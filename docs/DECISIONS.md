@@ -47,3 +47,13 @@ Adopt Conventional Commit titles and shared commit/PR templates. Add a dependenc
 message checker and GitHub PR-format check. Document actual changes, reasons,
 validation, and limitations. Existing published commits are preserved; use a
 formatted squash-merge title when the team later authorizes merging.
+
+## D007 — Reuse PushT for the first code milestone (2026-10-13)
+
+The user emphasized that PushT and diffusion-policy implementations already exist.
+Reuse GPC's pinned simulator/controller/image interface, preserve the T construction
+path, and add I/L through its existing object hook. Do not build a replacement
+physics engine. Implement and test geometry, metrics, and state/data contracts with
+the standard library while this laptop remains source-only. Actual physics and
+policy reproduction wait for the authorized training machine. The GPC optional
+dependency set includes IPython because the upstream environment imports it.

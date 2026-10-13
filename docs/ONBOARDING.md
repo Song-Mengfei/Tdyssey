@@ -5,9 +5,10 @@
 1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
-3. There are currently no implementation or experiment results. The original
-   detailed schedule is a proposal. A negative outcome is acceptable for the course
-   if the work and analysis are substantial.
+3. First code exists for geometry, the GPC shape adapter, state/data records, and
+   evaluation. Read `docs/IMPLEMENTATION.md`. Simulator runtime, policy/model
+   training, and experiment results remain pending. A negative outcome is
+   acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
