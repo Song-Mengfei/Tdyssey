@@ -20,6 +20,7 @@ lockfile is a candidate specification, not a validated training environment.
 - [Shared environment and storage](docs/ENVIRONMENT.md)
 - [Codex project guidance](docs/CODEX.md) and [agent instructions](AGENTS.md)
 - [Decisions](docs/DECISIONS.md)
+- [Commit and pull request rules](docs/GIT.md)
 - [Original detailed research schedule](跨形状机器人世界模型研究_详细执行时间表.md)
 
 ## Work without installing anything

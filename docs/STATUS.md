@@ -11,6 +11,8 @@ Updated: 2026-10-13. Stage: source-only scaffold; no experiments completed.
   communicate in plain English and avoid unnecessary jargon.
 - Added shared dependency specification, Codex guidance, onboarding, provenance
   records, example experiment configuration, and dependency-free repository checks.
+- Added shared Conventional Commit rules, commit/PR templates, and a dependency-free
+  PR-format check for consistent messages across the three authors and their agents.
 - Read-only laptop audit: RTX 4060 Laptop GPU, approximately 8 GB VRAM, 16 GB RAM,
   and approximately 119 GiB free at inspection time.
 - Found CUDA-enabled PyTorch in another project's `realsense/.venv-ml`; a tiny GPU
@@ -26,6 +28,8 @@ Updated: 2026-10-13. Stage: source-only scaffold; no experiments completed.
 - `python3 -B scripts/check_repo.py` passed configuration, lock-pin, provenance,
   Python syntax, and local documentation-link checks. `scripts/doctor.py --help`
   passed without importing third-party packages. Git whitespace checks passed.
+- Six standard-library tests passed for valid/invalid message titles, commit body
+  spacing, empty template sections, complete descriptions, and duplicate sections.
 - No Tdyssey environment, CUDA profile, GPC checkpoint, dataset schema, simulator,
   training loop, or task-performance result has been runtime-validated.
 - Upstream revisions are recorded, but code has not been cloned into this repo.

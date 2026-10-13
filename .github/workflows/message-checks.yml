@@ -1,0 +1,16 @@
+name: PR message checks
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  message-format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check title and completed PR sections
+        run: python3 -B scripts/check_messages.py --event "$GITHUB_EVENT_PATH"
