@@ -59,7 +59,9 @@ def main() -> int:
     if pilot["budgets"]["long_jobs_authorized"]:
         errors.append("Shared pilot must not grant machine-specific training authorization")
 
-    for path in (ROOT / "scripts").glob("*.py"):
+    python_paths = [path for folder in ("scripts", "tdyssey", "examples", "tests")
+                    for path in (ROOT / folder).rglob("*.py")]
+    for path in python_paths:
         try:
             ast.parse(path.read_text(), filename=str(path))
         except SyntaxError as exc:

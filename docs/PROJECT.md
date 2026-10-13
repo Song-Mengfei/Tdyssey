@@ -58,9 +58,9 @@ success rule, contact behavior, latency, and failures with matched initial state
 
 ## Expected engineering layout
 
-As implementations become necessary, add `envs/`, `data_collection/`, `models/`,
-`training/`, and `evaluation/`. Do not create empty framework layers to imply
-progress. Tracked configuration lives in `configs/`; small provenance records in
+The first implementation lives in `tdyssey/`, with existing-simulator adapters
+under `tdyssey/envs/`. Add collection/models/training modules there when needed;
+do not create empty framework layers to imply progress. Tracked configuration lives in `configs/`; small provenance records in
 `manifests/`; large outputs in ignored or external artifact directories.
 
 The original 16-week schedule assumes a full-time researcher and an unverified

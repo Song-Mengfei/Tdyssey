@@ -8,13 +8,16 @@ The project is graded on effort. Substantial implementation, controlled
 experiments, reproducibility, and an honest explanation of failures are useful
 deliverables even if the ambitious adaptation/generalization goals fail.
 
-**Current stage:** shared research and engineering scaffold. No simulator,
-training loop, or benchmark result has been implemented here. The dependency
-lockfile is a candidate specification, not a validated training environment.
+**Current stage:** first implementation of T/I/L geometry, an adapter for the
+existing GPC PushT simulator, evaluation metrics, and state/trajectory records.
+Core checks run without installing anything. Actual simulator, checkpoint, and
+training validation remain pending on the authorized training machine.
+The dependency lockfile is a candidate specification.
 
 ## Start here
 
 - [Project scope and milestones](docs/PROJECT.md)
+- [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Current status and next work](docs/STATUS.md)
 - [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
 - [Shared environment and storage](docs/ENVIRONMENT.md)
@@ -31,6 +34,8 @@ and creates no environment or cache:
 
 ```bash
 python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+python3 -B -m tdyssey
 ```
 
 Do not run `uv sync`, `uv run`, package installers, training, or asset downloads on
