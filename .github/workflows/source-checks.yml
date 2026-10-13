@@ -1,0 +1,14 @@
+name: Source checks
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check scaffold without installing research dependencies
+        run: python3 -B scripts/check_repo.py
