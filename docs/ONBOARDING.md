@@ -38,6 +38,9 @@ simultaneous edits; pull and inspect shared status before changing a common cont
 
 Put shared setup and later changes through branches and pull requests so both
 other authors can review them before they become the default on `main`.
+Follow `docs/GIT.md` for structured commit titles, useful change/check information,
+and the shared PR template. Each author may enable the commit editor template in
+their own checkout; no package installation is needed.
 
 ## First implementation task
 

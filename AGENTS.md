@@ -82,3 +82,16 @@ evidence, next task, and unresolved blockers. Record scope/dependency/protocol
 decisions in `docs/DECISIONS.md`. Keep these short; chat history is not shared
 project memory. Include reproducible commands and artifact references for results.
 Do not mark an experiment completed without actual outputs.
+
+## Commit and pull request rules
+
+Follow `docs/GIT.md` and the shared templates when preparing commits or PRs.
+Use Conventional Commit titles (`type(scope): description`, scope optional,
+lowercase type/scope, at most 72 characters). For substantive commits include
+Why, Changes, and Validation information; reference only real issues/PRs.
+PRs use the template's Summary, Changes, Validation, Limitations, and Related issues
+sections. Keep messages specific, concise, and accurate; never invent results,
+signatures, or author credit. Check prepared messages with
+`python3 -B scripts/check_messages.py` using the documented arguments.
+Use message/body files for scripted Git and GitHub commands to preserve newlines.
+Do not rewrite published commits or merge a PR without explicit authorization.

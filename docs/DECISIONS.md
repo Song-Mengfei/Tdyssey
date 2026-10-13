@@ -39,3 +39,11 @@ The owner works with two other coauthors. Propose one person per main workstream
 with names and ownership agreed by the team. Shared setup and later changes go
 through branches and pull requests before becoming defaults on `main`. Use plain
 English in team chat and explain unfamiliar technical terms only when needed.
+
+## D006 — Structured Git messages (2026-10-13)
+
+The user requested consistent commit and PR messages instead of improvised formats.
+Adopt Conventional Commit titles and shared commit/PR templates. Add a dependency-free
+message checker and GitHub PR-format check. Document actual changes, reasons,
+validation, and limitations. Existing published commits are preserved; use a
+formatted squash-merge title when the team later authorizes merging.
