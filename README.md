@@ -26,6 +26,7 @@ run without installation; a resizable desktop viewer is available. See
 - [Collect bounded interaction data](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
+- [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
 - [Separate GPC reference-policy comparison](docs/POLICY_BASELINE.md)
 - [Current status and next work](docs/STATUS.md)

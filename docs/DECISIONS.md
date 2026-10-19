@@ -204,3 +204,12 @@ lost alignment and do not replace the original success threshold. Post-run best
 frame selection is not an implementable learned stopping policy. Any future
 shorter-prefix/stopping experiment needs a separate matched comparison and explicit
 disclosure of privileged geometric reward or state used to decide when to stop.
+
+## D016 — Commit one curated alphabet-video snapshot (2026-10-19)
+
+Publish the 27 existing alphabet/near-T MP4 files directly under
+`docs/media/official-alphabet-2026-10-19/`, with a linked result table and exact
+size/frame/hash manifest. This bounded 11.5 MiB snapshot makes the actual failures
+and successes reviewable with the source. Preserve original video bytes. Keep the
+ignore exception scoped to this directory; future raw videos, datasets, checkpoints
+and complete reports remain outside Git. No release or external host is required.

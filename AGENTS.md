@@ -48,8 +48,10 @@ versions observed on one machine as requirements for every collaborator.
   need a documented compatibility decision, not silent dependency substitutions.
 - Upstream commit IDs live in `manifests/upstream.json`; models and datasets need
   separate revision/hash records once actually downloaded.
-- Keep generated data, checkpoints, caches, and video outside Git. Use configurable
-  paths, never author-specific absolute paths.
+- Keep generated data, checkpoints, caches, and raw video outside Git. The curated
+  MP4 snapshot under `docs/media/official-alphabet-2026-10-19/` is an explicit
+  publication exception; see `docs/ALPHABET_RESULTS.md`. Use configurable paths,
+  never author-specific absolute paths.
 - Use a branch or isolated checkout per author. Inspect `git status` before edits
   and preserve unrelated work. Split file ownership before any parallel work.
 
