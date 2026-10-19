@@ -18,6 +18,8 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/collection.py` | Bounded waypoint play with reset checks, seed records, contact diagnostics, and T+1 observations |
 | `tdyssey/dataset.py` | Compact episode persistence, byte limits, file hashes, frozen splits, and read-back validation |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
+| `tdyssey/training_data.py` | Frozen combined catalogs, duplicate/split checks, and lazy episode-safe training windows |
+| `scripts/prepare_training_data.py` | Verify real CPU batches without training; see `docs/TRAINING_DATA.md` |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
@@ -25,9 +27,10 @@ have passed with real Pymunk and GPC on the locked CPU profile; see
 `docs/VALIDATION.md`. CUDA and checkpoint validation remain pending. There is no
 world-model or policy training implementation yet.
 The collector now stores RGB frames once as uint8 alongside physical-state labels
-and exact observation timing. History-window loading and conversion to the original
-GPC training-data format remain pending. Training with physical labels must be
-reported as using privileged simulator supervision.
+and exact observation timing. History-window loading and PyTorch batches are now
+implemented; conversion to the original GPC training-data format remains pending.
+Training with physical labels must be reported as using privileged simulator
+supervision.
 
 ## Run the core code without installation
 

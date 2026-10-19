@@ -79,3 +79,15 @@ prior; optional object-directed exploration uses simulator position and must be
 reported as privileged exploration. Preserve upstream flags separately from the
 collector's horizon cutoff. Freeze whole-episode splits and verify files on read-back;
 small verification data is not a training or policy-performance result.
+
+## D010 — Frozen catalogs and episode-safe training windows (2026-10-19)
+
+Preserve source episode splits when combining runs, pin source manifest hashes,
+and reject duplicate trajectory IDs or exact initial scenes crossing splits.
+Do not silently create validation data from a tiny all-training collection.
+Emit only complete history/future windows within one episode, with actions at a
+predicting observations at a+1. Keep one decoded episode cached and construct
+windows on demand rather than duplicating images on disk. Images become float32
+in [0,1]; position/action units remain pixels. Privileged labels stay separate
+from visual model observations. Pretrained-policy transforms/normalizers and
+actual model training remain separate integration tasks.

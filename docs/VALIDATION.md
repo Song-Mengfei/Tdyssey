@@ -64,7 +64,7 @@ new interaction data, videos, and CUDA libraries are additional storage costs.
 - Loading the original T policy checkpoint and its observation/action conventions.
 - Initial-state penetration, boundary coverage, and goal reachability across seeds.
 - Restoring during established contact, whose cached solver impulses are not saved.
-- Dataset conversion, visual histories, training, and repeated policy evaluation.
+- Original GPC dataset conversion, pretrained-policy integration, training, and repeated evaluation.
 
 Legacy Gym prints its maintenance warning; NumPy remains pinned to 1.26.4 for
 upstream compatibility. Do not reinterpret these short simulator checks as
@@ -104,5 +104,39 @@ Outputs and detailed provenance remain under ignored `artifacts/`. Runs recorded
 the working-tree source hashes and dirty state, not a claimed clean training
 release. Object-directed exploration uses simulator object position. Tiny examples
 do not establish exploration coverage, learned dynamics quality, or policy success;
-their validation/test splits can be empty. Training loaders, combined dataset
-manifests, pretrained-policy loading, and training remain pending.
+their validation/test splits can be empty. The training-loader milestone below
+adds windows/catalogs; pretrained-policy loading and training remain pending.
+
+## Training-data loader checks (2026-10-19)
+
+All **60 tests passed** with `TDYSSEY_GPC_ROOT` set. Source-only discovery passed
+43 tests and skipped 17 installed/runtime checks. Five new source-only tests cover
+window boundaries, invalid sizes, duplicate/initial-scene leakage, split names,
+and metadata accounting. Seven new installed tests use independent frame/action
+marker fixtures to check alignment, split isolation, short episodes, stale/corrupt
+data, duplicate scenes, rate compatibility, and actual PyTorch batching.
+
+The existing real T/I/L example data was indexed and read without additional
+simulation or copied image files:
+
+```bash
+.venv/bin/python -B scripts/prepare_training_data.py --datasets artifacts/collection-check-T artifacts/collection-check-I artifacts/collection-check-L --output artifacts/training-check/catalog.json --history 2 --future 4 --batch-size 4 --max-batches 2
+```
+
+Observed results:
+
+- Four training episodes, 140 original actions, and 124 complete windows.
+- Two CPU batches of four examples; history images `(4,2,3,96,96)`, future images
+  `(4,4,3,96,96)`, and action targets `(4,4,2)`.
+- Image/position/goal batch tensors were finite float32; image range remains [0,1].
+- Source contact-step fraction was 15/140, about 10.7%. This is not a spatial
+  contact-coverage or policy-success metric.
+- Catalog file: 1,766 bytes. Saved batch report: 1,587 bytes. No window cache or
+  new image dataset was written.
+- Validation and model-test splits remained empty, as in the source examples.
+  Synthetic marker fixtures separately test split separation, not model quality.
+
+The catalog/read-back command also passed in a fresh process. The raw dataset
+files are unchanged; no new packages, weights, published data, or GPU setup were
+needed. Pretrained policy transforms/normalizers, original GPC data conversion,
+meaningful held-out datasets, and actual training remain pending.

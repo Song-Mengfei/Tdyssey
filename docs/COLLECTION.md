@@ -71,8 +71,9 @@ absolute world-frame position targets in pixels, not normalized displacements.
 
 Physical states, velocities, contact labels, and geometric scores are privileged
 labels. Training with them must be distinguished from image-only learning.
-The loader validates bounded pilot data; a windowed/batched training loader and
-conversion to the original GPC training format remain pending.
+The episode loader validates bounded pilot data. `docs/TRAINING_DATA.md` describes
+the windowed/batched loader and frozen combined catalogs. Conversion to the original
+GPC training format remains pending.
 
 The last transition is truncated if the collector reaches its action horizon.
 Diagnostics separately retain the original upstream terminal flags and collector
