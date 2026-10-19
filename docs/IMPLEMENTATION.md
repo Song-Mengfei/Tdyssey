@@ -1,8 +1,9 @@
 # First code milestone: extend the existing PushT environment
 
 The primary policy baseline is now the [official CNN implementation](OFFICIAL_BASELINE.md).
-The GPC extension and data pipeline described here remain a separate reference;
-their L geometry/data must be ported and checked before official-policy adaptation.
+The GPC extension and data pipeline described here remain a separate reference.
+The [official capital-L extension](OFFICIAL_SHAPES.md) is now implemented; its
+geometry and physical choices differ from the older GPC L fixtures.
 
 PushT is an existing benchmark. Reuse the pinned GPC `PushTImageEnv`, its Pymunk
 physics, controller, renderer, and diffusion-policy observation/action interface.
@@ -33,6 +34,11 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/official.py` | Pinned official CNN/environment loader, saved normalizers, actual-collision metrics |
 | `scripts/fetch_official_assets.py` | Verify official training checkpoint, retain compact EMA, remove staging data |
 | `scripts/evaluate_official.py` | Bounded CUDA T baseline with original environment, optional window/video, and real costs |
+| `tdyssey/envs/official.py` | Preserve official T; add rigid capitals/near-T, matched centers, and checked snapshot restore |
+| `tdyssey/letters.py` | Versioned edge-connected block capitals with geometry-specific symmetry |
+| `scripts/preview_letters.py` | Small dependency-free SVG catalog of actual collision rectangles |
+| `scripts/summarize_shapes.py` | HTML/video gallery and CSV from recorded results, without policy execution |
+| `scripts/evaluate_shapes.py` | Frozen official CNN on matched selected-letter scenes with geometry checks and explicit control/reset/denoising costs |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
@@ -48,6 +54,9 @@ Training with physical labels must be reported as using privileged simulator
 supervision.
 
 ## Run the core code without installation
+
+The `python -m tdyssey` preview below retains the older GPC geometry definitions.
+Use `docs/images/official-L.svg` for the current capital-L dimensions.
 
 ```bash
 python3 -B -m unittest discover -s tests -p 'test_*.py'

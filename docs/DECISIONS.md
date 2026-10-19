@@ -147,3 +147,52 @@ the official EMA state/config for inference after verifying the original trainin
 checkpoint and compact output. Source/checkpoint/config hashes and actual protocol
 are recorded separately. Three successful development scenes establish a working
 baseline, not reproduction of the full published evaluation or adaptation success.
+
+## D014 — Upright capital L and matching by physical centers (2026-10-19)
+
+Use an upright capital L with height 120 pixels, total bottom-foot width 90 pixels,
+and stroke thickness 30 pixels. Its connected nonoverlapping rectangles form one
+rigid body. Center local vertices at the area centroid. Keep total mass 1, matching
+official T, and use uniform-density inertia 1875 for L. L area is 5400 versus T's
+6300 pixel²; density/inertia are not matched. Preserve original T mass, inertia
+3000, local coordinates, and legacy center-of-gravity convention unchanged.
+
+Match T/L mass-center poses, velocities/forces, pusher state, and target mass
+centers rather than copying different local origins. This shifts L's goal origin
+relative to T's, while aligning their physical target centers. Use common rotated
+geometry/clearance rejection, count both reset substeps per candidate, and restore
+accepted full states into fresh spaces without extra stepping. Keep this paired
+development protocol separate from the canonical official benchmark reset path.
+
+Check source T image/state/contact equivalence, scalar rewards within roundoff,
+actual L contacts, collision/render/goal agreement, incompatible-state rejection,
+and pre-contact replay. Cached contact impulses and future-reset RNG are not saved.
+Retain older GPC L definitions/data as historical references rather than changing
+their hashes. A frozen-policy failure on one L scene is a development observation,
+not a generalization rate or an adaptation result.
+
+## D015 — Frozen-policy alphabet exploration and a near-T control (2026-10-19)
+
+Add the remaining 24 uppercase block letters and one near-T geometry as a separate
+exploratory frozen-policy sweep. Keep T-to-L learning as the core research task;
+these are development evaluation shapes, not evidence of learned adaptation or a
+frozen held-out shape set. Full alphabet exposure cannot later be called unseen
+model-selection evidence. Training/test shape choices need a later explicit freeze.
+
+Preserve official T and the specified shorter-foot L. Define the other letters as
+versioned edge-connected 5×7 blocks of total size 100×120, with holes, one rigid
+mass-1 body and area-centroid uniform-density inertia. Record exact rectangles,
+symmetry and hashes, not just a font name. Density/inertia/contact geometry vary;
+the sweep measures the combined task shift, not isolated visual generalization.
+
+For `T_narrow`, change only cap width 120→108 and retain original mass 1, inertia
+3000 and physical-center convention. Match all shapes by physical centers, pusher
+state, orientation and target centers. Common reset rejection applies to the full
+selected set, including every rejected reset in interaction accounting. Preserve
+identical per-scene policy noise seeds, budgets and original success rule.
+
+Allow 1–3 common scenes, at most 300 controls per shape and a bounded wall time.
+Keep CUDA-only inference and stream small videos. Generate HTML/CSV from saved
+reports with the standard library; do not download fonts, new weights or datasets.
+A single scene per shape is an exploratory observation, not a success-rate estimate
+or proof of the policy's overall limit. Retain honest failures and partial-run flags.

@@ -15,7 +15,8 @@ H3: accumulated experience improves zero-shot or fixed-budget adaptation to held
 shapes. H1 is the initial focus; H2/H3 are stretch questions, not promised results.
 
 The robot remains a circular 2D pusher. Shape variation concerns the pushed object.
-Start with T, I, and L, one rigid object, fixed physical/control parameters, and
+Start with T and an upright capital L with a shorter bottom foot, one rigid
+object, fixed physical/control parameters, and
 fixed target pose for the adaptation study. Prior GPC reference runs used a
 different environment and randomized goals; they are not the official baseline.
 Prioritize T-to-L adaptation before adding I or architecture comparisons.
@@ -26,7 +27,7 @@ Symmetry and shape-dependent mass/inertia must be explicit.
 | Milestone | Substantial deliverable | Evidence needed to advance |
 | --- | --- | --- |
 | M0: resources | Reproducible environment, fixed upstream code, verified resources | T policy rollout and resource/throughput report |
-| M1: environment | T/I/L geometry, collision, reset/replay, reward, contact logging | Boundary cases and matched-state replay |
+| M1: environment | T/L geometry, collision, reset/replay, reward, contact logging; I later | Boundary cases and matched-state replay |
 | M2: dynamics | Non-expert collectors and learned dynamics | Held-out contact errors, candidate ranking, optimistic-action replay |
 | M3: optimization | Direct simulator diffusion-policy fine-tuning, then imagined fine-tuning | Correct likelihood/gradient checks and physical learning curves |
 | M4: analysis | Baseline comparisons, behavior diagnostics, failures, cost accounting | Repeated runs and reproducible tables/videos |
@@ -74,3 +75,8 @@ The original 16-week schedule assumes a full-time researcher and an unverified
 32 GB GPU. It is a reference plan, not the course deadline or a hardware requirement.
 The team has three authors. Deadline, individual owners, available
 training machine, and compute budget remain to be recorded in onboarding.
+
+A separate frozen-policy development sweep covers all capital letters plus a
+10%-shorter T cap; see [shape protocol](OFFICIAL_SHAPES.md). This supports failure
+analysis without expanding the first learning milestone beyond T-to-L. These
+explored letters cannot later be presented as an untouched held-out shape set.

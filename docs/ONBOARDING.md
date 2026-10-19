@@ -7,9 +7,11 @@
    for new object shapes using non-expert data and imagined training.
 3. The primary baseline is the official RSS 2023 visual CNN policy in original
    PushT; three CUDA T-scene checks succeeded. Read `docs/OFFICIAL_BASELINE.md`.
-   Earlier GPC geometry/collection/data code remains separate reference work.
-   L must be ported before matched adaptation experiments. Policy/world-model
-   training remains pending. A negative outcome is acceptable for the course if
+   Official capital L is implemented and its first matched scene failed while T
+   succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
+   sweep explores failures without changing the T-to-L learning milestone. Earlier GPC collection/data remains
+   separate reference work. Official L collection and policy/world-model
+   training remain pending. A negative outcome is acceptable for the course if
    the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
@@ -51,8 +53,8 @@ Run the selected profile's doctor, then the opt-in real simulator checks describ
 in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
 `artifacts/` directories. On the training machine, verify required assets one by one
 and bound evaluation episodes before running the official T baseline using
-`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is porting L
-while preserving original T behavior, not treating the GPC adapter as interchangeable.
+`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is collecting
+official L data with frozen nonempty splits, using `docs/OFFICIAL_SHAPES.md`.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

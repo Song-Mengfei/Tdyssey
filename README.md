@@ -9,9 +9,11 @@ experiments, reproducibility, and an honest explanation of failures are useful
 deliverables even if the ambitious adaptation/generalization goals fail.
 
 **Current stage:** the official RSS 2023 visual CNN policy loads on CUDA and solved
-three original T-scene development checks. GPC-based T/I/L geometry, collection,
-and training-data code are retained as a separate reference. Porting L to the
-official setup and implementing world-model/policy training are next. Core checks
+three original T-scene development checks. A shorter-foot capital L is now in the
+official setup: the first matched scene succeeded for T and failed for L. GPC-based
+collection/training-data code remains separate reference work; official L data
+collection and world-model/policy training are next. All 26 capital letters and a
+near-T shape are available for separate frozen-policy exploration. Core checks
 run without installation; a resizable desktop viewer is available. See
 [official baseline](docs/OFFICIAL_BASELINE.md) and [validation evidence](docs/VALIDATION.md).
 
@@ -22,6 +24,7 @@ run without installation; a resizable desktop viewer is available. See
 - [Collect bounded interaction data](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
+- [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
 - [Separate GPC reference-policy comparison](docs/POLICY_BASELINE.md)
 - [Current status and next work](docs/STATUS.md)
 - [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
