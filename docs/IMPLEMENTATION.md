@@ -20,11 +20,17 @@ This change does not implement another physics engine or a replacement policy.
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
 | `tdyssey/training_data.py` | Frozen combined catalogs, duplicate/split checks, and lazy episode-safe training windows |
 | `scripts/prepare_training_data.py` | Verify real CPU batches without training; see `docs/TRAINING_DATA.md` |
+| `tdyssey/policy.py` | Verified compact EMA loading and original visual diffusion-policy inference |
+| `tdyssey/baseline.py` | Matched initial scenes, bounded eight-action chunks, scores and accounting |
+| `scripts/evaluate_policy.py` | CPU/CUDA-selectable unranked policy runner; see `docs/POLICY_BASELINE.md` |
+| `scripts/fetch_policy_assets.py` | Plan-only default; explicitly download one size/hash-verified checkpoint |
+| `scripts/replay_policy.py` | Export recorded actions to a small video and check physical replay |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
 have passed with real Pymunk and GPC on the locked CPU profile; see
-`docs/VALIDATION.md`. CUDA and checkpoint validation remain pending. There is no
+`docs/VALIDATION.md`. CPU checkpoint loading and bounded policy rollouts have also
+passed; CUDA remains pending. There is no
 world-model or policy training implementation yet.
 The collector now stores RGB frames once as uint8 alongside physical-state labels
 and exact observation timing. History-window loading and PyTorch batches are now
@@ -72,8 +78,10 @@ env = ShapeEnv(shape="I", domain_filename="push_t", resize_scale=96)
 The original image/proprioception and pixel position-target actions stay inherited.
 When starting inside GPC's evaluation directory, make Tdyssey importable via the
 process's `PYTHONPATH`; do not install it into an unrelated project environment.
-The original T checkpoint and evaluator still need the resource-loading checks
-described in M0 before comparing policy performance.
+The original T checkpoint now loads through `tdyssey/policy.py`; the initial
+unranked T/I/L comparison and its protocol are documented in
+`docs/POLICY_BASELINE.md`. Repeated T performance checks remain necessary before
+treating the pretrained baseline as reproduced.
 
 ## Geometry and protocol decisions
 

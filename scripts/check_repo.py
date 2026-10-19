@@ -24,6 +24,7 @@ def main() -> int:
         upstream = json.loads((ROOT / "manifests/upstream.json").read_text())
         example = json.loads((ROOT / "manifests/experiment.example.json").read_text())
         gym_metadata = json.loads((ROOT / "manifests/gym-metadata.json").read_text())
+        policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -48,6 +49,22 @@ def main() -> int:
     for repo in upstream["repositories"]:
         if not re.fullmatch(r"[0-9a-f]{40}", repo["commit"]):
             errors.append(f"Upstream commit must be a full SHA: {repo['name']}")
+    gpc_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "gpc")
+    if policy["source_commit"] != gpc_commit:
+        errors.append("Policy source revision differs from the simulator revision")
+    for asset in (policy["checkpoint"], policy["expert_dataset"]):
+        if not re.fullmatch(r"[0-9a-f]{40}", asset["revision"]):
+            errors.append("Policy/data resources need immutable revision SHAs")
+    hashes = [policy["checkpoint"]["sha256"], *policy["source_sha256"].values(),
+              *(item["sha256"] for item in policy["expert_dataset"]["schema"].values())]
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in hashes):
+        errors.append("Policy/source/data metadata need SHA-256 records")
+    config = policy["policy"]
+    if any(type(config[key]) is not int or config[key] < 1 for key in
+           ("obs_horizon", "pred_horizon", "action_horizon", "num_diffusion_iters")):
+        errors.append("Policy horizons/denoising count must be positive integers")
+    elif config["obs_horizon"] - 1 + config["action_horizon"] > config["pred_horizon"]:
+        errors.append("Policy action prefix exceeds its prediction horizon")
     gym_entries = [item for item in project["tool"]["uv"].get("dependency-metadata", [])
                    if item["name"] == "gym" and item["version"] == gym_metadata["version"]]
     if len(gym_entries) != 1 or gym_entries[0]["requires-dist"] != gym_metadata["requires_dist"]:

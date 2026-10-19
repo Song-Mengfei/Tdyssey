@@ -88,7 +88,8 @@ Check NVIDIA driver compatibility before CUDA setup. cu124 is an initial profile
 for Ada-generation GPUs; **Blackwell requires a newer compatible PyTorch/CUDA
 profile and a new lock/validation decision**. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.
-CPU simulator checks do not prove checkpoint loading or training compatibility.
+CPU simulator checks do not prove GPU or training compatibility. CPU checkpoint
+loading now has separate evidence in `docs/VALIDATION.md`.
 
 ## Updating dependencies
 
@@ -114,6 +115,14 @@ metadata. For source-only work, inspect resolver output for unexpected builds an
 remove task-owned temporary tooling/cache afterward.
 
 ## Training and data storage
+
+The current plain-policy runner needs one verified checkpoint of 364,554,150 bytes
+(about 348 MiB), beyond the CPU environment. It does not need the full original
+dataset, duplicate component checkpoints, world-model weights, or CUDA libraries.
+See [policy resource commands](POLICY_BASELINE.md). Public GPC assets need no
+Hugging Face account/token; `huggingface-hub` is already in the shared environment.
+Future private/gated resources or publishing may use individual accounts, with
+credentials stored locally outside Git.
 
 Do not reserve the full training budget just to develop the simulator. A course
 pilot may eventually need roughly 40–60 GB: 8–12 GB for a CUDA environment, about

@@ -1,10 +1,11 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: training-data preparation; no model training completed.
+Updated: 2026-10-19. Stage: pretrained-policy integration; no model training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
-and episode-safe training batches together. Review branch: `build/minimal-runtime-setup`.
+episode-safe training batches, and pretrained-policy baseline together.
+Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
 
 ## Completed
@@ -35,6 +36,12 @@ Main changes continue through pull requests.
 - Implemented on-demand visual history/future windows with one decoded episode
   cached, plus real CPU PyTorch batches. No image windows are duplicated on disk.
   Commands and timing/label assumptions are in `docs/TRAINING_DATA.md`.
+- Verified the original policy/data resource schemas and pinned immutable revisions.
+  Added compact EMA checkpoint loading, a cache-free selected-file downloader,
+  and bounded matched-scene T/I/L policy evaluation. Public assets need no account.
+- Added action/state-checked video replay without loading the model again.
+  Commands, normalization/horizons, and evaluator differences are in
+  `docs/POLICY_BASELINE.md`.
 
 ## Verification status
 
@@ -46,8 +53,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 60 tests passed together in the installed environment: 43 source-only and
-  17 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 68 tests passed together in the installed environment: 48 source-only and
+  20 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -57,18 +64,28 @@ See `docs/VALIDATION.md` for commands and limits.
   uses 1,766 bytes and its report 1,587 bytes; no new interaction data was needed.
   Validation/test splits remain empty in these tiny examples, so no model-quality
   evaluation or learned improvement is claimed.
-- CUDA, checkpoint loading, original dataset conversion, policy/world-model
+- CPU policy loading passed for 208 EMA tensors / 91,123,778 parameters. One
+  verified 364,554,150-byte checkpoint was downloaded; no duplicate component
+  weights or original training arrays were acquired.
+- A real matched-scene run at seed 100000 executed 300 controls per shape: 900
+  controls, three reset substeps, 114 policy calls, 11,400 denoising steps, about
+  140 seconds on CPU. Maximum IoU T/I/L: 0.510/0.226/0.229; none succeeded.
+  This validates execution, not baseline quality or an adaptation benefit.
+- A 301-frame T video decoded correctly; its 300 diagnostic replay steps matched
+  recorded poses/velocities within 1e-7 and rewards within 1e-9. Replay accounting
+  is separate from evaluation, and does not establish mid-contact restoration.
+- CUDA, repeated baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
-- No datasets, model checkpoints, CUDA libraries, or training runs were acquired
-  as part of the CPU simulator setup. Other project environments were untouched.
+- Original dataset schema inspection did not acquire image/action chunks. CUDA
+  libraries and training runs remain absent. Other project environments were untouched.
 
 ## Next task
 
-Integrate original T-policy resource loading and a bounded baseline rollout command:
-verify checkpoint/data schema, image transforms, observation histories, action
-normalization/horizons, and executed prefixes. Record required assets separately
-from the small development datasets; download only selected verified files when
-the execution machine and storage budget are agreed.
+Inspect recorded T trajectories and repeat several T seeds before freezing a
+baseline protocol. The first unranked single-scene run failed to solve T; check
+policy behavior and distinguish plain sampling from upstream world-model ranking
+before interpreting cross-shape differences. M0 execution is validated; published
+baseline performance is not reproduced.
 
 Then compare T/I/L with matched initial states and collect a meaningful target-shape
 dataset with nonempty frozen validation/test splits and contact diagnostics.
@@ -80,7 +97,7 @@ machine task; current work focuses on the portable repository pipeline.
 
 - Course deadline, rubric details, and named workstream owners.
 - Training machine, GPU profile, shared artifact location, and compute budget.
-- CUDA and pretrained-checkpoint runtime compatibility.
+- CUDA runtime compatibility and reproduced pretrained-policy performance.
 - Reset distribution coverage/dynamic goal reachability and mid-contact replay tolerance.
 
 ## Handoff convention
