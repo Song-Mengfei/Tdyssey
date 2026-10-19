@@ -347,3 +347,76 @@ on these three scenes; they are different metrics. Local CUDA RNG streams are
 recorded and differ from historical evaluation scheduling. Tests/compatibility
 probes are separate diagnostics, outside the 558 evaluation controls. L porting,
 matched target-shape datasets, world-model training, and policy updates remain pending.
+
+## Official capital L and matched physical centers (2026-10-19)
+
+The official adapter preserves T and adds the capital-L geometry described in
+[shape protocol](OFFICIAL_SHAPES.md): height 120, bottom width 90, stroke 30, one
+mass-1 body with area 5400 and uniform-density inertia 1875. Physics and geometry
+hashes reject incompatible restores. T retains the original mass, inertia and
+center convention. Equal mass does not match area, density or inertia.
+
+```bash
+.venv/bin/python -B scripts/evaluate_shapes.py --output artifacts/official-capital-L-2026-10-19 --display --video --hold-seconds 30
+```
+
+The first candidate, seed 100000, passed both shapes' rotated wall/clearance and
+not-already-solved checks. Object/target mass centers and full pusher state match;
+L's local body/goal origins differ from T's. This explicitly selected distribution
+is separate from the original benchmark resets.
+
+| Shape | Controls | Contact steps | Success | Best IoU | Final IoU |
+| --- | --- | --- | --- | --- | --- |
+| T | 128 | 74 | Yes | 0.924145 | 0.924145 |
+| L | 300 | 288 | No; control budget | 0.301521 | 0 |
+
+Total: **428 controls / 4280 control-physics substeps**, two reset substeps,
+54 policy calls / 5400 denoising steps. Evaluation elapsed: 125.28 seconds,
+including loading/display pacing and excluding the 30-second final-frame hold.
+All T actions, contacts, full body-state traces and flags matched its earlier
+canonical run exactly (maximum state difference zero). T rewards differed by at
+most `4.44e-16` from polygon arithmetic. Its video was byte-identical. L's maximum
+clipped coverage reward was 0.487723, separate from IoU. This is a real baseline
+failure on one scene, not a population performance estimate or a training result.
+
+Ignored output directory: `artifacts/official-capital-L-2026-10-19`:
+
+| Artifact | Bytes | SHA-256 |
+| --- | --- | --- |
+| `report.json` | 850661 | `ebf959e353459c2c7a71dc4732012b5cfe6c21899c5dc888682dba1a5994d3ad` |
+| `T-100000.mp4` (129 frames) | 176503 | `a433c2ab03f8597505af1a7672cd9865e25c9348c87e98c0bcbbb3d4e55938c2` |
+| `L-100000.mp4` (301 frames) | 368564 | `24b7aa1864b805afaca73acc8520ee32359327ae7312d787b2b46a8f7894cb51` |
+
+Both videos decoded fully; verification used saved traces/videos without extra
+policy or physics execution. `verification.json` records the exact T comparison.
+Reports record their dirty working tree and source hashes. Initial nine shape
+tests passed (three source-only, six installed), including original T agreement,
+actual contact motion, collision/goal/rendered-foot agreement, full-state restore,
+fresh pre-contact replay, common-center matching and rejected-reset accounting.
+Diagnostic test controls are separate from the 428 evaluation controls. Contact
+solver caches and future-reset RNG state remain outside snapshots; mid-contact
+replay is not established. No additional environment, weights, dataset or training
+was required. Official L collection and learned adaptation remain pending.
+
+## Capital-letter sweep implementation checks (2026-10-19)
+
+All **90 tests passed** in the installed CUDA/DP/GPC environment: 57 source-only
+checks and 33 opt-in installed/runtime checks. Source-only discovery passed 57
+and skipped 33. `scripts/check_repo.py`, CLI help, and whitespace checks passed.
+The full suite includes the added capital-letter geometry, symmetry, collision,
+contact, partial-overlap reward agreement, holes, common 27-shape reset and gallery
+presentation checks. Original T parity and direct official-class CUDA inference
+parity continue to pass. No manifest/lock change or installation was needed.
+
+```bash
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+.venv/bin/python -B scripts/evaluate_shapes.py --alphabet --seconds 3600 --output artifacts/official-alphabet-2026-10-19 --video
+python3 -B scripts/summarize_shapes.py --report artifacts/official-alphabet-2026-10-19/report.json --output artifacts/official-alphabet-2026-10-19/summary.html
+```
+
+The full alphabet run is recorded separately from tests and the earlier T/L probe.
+Completed sweep findings, cost accounting and artifact hashes follow once the
+bounded evaluation has finished; partial reports retain status `running` and must
+not be treated as a completed 27-shape result.

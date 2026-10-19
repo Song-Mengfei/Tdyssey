@@ -10,6 +10,7 @@ are acceptable. Do not reduce the project to a trivial demo just to guarantee su
 The primary baseline is the official RSS 2023 visual CNN Diffusion Policy and
 original PushT environment; see `docs/OFFICIAL_BASELINE.md`. GPC is a separate
 reference/comparison. Do not treat their checkpoints, geometry, or data as interchangeable.
+Official capital-letter/near-T shape choices and matched-state rules live in `docs/OFFICIAL_SHAPES.md`.
 Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 

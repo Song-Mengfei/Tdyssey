@@ -1,11 +1,12 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: official CNN T baseline verified; no model training completed.
+Updated: 2026-10-19. Stage: official capital-letter/near-T evaluation; no training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
 episode-safe training batches, the official CNN T baseline, and a separate GPC
 reference-policy runner together.
+The official letter extension and matched frozen-policy probes continue in that PR.
 Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
 
@@ -51,6 +52,15 @@ Main changes continue through pull requests.
   The older GPC runner/results remain separate; see `docs/OFFICIAL_BASELINE.md`.
 - Added a locked self-contained `dp` extra, compact EMA asset preparation, bounded
   official evaluation, optional video, and official-wrapper/inference parity tests.
+- Added official capital L: height 120, shorter 90-pixel bottom foot, 30-pixel
+  stroke, one rigid mass-1 body. Original T is delegated unchanged. Added matched
+  physical-center resets and full-state capture/restore; see `docs/OFFICIAL_SHAPES.md`.
+
+- Added all remaining 24 uppercase block letters and a near-T control with a 10%
+  shorter cap, preserving original T and the specified capital L. All letters are
+  edge-connected rigid bodies; openings are real empty geometry. Added a bounded
+  CUDA sweep, exact SVG catalog, and report-driven HTML/video gallery and CSV.
+  Alphabet exploration is separate from the core T-to-L learning study.
 
 ## Verification status
 
@@ -62,8 +72,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 76 tests passed together in the installed environment: 51 source-only and
-  25 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 90 tests passed together in the installed environment: 57 source-only and
+  33 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -99,6 +109,17 @@ See `docs/VALIDATION.md` for commands and limits.
 - The combined CUDA/DP/GPC environment has 113 packages and measured 5.72 GiB.
   Torch/CUDA pins did not change. No demonstration dataset or second environment
   was acquired for official inference.
+- Six real shape tests passed: unchanged T images/state/contact and roundoff-close
+  rewards, L collision/goal/render agreement, real pushing, full-state restore and
+  pre-contact replay, matched reset centers, and rejected-reset accounting.
+- First matched scene 100000: T succeeded in 128 controls; L failed at the 300-step
+  budget. Max IoU T/L: 0.9241/0.3015; L contacted the pusher in 288 steps and ended
+  at zero overlap. T actions/body-state traces and video matched its earlier
+  canonical run exactly. Total: 428 controls, two reset substeps, 54 policy calls.
+  One pair establishes an executable probe, not a population performance estimate.
+- A one-scene all-capital/near-T CUDA sweep is running with at most 300 controls
+  per shape and streamed videos. Full outcomes/costs remain pending; saved partial
+  episodes are development observations, not a completed population estimate.
 - Broader baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
 - Original dataset schema inspection did not acquire image/action chunks.
@@ -106,14 +127,11 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Port L to the official PushT setup while preserving original T behavior and
-recording the L coordinate/mass/inertia/reset decisions. Check matched T rollouts,
-collision/render/goal consistency, and safe L starts before comparing shapes.
-Do not load official weights through the GPC runner or silently use GPC play data
-as matched official-environment training data.
-
-Then evaluate the frozen official T policy on L and collect meaningful target-shape
-dataset with nonempty frozen validation/test splits and contact diagnostics.
+Port the bounded non-expert collector to the official L interface. Preserve
+observation/action timing and full reset provenance; build a useful contact-rich
+dataset with nonempty frozen whole-episode train/validation/test splits. Keep the
+development probe's scenes separate. Do not silently mix GPC fixtures or turn
+evaluation traces into adaptation training data.
 Use the visual CNN route initially; train/validate the first world model and verify
 direct simulator policy optimization before imagined optimization. Additional GPU hosts still
 need their own authorized compatibility/setup checks.

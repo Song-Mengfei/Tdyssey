@@ -107,11 +107,11 @@ controls. Maximum IoU was 0.9241/0.9082/0.9236. These are three development chec
 not a full paper-score reproduction or a generalization/adaptation result.
 See [validation evidence](VALIDATION.md) for commands, storage, and costs.
 
-The existing I/L adapter and play fixtures are **GPC-specific**. Official T uses
-different body coordinates/construction and fixed goals. Port and test L against
-this official baseline before comparing shapes or collecting scientific training
-data; do not pass the new weights through the old GPC runner or mix its datasets
-silently. Retain the GPC work as a separate reference/comparison.
+An official capital-L extension and paired probe now exist; see
+[shape geometry and comparison protocol](OFFICIAL_SHAPES.md). The older I/L adapter
+and play fixtures remain **GPC-specific**, with different coordinates/geometry and
+physical choices. Do not pass official weights through the GPC runner or silently
+mix its datasets with official L data. Retain GPC as a separate reference/comparison.
 
 Our research contribution remains new-shape interaction data, world-model
 adaptation/validation, and measured physical improvement from policy updates.
