@@ -162,17 +162,101 @@ two eligible states, eight branches, 32 controls and one reset substep. Predicte
 reward ranges across candidates were below `2e-7`, while final physical reward
 ranges were about 0.077 and 0.101. See [complete evidence](VALIDATION.md).
 
-Next assess the released pretrained GPC world model and its compatibility with
-the official T environment before spending more effort tuning this custom model.
-The assessment must identify exact assets, resource costs and image/action/timing
-differences; published availability alone does not establish compatibility.
-Then check bounded T predictions against real contact/noncontact action effects
-before attempting L adaptation. DINO-WM is an alternative candidate, with an
-additional image-decoding question for our existing visual policy. See decision
-D020 and [current next task](STATUS.md#next-task).
+The first pretrained GPC assessment is now completed below. It loads unchanged
+released weights and exposes an appearance mismatch and mixed native contact
+prediction. It does not yet provide a reliable official-environment world model.
+DINO-WM remains an alternative, with an additional image-decoding question for our
+existing visual policy. See [current next task](STATUS.md#next-task).
 
 Keep this CNN as the L-only pipeline baseline. Any future variants need more
 diverse contact data, reduced false noncontact motion and consistent image/motion
 predictions. Model-test evaluation, multiple seeds and physical policy learning
 remain pending. Verify direct simulator policy optimization before imagined-policy
 claims; this checkpoint is not ready to supply the imagined environment.
+
+## Pretrained GPC compatibility check
+
+The released phase-two world model is **8,729,827 parameters / 298 state entries**,
+not the separate GPC action policy. The verified file is 35,043,916 bytes (33.42
+MiB), SHA-256 `4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892`,
+at Hugging Face revision `c16a467ec176af19bba5136564a81d8d61d72af9`.
+Exact source hashes, model settings and checkpoint provenance live in
+`manifests/gpc_world_model.json`. No dataset or reward-predictor weights are needed
+for the prediction check. No package, lockfile or environment change was needed.
+
+The image diffusion model uses a four-level U-Net with 96 channels per level,
+two residual blocks per level and attention in the two lowest-resolution levels.
+Four RGB images and four continuous 2D actions condition each next-image prediction.
+Each action is projected from 2 to 64 dimensions; four projections form the
+256-dimensional condition, combined with noise embeddings. The input convolution
+receives 12 history channels plus 3 noisy-next-image channels. Released sampling
+uses three Euler denoising steps. The release describes single-step training and
+then multi-step training on demonstration/exploration trajectories; exact training
+membership/seed provenance is not embedded in this weights-only file.
+
+| Convention | GPC model / native scene | Official baseline |
+| --- | --- | --- |
+| Image | RGB 96×96, **[0,1] in actual training code** | Same shape/range; different rendering/preprocessing |
+| History | Four images, three executed actions plus next proposed action | Policy itself uses two frames; maintain a separate four-frame dynamics history |
+| Action | Absolute workspace pixel target, normalize with `a/511*2-1` | Same physical target meaning; do not substitute policy normalizers |
+| Timing | 10 Hz control, 100 Hz physics | Same rates |
+| Appearance | Red T, black target in domain 18 | Gray T, green target |
+| T body | Mass 2, inertia 5700, center-of-gravity offset (0,0) | Mass 1, inertia 3000, offset (0,45); different local coordinates |
+| Goal | Source setup uses randomized goals | Official baseline fixes its goal |
+
+The sampler internally clips/quantizes to image values derived from [-1,1], but
+that is **not** the training input scale. Preserve actual [0,1] RGB inputs. Keep
+raw generated images in autoregressive history; clip only for observation metrics
+and previews, recording the clipped fraction. Upstream `sample`, `denoise` and
+output quantization disable gradients. This verified inference path does not
+establish differentiable imagined-policy optimization. No upstream file is patched.
+Legacy `diffusion`, `data` and `utils` imports are isolated during loading and
+restored afterward so they do not replace other modules in the process.
+
+The pinned repository has no top-level LICENSE and its model README states no
+explicit weight license. The release is public, but redistribution terms remain
+unresolved; retain only source/hash references in Git, not copied upstream code
+or weights. This observation does not establish permission for redistribution.
+
+With an authorized installed CUDA/GPC/DP profile, extend the existing pinned
+sparse GPC checkout with the required small Python files:
+
+```bash
+git -C third_party/gpc sparse-checkout add --no-cone '/gpc_rank_evaluation/diffusion/*.py' '/gpc_rank_evaluation/data/*.py' /gpc_rank_evaluation/utils.py /gpc_rank_evaluation/eval_baseline.py /world_model_train_phase_one/train.py /world_model_train_phase_one/utils.py /world_model_train_phase_two/train.py /world_model_train_phase_two/utils.py /environment.yml /README.md
+python3 -B scripts/fetch_gpc_world_model.py
+# Explicitly fetch only the verified 33.42 MiB checkpoint, without a cache:
+python3 -B scripts/fetch_gpc_world_model.py --download
+.venv/bin/python -B scripts/probe_gpc_world_model.py --output artifacts/pretrained-gpc-T-001
+```
+
+The fetch command defaults to a plan, reuses a verified existing file and refuses
+overwrites, corrupt streams or downloads above its budget. The probe defaults to
+both simulator families, two hand-constructed pre-contact scenes (bottom/left),
+four candidate sequences (hold/push/away/side), four future controls, a 120-second
+wall budget and 4 MiB of output. It restores identical full physical/controller
+states per candidate and uses matched noise seeds. Initial T/goal collision
+geometry is aligned across families; appearance and physics remain different.
+Scene placement/action directions use disclosed geometry knowledge. This is a
+diagnostic, not a policy rollout or a population performance estimate.
+
+The first run completed in 6.39 seconds: **76 controls, 760 control physics
+substeps, two reset substeps, 20 restores, 64 forecast steps and 192 denoising
+steps**. Peak allocated GPU memory was about 105.8 MiB; report/preview used
+360,335 bytes, beyond the single checkpoint. No stored training/validation/model-test
+dataset was opened and no weights were updated. Full evidence: [VALIDATION.md](VALIDATION.md).
+
+At four controls, native bottom-push object-region MSE was **0.00785 vs 0.06821**
+for persistence; native left-push was **0.17537 vs 0.17479**, with missed rotation.
+On official inputs, generated T becomes red and the green target disappears.
+Official bottom/left push object-region MSE was **0.15135/0.15588**, versus
+**0.02801/0.06001** for persistence. The gray-color mask then finds no predicted
+object; that is an appearance failure, not proof the generated image has no T.
+Color-based centroids/IoU are only appearance-sensitive diagnostics, not a verified
+pose or reward decoder. Geometry-derived ROI masks and true physical states are
+evaluation labels, never model inputs. Do not claim a passed planning gate.
+
+Next separate appearance transfer from contact dynamics on T using frozen,
+matched validation comparisons, then decide whether to adapt this model or use
+the alternative. Preserve the original policy's inputs, record any rendering
+conversion explicitly, and validate target retention and contact/action effects
+before L adaptation. More data alone is not an explanation for all these failures.

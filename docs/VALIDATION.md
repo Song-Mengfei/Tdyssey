@@ -721,3 +721,88 @@ TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_pol
 Repository checks passed. Source-only discovery passed 55 and skipped 43;
 the installed suite passed all 98 in 12.674 seconds. Its synthetic CUDA optimizer
 update is a diagnostic, not another real-data model training experiment.
+
+## Pretrained GPC world-model compatibility check (2026-10-19)
+
+Pinned source: `a96146e568826ef46134f73c22fdf59a675e7264`. Downloaded only
+`world_model_checkpoint/phase_two_checkpoint/denoiser.pth` from checkpoint revision
+`c16a467ec176af19bba5136564a81d8d61d72af9`: **35,043,916 bytes**, SHA-256
+`4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892`.
+The selected phase-two checkpoint has **8,729,827 parameters / 298 state entries**;
+strict loading of all entries and finite-value checks passed on CUDA. Required
+source hashes/configuration are in `manifests/gpc_world_model.json`.
+
+No package/environment/lock change, demonstration dataset, reward checkpoint or
+duplicate model cache was needed. The sparse GPC source checkout measured about
+596 KiB afterward; the one new checkpoint is about 33.42 MiB. Licensing terms
+were not stated in the pinned top-level source/model metadata; upstream code and
+weights remain outside Git. See [compatibility details](WORLD_MODEL.md#pretrained-gpc-compatibility-check).
+
+```bash
+python3 -B scripts/fetch_gpc_world_model.py --download
+.venv/bin/python -B scripts/probe_gpc_world_model.py --output artifacts/pretrained-gpc-T-2026-10-19
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+The CUDA wrapper matched unchanged upstream sampling exactly, including two-step
+autoregressive feedback. Independent action markers check the four-frame/control
+offset. Future actions do not affect earlier predictions; global inference RNG
+and pre-existing `data`/`diffusion`/`utils` modules are restored. Images use the
+actual training range [0,1], not the range suggested by quantization comments.
+Actions use the source dynamics scale [0,511]. Released sampling disables
+gradients and rounds pixels; differentiable policy optimization is unvalidated.
+
+The physical check used two hand-constructed pre-contact scenes (bottom/left)
+in each native/official T environment, three hold controls to obtain true history,
+and four future controls for hold/push/away/side candidates. Initial collision/goal
+geometry is aligned, while palettes and mass/inertia remain different. The same
+full physical/controller anchor is cold-restored per branch; true history and
+restored images matched exactly. All history contacts were zero and each scene's
+push branch later contacted the object. Scene/action construction uses privileged
+geometry; this is neither collected training data nor a policy evaluation.
+
+Counts: **76 controls / 760 control physics substeps / two reset substeps /
+20 restores / 64 forecast steps / 192 denoising steps**. Elapsed: **6.3919 seconds**;
+peak allocated GPU memory **110,936,064 bytes (105.8 MiB)**. Diagnostics/tests and
+the earlier CNN pilot are separate work. No stored dataset was opened, no
+normalization was fitted, and no research model/policy weights were updated.
+
+At horizon four, object-region image MSE (lower is better):
+
+| Family / group | Samples | Pretrained GPC | Persistence |
+| --- | --- | --- | --- |
+| Native / contact | 2 | 0.091607 | 0.121502 |
+| Native / no contact | 6 | 0.000228 | 0 |
+| Official / contact | 2 | 0.153614 | 0.044012 |
+| Official / no contact | 6 | 0.134629 | 0 |
+
+The native contact mean hides a failure: bottom-push ROI MSE was 0.007846 vs
+0.068212, but left-push was 0.175368 vs 0.174792 and missed rotation. Native left
+physical object-origin movement was 15.344 pixels, versus 7.834 in the official
+branch; the different physics must not be described as matched trajectories.
+Official predictions turn the object red and remove the green target, so the
+gray-color mask finds zero predicted pixels. That mask failure does not mean
+the image has no T. Color-centroid/IoU metrics are appearance-sensitive proxies,
+not a verified pose/reward decoder. Geometry masks/true states are evaluation
+labels only. Two hand-constructed scenes do not establish general performance.
+
+Artifacts stay ignored under `artifacts/pretrained-gpc-T-2026-10-19/`:
+
+| File | Bytes | SHA-256 |
+| --- | --- | --- |
+| `report.json` | 188408 | `e69055e8ada899e5381d3fe3d3779ea7b4ad94fad7b676cd799b26f8da00d2b1` |
+| `predictions.png` | 171927 | `b191d1d9d74bb70224276eed35f442d697dcd5d2754c62f70716a62d417e052b` |
+
+The report fingerprints exactly match the predictor/probe/spec source files;
+development parent was `a03b72d`. The checkpoint and report/preview add about
+33.76 MiB total, without duplicate downloads. All **100 tests passed** in the
+installed profile in **13.680 seconds**: 56 source-only and 44 opt-in runtime.
+Source-only discovery passed 56/skipped 44; repository/help/whitespace checks
+passed. The existing synthetic CUDA optimizer test remains separate from the
+frozen pretrained diagnostic.
+
+Loading and bounded execution are complete. Appearance/domain compatibility and
+native contact reliability fail the official learned-dynamics gate. Next isolate
+appearance conversion from T physics adaptation with a frozen matched validation
+protocol; preserve official policy inputs and test target retention/contact effects
+before L adaptation. No imagined-policy or physical-policy improvement is claimed.

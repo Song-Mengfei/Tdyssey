@@ -29,6 +29,9 @@ This change does not implement another physics engine or a replacement policy.
 | `scripts/evaluate_world_model.py` | Frozen-catalog checkpoint evaluation; validation default, model-test explicit |
 | `scripts/probe_world_model.py` | Bounded matched physical branches for candidate-action diagnostics |
 | `scripts/summarize_world_model_probe.py` | Posthoc max/final/sum diagnostics from saved branches without new physics |
+| `tdyssey/gpc_world_model.py` | Verified released GPC dynamics with isolated imports, native sampling and explicit four-frame/action alignment |
+| `scripts/fetch_gpc_world_model.py` | Plan-only default; fetch just one verified 33.42 MiB world-model checkpoint without a cache |
+| `scripts/probe_gpc_world_model.py` | Bounded native/official T contact prediction branches, persistence comparisons and previews |
 | `tdyssey/official_collection.py` | Official T/L play with evaluation-scene exclusions, full resets and nonempty frozen splits |
 | `scripts/collect_official_play.py` | Bounded official collection/read-back without model weights or training |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
@@ -56,7 +59,9 @@ have passed with real Pymunk and GPC on the locked CPU profile; see
 `docs/VALIDATION.md`. CPU/CUDA checkpoint loading and bounded policy rollouts have
 also passed. Policy inference defaults to CUDA without automatic CPU fallback.
 A first visual world-model trainer is implemented with mixed validation results;
-see `docs/WORLD_MODEL.md`. Policy optimization remains unimplemented.
+pretrained GPC loading and prediction checks now expose an official-scene appearance
+mismatch and mixed native contact accuracy; see `docs/WORLD_MODEL.md`.
+Policy optimization remains unimplemented.
 The collector now stores RGB frames once as uint8 alongside physical-state labels
 and exact observation timing. History-window loading and PyTorch batches are now
 implemented; conversion to the original GPC training-data format remains pending.

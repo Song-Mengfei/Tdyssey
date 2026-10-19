@@ -143,6 +143,14 @@ Hugging Face account/token; `huggingface-hub` is already in the shared environme
 Future private/gated resources or publishing may use individual accounts, with
 credentials stored locally outside Git.
 
+The pretrained GPC **world model** is a separate verified **33.42 MiB** checkpoint;
+its loader/probe uses the existing CUDA/GPC/DP profile without dependency changes.
+The first diagnostic added about 352 KiB of reports/images. Use the plan-only
+fetch command and bounded check documented in [WORLD_MODEL.md](WORLD_MODEL.md#pretrained-gpc-compatibility-check).
+No full dataset, reward checkpoints, second environment or persistent cache is
+required. Loading/inference is verified; target-shape adaptation and policy
+optimization are not. See that document for source licensing and compatibility limits.
+
 Do not reserve the full training budget just to develop the simulator. A course
 pilot may eventually need roughly 40–60 GB: 8–12 GB for a CUDA environment, about
 1.2 GB for published GPC assets as stored, 5–15 GB for new data/preprocessing,
