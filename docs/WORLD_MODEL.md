@@ -255,8 +255,71 @@ Color-based centroids/IoU are only appearance-sensitive diagnostics, not a verif
 pose or reward decoder. Geometry-derived ROI masks and true physical states are
 evaluation labels, never model inputs. Do not claim a passed planning gate.
 
-Next separate appearance transfer from contact dynamics on T using frozen,
-matched validation comparisons, then decide whether to adapt this model or use
-the alternative. Preserve the original policy's inputs, record any rendering
-conversion explicitly, and validate target retention and contact/action effects
-before L adaptation. More data alone is not an explanation for all these failures.
+The matched palette experiment below isolates much of the appearance failure;
+it also preserves the native left-push failure. Preserve those findings when
+adapting the pretrained model; more data alone does not explain every error.
+
+## Matched palette experiment
+
+Run with the same authorized environment and existing checkpoint:
+
+```bash
+.venv/bin/python -B scripts/probe_gpc_appearance.py --output artifacts/gpc-appearance-T-001
+```
+
+`configs/gpc_appearance_probe.json` fixes six scenes, three model-noise seeds,
+hold/push/away/side candidates and four predicted controls, with a 180-second /
+8 MiB output cap. Two scenes were previously examined; four add other directions
+and rotations. All six are development diagnostics, not an untouched final test.
+No training data, model weights, packages or downloads are added. Original and
+source-palette predictions share the same official physical branches and noise.
+Native GPC physics is a separate control with aligned starting geometry.
+
+`tdyssey/appearance.py` temporarily changes only object/goal render colors,
+renders an auxiliary image and restores the colors/screen even on an exception.
+The probe verifies full state, policy-image and render-cache preservation at every
+frame. Source-view conversion matches torchvision's float32 multiplication by
+1/255. This **requires simulator rendering access**; it is a privileged experimental
+control, not an image-only deployed adapter or learned T-to-L adaptation. Future
+images/poses remain evaluation labels. True physical future branches are recorded
+once and reused across both views and all noise seeds.
+
+Fixed known-color masks accept both gray and red T pixels, and green/black target
+pixels. Report object-mask IoU, centroid error, visible-target IoU/recall, false
+noncontact movement and RGB/ROI MSE by horizon/contact. The masks are appearance-
+sensitive proxies, not a learned pose or reward decoder. Cross-palette RGB errors
+also reflect color contrast and cannot alone establish a motion benefit. Missing
+centroids remain absent with explicit counts. Persistence is evaluated per view.
+
+At horizon four, on the unchanged official physics:
+
+| Image-proxy diagnostic | Original input | Source palette | Persistence, source palette |
+| --- | --- | --- | --- |
+| Object-mask IoU, contact | 0.731 | 0.861 | 0.512 |
+| Object centroid error, contact (pixels) | 10.901 | 3.272 | 14.568 |
+| Object centroid error, no contact (pixels) | 6.996 | 0.205 | 0 |
+| Visible-target recall, all | 0.033 | 0.954 | 0.936 |
+
+Contact rows contain six unique physical branches × three model-noise repeats,
+not 18 independent trials. The complete probe has 48 physical candidate branches
+across both simulator families. It used 228 controls, 2280 control substeps, two
+resets, 60 restores, 288 auxiliary renders and 864 forecast steps / 2592 denoising
+steps, in 34.51 seconds. Peak GPU allocation remained about 105.8 MiB; saved
+source frames, report and comparison image use about 2.13 MiB. Raw frames are
+compressed once per branch for later analysis without new physical interaction.
+
+The mean hides a remaining failure: source-palette left-push object IoU is only
+0.451–0.456, compared with 0.887–0.904 under original inputs. Actual official
+rotation is about -9.84 degrees; the palette-conditioned prediction largely
+remains still. Most other directions improve, so palette conversion cannot be
+described as uniformly better or as a complete dynamics fix. Target shape/recall
+also remain imperfect. The failed first run and its separate resource counts are
+preserved in [VALIDATION.md](VALIDATION.md).
+
+Next calibrate the pretrained model on bounded **official-RGB T training data**
+with varied contact/rotation, then compare unchanged/adapted weights on disjoint
+scenes and record action effects. This can address appearance without requiring
+an auxiliary simulator renderer. Keep the palette control as a diagnostic and
+the untouched model-test split for a fixed final comparison. Check prediction and
+physical action ranking before L adaptation; policy optimization still needs its
+separate direct-simulator baseline.

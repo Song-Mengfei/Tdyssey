@@ -323,3 +323,30 @@ before L. Keep DINO-WM as an alternative and the L-only CNN as a comparison.
 The released quantized/no-grad sampler is inference-only; no differentiable
 imagined optimization is validated. Pinned code/model metadata contains no explicit
 license grant; do not redistribute upstream code or weights without clarification.
+
+## D022 — Isolate palette effects with shared physical branches (2026-10-19)
+
+Fix `configs/gpc_appearance_probe.json` before running the six-scene T diagnostic:
+three model-noise repeats, four candidate sequences and four predicted controls.
+Render official physics in both its original palette and an auxiliary red/black
+palette; keep original policy observations, physical state and render cache intact.
+Use each actual branch once for all views/noise repeats, with native GPC physics
+as a separate control. This is a privileged simulator-rendering control, not a
+deployable image-only converter or learned model adaptation. No future geometry
+or true future image is passed into the predictor. Preserve raw generated history.
+
+Use fixed known-color object/target masks across both palettes, with occupancy
+IoU, centroid error, visible-target recall and within-palette image/ROI errors.
+They are image proxies, not verified physical pose/reward estimates. Do not
+interpret cross-palette MSE differences as pure motion improvement or count three
+noise repeats as independent physical trajectories. Six development scenes do
+not establish generalization; two were already examined. The numerical image
+conversion fix preserves the same protocol; retain failed-run counts/evidence.
+
+Palette control markedly improves most predictions and target retention, but
+the left push still misses rotation and its raw-input prediction is better on
+that case. Keep these failures visible. Next calibrate pretrained GPC on explicit
+official-RGB T training episodes with contact/rotation coverage, comparing frozen
+initial and adapted weights on disjoint scenes. Keep this palette control as an
+explanation/comparison, preserve the official policy and final model-test data,
+then move to L after checking actual action effects. Do not claim policy learning.

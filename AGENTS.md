@@ -15,6 +15,8 @@ Use `docs/OFFICIAL_COLLECTION.md` for primary training data; never mix it with G
 The custom visual model and pretrained GPC compatibility failures are documented
 in `docs/WORLD_MODEL.md`. Pretrained loading is verified; official-domain adaptation
 and reliable contact prediction are not. The released GPC sampler disables gradients.
+The T palette comparison uses privileged auxiliary rendering, not an image-only
+adapter; it explains much of the appearance gap but retains a left-push failure.
 Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 
