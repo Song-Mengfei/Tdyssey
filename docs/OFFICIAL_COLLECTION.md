@@ -108,9 +108,9 @@ train/validation/model-test membership is 6/1/1 episodes. History 2/future 4 giv
 are data-path checks, not learned-model accuracy or an adaptation benefit. See
 [validation details](VALIDATION.md#official-l-collection-and-training-data-2026-10-19).
 
-Next implement the first visual action-conditioned world model, fit normalization
-only on training episodes and compare held-out contact/noncontact prediction errors
-against simple baselines. Reserve model-test data for final model comparisons;
+The [first visual model](WORLD_MODEL.md) now implements training-only normalization
+and validation contact/noncontact comparisons against simple baselines. Its first
+GPU pilot still has drift and action-ranking failures. Reserve model-test data for final model comparisons;
 use validation for development choices. Require contact-dynamics and selected-action
 checks, then verify direct physical-simulator policy optimization before relying
 on imagined updates. More data, repeated seeds and a fixed final policy-evaluation

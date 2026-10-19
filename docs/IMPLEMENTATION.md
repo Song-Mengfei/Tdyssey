@@ -22,6 +22,13 @@ This change does not implement another physics engine or a replacement policy.
 | `tests/test_gpc_runtime.py` | Opt-in real physics, rendering, T comparison, and state/replay checks |
 | `tdyssey/collection.py` | Bounded waypoint play with reset checks, seed records, contact diagnostics, and T+1 observations |
 | `tdyssey/dataset.py` | Compact episode persistence, byte limits, file hashes, frozen splits, and read-back validation |
+| `tdyssey/world_model_data.py` | Visual windows with separate privileged motion/mask labels and train-only statistics |
+| `tdyssey/models/visual_dynamics.py` | Small action-conditioned visual CNN with autoregressive RGB/motion/reward/contact heads |
+| `tdyssey/world_model_training.py` | Bounded CUDA training, persistence baselines, horizon/contact metrics and compact checkpoints |
+| `scripts/train_world_model.py` | First visual L training pilot; see `docs/WORLD_MODEL.md` |
+| `scripts/evaluate_world_model.py` | Frozen-catalog checkpoint evaluation; validation default, model-test explicit |
+| `scripts/probe_world_model.py` | Bounded matched physical branches for candidate-action diagnostics |
+| `scripts/summarize_world_model_probe.py` | Posthoc max/final/sum diagnostics from saved branches without new physics |
 | `tdyssey/official_collection.py` | Official T/L play with evaluation-scene exclusions, full resets and nonempty frozen splits |
 | `scripts/collect_official_play.py` | Bounded official collection/read-back without model weights or training |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
@@ -48,8 +55,8 @@ adapter tests use explicit construction/API doubles. Separate opt-in runtime tes
 have passed with real Pymunk and GPC on the locked CPU profile; see
 `docs/VALIDATION.md`. CPU/CUDA checkpoint loading and bounded policy rollouts have
 also passed. Policy inference defaults to CUDA without automatic CPU fallback.
-There is no
-world-model or policy training implementation yet.
+A first visual world-model trainer is implemented with mixed validation results;
+see `docs/WORLD_MODEL.md`. Policy optimization remains unimplemented.
 The collector now stores RGB frames once as uint8 alongside physical-state labels
 and exact observation timing. History-window loading and PyTorch batches are now
 implemented; conversion to the original GPC training-data format remains pending.
