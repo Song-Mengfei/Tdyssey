@@ -9,6 +9,10 @@ reference-policy runner together.
 The official letter extension and matched frozen-policy probes continue in that PR.
 Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
+Review milestone: baseline, data/training infrastructure and world-model diagnostics
+are complete enough for coauthor review. Selected figures/reports are now in
+`docs/RESULTS.md`. Finish review of PR #2 before starting the next training milestone
+on a new branch after merge; the PR does not claim completed adaptation or policy learning.
 
 ## Completed
 
@@ -87,6 +91,10 @@ Main changes continue through pull requests.
   three inference-noise repeats, palette-independent image-mask proxies and
   compressed source frames. Auxiliary rendering preserves original policy images
   and state; it requires simulator access and is not a deployed image adapter.
+- Published four unchanged world-model figures and three compact report summaries
+  with source hashes in a 775,943-byte reviewed snapshot. The result index links
+  these and all 27 alphabet MP4s without setup. Raw reports/data/checkpoints remain
+  local/ignored, with no shared raw archive configured; see `docs/RESULTS.md`.
 
 ## Verification status
 

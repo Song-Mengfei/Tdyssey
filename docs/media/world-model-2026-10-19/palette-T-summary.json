@@ -1,0 +1,5832 @@
+{
+  "schema_version": 1,
+  "publication": "selected report fields; not a full raw report",
+  "source_report": {
+    "path": "artifacts/gpc-appearance-T-2026-10-19-v2/report.json",
+    "bytes": 1648899,
+    "sha256": "6905628627c00984140585cf5980137900b1512b82aee2018d37b2a411bca536"
+  },
+  "experiment": "Fixed matched palette diagnostic; six T scenes and three model-noise repeats",
+  "status": "complete",
+  "protocol": {
+    "schema_version": 1,
+    "protocol": "gpc-t-appearance-v1",
+    "families": [
+      "official",
+      "gpc"
+    ],
+    "official_views": [
+      "original",
+      "source_palette"
+    ],
+    "native_views": [
+      "source_palette"
+    ],
+    "scenes": [
+      {
+        "name": "bottom",
+        "angle": 0.0,
+        "pusher_offset": [
+          0,
+          115
+        ],
+        "push_direction": [
+          0,
+          -1
+        ],
+        "previously_examined": true
+      },
+      {
+        "name": "left",
+        "angle": 0.0,
+        "pusher_offset": [
+          -40,
+          35
+        ],
+        "push_direction": [
+          1,
+          0
+        ],
+        "previously_examined": true
+      },
+      {
+        "name": "right",
+        "angle": 0.0,
+        "pusher_offset": [
+          40,
+          35
+        ],
+        "push_direction": [
+          -1,
+          0
+        ],
+        "previously_examined": false
+      },
+      {
+        "name": "top",
+        "angle": 0.0,
+        "pusher_offset": [
+          0,
+          -70
+        ],
+        "push_direction": [
+          0,
+          1
+        ],
+        "previously_examined": false
+      },
+      {
+        "name": "left_rotated",
+        "angle": 0.5235987755982988,
+        "pusher_offset": [
+          -40,
+          35
+        ],
+        "push_direction": [
+          1,
+          0
+        ],
+        "previously_examined": false
+      },
+      {
+        "name": "right_rotated",
+        "angle": -0.5235987755982988,
+        "pusher_offset": [
+          40,
+          35
+        ],
+        "push_direction": [
+          -1,
+          0
+        ],
+        "previously_examined": false
+      }
+    ],
+    "object_physical_center": [
+      256,
+      285
+    ],
+    "goal_official_origin": [
+      256,
+      256
+    ],
+    "goal_angle": 0.7853981633974483,
+    "future": 4,
+    "history_controls": 3,
+    "target_increment_pixels": 12,
+    "candidates": [
+      "hold",
+      "push",
+      "away",
+      "side"
+    ],
+    "noise_seeds": [
+      300000,
+      300100,
+      300200
+    ],
+    "image_color_tolerance": 0.15,
+    "max_seconds": 180,
+    "max_output_bytes": 8388608,
+    "notes": [
+      "Frozen before running this experiment; all scenes are development diagnostics, not final tests.",
+      "Secondary palette rendering uses simulator access. It is not an image-only deployable color adapter.",
+      "Each physical branch is shared across views and noise seeds; all forecasts receive full identical controls.",
+      "No fixed success threshold or reward ranking is inferred from image-proxy metrics."
+    ]
+  },
+  "protocol_sha256": "90909f757e117118cfb8ea6d8d9f8569d344eab285ea4e084f594dff3fd32b5a",
+  "checkpoint_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+  "source_sha256": {
+    "scripts/probe_gpc_appearance.py": "6efe56683eb2261179ff93f6541e0122c78e4797792bfb85e578462b80039c71",
+    "tdyssey/appearance.py": "8aac13b520fb9d8ed128994db4defe723a3985c8ee50b60348b486ebeff327af",
+    "tdyssey/gpc_world_model.py": "bf1c9146b6fccafbaac95438a89999cc21c76041818c05d9b0f115a94035cd0b"
+  },
+  "counts": {
+    "control_steps": 228,
+    "control_physics_substeps": 2280,
+    "reset_physics_substeps": 2,
+    "state_restores": 60,
+    "auxiliary_renders": 288,
+    "model_forecast_steps": 864,
+    "denoising_steps": 2592
+  },
+  "model_test_used": false,
+  "weights_updated": false,
+  "dataset_loaded": false,
+  "palette_access": "auxiliary simulator renderer; privileged rendering control, not an image-only adapter",
+  "metric_limits": "known-color image masks are proxies; RGB MSE is not comparable across palettes as a pure motion measure",
+  "object_rgb_palette": [
+    [
+      119,
+      136,
+      153
+    ],
+    [
+      143,
+      163,
+      184
+    ],
+    [
+      165,
+      28,
+      48
+    ],
+    [
+      198,
+      34,
+      58
+    ]
+  ],
+  "target_rgb_palette": [
+    [
+      144,
+      238,
+      144
+    ],
+    [
+      0,
+      0,
+      0
+    ]
+  ],
+  "inference_noise": "same seed per scene/candidate/view, with random-state restoration; no best-seed selection",
+  "restore_limits": "fresh cold solver; full physical/controller state, no cached contact impulses",
+  "elapsed_seconds": 34.51468693600327,
+  "peak_gpu_allocated_bytes": 110936064,
+  "summary": {
+    "official/source_palette/h1/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00022041445845388807,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0008434910822769678,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9938517877461266,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.70833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9075781353068177,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9847948024069424,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00017381632884886736,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 2.2156389907953176e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9890234838931607,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.995651051981273,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h1/noncontact": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00022041445845388807,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0008434910822769678,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9938517877461266,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.70833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9075781353068177,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9847948024069424,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00017381632884886736,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 2.2156389907953176e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9890234838931607,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.995651051981273,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h2/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0003817897422777605,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0017250207096771596,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9917393996272457,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.18345098282088917,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2002436122002454,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.72222222222223,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8955202620979313,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9775501647266314,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0005756920048346122,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0019966800852368274,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9967394046738502,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9719963917170138,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9869511152731263,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h2/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00036736926497389123,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.000994934871222971,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9922503927425333,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.16508641385103753,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.16508641385103753,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.6140350877193,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8948543206857417,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.42105263157895,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9787163870323828,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.000485161830989742,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.57894736842104,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9782694212828328,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.42105263157895,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9881175412446868,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h3/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0008088999723743958,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.008247237648498008,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9664226070017848,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.7009129174182436,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 1.2618790351051135,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.5655956893582634,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.20833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8729604139528312,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.5,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9635628215307916,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.001701738665966938,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.021179579867748544,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9340710692669861,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 1.5655956893582634,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.5655956893582634,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9246834254414877,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.5,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.959638293697316,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h3/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0005532018518639042,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0010526265097340864,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9919963720041457,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2112845006759733,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2112845006759733,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.82456140350877,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8807046437910099,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.57894736842105,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9692128936504047,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0008468094870055976,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 9.275586834471477e-05,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.57894736842104,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9621404983136079,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.57894736842105,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9785023771740508,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h4/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0010774901309357826,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.011370856328641012,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9581131955814365,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.9718286919429288,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 3.042987792589459,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.6420267600781164,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.20833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8590113701891235,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.66666666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9540268044633728,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0027654119912767783,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.038693087044521235,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8778952455446165,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 3.6420267600781164,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.6420267600781164,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.888944375487419,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.66666666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9359476002121689,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h4/noncontact": {
+      "samples": 54,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.000699514625820383,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0012593171570053393,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9904647547296916,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2051913242844883,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2051913242844883,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.14814814814815,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8724202227389156,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.16666666666667,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9629044423702877,
+            "valid": 54,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0010286752044016288,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.00023923093168478872,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9556793497302222,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.16666666666667,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9744894993882568,
+            "valid": 54,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h1/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006459165202815914,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.13454954884946346,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.6304890085493325,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 14.77106917079519,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 14.774394862590878,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 172.125,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.00034008636536726424,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.58333333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.0003968253968253968,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00015578645949669104,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 1.0237520200462313e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9998353096179183,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.991022089961493,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.58333333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9958124689615009,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h1/noncontact": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006459165202815914,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.13454954884946346,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.6304890085493325,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 14.77106917079519,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 14.774394862590878,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 172.125,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.00034008636536726424,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.58333333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.0003968253968253968,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00015578645949669104,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 1.0237520200462313e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9998353096179183,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.006891676240048896,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.991022089961493,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.58333333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9958124689615009,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h2/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006670791623441296,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.13935122928685612,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8318829530978331,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 8.145794789039249,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 8.178838703634069,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.19068550717470872,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 218.16666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.005045645759643953,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.25,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.005124169886779652,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0004657023406859177,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0010676642802233498,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9942294254135219,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.19068550717470872,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.19068550717470872,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9712692788660342,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.25,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9870008209550648,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h2/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00663400120346954,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.13790243654920345,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8536984984819794,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 7.122912971540084,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 7.122912971540084,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 222.21052631578948,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.006226019883330295,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 133.21052631578948,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.006325208254449073,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0004165022738130861,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.52631578947367,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9784815750049305,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 133.21052631578948,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9884417876873498,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h3/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006937888075804545,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.1430705435987976,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8354669183747352,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 8.004317243865318,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 8.021836378818342,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.6314747590475924,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 221.94444444444446,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.02177224966975735,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.04166666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.022382648913320514,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0010319737654450971,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.00816393539813968,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9328401455622383,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 1.6314747590475924,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.6314747590475924,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9265335373877563,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.04166666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.961767179824828,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h3/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006747867119612924,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.14068201445696646,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8637818399785473,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 6.867114162630067,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 6.867114162630067,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 224.28070175438597,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.01878640397982096,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 133.21052631578948,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.01919008225169971,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0007168882569347165,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 9.275586834471477e-05,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.52631578947367,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9633581502776549,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 133.21052631578948,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9799749158947861,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h4/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.007239144877530634,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.14645392778846952,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8284678599957945,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 7.9725035984788235,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 8.670359729246329,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.6553234194290485,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 224.02777777777777,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.031233434446096026,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 131.91666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.033136637498887477,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0014351742356666364,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.013232636687462218,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8773127794631947,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 3.6553234194290485,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.6553234194290485,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8898677263810262,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 131.91666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9385358714324351,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h4/noncontact": {
+      "samples": 54,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006777239661594784,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.1420177924964163,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8608118881035013,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 6.996188605314834,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 6.996188605314834,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 224.4814814814815,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.021409567753032425,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.77777777777777,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.021871705268169915,
+            "valid": 54,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.000872501893253583,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0002392309446198245,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9553681657848324,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 132.77777777777777,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9752531468663376,
+            "valid": 54,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h4/contact": {
+      "samples": 18,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.002211416646281982,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.04170547384354803,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8610585181366708,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 3.27174079491825,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 11.556377197504371,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.568107040312466,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.38888888888889,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8187848125397472,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 125.16666666666667,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9273938907426285,
+            "valid": 18,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.007975622351902226,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.15405465538303056,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.5115809821784661,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 14.568107040312466,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.568107040312466,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.6887394527590096,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 125.16666666666667,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8203219026839053,
+            "valid": 18,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h4/contact": {
+      "samples": 18,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.008624860525338186,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.1597623336646292,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.7314357756726741,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 10.901448577970791,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 13.692873101040817,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.621293677716194,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 222.66666666666666,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.06070503452528683,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 129.33333333333334,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.06693143419104015,
+            "valid": 18,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0031231912629057965,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0522128539159894,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.509251117852779,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 14.621293677716194,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.621293677716194,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.66666666666666,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.6933664081696072,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 129.33333333333334,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8283840451307275,
+            "valid": 18,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h2/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0004365875560324639,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.004499346895803076,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9897976257891522,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2532363449063254,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.3338409659272352,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.13333333333333,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.898050839464252,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 123.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9731185199647756,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0009197066654451191,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.009584064409136773,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9843491424344811,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9481588793669018,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 123.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9825186965811966,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/source_palette/h3/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0017805528303142637,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.035586759975800915,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8692422999928133,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 2.5615009010388707,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 5.254138265935846,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.514859308919664,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 250.66666666666666,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8435323405677518,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 122.4,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9420925474762619,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.004950469546020031,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.1013095110654831,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.6835411324815333,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 7.514859308919664,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.514859308919664,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.7823465485274311,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 122.4,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8879547764857241,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h2/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.006810595219333967,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.1448566416899363,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.7489838806380769,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 12.032745695536077,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 12.191356485591209,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.9152904344386019,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 202.8,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.0005602240896358543,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 128.6,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.0005602240896358543,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0006526625948026776,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0051247885450720785,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9723012419849049,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.9152904344386019,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.9152904344386019,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9438625535382281,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 128.6,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9815251473723818,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "official/original/h3/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.007659967709332705,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.15214695433775585,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.7278702162802493,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 12.325688952559268,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 12.409780800333788,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.831078843428444,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 213.06666666666666,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.033118463291515646,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.6,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.03451440222747957,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.002229298697784543,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.03883441761136055,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.6776326986987438,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 7.831078843428444,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.831078843428444,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.786600008406142,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.6,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8925777827589866,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h1/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00022041445845388807,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0008434910822769678,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9938517877461266,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.70833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9075781353068177,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9847948024069424,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00017381632884886736,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 2.2156389907953176e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9890234838931607,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.995651051981273,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h1/noncontact": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00022041445845388807,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0008434910822769678,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9938517877461266,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.15245577238982747,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.70833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9075781353068177,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9847948024069424,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.00017381632884886736,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 2.2156389907953176e-06,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9890234838931607,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.995651051981273,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h2/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0003817897422777605,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0017250207096771596,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9917393996272457,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.18345098282088917,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2002436122002454,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.72222222222223,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8955202620979313,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9775501647266314,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0005756920048346122,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0019966800852368274,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9967394046738502,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.09663525790804264,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9719963917170138,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.54166666666667,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9869511152731263,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h2/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.00036736926497389123,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.000994934871222971,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9922503927425333,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.16508641385103753,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.16508641385103753,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.6140350877193,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8948543206857417,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.42105263157895,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9787163870323828,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.000485161830989742,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.57894736842104,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9782694212828328,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.42105263157895,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9881175412446868,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h3/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0008221110329031944,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.008521669669587735,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9654123865902317,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.6641889611660086,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 1.2618790351051135,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.5421086130828625,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.20833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8721789762155838,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.375,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.963569050352408,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0017132992895009618,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.021370591023393597,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.933619001886153,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 1.5421086130828625,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 1.5421086130828625,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9238603876651595,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.375,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9593992104028377,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h3/noncontact": {
+      "samples": 57,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0005532018518639042,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0010526265097340864,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9919963720041457,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2112845006759733,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2112845006759733,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248.82456140350877,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8807046437910099,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.57894736842105,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9692128936504047,
+            "valid": 57,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0008468094870055976,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 9.275586834471477e-05,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 57,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.57894736842104,
+            "valid": 57,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9621404983136079,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.57894736842105,
+            "valid": 57,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9785023771740508,
+            "valid": 57,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h4/all": {
+      "samples": 72,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0010863923350067732,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.011623433436195936,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9572573261859909,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.9269244766450729,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 3.042987792589459,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.5993661349551633,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.20833333333334,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8594731846868149,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.58333333333333,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9545729115460653,
+            "valid": 72,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.002768418300547637,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0389215702743968,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8779204745101462,
+            "valid": 72,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 3.5993661349551633,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 72,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 3.5993661349551633,
+            "valid": 72,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 72,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8893105777824293,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 126.58333333333333,
+            "valid": 72,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9364991273490619,
+            "valid": 72,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h4/noncontact": {
+      "samples": 54,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.000699514625820383,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.0012593171570053393,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9904647547296916,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2051913242844883,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.2051913242844883,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.14814814814815,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8724202227389156,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.16666666666667,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9629044423702877,
+            "valid": 54,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0010286752044016288,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.00023923093168478872,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 1.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 54,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 54,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9556793497302222,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 127.16666666666667,
+            "valid": 54,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9744894993882568,
+            "valid": 54,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h4/contact": {
+      "samples": 18,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0022470254625659436,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.042715782273767725,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.8576350405548885,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 3.092123933726827,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 11.556377197504371,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.397464539820653,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.38888888888889,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8206320705305128,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 124.83333333333333,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9295783190733982,
+            "valid": 18,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.007987647588985661,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.15496858830253282,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.5116818980405847,
+            "valid": 18,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 14.397464539820653,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 18,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 14.397464539820653,
+            "valid": 18,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 247.66666666666666,
+            "valid": 18,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.6902042619390506,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 124.83333333333333,
+            "valid": 18,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8225280112314772,
+            "valid": 18,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h2/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0004365875560324639,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.004499346895803076,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9897976257891522,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.2532363449063254,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.3338409659272352,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 249.13333333333333,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.898050839464252,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 123.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9731185199647756,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.0009197066654451191,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.009584064409136773,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.9843491424344811,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 0.46384923795860467,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.9481588793669018,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 123.2,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9825186965811966,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    },
+    "gpc/source_palette/h3/contact": {
+      "samples": 15,
+      "metrics": {
+        "model": {
+          "image_mse": {
+            "mean": 0.0018439659208524973,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.03690403367703159,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.864393242017358,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 2.385225911028143,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 5.254138265935846,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.40212134279774,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 250.66666666666666,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.8397814394289645,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 121.8,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.9421224458200207,
+            "valid": 15,
+            "missing": 0
+          }
+        },
+        "persistence": {
+          "image_mse": {
+            "mean": 0.005005960538983345,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_roi_mse": {
+            "mean": 0.10222636461257935,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_mask_iou": {
+            "mean": 0.6813712090535342,
+            "valid": 15,
+            "missing": 0
+          },
+          "object_centroid_error_pixels": {
+            "mean": 7.40212134279774,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_centroid_shift_pixels": {
+            "mean": 0.0,
+            "valid": 15,
+            "missing": 0
+          },
+          "actual_centroid_shift_pixels": {
+            "mean": 7.40212134279774,
+            "valid": 15,
+            "missing": 0
+          },
+          "predicted_object_pixels": {
+            "mean": 248,
+            "valid": 15,
+            "missing": 0
+          },
+          "target_mask_iou": {
+            "mean": 0.7783959672010557,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_pixels": {
+            "mean": 121.8,
+            "valid": 15,
+            "missing": 0
+          },
+          "visible_target_recall": {
+            "mean": 0.8868071766722283,
+            "valid": 15,
+            "missing": 0
+          }
+        }
+      }
+    }
+  },
+  "preview_columns": [
+    "original current",
+    "original physical future",
+    "original-input prediction",
+    "palette current",
+    "palette physical future",
+    "palette-input prediction"
+  ],
+  "unique_physical_candidate_branches": 48,
+  "push_predictions": [
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300000,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.00045235001016408205,
+          "object_roi_mse": 0.00784631073474884,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300100,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0004372605762910098,
+          "object_roi_mse": 0.007484911475330591,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300200,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0004455590096767992,
+          "object_roi_mse": 0.00766679085791111,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "original",
+      "seed": 300000,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.007291332818567753,
+          "object_roi_mse": 0.15135081112384796,
+          "object_mask_iou": 0.8905660377358491,
+          "object_centroid_error_pixels": 1.6494508116715783,
+          "predicted_centroid_shift_pixels": 6.157827384438177,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.0,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.0
+        },
+        "persistence": {
+          "image_mse": 0.002138611162081361,
+          "object_roi_mse": 0.028011703863739967,
+          "object_mask_iou": 0.8118081180811808,
+          "object_centroid_error_pixels": 6.155483349873148,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8741258741258742,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.9765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "original",
+      "seed": 300100,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.007317539304494858,
+          "object_roi_mse": 0.15201491117477417,
+          "object_mask_iou": 0.8943396226415095,
+          "object_centroid_error_pixels": 1.761989044107392,
+          "predicted_centroid_shift_pixels": 6.336948268218658,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 257,
+          "target_mask_iou": 0.0,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.0
+        },
+        "persistence": {
+          "image_mse": 0.002138611162081361,
+          "object_roi_mse": 0.028011703863739967,
+          "object_mask_iou": 0.8118081180811808,
+          "object_centroid_error_pixels": 6.155483349873148,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8741258741258742,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.9765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "bottom",
+      "view": "original",
+      "seed": 300200,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043696,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.007266670931130648,
+          "object_roi_mse": 0.1506752073764801,
+          "object_mask_iou": 0.9045801526717557,
+          "object_centroid_error_pixels": 1.5613822863293023,
+          "predicted_centroid_shift_pixels": 6.334361852239185,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 254,
+          "target_mask_iou": 0.0,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.0
+        },
+        "persistence": {
+          "image_mse": 0.002138611162081361,
+          "object_roi_mse": 0.028011703863739967,
+          "object_mask_iou": 0.8118081180811808,
+          "object_centroid_error_pixels": 6.155483349873148,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 6.155483349873148,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8741258741258742,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.9765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300001,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.00915476493537426,
+          "object_roi_mse": 0.17495131492614746,
+          "object_mask_iou": 0.45058139534883723,
+          "object_centroid_error_pixels": 14.846261046634439,
+          "predicted_centroid_shift_pixels": 0.42616036055927103,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 245,
+          "target_mask_iou": 0.5696969696969697,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.752
+        },
+        "persistence": {
+          "image_mse": 0.009089972823858261,
+          "object_roi_mse": 0.1738261729478836,
+          "object_mask_iou": 0.4492753623188406,
+          "object_centroid_error_pixels": 15.272251523689585,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6291390728476821,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.76
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300101,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.00886476505547762,
+          "object_roi_mse": 0.16877269744873047,
+          "object_mask_iou": 0.45588235294117646,
+          "object_centroid_error_pixels": 13.860966067309237,
+          "predicted_centroid_shift_pixels": 1.5113911963430042,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 241,
+          "target_mask_iou": 0.5670731707317073,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.744
+        },
+        "persistence": {
+          "image_mse": 0.009089972823858261,
+          "object_roi_mse": 0.1738261729478836,
+          "object_mask_iou": 0.4492753623188406,
+          "object_centroid_error_pixels": 15.272251523689585,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6291390728476821,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.76
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300201,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.008945784531533718,
+          "object_roi_mse": 0.17102575302124023,
+          "object_mask_iou": 0.45454545454545453,
+          "object_centroid_error_pixels": 14.10455869200453,
+          "predicted_centroid_shift_pixels": 1.219464150009542,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 242,
+          "target_mask_iou": 0.5757575757575758,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.76
+        },
+        "persistence": {
+          "image_mse": 0.009089972823858261,
+          "object_roi_mse": 0.1738261729478836,
+          "object_mask_iou": 0.4492753623188406,
+          "object_centroid_error_pixels": 15.272251523689585,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.272251523689585,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6291390728476821,
+          "visible_target_pixels": 125,
+          "visible_target_recall": 0.76
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "original",
+      "seed": 300001,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.008658691309392452,
+          "object_roi_mse": 0.15587785840034485,
+          "object_mask_iou": 0.8868613138686131,
+          "object_centroid_error_pixels": 2.7570993252078146,
+          "predicted_centroid_shift_pixels": 13.275508232672818,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 261,
+          "target_mask_iou": 0.072992700729927,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.078125
+        },
+        "persistence": {
+          "image_mse": 0.003410723526030779,
+          "object_roi_mse": 0.06001231074333191,
+          "object_mask_iou": 0.44668587896253603,
+          "object_centroid_error_pixels": 15.136221984892387,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6242038216560509,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "original",
+      "seed": 300101,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.008520398288965225,
+          "object_roi_mse": 0.15298116207122803,
+          "object_mask_iou": 0.9037037037037037,
+          "object_centroid_error_pixels": 2.305523337039585,
+          "predicted_centroid_shift_pixels": 13.824404346868725,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 258,
+          "target_mask_iou": 0.08759124087591241,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.09375
+        },
+        "persistence": {
+          "image_mse": 0.003410723526030779,
+          "object_roi_mse": 0.06001231074333191,
+          "object_mask_iou": 0.44668587896253603,
+          "object_centroid_error_pixels": 15.136221984892387,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6242038216560509,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left",
+      "view": "original",
+      "seed": 300201,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.39323543665216154,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660626,
+        "model": {
+          "image_mse": 0.008958479389548302,
+          "object_roi_mse": 0.16229559481143951,
+          "object_mask_iou": 0.8970588235294118,
+          "object_centroid_error_pixels": 2.6070950202177925,
+          "predicted_centroid_shift_pixels": 13.671183519184236,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 260,
+          "target_mask_iou": 0.08633093525179857,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.09375
+        },
+        "persistence": {
+          "image_mse": 0.003410723526030779,
+          "object_roi_mse": 0.06001231074333191,
+          "object_mask_iou": 0.44668587896253603,
+          "object_centroid_error_pixels": 15.136221984892387,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.136221984892387,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6242038216560509,
+          "visible_target_pixels": 128,
+          "visible_target_recall": 0.765625
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300002,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.0017799549968913198,
+          "object_roi_mse": 0.03494894132018089,
+          "object_mask_iou": 0.8472727272727273,
+          "object_centroid_error_pixels": 2.198631721635811,
+          "predicted_centroid_shift_pixels": 12.830386660488676,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.7954545454545454,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.9459459459459459
+        },
+        "persistence": {
+          "image_mse": 0.008699927479028702,
+          "object_roi_mse": 0.17022757232189178,
+          "object_mask_iou": 0.4563953488372093,
+          "object_centroid_error_pixels": 14.719566287358818,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6554054054054054,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8738738738738738
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300102,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.0015801099361851811,
+          "object_roi_mse": 0.030883265659213066,
+          "object_mask_iou": 0.8571428571428571,
+          "object_centroid_error_pixels": 1.9296553075633898,
+          "predicted_centroid_shift_pixels": 12.994742305217423,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.7954545454545454,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.9459459459459459
+        },
+        "persistence": {
+          "image_mse": 0.008699927479028702,
+          "object_roi_mse": 0.17022757232189178,
+          "object_mask_iou": 0.4563953488372093,
+          "object_centroid_error_pixels": 14.719566287358818,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6554054054054054,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8738738738738738
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300202,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.0016675578663125634,
+          "object_roi_mse": 0.03272666037082672,
+          "object_mask_iou": 0.8472727272727273,
+          "object_centroid_error_pixels": 1.9158614289324332,
+          "predicted_centroid_shift_pixels": 12.996047685095522,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.7954545454545454,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.9459459459459459
+        },
+        "persistence": {
+          "image_mse": 0.008699927479028702,
+          "object_roi_mse": 0.17022757232189178,
+          "object_mask_iou": 0.4563953488372093,
+          "object_centroid_error_pixels": 14.719566287358818,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.719566287358818,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6554054054054054,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8738738738738738
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "original",
+      "seed": 300002,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.008554571308195591,
+          "object_roi_mse": 0.15541674196720123,
+          "object_mask_iou": 0.8133802816901409,
+          "object_centroid_error_pixels": 2.400632972615517,
+          "predicted_centroid_shift_pixels": 14.836763378246655,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 258,
+          "target_mask_iou": 0.09401709401709402,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.09565217391304348
+        },
+        "persistence": {
+          "image_mse": 0.003416901919990778,
+          "object_roi_mse": 0.05714184418320656,
+          "object_mask_iou": 0.45375722543352603,
+          "object_centroid_error_pixels": 14.7458832185793,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6558441558441559,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.8782608695652174
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "original",
+      "seed": 300102,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.008520803414285183,
+          "object_roi_mse": 0.15500296652317047,
+          "object_mask_iou": 0.8041958041958042,
+          "object_centroid_error_pixels": 2.1621308365891716,
+          "predicted_centroid_shift_pixels": 14.279781481695565,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 259,
+          "target_mask_iou": 0.08547008547008547,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.08695652173913043
+        },
+        "persistence": {
+          "image_mse": 0.003416901919990778,
+          "object_roi_mse": 0.05714184418320656,
+          "object_mask_iou": 0.45375722543352603,
+          "object_centroid_error_pixels": 14.7458832185793,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6558441558441559,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.8782608695652174
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right",
+      "view": "original",
+      "seed": 300202,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40315053920614596,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660617,
+        "model": {
+          "image_mse": 0.008557246997952461,
+          "object_roi_mse": 0.15547031164169312,
+          "object_mask_iou": 0.8076923076923077,
+          "object_centroid_error_pixels": 2.4673469903816834,
+          "predicted_centroid_shift_pixels": 14.357998872975623,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 260,
+          "target_mask_iou": 0.09401709401709402,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.09565217391304348
+        },
+        "persistence": {
+          "image_mse": 0.003416901919990778,
+          "object_roi_mse": 0.05714184418320656,
+          "object_mask_iou": 0.45375722543352603,
+          "object_centroid_error_pixels": 14.7458832185793,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.7458832185793,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6558441558441559,
+          "visible_target_pixels": 115,
+          "visible_target_recall": 0.8782608695652174
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300003,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0007301383884623647,
+          "object_roi_mse": 0.012813044711947441,
+          "object_mask_iou": 0.9722222222222222,
+          "object_centroid_error_pixels": 1.1549626889266416,
+          "predicted_centroid_shift_pixels": 20.26834203060904,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300103,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.000817895692307502,
+          "object_roi_mse": 0.014642385765910149,
+          "object_mask_iou": 0.9645669291338582,
+          "object_centroid_error_pixels": 1.5495036810268894,
+          "predicted_centroid_shift_pixels": 19.933891023256464,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300203,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0006144260405562818,
+          "object_roi_mse": 0.01035667397081852,
+          "object_mask_iou": 0.9760956175298805,
+          "object_centroid_error_pixels": 0.8978144663841251,
+          "predicted_centroid_shift_pixels": 20.43578349287862,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "original",
+      "seed": 300003,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.008176041767001152,
+          "object_roi_mse": 0.1514294147491455,
+          "object_mask_iou": 0.5263157894736842,
+          "object_centroid_error_pixels": 27.05655835693595,
+          "predicted_centroid_shift_pixels": 6.057619045158375,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 160,
+          "target_mask_iou": 0.04294478527607362,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.051470588235294115
+        },
+        "persistence": {
+          "image_mse": 0.003193494165316224,
+          "object_roi_mse": 0.0535702258348465,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6526946107784432,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.8014705882352942
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "original",
+      "seed": 300103,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.008113987743854523,
+          "object_roi_mse": 0.14998887479305267,
+          "object_mask_iou": 0.5113636363636364,
+          "object_centroid_error_pixels": 26.048899814170703,
+          "predicted_centroid_shift_pixels": 4.751547737446791,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 153,
+          "target_mask_iou": 0.024691358024691357,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.029411764705882353
+        },
+        "persistence": {
+          "image_mse": 0.003193494165316224,
+          "object_roi_mse": 0.0535702258348465,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6526946107784432,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.8014705882352942
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "top",
+      "view": "original",
+      "seed": 300203,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3536352099899282,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.00877984706312418,
+          "object_roi_mse": 0.16459375619888306,
+          "object_mask_iou": 0.5300751879699248,
+          "object_centroid_error_pixels": 27.37358285185292,
+          "predicted_centroid_shift_pixels": 6.286191694296742,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 161,
+          "target_mask_iou": 0.06626506024096386,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.08088235294117647
+        },
+        "persistence": {
+          "image_mse": 0.003193494165316224,
+          "object_roi_mse": 0.0535702258348465,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6526946107784432,
+          "visible_target_pixels": 136,
+          "visible_target_recall": 0.8014705882352942
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300004,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.0004487133992370218,
+          "object_roi_mse": 0.007314960937947035,
+          "object_mask_iou": 0.9802371541501976,
+          "object_centroid_error_pixels": 0.4687828778518409,
+          "predicted_centroid_shift_pixels": 15.65399306072322,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.9014084507042254,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00881505198776722,
+          "object_roi_mse": 0.166472390294075,
+          "object_mask_iou": 0.45507246376811594,
+          "object_centroid_error_pixels": 15.216615587313848,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300104,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.0004662997671402991,
+          "object_roi_mse": 0.007791396230459213,
+          "object_mask_iou": 0.9724409448818898,
+          "object_centroid_error_pixels": 0.7301608936481739,
+          "predicted_centroid_shift_pixels": 15.744589288747209,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.9014084507042254,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00881505198776722,
+          "object_roi_mse": 0.166472390294075,
+          "object_mask_iou": 0.45507246376811594,
+          "object_centroid_error_pixels": 15.216615587313848,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300204,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.0004798768204636872,
+          "object_roi_mse": 0.00798184797167778,
+          "object_mask_iou": 0.9763779527559056,
+          "object_centroid_error_pixels": 0.6292522877008229,
+          "predicted_centroid_shift_pixels": 15.623585206198936,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.9078014184397163,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00881505198776722,
+          "object_roi_mse": 0.166472390294075,
+          "object_mask_iou": 0.45507246376811594,
+          "object_centroid_error_pixels": 15.216615587313848,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.216615587313848,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "original",
+      "seed": 300004,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.010373341850936413,
+          "object_roi_mse": 0.18803884088993073,
+          "object_mask_iou": 0.8847583643122676,
+          "object_centroid_error_pixels": 3.4790942660527433,
+          "predicted_centroid_shift_pixels": 16.222650988431354,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.12179487179487179,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.1386861313868613
+        },
+        "persistence": {
+          "image_mse": 0.0030520048458129168,
+          "object_roi_mse": 0.054268982261419296,
+          "object_mask_iou": 0.4498567335243553,
+          "object_centroid_error_pixels": 15.222366320948746,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.5963855421686747,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.7226277372262774
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "original",
+      "seed": 300104,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.010734313167631626,
+          "object_roi_mse": 0.19573752582073212,
+          "object_mask_iou": 0.8540145985401459,
+          "object_centroid_error_pixels": 4.456689821898415,
+          "predicted_centroid_shift_pixels": 17.285211767115133,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 254,
+          "target_mask_iou": 0.12025316455696203,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.1386861313868613
+        },
+        "persistence": {
+          "image_mse": 0.0030520048458129168,
+          "object_roi_mse": 0.054268982261419296,
+          "object_mask_iou": 0.4498567335243553,
+          "object_centroid_error_pixels": 15.222366320948746,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.5963855421686747,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.7226277372262774
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "left_rotated",
+      "view": "original",
+      "seed": 300204,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.30974155091261,
+        "success": false,
+        "object_angle_change_degrees": -9.835124179660587,
+        "model": {
+          "image_mse": 0.010719739831984043,
+          "object_roi_mse": 0.19548101723194122,
+          "object_mask_iou": 0.8671586715867159,
+          "object_centroid_error_pixels": 3.962072398977523,
+          "predicted_centroid_shift_pixels": 16.88492348456095,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.12658227848101267,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.145985401459854
+        },
+        "persistence": {
+          "image_mse": 0.0030520048458129168,
+          "object_roi_mse": 0.054268982261419296,
+          "object_mask_iou": 0.4498567335243553,
+          "object_centroid_error_pixels": 15.222366320948746,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.222366320948746,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.5963855421686747,
+          "visible_target_pixels": 137,
+          "visible_target_recall": 0.7226277372262774
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300005,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.001040946925058961,
+          "object_roi_mse": 0.019084792584180832,
+          "object_mask_iou": 0.9063670411985019,
+          "object_centroid_error_pixels": 1.5397382247766525,
+          "predicted_centroid_shift_pixels": 13.463692593356308,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 255,
+          "target_mask_iou": 0.8888888888888888,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9523809523809523
+        },
+        "persistence": {
+          "image_mse": 0.009186671115458012,
+          "object_roi_mse": 0.1791110634803772,
+          "object_mask_iou": 0.4553314121037464,
+          "object_centroid_error_pixels": 14.889533113804475,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300105,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.0008875704370439053,
+          "object_roi_mse": 0.016331378370523453,
+          "object_mask_iou": 0.9172932330827067,
+          "object_centroid_error_pixels": 1.688756916101831,
+          "predicted_centroid_shift_pixels": 13.368307484064513,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.8880597014925373,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9444444444444444
+        },
+        "persistence": {
+          "image_mse": 0.009186671115458012,
+          "object_roi_mse": 0.1791110634803772,
+          "object_mask_iou": 0.4553314121037464,
+          "object_centroid_error_pixels": 14.889533113804475,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300205,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.000991525244899094,
+          "object_roi_mse": 0.018075402826070786,
+          "object_mask_iou": 0.9207547169811321,
+          "object_centroid_error_pixels": 1.3764280080316846,
+          "predicted_centroid_shift_pixels": 13.612385828406689,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 255,
+          "target_mask_iou": 0.8888888888888888,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9523809523809523
+        },
+        "persistence": {
+          "image_mse": 0.009186671115458012,
+          "object_roi_mse": 0.1791110634803772,
+          "object_mask_iou": 0.4553314121037464,
+          "object_centroid_error_pixels": 14.889533113804475,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.889533113804475,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "original",
+      "seed": 300005,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.008271841332316399,
+          "object_roi_mse": 0.14733070135116577,
+          "object_mask_iou": 0.39590443686006827,
+          "object_centroid_error_pixels": 28.13297044356834,
+          "predicted_centroid_shift_pixels": 25.381379136431534,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 150,
+          "target_mask_iou": 0.027777777777777776,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.030303030303030304
+        },
+        "persistence": {
+          "image_mse": 0.0035274119582027197,
+          "object_roi_mse": 0.060272056609392166,
+          "object_mask_iou": 0.4548022598870056,
+          "object_centroid_error_pixels": 15.13447385867027,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.7569444444444444,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.8257575757575758
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "original",
+      "seed": 300105,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.008325680159032345,
+          "object_roi_mse": 0.14846155047416687,
+          "object_mask_iou": 0.3993174061433447,
+          "object_centroid_error_pixels": 28.217066560702392,
+          "predicted_centroid_shift_pixels": 25.22010272921928,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 151,
+          "target_mask_iou": 0.027777777777777776,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.030303030303030304
+        },
+        "persistence": {
+          "image_mse": 0.0035274119582027197,
+          "object_roi_mse": 0.060272056609392166,
+          "object_mask_iou": 0.4548022598870056,
+          "object_centroid_error_pixels": 15.13447385867027,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.7569444444444444,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.8257575757575758
+        }
+      }
+    },
+    {
+      "family": "official",
+      "scene": "right_rotated",
+      "view": "original",
+      "seed": 300205,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.31018743810239013,
+        "success": false,
+        "object_angle_change_degrees": 9.835124179660616,
+        "model": {
+          "image_mse": 0.008106962777674198,
+          "object_roi_mse": 0.1435747593641281,
+          "object_mask_iou": 0.3945578231292517,
+          "object_centroid_error_pixels": 27.826489265155423,
+          "predicted_centroid_shift_pixels": 25.30731189953489,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 151,
+          "target_mask_iou": 0.014184397163120567,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.015151515151515152
+        },
+        "persistence": {
+          "image_mse": 0.0035274119582027197,
+          "object_roi_mse": 0.060272056609392166,
+          "object_mask_iou": 0.4548022598870056,
+          "object_centroid_error_pixels": 15.13447385867027,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.13447385867027,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.7569444444444444,
+          "visible_target_pixels": 132,
+          "visible_target_recall": 0.8257575757575758
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300000,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043685,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.00045235001016408205,
+          "object_roi_mse": 0.00784631073474884,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300100,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043685,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0004372605762910098,
+          "object_roi_mse": 0.007484911475330591,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "bottom",
+      "view": "source_palette",
+      "seed": 300200,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.38203747995043685,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0004455590096767992,
+          "object_roi_mse": 0.00766679085791111,
+          "object_mask_iou": 1.0,
+          "object_centroid_error_pixels": 0.0,
+          "predicted_centroid_shift_pixels": 5.977342396374752,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 244,
+          "target_mask_iou": 0.8591549295774648,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.991869918699187
+        },
+        "persistence": {
+          "image_mse": 0.0036740282084792852,
+          "object_roi_mse": 0.06821171194314957,
+          "object_mask_iou": 0.8148148148148148,
+          "object_centroid_error_pixels": 5.977342396374752,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 5.977342396374752,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.8759124087591241,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.975609756097561
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300001,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3939908985490123,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807144,
+        "model": {
+          "image_mse": 0.009116718545556068,
+          "object_roi_mse": 0.1753682643175125,
+          "object_mask_iou": 0.45217391304347826,
+          "object_centroid_error_pixels": 14.113807853247414,
+          "predicted_centroid_shift_pixels": 0.42616036055927103,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 245,
+          "target_mask_iou": 0.5670731707317073,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7560975609756098
+        },
+        "persistence": {
+          "image_mse": 0.009059404954314232,
+          "object_roi_mse": 0.17479249835014343,
+          "object_mask_iou": 0.4508670520231214,
+          "object_centroid_error_pixels": 14.539922366217851,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6266666666666667,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7642276422764228
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300101,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3939908985490123,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807144,
+        "model": {
+          "image_mse": 0.008826876990497112,
+          "object_roi_mse": 0.16913281381130219,
+          "object_mask_iou": 0.4574780058651026,
+          "object_centroid_error_pixels": 13.136948701270818,
+          "predicted_centroid_shift_pixels": 1.5113911963430042,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 241,
+          "target_mask_iou": 0.5644171779141104,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7479674796747967
+        },
+        "persistence": {
+          "image_mse": 0.009059404954314232,
+          "object_roi_mse": 0.17479249835014343,
+          "object_mask_iou": 0.4508670520231214,
+          "object_centroid_error_pixels": 14.539922366217851,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6266666666666667,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7642276422764228
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left",
+      "view": "source_palette",
+      "seed": 300201,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3939908985490123,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807144,
+        "model": {
+          "image_mse": 0.008907685056328773,
+          "object_roi_mse": 0.17140229046344757,
+          "object_mask_iou": 0.45614035087719296,
+          "object_centroid_error_pixels": 13.377481825254753,
+          "predicted_centroid_shift_pixels": 1.219464150009542,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 242,
+          "target_mask_iou": 0.573170731707317,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7642276422764228
+        },
+        "persistence": {
+          "image_mse": 0.009059404954314232,
+          "object_roi_mse": 0.17479249835014343,
+          "object_mask_iou": 0.4508670520231214,
+          "object_centroid_error_pixels": 14.539922366217851,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.539922366217851,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6266666666666667,
+          "visible_target_pixels": 123,
+          "visible_target_recall": 0.7642276422764228
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300002,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40479224572185607,
+        "success": false,
+        "object_angle_change_degrees": 10.19570763280712,
+        "model": {
+          "image_mse": 0.0018119056476280093,
+          "object_roi_mse": 0.03596316650509834,
+          "object_mask_iou": 0.8472727272727273,
+          "object_centroid_error_pixels": 1.8455427390209762,
+          "predicted_centroid_shift_pixels": 12.830386660488676,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.8091603053435115,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.954954954954955
+        },
+        "persistence": {
+          "image_mse": 0.008668003603816032,
+          "object_roi_mse": 0.17113104462623596,
+          "object_mask_iou": 0.4606413994169096,
+          "object_centroid_error_pixels": 14.010556573719324,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6666666666666666,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8828828828828829
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300102,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40479224572185607,
+        "success": false,
+        "object_angle_change_degrees": 10.19570763280712,
+        "model": {
+          "image_mse": 0.001650113146752119,
+          "object_roi_mse": 0.03267887607216835,
+          "object_mask_iou": 0.8571428571428571,
+          "object_centroid_error_pixels": 1.5478364469284691,
+          "predicted_centroid_shift_pixels": 12.994742305217423,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 252,
+          "target_mask_iou": 0.8091603053435115,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.954954954954955
+        },
+        "persistence": {
+          "image_mse": 0.008668003603816032,
+          "object_roi_mse": 0.17113104462623596,
+          "object_mask_iou": 0.4606413994169096,
+          "object_centroid_error_pixels": 14.010556573719324,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6666666666666666,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8828828828828829
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right",
+      "view": "source_palette",
+      "seed": 300202,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.40479224572185607,
+        "success": false,
+        "object_angle_change_degrees": 10.19570763280712,
+        "model": {
+          "image_mse": 0.0017292133998125792,
+          "object_roi_mse": 0.03435974568128586,
+          "object_mask_iou": 0.8472727272727273,
+          "object_centroid_error_pixels": 1.5261019964400822,
+          "predicted_centroid_shift_pixels": 12.996047685095522,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.8091603053435115,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.954954954954955
+        },
+        "persistence": {
+          "image_mse": 0.008668003603816032,
+          "object_roi_mse": 0.17113104462623596,
+          "object_mask_iou": 0.4606413994169096,
+          "object_centroid_error_pixels": 14.010556573719324,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 14.010556573719324,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6666666666666666,
+          "visible_target_pixels": 111,
+          "visible_target_recall": 0.8828828828828829
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300003,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.35363520998992815,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0007301383884623647,
+          "object_roi_mse": 0.012813044711947441,
+          "object_mask_iou": 0.9722222222222222,
+          "object_centroid_error_pixels": 1.1549626889266416,
+          "predicted_centroid_shift_pixels": 20.26834203060904,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300103,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.35363520998992815,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.000817895692307502,
+          "object_roi_mse": 0.014642385765910149,
+          "object_mask_iou": 0.9645669291338582,
+          "object_centroid_error_pixels": 1.5495036810268894,
+          "predicted_centroid_shift_pixels": 19.933891023256464,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 253,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "top",
+      "view": "source_palette",
+      "seed": 300203,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.35363520998992815,
+        "success": false,
+        "object_angle_change_degrees": 0.0,
+        "model": {
+          "image_mse": 0.0006144260405562818,
+          "object_roi_mse": 0.01035667397081852,
+          "object_mask_iou": 0.9760956175298805,
+          "object_centroid_error_pixels": 0.8978144663841251,
+          "predicted_centroid_shift_pixels": 20.43578349287862,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.8951048951048951,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.00838808249682188,
+          "object_roi_mse": 0.16647902131080627,
+          "object_mask_iou": 0.43859649122807015,
+          "object_centroid_error_pixels": 21.333333333333314,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 21.333333333333314,
+          "predicted_object_pixels": 246,
+          "target_mask_iou": 0.6583850931677019,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7969924812030075
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300004,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3129605271766157,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807137,
+        "model": {
+          "image_mse": 0.0005877080257050693,
+          "object_roi_mse": 0.010249467566609383,
+          "object_mask_iou": 0.96484375,
+          "object_centroid_error_pixels": 0.30413062534634516,
+          "predicted_centroid_shift_pixels": 15.65399306072322,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.9014084507042254,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.008913574740290642,
+          "object_roi_mse": 0.1689198911190033,
+          "object_mask_iou": 0.45244956772334294,
+          "object_centroid_error_pixels": 15.453583341030763,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300104,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3129605271766157,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807137,
+        "model": {
+          "image_mse": 0.0006035321857780218,
+          "object_roi_mse": 0.010689995251595974,
+          "object_mask_iou": 0.9571984435797666,
+          "object_centroid_error_pixels": 0.6374864613757456,
+          "predicted_centroid_shift_pixels": 15.744589288747209,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 250,
+          "target_mask_iou": 0.9014084507042254,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.008913574740290642,
+          "object_roi_mse": 0.1689198911190033,
+          "object_mask_iou": 0.45244956772334294,
+          "object_centroid_error_pixels": 15.453583341030763,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "left_rotated",
+      "view": "source_palette",
+      "seed": 300204,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3129605271766157,
+        "success": false,
+        "object_angle_change_degrees": -10.195707632807137,
+        "model": {
+          "image_mse": 0.0006163194193504751,
+          "object_roi_mse": 0.010864298790693283,
+          "object_mask_iou": 0.9610894941634242,
+          "object_centroid_error_pixels": 0.568366071206278,
+          "predicted_centroid_shift_pixels": 15.623585206198936,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.9078014184397163,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.9624060150375939
+        },
+        "persistence": {
+          "image_mse": 0.008913574740290642,
+          "object_roi_mse": 0.1689198911190033,
+          "object_mask_iou": 0.45244956772334294,
+          "object_centroid_error_pixels": 15.453583341030763,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.453583341030763,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.588957055214724,
+          "visible_target_pixels": 133,
+          "visible_target_recall": 0.7218045112781954
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300005,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3100291319346479,
+        "success": false,
+        "object_angle_change_degrees": 10.195707632807144,
+        "model": {
+          "image_mse": 0.001095001120120287,
+          "object_roi_mse": 0.020262986421585083,
+          "object_mask_iou": 0.8996282527881041,
+          "object_centroid_error_pixels": 1.6738147887281036,
+          "predicted_centroid_shift_pixels": 13.463692593356308,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 255,
+          "target_mask_iou": 0.8888888888888888,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9523809523809523
+        },
+        "persistence": {
+          "image_mse": 0.009222791530191898,
+          "object_roi_mse": 0.18027736246585846,
+          "object_mask_iou": 0.45272206303724927,
+          "object_centroid_error_pixels": 15.07004922824791,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300105,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3100291319346479,
+        "success": false,
+        "object_angle_change_degrees": 10.195707632807144,
+        "model": {
+          "image_mse": 0.0009557395242154598,
+          "object_roi_mse": 0.01779961585998535,
+          "object_mask_iou": 0.9104477611940298,
+          "object_centroid_error_pixels": 1.8125,
+          "predicted_centroid_shift_pixels": 13.368307484064513,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 256,
+          "target_mask_iou": 0.8880597014925373,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9444444444444444
+        },
+        "persistence": {
+          "image_mse": 0.009222791530191898,
+          "object_roi_mse": 0.18027736246585846,
+          "object_mask_iou": 0.45272206303724927,
+          "object_centroid_error_pixels": 15.07004922824791,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    },
+    {
+      "family": "gpc",
+      "scene": "right_rotated",
+      "view": "source_palette",
+      "seed": 300205,
+      "last_control": {
+        "horizon": 4,
+        "n_contacts": 1,
+        "reward": 0.3100291319346479,
+        "success": false,
+        "object_angle_change_degrees": 10.195707632807144,
+        "model": {
+          "image_mse": 0.0010480155469849706,
+          "object_roi_mse": 0.01930244266986847,
+          "object_mask_iou": 0.9138576779026217,
+          "object_centroid_error_pixels": 1.511932461926242,
+          "predicted_centroid_shift_pixels": 13.612385828406689,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 255,
+          "target_mask_iou": 0.8888888888888888,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.9523809523809523
+        },
+        "persistence": {
+          "image_mse": 0.009222791530191898,
+          "object_roi_mse": 0.18027736246585846,
+          "object_mask_iou": 0.45272206303724927,
+          "object_centroid_error_pixels": 15.07004922824791,
+          "predicted_centroid_shift_pixels": 0.0,
+          "actual_centroid_shift_pixels": 15.07004922824791,
+          "predicted_object_pixels": 251,
+          "target_mask_iou": 0.7246376811594203,
+          "visible_target_pixels": 126,
+          "visible_target_recall": 0.7936507936507936
+        }
+      }
+    }
+  ],
+  "failed_first_run": {
+    "source_report": {
+      "path": "artifacts/gpc-appearance-T-2026-10-19/report.json",
+      "bytes": 965099,
+      "sha256": "8b32f0868ec32bee6e4259a023bfe33b8245c31e965f37a8d8cece4a32a66072"
+    },
+    "status": "failed",
+    "error": "ValueError: Source palette control differs from the native GPC observation",
+    "counts": {
+      "control_steps": 114,
+      "control_physics_substeps": 1140,
+      "reset_physics_substeps": 2,
+      "state_restores": 31,
+      "auxiliary_renders": 145,
+      "model_forecast_steps": 576,
+      "denoising_steps": 1728
+    },
+    "elapsed_seconds": 23.4650259020018,
+    "protocol_sha256": "90909f757e117118cfb8ea6d8d9f8569d344eab285ea4e084f594dff3fd32b5a",
+    "resolution": "Match torchvision float32 multiplication by 1/255; fixed protocol/thresholds unchanged."
+  },
+  "limitations": [
+    "Auxiliary palette rendering needs simulator access; it is not an image-only deployed adapter.",
+    "Three model-noise repeats share each physical branch; they are not independently trained models or independent physical trials.",
+    "The left push remains worse under source-palette input than original input.",
+    "Known-color masks/centroids are image proxies; six development scenes do not establish generalization or policy improvement."
+  ]
+}

@@ -350,3 +350,22 @@ official-RGB T training episodes with contact/rotation coverage, comparing froze
 initial and adapted weights on disjoint scenes. Keep this palette control as an
 explanation/comparison, preserve the official policy and final model-test data,
 then move to L after checking actual action effects. Do not claim policy learning.
+
+## D023 — Publish a small reviewable evidence snapshot (2026-10-19)
+
+Commit four original world-model PNGs and three selected JSON report summaries
+under `docs/media/world-model-2026-10-19/`, with a size/hash manifest and a 1 MiB
+cap. Preserve image bytes, recorded source-report hashes, negative results,
+privileged-rendering caveats and failed-run accounting. Summaries are selections,
+not complete raw reports. Link the figures/reports and existing 27 alphabet MP4s
+from `docs/RESULTS.md` so coauthors can review without installing the environment.
+
+Keep datasets, source-frame archives, weights, caches and full raw reports out of
+Git. State that these remain local and no shared raw archive exists; hashes are
+identifiers, not access or backup. The selected 775,943-byte snapshot is a bounded
+publication exception. Use the existing source checker for manifest integrity;
+no presentation-only unit tests or new runtime experiment are needed.
+
+This completes a foundation/diagnostic review milestone for PR #2. Review/merge
+does not require successful adaptation. Continue the next training milestone on
+a new branch after coauthor review and an authorized merge; do not merge automatically.

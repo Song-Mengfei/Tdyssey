@@ -3,6 +3,7 @@
 ## Five-minute orientation
 
 1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
+   Open [published figures and results](RESULTS.md) to inspect evidence without setup.
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
 3. The primary baseline is the official RSS 2023 visual CNN policy in original

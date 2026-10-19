@@ -1,0 +1,379 @@
+{
+  "schema_version": 1,
+  "publication": "selected report fields; not a full raw report",
+  "source_report": {
+    "path": "artifacts/visual-world-model-L-2026-10-19/report.json",
+    "bytes": 156113,
+    "sha256": "108ee651ad6a61790e142eb8d67cb7240202ed64c92a3133cbf507ce04b6b747"
+  },
+  "experiment": "L-only custom CNN trained from scratch",
+  "status": "complete",
+  "model_version": "visual-residual-cnn-v1",
+  "parameters": 1302570,
+  "config": {
+    "batch_size": 8,
+    "epochs": 10,
+    "future": 4,
+    "learning_rate": 0.0003,
+    "max_bytes": 33554432,
+    "max_steps": 750,
+    "seconds": 300,
+    "seed": 42
+  },
+  "loss_weights": {
+    "agent_motion": 0.1,
+    "contact": 0.05,
+    "image": 1.0,
+    "object_motion": 0.1,
+    "object_roi": 2.0,
+    "reward": 0.1
+  },
+  "train": {
+    "cache": "one decoded episode; no disk window cache",
+    "contact_step_fraction": 0.4583333333333333,
+    "contact_steps": 275,
+    "control_steps": 600,
+    "episodes": 6,
+    "split": "train",
+    "window_spec": {
+      "future": 4,
+      "history": 2
+    },
+    "windows": 576
+  },
+  "validation": {
+    "cache": "one decoded episode; no disk window cache",
+    "contact_step_fraction": 0.4,
+    "contact_steps": 40,
+    "control_steps": 100,
+    "episodes": 1,
+    "split": "validation",
+    "window_spec": {
+      "future": 4,
+      "history": 2
+    },
+    "windows": 96
+  },
+  "selection": "lowest validation contact object-position error at final horizon; all-step fallback if no contact",
+  "best_epoch": 6,
+  "steps": 720,
+  "training_windows_seen": 5760,
+  "forecast_steps_trained": 23040,
+  "elapsed_seconds": 14.830652743999963,
+  "peak_gpu_bytes": 215508480,
+  "checkpoint_sha256": "9d66fd8ec8071554c68ec3173ee4bdf2b169a6ae5d44344839fc9308b67dc81a",
+  "catalog_sha256": "d3b4b49bad025e4d235844857fecd8ad5d1963f00cd352416c9505bfc4bf42c6",
+  "model_test_used": false,
+  "best_validation": {
+    "horizons": {
+      "1": {
+        "all": {
+          "agent_position_error_pixels": 4.176454280813535,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447476346666614,
+          "forecast_steps": 96,
+          "image_mse": 0.0005615402761425988,
+          "object_angle_error_degrees": 0.5740754264261341,
+          "object_position_error_pixels": 1.8738179684927065,
+          "object_roi_mse": 0.009600311279257312,
+          "reward_mae": 0.08334178465884179
+        },
+        "contact": {
+          "agent_position_error_pixels": 2.542278343439102,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.2934521347284317,
+          "forecast_steps": 40,
+          "image_mse": 0.0009748640710313339,
+          "object_angle_error_degrees": 0.6544857795932331,
+          "object_position_error_pixels": 3.148587192595005,
+          "object_roi_mse": 0.022727599390782414,
+          "reward_mae": 0.060351199470460415
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 5.343722807509558,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.20995870605111122,
+          "forecast_steps": 56,
+          "image_mse": 0.0002663089940792166,
+          "object_angle_error_degrees": 0.5166394598782063,
+          "object_position_error_pixels": 0.9632685227053506,
+          "object_roi_mse": 0.00022367691388223778,
+          "reward_mae": 0.09976363122197134
+        }
+      },
+      "2": {
+        "all": {
+          "agent_position_error_pixels": 8.230185948312283,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.24475103756412864,
+          "forecast_steps": 96,
+          "image_mse": 0.0010409871721700863,
+          "object_angle_error_degrees": 1.1301952159653108,
+          "object_position_error_pixels": 3.723347581612567,
+          "object_roi_mse": 0.015812325187653187,
+          "reward_mae": 0.08164845620437215
+        },
+        "contact": {
+          "agent_position_error_pixels": 5.076063227653504,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.29345462918281556,
+          "forecast_steps": 40,
+          "image_mse": 0.001698911312269047,
+          "object_angle_error_degrees": 1.261811751127243,
+          "object_position_error_pixels": 6.214023488014936,
+          "object_roi_mse": 0.0362832322018221,
+          "reward_mae": 0.06035108212381601
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 10.48313074878284,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.20996275783649512,
+          "forecast_steps": 56,
+          "image_mse": 0.0005710413578136857,
+          "object_angle_error_degrees": 1.0361834051353591,
+          "object_position_error_pixels": 1.9442933627537318,
+          "object_roi_mse": 0.0011902487489611044,
+          "reward_mae": 0.09686086626191225
+        }
+      },
+      "3": {
+        "all": {
+          "agent_position_error_pixels": 12.146669087310633,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447569832826654,
+          "forecast_steps": 96,
+          "image_mse": 0.001474158005597322,
+          "object_angle_error_degrees": 1.655635737425958,
+          "object_position_error_pixels": 5.533280821206669,
+          "object_roi_mse": 0.01873336634344014,
+          "reward_mae": 0.07995512297687431
+        },
+        "contact": {
+          "agent_position_error_pixels": 7.595230710506439,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.29345926716923715,
+          "forecast_steps": 40,
+          "image_mse": 0.0023389505440718494,
+          "object_angle_error_degrees": 1.8013028113171459,
+          "object_position_error_pixels": 9.168740094453096,
+          "object_roi_mse": 0.0415660823462531,
+          "reward_mae": 0.060351216606795786
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 15.397696499313627,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.20996963764939988,
+          "forecast_steps": 56,
+          "image_mse": 0.0008564490495440882,
+          "object_angle_error_degrees": 1.5515878275036812,
+          "object_position_error_pixels": 2.936524197459221,
+          "object_roi_mse": 0.0024242834842880256,
+          "reward_mae": 0.09395791324121612
+        }
+      },
+      "4": {
+        "all": {
+          "agent_position_error_pixels": 15.919136002659798,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.24476324037338296,
+          "forecast_steps": 96,
+          "image_mse": 0.0018505537594440586,
+          "object_angle_error_degrees": 2.158551833272213,
+          "object_position_error_pixels": 7.307073634816334,
+          "object_roi_mse": 0.022306371110365337,
+          "reward_mae": 0.07826177900036176
+        },
+        "contact": {
+          "agent_position_error_pixels": 10.119538164138794,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.29346430376172067,
+          "forecast_steps": 40,
+          "image_mse": 0.0029018162778811528,
+          "object_angle_error_degrees": 2.2967735659331083,
+          "object_position_error_pixels": 12.0174595432356,
+          "object_roi_mse": 0.048046224168501794,
+          "reward_mae": 0.060351216606795786
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 20.061705887317657,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.20997676652457034,
+          "forecast_steps": 56,
+          "image_mse": 0.00109965196056042,
+          "object_angle_error_degrees": 2.0598220242287164,
+          "object_position_error_pixels": 3.942512271659715,
+          "object_roi_mse": 0.003920761783125012,
+          "reward_mae": 0.09105503785290889
+        }
+      }
+    },
+    "persistence": {
+      "1": {
+        "all": {
+          "agent_position_error_pixels": 4.776382038990657,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447916492819786,
+          "forecast_steps": 96,
+          "image_mse": 0.0005308869836729476,
+          "object_angle_error_degrees": 0.33107075064132613,
+          "object_position_error_pixels": 1.6872589962246518,
+          "object_roi_mse": 0.009692476315346235,
+          "reward_mae": 0.08335818998360385
+        },
+        "contact": {
+          "agent_position_error_pixels": 4.88316171169281,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.2934027314186096,
+          "forecast_steps": 40,
+          "image_mse": 0.0009501415268459823,
+          "object_angle_error_degrees": 0.7897936483845115,
+          "object_position_error_pixels": 4.0354377090930935,
+          "object_roi_mse": 0.023047729092650116,
+          "reward_mae": 0.060131164453923705
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 4.700110844203404,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.2100694477558136,
+          "forecast_steps": 56,
+          "image_mse": 0.00023141945283506566,
+          "object_angle_error_degrees": 0.00341153796762228,
+          "object_position_error_pixels": 0.00998848703290735,
+          "object_roi_mse": 0.00015301004584346498,
+          "reward_mae": 0.09994892250480396
+        }
+      },
+      "2": {
+        "all": {
+          "agent_position_error_pixels": 9.377914875745773,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447916492819786,
+          "forecast_steps": 96,
+          "image_mse": 0.0009540004594631076,
+          "object_angle_error_degrees": 0.6621415029900769,
+          "object_position_error_pixels": 3.3742145065528653,
+          "object_roi_mse": 0.016124163752465392,
+          "reward_mae": 0.08165782930639882
+        },
+        "contact": {
+          "agent_position_error_pixels": 9.766303396224975,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.2934027314186096,
+          "forecast_steps": 40,
+          "image_mse": 0.0016335933774826116,
+          "object_angle_error_degrees": 1.5290117148309945,
+          "object_position_error_pixels": 7.919625309109688,
+          "object_roi_mse": 0.03738843351602554,
+          "reward_mae": 0.060131164453923705
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 9.100494503974915,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.2100694477558136,
+          "forecast_steps": 56,
+          "image_mse": 0.0004685769465920332,
+          "object_angle_error_degrees": 0.04294849453227861,
+          "object_position_error_pixels": 0.12749250472656318,
+          "object_roi_mse": 0.0009353996356367134,
+          "reward_mae": 0.0970340184867382
+        }
+      },
+      "3": {
+        "all": {
+          "agent_position_error_pixels": 13.77343817303578,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447916492819786,
+          "forecast_steps": 96,
+          "image_mse": 0.0013372891039580281,
+          "object_angle_error_degrees": 0.9932122058235109,
+          "object_position_error_pixels": 5.060829745139927,
+          "object_roi_mse": 0.01930150592246112,
+          "reward_mae": 0.0799574686291938
+        },
+        "contact": {
+          "agent_position_error_pixels": 14.64746081829071,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.2934027314186096,
+          "forecast_steps": 40,
+          "image_mse": 0.00224980189523194,
+          "object_angle_error_degrees": 2.221045821905136,
+          "object_position_error_pixels": 11.656762072443962,
+          "object_roi_mse": 0.04362188121303916,
+          "reward_mae": 0.060131164453923705
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 13.149136283567973,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.2100694477558136,
+          "forecast_steps": 56,
+          "image_mse": 0.0006854942530480912,
+          "object_angle_error_degrees": 0.11618819433663573,
+          "object_position_error_pixels": 0.34944951135132996,
+          "object_roi_mse": 0.001929809286333953,
+          "reward_mae": 0.09411911446867245
+        }
+      },
+      "4": {
+        "all": {
+          "agent_position_error_pixels": 17.98774999131759,
+          "contact_accuracy": 0.5833333333333334,
+          "contact_brier": 0.2447916492819786,
+          "forecast_steps": 96,
+          "image_mse": 0.0016927214332251121,
+          "object_angle_error_degrees": 1.3242829667093854,
+          "object_position_error_pixels": 6.747130075003952,
+          "object_roi_mse": 0.023158230496846954,
+          "reward_mae": 0.07825710795198877
+        },
+        "contact": {
+          "agent_position_error_pixels": 19.52365107536316,
+          "contact_accuracy": 0.0,
+          "contact_brier": 0.2934027314186096,
+          "forecast_steps": 40,
+          "image_mse": 0.0028218135616043583,
+          "object_angle_error_degrees": 2.8691761553287507,
+          "object_position_error_pixels": 15.250454714894294,
+          "object_roi_mse": 0.05114745954051614,
+          "reward_mae": 0.060131164453923705
+        },
+        "noncontact": {
+          "agent_position_error_pixels": 16.890677788427897,
+          "contact_accuracy": 1.0,
+          "contact_brier": 0.2100694477558136,
+          "forecast_steps": 56,
+          "image_mse": 0.0008862270558113648,
+          "object_angle_error_degrees": 0.22078783198126725,
+          "object_position_error_pixels": 0.673326760796564,
+          "object_roi_mse": 0.0031659240370832515,
+          "reward_mae": 0.09120421045060668
+        }
+      }
+    },
+    "windows": 96
+  },
+  "preview": {
+    "anchor": 15,
+    "episode_id": "official-L-1162504bdee2a98ec1fd",
+    "selection": "first validation window with any contact; fallback first window"
+  },
+  "provenance": {
+    "commit": "cb87a678935f5a2e44bd2eeee413e8c222a0e3b6",
+    "dirty": true,
+    "source_sha256": {
+      "pyproject.toml": "4a3550231e9aeafad32c2f97c11ae2be538246c28f0dd4d4177e4ffaec13d3a8",
+      "scripts/train_world_model.py": "2ab74ee2312b45ea5949ec8d6aecd97c24023b3156d4e66d8718f9d2f51c17c3",
+      "tdyssey/dataset.py": "4add9e39caca5ddb53eb9307042b019c1d3d8ebaea28ba7dabe60fce9d0c521f",
+      "tdyssey/models/visual_dynamics.py": "a1727e4e01174a1b0a5064fbf9dd3fff5cf3dc791d44ffa41eb781c5b16fff08",
+      "tdyssey/training_data.py": "fffc4f79c6e99dc651862d5537fb481a5657f755a3d4e423f142e415a9df7af5",
+      "tdyssey/world_model_data.py": "4058f0619037cc4ae77a23e04250ab61fd5e62d25daa471c629e57869033c89d",
+      "tdyssey/world_model_protocol.py": "e317f898425407a9463eb1b3b52d5f22b08ab1c166cb7549a1fe6f33e32c00bb",
+      "tdyssey/world_model_training.py": "8aa8a218cb78875134be4ca7a6ac1887baca0e8519efb184a6ac24a63254eace",
+      "uv.lock": "e0a40dad07b9333615ea724477d9b74593816a59eefa281eedbff70a1b424466"
+    }
+  },
+  "limitations": [
+    "One model seed and one validation episode; checkpoint selected on validation contact error.",
+    "Aggregate and noncontact position errors worsen against persistence.",
+    "Independent output heads can disagree; no policy improvement or T-to-L world-model transfer established."
+  ]
+}
