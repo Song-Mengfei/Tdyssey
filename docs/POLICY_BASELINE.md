@@ -7,7 +7,7 @@ See [validation evidence](VALIDATION.md) for actual observations and limits.
 
 ## Resources
 
-Start with the locked CPU/GPC environment and pinned sparse simulator checkout
+Start with the locked CUDA/GPC environment and pinned sparse simulator checkout
 from [environment setup](ENVIRONMENT.md). Add these small source files:
 
 ```bash
@@ -56,7 +56,10 @@ credential store or environment, outside Git. No login is performed by these scr
 .venv/bin/python -B scripts/evaluate_policy.py --output artifacts/policy-baseline --steps 300 --seconds 360
 ```
 
-Defaults are CPU, four CPU threads, one episode per shape, and seed 100000.
+Defaults are CUDA for the neural policy, four CPU threads, one episode per shape,
+and seed 100000. CUDA unavailability is an error; there is no automatic CPU
+fallback. The simulator physics and rendering remain on CPU. An explicit
+`--device cpu` remains available for collaborators doing CPU debugging.
 Use `--shapes T` for T alone. `--checkpoint` and `--gpc-root` accept other paths.
 The command refuses existing output directories. Reports contain source/asset
 hashes, seeds, full initial states, per-action state/metrics/contact counts,
@@ -75,9 +78,27 @@ This replays the recorded actions from the saved pre-contact initial state,
 checks every pose/velocity/reward/terminal flag, and decodes the saved video to
 verify its frame count. It needs no checkpoint or further policy predictions.
 The video report counts diagnostic replay controls and reset work separately.
-The first T preview was about 200 KB. No desktop window opens: these commands
-render offscreen using the installed headless OpenCV build. CPU is the default;
-`--device cuda` requires a separately authorized, compatible CUDA environment.
+The first T preview was about 200 KB. Video export renders offscreen using the
+installed headless OpenCV build.
+
+## Open a visible simulator window
+
+```bash
+.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/visible-policy --shapes T --steps 300 --display --hold-seconds 60
+```
+
+This uses pygame to open a real **768×768 resizable window**. The underlying model
+image stays 96×96; display enlargement does not change policy input. Resize or
+maximize the window, or select `--window-size 1024`. Escape/close stops evaluation
+and is recorded distinctly. `--hold-seconds` optionally keeps the final frame for
+up to 60 seconds. Without `--display`, evaluation stays offscreen. A desktop
+session/display is required for visible mode; no OpenCV GUI package is needed.
+
+Visible runs pace control steps for inspection. Their elapsed time includes
+display pacing and optional final-frame hold, so use the separately recorded
+planning times or offscreen runs to measure inference speed. CUDA planning times
+include synchronization. Recorded device/runtime/GPU fields distinguish actual
+GPU runs from CPU debugging. Geometry, scoring, and policy inputs do not change.
 
 Each scene uses T's complete initial physical state and goal across the selected
 shapes, while retaining each shape's geometry/inertia identifiers. All shapes
@@ -101,8 +122,9 @@ seeds; the output is not a published benchmark score.
   indices `[1:9]`: eight pixel-coordinate targets. Shorten the final chunk to the
   remaining control budget; update observation history after every executed action.
 - Use a local seeded PyTorch random generator for initial and denoising noise.
-  Shape comparisons start with the same noise seed. CPU/GPU numerical identity
-  is not promised.
+  Shape comparisons start with the same noise seed. CPU and CUDA generators can
+  produce different samples for the same integer seed; cross-device trajectories
+  are not expected to match.
 
 GPC's file named `eval_baseline.py` actually ranks 50 candidates using a world
 model and reward heads, includes candidate spreading, and uses a different slice

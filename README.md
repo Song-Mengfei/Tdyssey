@@ -13,9 +13,10 @@ existing GPC PushT simulator, evaluation metrics, state/trajectory records, and 
 bounded image/state interaction collector with episode-safe training batches,
 and verified pretrained-policy loading with bounded physical T/I/L rollouts.
 Core checks run without installing anything. The locked CPU/GPC profile and real
-T/I/L simulator and CPU checkpoint checks are validated. The first single-scene
-policy runs did not solve the task; repeated baseline evaluation, CUDA, and
-training remain pending. See [validation evidence](docs/VALIDATION.md).
+T/I/L simulator and CPU/CUDA checkpoint checks are validated. The first
+single-scene policy runs did not solve the task; repeated baseline evaluation and
+training remain pending. A resizable desktop viewer is available. See
+[validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
@@ -46,7 +47,7 @@ python3 -B -m tdyssey
 ## Install a development environment
 
 Reference platform: Linux x86_64, Python 3.12.3, uv 0.13.0. The manifest offers
-CPU development and CUDA 12.4 training profiles. Choose one profile based on the
+CPU simulator-development and CUDA 12.4 policy/training profiles. Choose one profile based on the
 machine and task. See [environment notes](docs/ENVIRONMENT.md) for storage-saving
 setup, the small upstream checkout, and platform limitations.
 
@@ -67,8 +68,18 @@ uv sync --locked --extra cu124 --extra gpc --no-cache --link-mode copy
 
 An existing environment can be used directly through `.venv/bin/python`; activation
 is optional. If using `uv run`, pass the same extras to preserve the chosen profile.
-Doctor checks basic packages, torch, and Pymunk; it does not reproduce a policy.
+Doctor checks packages, torch calculations/gradients, and Pymunk; it does not reproduce a policy.
 No upstream repository, checkpoint, or dataset is downloaded by these checks.
+
+Policy runs default to CUDA with no automatic CPU fallback. After fetching the
+selected checkpoint using [policy setup](docs/POLICY_BASELINE.md), open PushT:
+
+```bash
+.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/visible-policy --shapes T --steps 300 --display --hold-seconds 60
+```
+
+The window starts at 768×768 and can be resized. `--display` controls window
+visibility independently of GPU use; physics remains on CPU.
 
 ## Collaboration
 

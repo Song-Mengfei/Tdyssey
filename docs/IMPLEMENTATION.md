@@ -25,12 +25,14 @@ This change does not implement another physics engine or a replacement policy.
 | `scripts/evaluate_policy.py` | CPU/CUDA-selectable unranked policy runner; see `docs/POLICY_BASELINE.md` |
 | `scripts/fetch_policy_assets.py` | Plan-only default; explicitly download one size/hash-verified checkpoint |
 | `scripts/replay_policy.py` | Export recorded actions to a small video and check physical replay |
+| `tdyssey/viewer.py` | Optional 768×768 resizable pygame desktop viewer, independent of model input size |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
 have passed with real Pymunk and GPC on the locked CPU profile; see
-`docs/VALIDATION.md`. CPU checkpoint loading and bounded policy rollouts have also
-passed; CUDA remains pending. There is no
+`docs/VALIDATION.md`. CPU/CUDA checkpoint loading and bounded policy rollouts have
+also passed. Policy inference defaults to CUDA without automatic CPU fallback.
+There is no
 world-model or policy training implementation yet.
 The collector now stores RGB frames once as uint8 alongside physical-state labels
 and exact observation timing. History-window loading and PyTorch batches are now

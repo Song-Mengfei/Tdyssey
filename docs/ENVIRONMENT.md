@@ -17,7 +17,11 @@ machine being used; keep those local details out of shared instructions.
 The CPU/GPC environment measured about **1.33 GiB** after installation, plus about
 38 MiB for a local uv executable and less than 1 MiB for the sparse GPC checkout.
 This is a measured development footprint, not a training storage budget. The
-CUDA profile includes additional GPU libraries and has not been validated yet.
+CUDA profile includes additional GPU libraries. It measured about **5.57 GiB**
+after replacing the CPU profile in the same environment; no duplicate CPU
+environment was retained. CUDA 12.4 calculations, gradients, torchvision, and
+pretrained inference passed on an Ada GPU. This does not prove full training
+memory requirements or compatibility with every GPU generation.
 See `docs/VALIDATION.md` for the checks that actually ran.
 
 CPU and CUDA extras conflict intentionally. Keep one `.venv` per checkout and
@@ -88,8 +92,9 @@ Check NVIDIA driver compatibility before CUDA setup. cu124 is an initial profile
 for Ada-generation GPUs; **Blackwell requires a newer compatible PyTorch/CUDA
 profile and a new lock/validation decision**. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.
-CPU simulator checks do not prove GPU or training compatibility. CPU checkpoint
-loading now has separate evidence in `docs/VALIDATION.md`.
+CPU simulator checks do not prove GPU or training compatibility. CPU/CUDA
+checkpoint loading and GPU gradient checks have separate evidence in
+`docs/VALIDATION.md`; actual project training remains pending.
 
 ## Updating dependencies
 

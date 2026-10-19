@@ -83,17 +83,17 @@ def load_ema_parameters(network, payload):
 
 
 class GPCDiffusionPolicy:
-    def __init__(self, gpc_root, checkpoint, device="cpu"):
+    def __init__(self, gpc_root, checkpoint, device="cuda"):
         import torch
         from diffusers.schedulers.scheduling_ddpm import DDPMScheduler
 
         self.spec, self.device = policy_spec(), torch.device(device)
         asset, config = self.spec["checkpoint"], self.spec["policy"]
+        if self.device.type == "cuda" and not torch.cuda.is_available():
+            raise ValueError("CUDA requested but unavailable; install/check the CUDA profile. No CPU fallback is used.")
         checkpoint = Path(checkpoint)
         if checkpoint.stat().st_size != asset["bytes"] or hash_file(checkpoint) != asset["sha256"]:
             raise ValueError("Policy checkpoint differs from pinned size/hash")
-        if self.device.type == "cuda" and not torch.cuda.is_available():
-            raise ValueError("CUDA requested but unavailable; use the installed CPU profile")
         module = load_model_source(gpc_root, self.spec)
         encoder = module.replace_bn_with_gn(module.get_resnet())
         # Preserve exact upstream insertion/parameter order for the EMA shadows.

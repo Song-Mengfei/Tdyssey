@@ -52,7 +52,7 @@ def matched_resets(environments, seed, counters):
     raise ValueError(f"No common valid scene after 20 candidates: {attempts}")
 
 
-def rollout(env, policy, observation, steps, action_seed, deadline, counters):
+def rollout(env, policy, observation, steps, action_seed, deadline, counters, viewer=None):
     """Execute configured action chunks, recording post-action scores and flags.
 
     This keeps GPC's original terminal flags, including its simultaneous
@@ -69,18 +69,33 @@ def rollout(env, policy, observation, steps, action_seed, deadline, counters):
     result = {"shape": env.object, "action_seed": action_seed, "initial_state": asdict(initial),
               "initial_metrics": initial_metrics, "steps": [], "planning_seconds": [],
               "stop_reason": "control_budget", "upstream_success": False}
+    if viewer:
+        viewer.draw(env.render(mode="rgb_array"), f"Tdyssey | {env.object} | ready | {policy.device}")
     start = time.monotonic()
     while len(result["steps"]) < steps:
+        if viewer and not viewer.poll():
+            result["stop_reason"] = "viewer_closed"
+            break
         if time.monotonic() >= deadline:
             result["stop_reason"] = "wall_time_budget"
             break
         plan_start = time.monotonic()
+        if policy.device.type == "cuda":
+            # CUDA operations are asynchronous. Synchronize for honest planning
+            # latency rather than timing only CPU work submission.
+            import torch
+            torch.cuda.synchronize(policy.device)
         prediction = policy.predict(list(history))
+        if policy.device.type == "cuda":
+            torch.cuda.synchronize(policy.device)
         result["planning_seconds"].append(time.monotonic() - plan_start)
         counters["planning_calls"] += 1
         counters["denoising_steps"] += config["num_diffusion_iters"]
         actions = action_prefix(prediction, config, steps - len(result["steps"]))
         for action in actions:
+            if viewer and not viewer.poll():
+                result["stop_reason"] = "viewer_closed"
+                break
             if time.monotonic() >= deadline:
                 result["stop_reason"] = "wall_time_budget"
                 break
@@ -93,6 +108,9 @@ def rollout(env, policy, observation, steps, action_seed, deadline, counters):
                                     "terminated": bool(terminated), "truncated": bool(truncated),
                                     "n_contacts": int(info["n_contacts"]), "state": asdict(state),
                                     "metrics": asdict(goal_metrics(shape, state.object_body.pose, state.goal))})
+            if viewer:
+                viewer.draw(env.render(mode="rgb_array"),
+                            f"Tdyssey | {env.object} | {state.control_step}/{steps} | {policy.device}", env.control_hz)
             if terminated or truncated:
                 result["stop_reason"] = "upstream_termination" if terminated else "upstream_truncation"
                 result["upstream_success"] = bool(terminated)
