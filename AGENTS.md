@@ -1,0 +1,97 @@
+# Tdyssey agent instructions
+
+## Purpose and priorities
+
+This is a three-author course research project on adapting a T-trained pushing
+policy to new object shapes using non-expert interaction data and a learned world
+model. It changes the pushed object, not the robot embodiment. The course values
+substantial implementation, experiments, and analysis; useful negative results
+are acceptable. Do not reduce the project to a trivial demo just to guarantee success.
+Use plain English in chat with the team. Avoid jargon where ordinary words work;
+briefly explain technical terms when they are needed.
+
+For substantial project work, read `docs/STATUS.md` and the relevant sections of
+`docs/PROJECT.md`. Use `docs/ENVIRONMENT.md` for dependency changes and setup;
+`docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
+background, not evidence that anything has been implemented or validated.
+
+## Current execution constraint
+
+The owner requested source-only work on the current laptop to preserve disk space.
+By default, a new checkout is also source-only until a user authorizes setup on that
+machine. Do not install dependencies, create an environment, run `uv sync` or
+`uv run` (they can install automatically), download weights/datasets, start training,
+or pull container images without machine-specific authorization. Authorization on
+one author's machine does not authorize setup on another. Continue coding,
+documentation, static checks, and small standard-library checks without asking
+again. Metadata-only dependency locking with no package builds is permitted; use
+temporary storage and remove temporary tooling/cache afterward.
+
+Do not modify another project's environment. Do not treat hardware or package
+versions observed on one machine as requirements for every collaborator.
+
+## Shared environment and code
+
+- `pyproject.toml`, `uv.lock`, and `.python-version` define the shared candidate
+  environment. It is not runtime-validated yet. Update manifest and lock together.
+- Use the documented CPU or CUDA profile consistently when setup is authorized.
+  Do not install both profiles or manually upgrade packages inside `.venv`.
+- Reference training platform: Linux x86_64, Python 3.12. Other hardware/platforms
+  need a documented compatibility decision, not silent dependency substitutions.
+- Upstream commit IDs live in `manifests/upstream.json`; models and datasets need
+  separate revision/hash records once actually downloaded.
+- Keep generated data, checkpoints, caches, and video outside Git. Use configurable
+  paths, never author-specific absolute paths.
+- Use a branch or isolated checkout per author. Inspect `git status` before edits
+  and preserve unrelated work. Split file ownership before any parallel work.
+
+## Research correctness
+
+- Prioritize one-shape adaptation before expanding to continual learning or
+  unseen-shape generalization. Preserve the ambitious questions as stretch goals.
+- A state-based mechanism study is valid but must be distinguished from a visual
+  system. Changing representation requires matched policy training and baselines.
+- Target-shape play data means adaptation, not zero-shot generalization.
+- Keep rendering, collision geometry, target geometry, inertia, and symmetry-aware
+  evaluation consistent. Restore full simulator state for matched comparisons.
+- Align action normalization, observation histories, executed action prefixes,
+  control-step counting, block rewards, and termination/bootstrap handling.
+- Validate contact dynamics and model-selected optimistic actions, not just image
+  reconstruction. Evaluate policy improvement in the physical simulator.
+- First verify direct simulator policy optimization. Imagined reward gains alone
+  are not evidence of physical improvement or new behavior.
+- Disclose geometric exploration priors and privileged state/reward supervision.
+- Separate training/validation/test trajectories and held-out shapes. Count real
+  interaction and compute costs; report failures and seed variability honestly.
+
+## Verification and handoff
+
+Source-only check (Python 3.11+; no third-party packages, network, or file writes):
+
+```bash
+python3 -B scripts/check_repo.py
+```
+
+For implementation changes, add and run focused checks for meaningful behavior
+when the required environment is available. Otherwise report exactly which checks
+were static and what runtime verification is pending. Never claim a dependency
+lockfile proves CUDA, simulator, or checkpoint compatibility.
+
+After a substantive milestone, update `docs/STATUS.md` with completed work,
+evidence, next task, and unresolved blockers. Record scope/dependency/protocol
+decisions in `docs/DECISIONS.md`. Keep these short; chat history is not shared
+project memory. Include reproducible commands and artifact references for results.
+Do not mark an experiment completed without actual outputs.
+
+## Commit and pull request rules
+
+Follow `docs/GIT.md` and the shared templates when preparing commits or PRs.
+Use Conventional Commit titles (`type(scope): description`, scope optional,
+lowercase type/scope, at most 72 characters). For substantive commits include
+Why, Changes, and Validation information; reference only real issues/PRs.
+PRs use the template's Summary, Changes, Validation, Limitations, and Related issues
+sections. Keep messages specific, concise, and accurate; never invent results,
+signatures, or author credit. Check prepared messages with
+`python3 -B scripts/check_messages.py` using the documented arguments.
+Use message/body files for scripted Git and GitHub commands to preserve newlines.
+Do not rewrite published commits or merge a PR without explicit authorization.

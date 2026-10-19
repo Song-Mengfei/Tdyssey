@@ -1,0 +1,112 @@
+[project]
+name = "tdyssey"
+version = "0.1.0"
+description = "Course research scaffold for world-model-based cross-shape pushing adaptation"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy==1.26.4",
+    "pyyaml==6.0.2",
+    "pillow==11.0.0",
+    "scipy==1.14.1",
+    "matplotlib==3.9.2",
+    "tqdm==4.66.6",
+    "gymnasium==0.29.1",
+    "pymunk==6.9.0",
+    "pygame==2.6.1",
+    "shapely==2.0.6",
+    "zarr==2.18.3",
+    "numcodecs==0.15.1",
+    "huggingface-hub==0.26.2",
+]
+
+# Choose exactly one torch backend when installation is authorized.
+[project.optional-dependencies]
+cpu = ["torch==2.5.1", "torchvision==0.20.1"]
+cu124 = ["torch==2.5.1", "torchvision==0.20.1"]
+gpc = [
+    "ipython==8.29.0",
+    "diffusers==0.31.0",
+    "einops==0.8.0",
+    "gym==0.26.2",
+    "opencv-python-headless==4.10.0.84",
+    "scikit-image==0.24.0",
+    "scikit-video==1.1.11",
+    "wandb==0.18.7",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.13.0"
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+conflicts = [[{ extra = "cpu" }, { extra = "cu124" }]]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cu124" },
+]
+torchvision = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu124", extra = "cu124" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+# Static metadata read from the checksum-verified upstream Gym 0.26.2 setup.py.
+# Avoids executing its build backend just to resolve dependencies.
+[[tool.uv.dependency-metadata]]
+name = "gym"
+version = "0.26.2"
+requires-python = ">=3.6"
+requires-dist = [
+    "numpy >= 1.18.0",
+    "cloudpickle >= 1.2.0",
+    "importlib_metadata >= 4.8.0; python_version < '3.10'",
+    "gym_notices >= 0.0.4",
+    "dataclasses == 0.8; python_version == '3.6'",
+    "autorom[accept-rom-license]~=0.4.2; extra == 'accept-rom-license'",
+    "ale-py~=0.8.0; extra == 'all'",
+    "box2d-py==2.3.5; extra == 'all'",
+    "imageio>=2.14.1; extra == 'all'",
+    "lz4>=3.1.0; extra == 'all'",
+    "matplotlib>=3.0; extra == 'all'",
+    "moviepy>=1.0.0; extra == 'all'",
+    "mujoco==2.2; extra == 'all'",
+    "mujoco_py<2.2,>=2.1; extra == 'all'",
+    "opencv-python>=3.0; extra == 'all'",
+    "pygame==2.1.0; extra == 'all'",
+    "pytest==7.0.1; extra == 'all'",
+    "swig==4.*; extra == 'all'",
+    "ale-py~=0.8.0; extra == 'atari'",
+    "box2d-py==2.3.5; extra == 'box2d'",
+    "pygame==2.1.0; extra == 'box2d'",
+    "swig==4.*; extra == 'box2d'",
+    "pygame==2.1.0; extra == 'classic_control'",
+    "mujoco==2.2; extra == 'mujoco'",
+    "imageio>=2.14.1; extra == 'mujoco'",
+    "mujoco_py<2.2,>=2.1; extra == 'mujoco_py'",
+    "lz4>=3.1.0; extra == 'other'",
+    "opencv-python>=3.0; extra == 'other'",
+    "matplotlib>=3.0; extra == 'other'",
+    "moviepy>=1.0.0; extra == 'other'",
+    "box2d-py==2.3.5; extra == 'testing'",
+    "imageio>=2.14.1; extra == 'testing'",
+    "lz4>=3.1.0; extra == 'testing'",
+    "matplotlib>=3.0; extra == 'testing'",
+    "moviepy>=1.0.0; extra == 'testing'",
+    "mujoco==2.2; extra == 'testing'",
+    "mujoco_py<2.2,>=2.1; extra == 'testing'",
+    "opencv-python>=3.0; extra == 'testing'",
+    "pygame==2.1.0; extra == 'testing'",
+    "swig==4.*; extra == 'testing'",
+    "pytest==7.0.1; extra == 'testing'",
+    "pygame==2.1.0; extra == 'toy_text'",
+]
