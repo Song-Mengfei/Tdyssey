@@ -188,7 +188,7 @@ def load_dataset(root):
     root = Path(root)
     manifest = read_manifest(root)
     episodes = [load_episode(root, entry) for entry in manifest["episodes"]]
-    resets = sum(len(episode[1]["reset_attempts"]) for episode in episodes)
+    resets = sum(sum(item.get("simulated", True) for item in episode[1]["reset_attempts"]) for episode in episodes)
     if manifest["counts"]["reset_attempts"] != resets:
         raise ValueError("Physics/reset cost accounting mismatch")
     return manifest, episodes

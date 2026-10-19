@@ -9,10 +9,10 @@
    PushT; three CUDA T-scene checks succeeded. Read `docs/OFFICIAL_BASELINE.md`.
    Official capital L is implemented and its first matched scene failed while T
    succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
-   sweep explores failures without changing the T-to-L learning milestone. Earlier GPC collection/data remains
-   separate reference work. Official L collection and policy/world-model
-   training remain pending. A negative outcome is acceptable for the course if
-   the work and analysis are substantial.
+   sweep explores failures without changing the T-to-L learning milestone.
+   Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
+   see `docs/OFFICIAL_COLLECTION.md`. Policy/world-model training remains pending.
+   A negative outcome is acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
@@ -53,8 +53,8 @@ Run the selected profile's doctor, then the opt-in real simulator checks describ
 in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
 `artifacts/` directories. On the training machine, verify required assets one by one
 and bound evaluation episodes before running the official T baseline using
-`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is collecting
-official L data with frozen nonempty splits, using `docs/OFFICIAL_SHAPES.md`.
+`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is a first
+visual world model using the official L data path in `docs/OFFICIAL_COLLECTION.md`.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

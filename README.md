@@ -11,8 +11,9 @@ deliverables even if the ambitious adaptation/generalization goals fail.
 **Current stage:** the official RSS 2023 visual CNN policy loads on CUDA and solved
 three original T-scene development checks. A shorter-foot capital L is now in the
 official setup: the first matched scene succeeded for T and failed for L. GPC-based
-collection/training-data code remains separate reference work; official L data
-collection and world-model/policy training are next. All 26 capital letters and a
+collection/training-data code remains separate reference work. Official L collection
+and episode-safe batches now work: the first eight-episode pilot has nonempty
+training/validation/test splits. World-model/policy training is next. All 26 capital letters and a
 near-T shape are available for separate frozen-policy exploration. In the first
 common scene, T and Y succeeded; other letters and near-T reached the step limit.
 The saved gallery records near misses and lost overlap as well as success. Core checks
@@ -23,7 +24,8 @@ run without installation; a resizable desktop viewer is available. See
 
 - [Project scope and milestones](docs/PROJECT.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
-- [Collect bounded interaction data](docs/COLLECTION.md)
+- [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
+- [Separate GPC reference collector](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
@@ -93,6 +95,7 @@ substantial task, agree on file ownership, and finish with a handoff in
 Use the same locked profile for matched experiments and record differences in
 hardware and numerical behavior.
 
-Keep datasets, environments, checkpoints, and videos outside Git. The tracked
+Keep datasets, environments, checkpoints, and raw videos outside Git. The
+[curated alphabet clips](docs/ALPHABET_RESULTS.md) are the documented exception. The tracked
 manifests record upstream revisions and verified asset hashes. Configurable
 paths allow moving the project to another machine or disk.

@@ -213,3 +213,29 @@ size/frame/hash manifest. This bounded 11.5 MiB snapshot makes the actual failur
 and successes reviewable with the source. Preserve original video bytes. Keep the
 ignore exception scoped to this directory; future raw videos, datasets, checkpoints
 and complete reports remain outside Git. No release or external host is required.
+
+## D017 — Official non-expert data and environment-family separation (2026-10-19)
+
+Port bounded waypoint play to the official T/L four-value step API, keeping the
+fixed official target and physical-center conventions. Record success as terminal
+and only the collector horizon as timeout truncation. Preserve T+1 uint8 frames,
+full physical labels and original goal overlays. Directed play discloses its
+75%-probability privileged object-position prior; it does not optimize reward or
+use an expert/checkpoint policy. Physics-only collection needs no policy weights.
+
+Version reset/action seeds separately. Exclude known development seeds
+100000–100002 and support additional exclusions. Save all candidate records with
+full post-reset/accepted states. Count each simulated accepted/rejected reset;
+record excluded unsimulated candidates separately. Restore accepted fresh states
+without extra steps. Future evaluation scenes need their own explicit exclusions.
+
+Keep existing pilot resource caps (1000 controls/64 MiB) and add a wall-time cap.
+Default to 8×100 controls/32 MiB/120 seconds. Freeze whole-episode 80/10/10 splits,
+refusing empty sets or repeated initial scenes; the CLI requires at least seven
+episodes. Check actual window availability independently. Official dataset family
+is `official-pusht-capitals-v1`; legacy untagged GPC is `gpc-reference-v1`.
+Reject mixed families in combined catalogs. Preserve legacy file/split semantics.
+
+The first 800-control pilot validates storage/batches, not learned dynamics or
+policy improvement. Next implement the visual world-model training/validation
+path, then direct physical-simulator policy optimization before imagined updates.

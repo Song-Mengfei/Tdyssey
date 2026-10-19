@@ -1,5 +1,8 @@
 # Bounded non-expert interaction collection
 
+For the primary official T/L pipeline, use [official collection](OFFICIAL_COLLECTION.md).
+The remainder of this page describes the separate historical GPC collector.
+
 The collector uses the existing pinned GPC simulator and T/I/L adapter. It does
 not load an expert policy, optimize reward, install packages, download assets, or
 train a model. Use the installed CPU/GPC profile for small runs.

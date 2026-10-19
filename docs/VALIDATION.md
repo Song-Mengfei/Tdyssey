@@ -397,7 +397,8 @@ fresh pre-contact replay, common-center matching and rejected-reset accounting.
 Diagnostic test controls are separate from the 428 evaluation controls. Contact
 solver caches and future-reset RNG state remain outside snapshots; mid-contact
 replay is not established. No additional environment, weights, dataset or training
-was required. Official L collection and learned adaptation remain pending.
+was required. At this milestone official L collection and learned adaptation were
+pending; the collection section below records the subsequent data milestone.
 
 ## Capital-letter sweep implementation checks (2026-10-19)
 
@@ -502,7 +503,8 @@ reliable success rate or ranking. Near-T failure here does not establish a 10%
 tolerance boundary. Repeat fixed evaluation scenes before making those claims.
 Area/inertia/density, contact contours, component seams and common reset rejection
 are disclosed in the [shape protocol](OFFICIAL_SHAPES.md). There is still no
-adaptation result; official-L collection and learned optimization remain next.
+adaptation result. The following collection section records the subsequent data
+milestone; learned optimization remains pending.
 
 ## Published alphabet video snapshot
 
@@ -513,3 +515,67 @@ sizes/SHA-256 values match the decoded originals in `verification.json`.
 records scene/noise seeds, original report hash, control costs and per-video hashes.
 This explicit curated snapshot is an exception to the default raw-artifact policy.
 No inference, replay, re-encoding, download or dependency installation was needed.
+
+## Official L collection and training data (2026-10-19)
+
+Implemented the [official collector](OFFICIAL_COLLECTION.md), keeping the original
+four-value step API, fixed goal, capital-L physics and correct post-action image
+alignment. Known evaluation seeds 100000–100002 are excluded; skipped seed
+candidates do not simulate, while rejected physical resets count their actual
+substeps. Full accepted/rejected reset-state provenance is retained. The loader
+now distinguishes simulated resets from unsimulated exclusions and refuses mixed
+official/GPC environment-family catalogs. Historical GPC data checks still pass.
+
+```bash
+.venv/bin/python -B scripts/collect_official_play.py --shape L --episodes 8 --steps 100 --mode object-directed --output artifacts/official-play-L-2026-10-19
+.venv/bin/python -B scripts/collect_official_play.py --validate-only --output artifacts/official-play-L-2026-10-19
+.venv/bin/python -B scripts/prepare_training_data.py --datasets artifacts/official-play-L-2026-10-19 --output artifacts/official-play-L-2026-10-19.catalog.json --split train
+.venv/bin/python -B scripts/prepare_training_data.py --catalog artifacts/official-play-L-2026-10-19.catalog.json --split validation
+.venv/bin/python -B scripts/prepare_training_data.py --catalog artifacts/official-play-L-2026-10-19.catalog.json --split model_test
+```
+
+The retained run completed **eight 100-control episodes / 800 controls / 8000
+control-physics substeps**, with **12 simulated reset substeps** (eight accepted,
+four rejected), **808 stored frames**, and **354 contact steps**. All eight
+trajectories have contacts. The 44.25% contact-step fraction is not a spatial
+contact-coverage metric, demonstration quality or task success rate. This is
+object-directed non-expert play using a disclosed privileged object-position prior.
+
+Encoded data: **3,279,264 bytes** (about 3.13 MiB), below the 32 MiB limit. Elapsed
+from source loading through collection/writing: **2.0131 seconds**; final read-back
+is additional. Concurrent tests and filesystem work mean this is not an isolated
+throughput benchmark. No expert demonstrations, checkpoint inference, GPU learning,
+downloads or new environment were required. Data remains in ignored artifacts.
+
+| Frozen split | Episodes | Controls | Contact steps | Windows, history 2 / future 4 |
+| --- | --- | --- | --- | --- |
+| train | 6 | 600 | 275 | 576 |
+| validation | 1 | 100 | 40 | 96 |
+| model_test | 1 | 100 | 39 | 96 |
+
+Fresh-process dataset validation passed. All three splits produced two verified
+PyTorch batches of four examples: history images `(4,2,3,96,96)`, future images
+`(4,4,3,96,96)`, actions `(4,4,2)`. These are CPU data-loader checks, not training;
+GPU training remains a later task. Images stay uint8 on disk and windows are not
+duplicated. There are no shared episode IDs/initial states across frozen splits.
+
+The source dataset manifest SHA-256 is `37629a76a0cc20ec33f9dfb7c8cd945d076e0bbb81668cfffe9fb7594f7251b5`.
+The 2634-byte frozen catalog SHA-256 is `d3b4b49bad025e4d235844857fecd8ad5d1963f00cd352416c9505bfc4bf42c6`.
+Batch reports are ignored files named `official-play-L-2026-10-19-*-batches.json`
+under `artifacts/`. Recorded source hashes match the collection code; provenance
+records dirty development at parent `3012a72`. Diagnostic/unit-test physics is
+separate from the retained pilot's 800 controls and 12 resets.
+
+All **100 tests passed** together in the installed CUDA/DP/GPC environment:
+**61 source-only checks and 39 opt-in runtime checks**. Eight new checks cover
+resource/exclusion limits, nonempty/repeatable whole-episode splits, repeated-scene
+rejection, real collection/persistence/window timing, skipped/rejected reset costs,
+reproducibility, original terminal handling, time-budget exhaustion and environment-
+family isolation. Source-only discovery, CLI help, repository and whitespace checks
+also passed. The injected terminal case checks recorder behavior, not task success.
+
+This is a useful contact-bearing pilot for starting model development, not enough
+evidence of world-model quality, physical policy improvement or generalization.
+No learned world model/policy update has run. Future evaluated scenes must be added
+to exclusions explicitly; near-duplicate scene detection, broad contact coverage,
+mid-contact restoration and final multi-seed policy evaluation remain pending.

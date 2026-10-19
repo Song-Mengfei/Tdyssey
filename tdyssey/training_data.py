@@ -66,9 +66,13 @@ def write_catalog(roots, destination):
     roots = [Path(root).resolve() for root in roots]
     if not roots or len(set(roots)) != len(roots):
         raise ValueError("Choose one or more distinct dataset roots")
-    runs, rows, rates = [], [], None
+    runs, rows, rates, family = [], [], None, None
     for root in roots:
         manifest = read_manifest(root)
+        current_family = manifest["provenance"].get("environment_family", "gpc-reference-v1")
+        if family is not None and current_family != family:
+            raise ValueError("Do not mix official and reference environment families in one catalog")
+        family = current_family
         if rates is not None and manifest["rates"] != rates:
             raise ValueError("Combined datasets must use the same simulation/control rates")
         rates = manifest["rates"]
@@ -78,7 +82,7 @@ def write_catalog(roots, destination):
             trajectory, record, _ = load_episode(root, entry)
             if not math.isclose(trajectory.control_dt, 1 / rates["control_hz"], rel_tol=0, abs_tol=1e-12):
                 raise ValueError("Trajectory timing differs from recorded control rate")
-            resets += len(record["reset_attempts"])
+            resets += sum(item.get("simulated", True) for item in record["reset_attempts"])
             if trajectory.transitions[0].before.shape != manifest["config"]["shape"]:
                 raise ValueError("Collected shape differs from run configuration")
             contact_steps = sum(row["n_contacts"] > 0 for row in record["step_diagnostics"])
@@ -94,7 +98,7 @@ def write_catalog(roots, destination):
                      "manifest_sha256": digest((root / "manifest.json").read_bytes()), "episodes": entries})
         rows.extend(entries)
     check_membership(rows)
-    catalog = {"schema_version": 1, "rates": rates, "runs": runs,
+    catalog = {"schema_version": 1, "rates": rates, "environment_family": family, "runs": runs,
                "split_protocol": "preserve source whole-episode splits; no implicit reassignment"}
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("xb") as stream:
@@ -117,6 +121,9 @@ def read_catalog(path):
         if digest((root / "manifest.json").read_bytes()) != run["manifest_sha256"]:
             raise ValueError("Dataset manifest changed after catalog was frozen")
         manifest = read_manifest(root)
+        family = manifest["provenance"].get("environment_family", "gpc-reference-v1")
+        if family != catalog.get("environment_family", "gpc-reference-v1"):
+            raise ValueError("Catalog environment family differs from source; do not mix official/reference data")
         if manifest["rates"] != catalog["rates"]:
             raise ValueError("Catalog simulation/control rates differ from source")
         entries = {entry["trajectory_id"]: entry for entry in manifest["episodes"]}

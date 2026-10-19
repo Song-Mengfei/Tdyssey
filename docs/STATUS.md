@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: first official capital-letter/near-T sweep complete; no training completed.
+Updated: 2026-10-19. Stage: official L collection and nonempty split-safe batches verified; no training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
@@ -66,6 +66,11 @@ Main changes continue through pull requests.
   with a linked index and exact video hashes: `docs/ALPHABET_RESULTS.md`.
   Complete raw reports, generated galleries and future videos remain outside Git.
 
+- Ported bounded non-expert play to official T/L, with full reset provenance,
+  known evaluation-scene exclusions, correct original done/horizon handling and
+  mandatory nonempty whole-episode splits. Catalogs refuse official/GPC mixtures.
+  Commands and semantics: `docs/OFFICIAL_COLLECTION.md`.
+
 ## Verification status
 
 See `docs/VALIDATION.md` for commands and limits.
@@ -76,8 +81,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 92 tests passed together in the installed environment: 58 source-only and
-  34 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 100 tests passed together in the installed environment: 61 source-only and
+  39 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -130,6 +135,11 @@ See `docs/VALIDATION.md` for commands and limits.
   0.8154/0.4172; K 0.7512/0.0620. Record peak step/coverage and final loss without
   changing original success. One scene/checkpoint/font is not a generalization
   limit or reliable success-rate estimate. Full results/hashes: `docs/VALIDATION.md`.
+- First official L play pilot: 8 episodes, 800 controls, 12 simulated resets,
+  354 contact steps and 3,279,264 bytes. Frozen train/validation/model-test: 6/1/1
+  episodes and 576/96/96 windows (history 2/future 4). Fresh read-back and two
+  batches of four examples passed in all three splits. Raw data stays local/ignored.
+  This is data-path evidence, not model training or an adaptation benefit.
 - Broader baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
 - Original dataset schema inspection did not acquire image/action chunks.
@@ -137,14 +147,17 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Port the bounded non-expert collector to the official L interface. Preserve
-observation/action timing and full reset provenance; build a useful contact-rich
-dataset with nonempty frozen whole-episode train/validation/test splits. Keep the
-development probe's scenes separate. Do not silently mix GPC fixtures or turn
-evaluation traces into adaptation training data.
-Use the visual CNN route initially; train/validate the first world model and verify
-direct simulator policy optimization before imagined optimization. Additional GPU hosts still
-need their own authorized compatibility/setup checks.
+Implement the first visual action-conditioned world-model training/validation path
+on the official L data. Use the frozen splits and training-only normalization;
+start with simple prediction baselines and report held-out contact/noncontact
+errors. Keep model-test data for final comparisons. The pilot is small, so expand
+contact coverage through explicit bounded runs when needed. Do not mix GPC fixtures
+or use evaluation traces as training data.
+
+Verify direct physical-simulator policy optimization before imagined updates;
+reconstruction gains alone do not establish better actions. Repeat a small fixed
+T/L/Y/near-T evaluation set across additional scenes before generalization claims.
+Additional GPU hosts still need their own authorized compatibility/setup checks.
 
 ## Open questions
 

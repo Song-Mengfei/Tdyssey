@@ -6,7 +6,8 @@ a model, install packages, copy image data, or prepare a GPU machine.
 
 ## Commands
 
-After collecting a run as described in `docs/COLLECTION.md`:
+After collecting an [official T/L run](OFFICIAL_COLLECTION.md) or a separate
+[GPC reference run](COLLECTION.md):
 
 ```bash
 .venv/bin/python -B scripts/prepare_training_data.py --datasets artifacts/play-L-001 --output artifacts/training-L-001/catalog.json --history 2 --future 4 --batch-size 4
@@ -74,6 +75,8 @@ silently inferred; that policy-training decision remains explicit.
 - Reject an identical physical initial scene appearing in different splits even
   when its trajectory ID differs, for example after recollection with a new horizon.
 - Require matching simulation/control rates and trajectory time intervals.
+- Preserve the environment-family tag; reject official/GPC mixtures even with
+  matching rates or shape names. Legacy catalogs without tags retain GPC identity.
 - Pin each source manifest's hash. Check file hashes and observation/state alignment
   when an episode is loaded; stale or corrupted input is rejected.
 
