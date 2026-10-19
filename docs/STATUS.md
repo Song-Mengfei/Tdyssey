@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: pretrained GPC dynamics checked; official-domain adaptation, dynamics reliability and policy learning remain pending.
+Updated: 2026-10-19. Stage: matched T palette experiment completed; pretrained calibration, reliable dynamics and policy learning remain pending.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
@@ -83,6 +83,10 @@ Main changes continue through pull requests.
   four-frame/action alignment and a bounded native/official T prediction probe.
   No new environment, dependency or dataset was needed. Compatibility findings
   and reproducible commands are in `docs/WORLD_MODEL.md`.
+- Added a fixed six-scene T palette comparison with shared physical branches,
+  three inference-noise repeats, palette-independent image-mask proxies and
+  compressed source frames. Auxiliary rendering preserves original policy images
+  and state; it requires simulator access and is not a deployed image adapter.
 
 ## Verification status
 
@@ -94,10 +98,11 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 100 current tests passed together: 56 source-only and 44 opt-in runtime
-  checks. Source-only discovery passed 56 and skipped 44.
+- All 101 current tests passed together: 56 source-only and 45 opt-in runtime
+  checks. Source-only discovery passed 56 and skipped 45.
   Twelve peripheral/repeated checks were removed; simulator and GPU checks remain.
   Pretrained integration adds only two focused timing/sampler-parity checks.
+  The palette experiment adds one rendering-isolation/image-proxy check.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -173,20 +178,27 @@ See `docs/VALIDATION.md` for commands and limits.
   improved image prediction over persistence, but native side rotation was missed.
   Official inputs were recolored red and lost the green target; no reliable
   official-world-model transfer or policy improvement is established.
+- Matched palette run: 228 controls/two resets, 864 forecasts, 34.51 seconds.
+  Official contact centroid proxy error fell from 10.901 to 3.272 pixels; visible
+  target recall rose from 0.033 to 0.954. Left-push rotation still failed, and the
+  original-input prediction was better on that case. No weights/policy were updated.
+  A failed first run retained separate counts (114 controls/two resets) before
+  matching native float32 conversion. Complete evidence: `docs/VALIDATION.md`.
 - Broader baseline evaluation, original demonstration conversion, reliable visual
   dynamics, policy optimization, reset coverage and mid-contact replay remain pending.
   Other project environments were untouched.
 
 ## Next task
 
-Resolve the pretrained GPC appearance/domain mismatch on T before L adaptation.
-Freeze a matched validation protocol that separates appearance conversion from
-physics adaptation; preserve the official policy's observation stream. Check
-target retention, no-contact stability, contact/rotation and action effects, with
-both persistence and the unchanged pretrained model as comparisons. The native
-side-push failure needs investigation alongside the official red/gray mismatch.
-Use explicit training-only data if adaptation is needed; leave the real model-test
-split untouched. Freeze action-ranking/terminal scoring before comparisons.
+Calibrate the pretrained GPC world model on bounded official-RGB T training data
+with varied contact/rotation. This addresses appearance without requiring the
+diagnostic's auxiliary renderer. Compare original/adapted weights and persistence
+on disjoint validation scenes with fixed data/compute budgets. Keep the left-push
+failure and target/no-contact metrics explicit; image averages alone are insufficient.
+The palette result explains much of the gap but does not pass a full dynamics or
+planning gate. Preserve official policy inputs and the final model-test split.
+Freeze action-ranking/terminal scoring before comparisons, then proceed to L
+adaptation after validating actual action effects. See decision D022.
 
 DINO-WM remains an alternative if GPC cannot pass physical prediction checks.
 Retain the custom CNN as an L-only comparison. Loading a public checkpoint does

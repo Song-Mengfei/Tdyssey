@@ -32,6 +32,8 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/gpc_world_model.py` | Verified released GPC dynamics with isolated imports, native sampling and explicit four-frame/action alignment |
 | `scripts/fetch_gpc_world_model.py` | Plan-only default; fetch just one verified 33.42 MiB world-model checkpoint without a cache |
 | `scripts/probe_gpc_world_model.py` | Bounded native/official T contact prediction branches, persistence comparisons and previews |
+| `tdyssey/appearance.py` | Temporary source-palette rendering with cleanup and known-color object/target image proxies |
+| `scripts/probe_gpc_appearance.py` | Fixed six-scene palette experiment, shared physical branches, noise repeats and saved source frames |
 | `tdyssey/official_collection.py` | Official T/L play with evaluation-scene exclusions, full resets and nonempty frozen splits |
 | `scripts/collect_official_play.py` | Bounded official collection/read-back without model weights or training |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |

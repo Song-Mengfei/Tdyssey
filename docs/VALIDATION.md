@@ -806,3 +806,95 @@ native contact reliability fail the official learned-dynamics gate. Next isolate
 appearance conversion from T physics adaptation with a frozen matched validation
 protocol; preserve official policy inputs and test target retention/contact effects
 before L adaptation. No imagined-policy or physical-policy improvement is claimed.
+
+## Matched pretrained T palette experiment (2026-10-19)
+
+Fixed local protocol before the first run:
+`configs/gpc_appearance_probe.json`, SHA-256
+`90909f757e117118cfb8ea6d8d9f8569d344eab285ea4e084f594dff3fd32b5a`.
+It specifies six development scenes, four candidate sequences, four future controls
+and three model-noise repeats. Bottom/left were previously inspected; right/top
+and two rotated scenes extend this check, not the final evaluation set. The
+checkpoint is unchanged from the preceding section; no new model assets,
+dependencies, stored datasets or research training were needed.
+
+```bash
+.venv/bin/python -B scripts/probe_gpc_appearance.py --output artifacts/gpc-appearance-T-2026-10-19-v2
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+Only the object/goal renderer colors change between the official views. Every
+auxiliary render verifies that full physical/controller state, render cache and
+original policy pixels remain unchanged. Color/screen cleanup also passes when
+rendering raises an exception. Native GPC is a separate physics control; matching
+initial geometry does not equate later physical trajectories. All views/noise
+repeats share each actual physical branch. Future images/geometry are labels,
+not prediction inputs. Auxiliary rendering needs privileged simulator access and
+is not an image-only deployment adapter or learned adaptation.
+
+The probe uses fixed known-color masks accepting both object palettes and both
+target palettes. Full/ROI RGB errors compare within each palette; they cannot
+alone compare motion across palettes. Color-mask IoU/centroids and target recall
+are image proxies, not independent physical-state/reward predictions. Missing
+centroids have explicit counts, and each control horizon is summarized separately.
+The current experiment has no early success; all rows reach horizon four.
+
+| Official physics, horizon 4 | Original input | Source palette | Persistence in source palette |
+| --- | --- | --- | --- |
+| Contact object-mask IoU | 0.73144 | 0.86106 | 0.51158 |
+| Contact centroid error (pixels) | 10.90145 | 3.27174 | 14.56811 |
+| No-contact centroid error (pixels) | 6.99619 | 0.20519 | 0 |
+| All visible-target recall | 0.03314 | 0.95403 | 0.93595 |
+| All visible-target IoU | 0.03123 | 0.85901 | 0.88894 |
+
+Each official view has 24 physical branches × three model-noise repeats: 18
+contact and 54 noncontact horizon-four predictions. These are six unique contact
+branches, not 18 independent interactions or trained seeds. Across the three noise
+repeats, source-palette contact object IoU means were 0.85945/0.86122/0.86251;
+centroid errors were 3.368/3.293/3.154 pixels. Native source-palette contact IoU
+was 0.85764 and centroid error 3.09212. Repeats are not used to pick a best seed.
+
+The palette-conditioned **left push remains a failure**: official contact angle
+changed -9.835 degrees while the predicted object largely stayed still. Object
+IoU was 0.451–0.456, worse than original-input 0.887–0.904. Target recall/IoU also
+remain imperfect. The mean improvement therefore cannot be presented as a full
+fix, reliable planning, generalization or policy success. No reward ranking or
+gradient through the quantized sampler was validated.
+
+Completed run: **228 controls / 2280 control physics substeps / two reset
+substeps / 60 restores / 288 auxiliary renders / 864 forecasts / 2592 denoising
+steps**, **34.5147 seconds**, peak GPU allocation **110,936,064 bytes**. All 48
+physical branches are archived once as compressed uint8 history/future frames
+with exact actions, plus state labels in the report. The 48 archives use 370,834
+bytes. Total retained output: **2,233,203 bytes (2.13 MiB)**. All archived file
+hashes and report fingerprints match the completed source/protocol at parent
+`9a47f67`. Original policy and world-model weights remain unchanged.
+
+The first run at `artifacts/gpc-appearance-T-2026-10-19/` is explicitly **failed**:
+it stopped at the native image-identity check after 114 controls, two resets,
+31 restores, 145 auxiliary renders and 576 forecasts / 1728 denoising steps
+(23.4650 seconds). NumPy division versus torchvision float32 multiplication
+differed by at most `5.9604645e-8`, with identical uint8 pixels. Matching the
+source conversion fixed the implementation; the protocol/thresholds were unchanged.
+The failed report and 24 source archives remain, using 1,209,688 bytes. Together,
+failed/completed experiments used **342 controls and four reset substeps**, with
+unit tests and a one-reset/zero-control conversion diagnostic counted separately.
+
+| Artifact | Bytes | SHA-256 |
+| --- | --- | --- |
+| Completed `report.json` | 1648899 | `6905628627c00984140585cf5980137900b1512b82aee2018d37b2a411bca536` |
+| `appearance-comparison.png` | 213470 | `40eafde5f16f6d366757a7db282ed9a7e217baab2dafcaca1b37d0f851dbb33f` |
+| Failed first `report.json` | 965099 | `8b32f0868ec32bee6e4259a023bfe33b8245c31e965f37a8d8cece4a32a66072` |
+
+All **101 tests passed** together in **13.842 seconds**: 56 source-only and 45
+opt-in runtime checks. One focused new test checks palette cleanup, state/policy
+image preservation and image-proxy sensitivity to physical displacement/rotation.
+Source-only discovery passed 56 and skipped 45; repository, CLI-help, protocol JSON
+and whitespace checks passed. Existing synthetic CUDA optimizer updates remain
+separate from this frozen-model experiment.
+
+Next use bounded official-RGB T training episodes with varied contact/rotation
+to calibrate the pretrained predictor. Compare initial/adapted weights on disjoint
+validation scenes; preserve the final model-test split and original policy inputs.
+Keep the renderer-only palette result as an explanation/comparison, then assess
+L adaptation and actual physical action effects before imagined-policy claims.

@@ -27,6 +27,7 @@ def main() -> int:
         policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
         official = json.loads((ROOT / "manifests/official_dp.json").read_text())
         world_model = json.loads((ROOT / "manifests/gpc_world_model.json").read_text())
+        json.loads((ROOT / "configs/gpc_appearance_probe.json").read_text())
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
