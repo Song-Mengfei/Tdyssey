@@ -100,7 +100,8 @@ profile and a new lock/validation decision**. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.
 CPU simulator checks do not prove GPU or training compatibility. CPU/CUDA
 checkpoint loading and GPU gradient checks have separate evidence in
-`docs/VALIDATION.md`; actual project training remains pending.
+`docs/VALIDATION.md`; a first small visual world-model CUDA pilot is recorded in `docs/WORLD_MODEL.md`.
+Full policy training and other GPU generations remain unvalidated.
 
 ## Updating dependencies
 

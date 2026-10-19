@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: official L collection and nonempty split-safe batches verified; no training completed.
+Updated: 2026-10-19. Stage: first visual world-model GPU pilot trained; dynamics reliability and policy learning remain pending.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
@@ -71,6 +71,12 @@ Main changes continue through pull requests.
   mandatory nonempty whole-episode splits. Catalogs refuse official/GPC mixtures.
   Commands and semantics: `docs/OFFICIAL_COLLECTION.md`.
 
+- Implemented a small visual/action-conditioned CNN world model, four-step
+  autoregressive training, train-only normalization, contact/noncontact physical
+  metrics, persistence baselines, compact checkpoints and physical candidate probes.
+  This visual model uses privileged labels, not physical-state inputs. Its first
+  training experiment and limitations are in `docs/WORLD_MODEL.md`.
+
 ## Verification status
 
 See `docs/VALIDATION.md` for commands and limits.
@@ -81,8 +87,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 100 tests passed together in the installed environment: 61 source-only and
-  39 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 110 tests passed together in the installed environment: 67 source-only and
+  43 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -140,24 +146,35 @@ See `docs/VALIDATION.md` for commands and limits.
   episodes and 576/96/96 windows (history 2/future 4). Fresh read-back and two
   batches of four examples passed in all three splits. Raw data stays local/ignored.
   This is data-path evidence, not model training or an adaptation benefit.
-- Broader baseline evaluation, original dataset conversion, policy/world-model
-  training, reset-safety coverage, and replay restored during contact remain pending.
-- Original dataset schema inspection did not acquire image/action chunks.
-  Training runs remain absent. Other project environments were untouched.
+- First visual L model: 10 epochs / 720 CUDA updates / 5760 windows / 23040
+  forecast steps. Epoch 6 was selected on validation contact position error.
+  At horizon 4, contact error was 12.017 vs 15.250 pixels for persistence, but
+  all-step error was worse (7.307 vs 6.747) and noncontact drift grew (3.943 vs
+  0.673). The real model-test split was not loaded. No policy learning occurred.
+- Fresh checkpoint validation reproduced exactly. Training used 14.83 seconds,
+  peak allocated GPU memory about 205.5 MiB, and about 5.3 MiB of saved output.
+- Candidate diagnostic: two validation starts / eight matched fresh-space branches,
+  32 controls and one initialization reset. Reward predictions barely changed
+  across actions. Primary max scores tied and were uninformative; posthoc final/
+  sum views exposed bad choices. No useful planning or adaptation is established.
+- Broader baseline evaluation, original demonstration conversion, reliable visual
+  dynamics, policy optimization, reset coverage and mid-contact replay remain pending.
+  Other project environments were untouched.
 
 ## Next task
 
-Implement the first visual action-conditioned world-model training/validation path
-on the official L data. Use the frozen splits and training-only normalization;
-start with simple prediction baselines and report held-out contact/noncontact
-errors. Keep model-test data for final comparisons. The pilot is small, so expand
-contact coverage through explicit bounded runs when needed. Do not mix GPC fixtures
-or use evaluation traces as training data.
+Improve the first model before using it for imagined control: expand bounded
+training scene/contact diversity, reduce false noncontact motion and make predicted
+reward/motion sensitive to actual action effects. Keep normalization/training data
+separate from validation choices; leave real model-test images untouched until a
+fixed comparison. Check image/motion consistency and frozen final/sum action
+ranking protocols in matched physical branches. The initial pilot is small and
+its mixed metrics do not pass the learned-dynamics reliability gate.
 
-Verify direct physical-simulator policy optimization before imagined updates;
-reconstruction gains alone do not establish better actions. Repeat a small fixed
-T/L/Y/near-T evaluation set across additional scenes before generalization claims.
-Additional GPU hosts still need their own authorized compatibility/setup checks.
+Verify direct physical-simulator policy optimization before imagined updates.
+Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before
+generalization claims. Additional GPU hosts need their own setup authorization
+and compatibility checks.
 
 ## Open questions
 

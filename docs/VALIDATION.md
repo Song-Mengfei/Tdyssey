@@ -579,3 +579,126 @@ evidence of world-model quality, physical policy improvement or generalization.
 No learned world model/policy update has run. Future evaluated scenes must be added
 to exclusions explicitly; near-duplicate scene detection, broad contact coverage,
 mid-contact restoration and final multi-seed policy evaluation remain pending.
+
+## First visual world-model CUDA pilot (2026-10-19)
+
+Implemented the [visual model protocol](WORLD_MODEL.md) on the existing official
+L data. Inputs are two RGB frames, pusher history, goal and future actions; object
+motion, geometry-derived ROI, reward and contact are privileged **targets**, not
+network inputs. The official diffusion policy/representation/weights are unchanged.
+A residual CNN with 1,302,570 parameters predicts images, pusher/object motion,
+reward and contact autoregressively for four controls. Output-motion normalization
+uses 600 unique training transitions only. No expert data or model download was
+needed, and the existing CUDA environment/lock were unchanged.
+
+```bash
+.venv/bin/python -B scripts/train_world_model.py --catalog artifacts/official-play-L-2026-10-19.catalog.json --output artifacts/visual-world-model-L-2026-10-19
+.venv/bin/python -B scripts/evaluate_world_model.py --catalog artifacts/official-play-L-2026-10-19.catalog.json --checkpoint artifacts/visual-world-model-L-2026-10-19/best.pt --output artifacts/visual-world-model-L-2026-10-19-validation-recheck.json
+.venv/bin/python -B scripts/probe_world_model.py --catalog artifacts/official-play-L-2026-10-19.catalog.json --checkpoint artifacts/visual-world-model-L-2026-10-19/best.pt --output artifacts/visual-world-model-L-2026-10-19-candidate-probe.json
+python3 -B scripts/summarize_world_model_probe.py --probe artifacts/visual-world-model-L-2026-10-19-candidate-probe.json --output artifacts/visual-world-model-L-2026-10-19-score-summary.json
+```
+
+The actual run completed **10 epochs / 720 CUDA optimizer updates**, presenting
+5760 overlapping training windows / 23040 forecast steps from six training episodes.
+These repeated forecasts are not new simulator interactions. Fixed seed 42, AdamW
+0.0003 and recorded loss weights were used. Best trained checkpoint: epoch 6,
+selected on last-horizon validation contact position error. Initial untrained
+results were separate and ineligible for checkpoint selection. **The real model-test
+images were never loaded**, and no policy update or imagined-policy learning ran.
+
+Training/loading/validation/preview elapsed: **14.83 seconds**; maximum measured
+CUDA allocation: **215,508,480 bytes** (about 205.5 MiB). This is a small-prototype
+measurement, not a full-policy training-memory requirement or isolated throughput
+benchmark. Only one checkpoint is retained; no optimizer state/epoch archives.
+
+Validation is one frozen 100-control episode, giving 96 overlapping windows. At
+each listed horizon there are 40 contact and 56 noncontact forecast labels:
+
+| Metric / horizon | Learned model | Persistence baseline |
+| --- | --- | --- |
+| Object position error (pixels), contact, +1 | 3.1486 | 4.0354 |
+| Object position error (pixels), no contact, +1 | 0.9633 | 0.0100 |
+| Object position error (pixels), all, +1 | 1.8738 | 1.6873 |
+| Full-image MSE, all, +1 | 0.000562 | 0.000531 |
+| Object-region MSE, all, +1 | 0.009600 | 0.009692 |
+| Pusher position error (pixels), all, +1 | 4.176454 | 4.776382 |
+| Object position error (pixels), contact, +4 | 12.0175 | 15.2505 |
+| Object position error (pixels), no contact, +4 | 3.9425 | 0.6733 |
+| Object position error (pixels), all, +4 | 7.3071 | 6.7471 |
+| Full-image MSE, all, +4 | 0.001851 | 0.001693 |
+| Object-region MSE, all, +4 | 0.022306 | 0.023158 |
+| Pusher position error (pixels), all, +4 | 15.919136 | 17.987750 |
+
+Persistence repeats the last RGB/pusher pose and zero object motion; reward/contact
+use the constant training means. Learned contact position error improved on this
+checkpoint-selection episode, but **overall position/image errors worsened and
+noncontact false motion grew**. The image/motion heads are not constrained to agree.
+Reward/contact predictors remained close to constants. The report preserves all
+horizons/groups, not just the improved metric. A fresh-process checkpoint load
+reproduced the complete validation metric dictionary exactly. The generated
+`prediction-preview.png` shows the first validation window with contact, selected
+without reference to prediction quality; `validation-errors.png` plots both the
+improvement and deterioration. These are not model-test or policy-success results.
+
+### Matched physical action probe
+
+Only two disjoint eligible validation starts existed (anchors 15 and 47). Each
+branch cold-restored the same full saved state and compared recorded, hold,
+privileged-object-directed toward, and away candidates over four controls.
+Restored images matched the current stored frame within the uint8 quantization
+bound. Work: **8 state restores / 32 controls / 320 control-physics substeps**,
+**one initialization-reset substep**, and **32 model forecast steps**. This is
+additional diagnostic interaction, separate from the 800 collected controls.
+There were no model/policy updates and no model-test access.
+
+The primary max-reward block score tied physically (range zero within roundoff)
+because an early high-overlap moment hid the later differences. Its near-zero
+regret is therefore **uninformative**, not successful action ranking. Predicted
+maximum reward ranges were only 1.75e-7 / 1.19e-7. The selected predictions were
+pessimistic here, rather than evidence of a useful optimistic-action search.
+
+A separately labelled **posthoc** final/sum analysis used saved traces with zero
+new inference/physics. Actual final reward ranges were 0.07728 / 0.10080; predicted
+final ranges were only 6.71e-7 / 3.99e-7. With final reward, the predictor preferred
+toward pushes that lost alignment, instead of holding/retreating. No rank-quality
+claim is supported. Future ranking comparisons must freeze block scoring and
+terminal conventions in advance. Cached contact impulses are absent; these are
+matched fresh-space branches, not proof of exact warm mid-contact replay.
+
+### Artifacts, checks and limits
+
+Local ignored artifacts:
+
+| Artifact | Bytes | SHA-256 |
+| --- | --- | --- |
+| `prediction-preview.png` | 60665 | `abe450891237a4c95aa3b7a2de7ecffe1159a9f9369eee8e9018550f6db978f8` |
+| `best.pt` | 5223938 | `9d66fd8ec8071554c68ec3173ee4bdf2b169a6ae5d44344839fc9308b67dc81a` |
+| `validation-errors.png` | 65129 | `871079a34b7a2a4450ae9dc87c24ace7dd7b3d98f4c8f7b2ce868eaec4aef4a8` |
+| `report.json` | 156113 | `108ee651ad6a61790e142eb8d67cb7240202ed64c92a3133cbf507ce04b6b747` |
+| `visual-world-model-L-2026-10-19-candidate-probe.json` | 78948 | `ed62daffbef433c24ca1a9d4cfe90db962f0e9364956f61e65ff42c3963df6bd` |
+| `visual-world-model-L-2026-10-19-score-summary.json` | 5793 | `5890b99f1367a36b967e801a4283edb9451bb78cbeeebf28c93eb8e60fca3334` |
+| `visual-world-model-L-2026-10-19-validation-recheck.json` | 11952 | `e9c78319e795277d785c9261f24f0538aa94ae2c401a8d173f04e7afb3ec60d7` |
+
+The training directory uses about **5.3 MiB**, including the checkpoint, report
+and previews. The source hashes match the actual training implementation; the
+report records dirty development at parent `cb87a67`. The evidence sidecar also
+records the original probe-runner hash and exact fresh-load comparison. No policy
+checkpoint, new data/environment, download or cache archive was created.
+
+All **110 tests passed** in the installed CUDA/DP/GPC profile: 67 source-only and
+43 opt-in runtime checks. New checks cover limits, episode-local sampling, metric
+weighting/empty groups, angle wrapping, loss-of-progress score views, training-only
+normalization, independent marker timing, causal/autoregressive action gradients,
+physical metric units and an actual CUDA optimizer update/checkpoint load. A
+synthetic test deliberately corrupts its model-test file and verifies training
+never reads it. Those synthetic gradients/updates are diagnostics, separate from
+the retained 720-update real-data pilot. Source discovery skips runtime checks;
+repository/help/whitespace checks passed.
+
+This completes an executable first training experiment, **not the learned-dynamics
+reliability gate**. One training seed/validation episode, selection bias, sparse
+scene diversity, false noncontact drift, image/motion inconsistency and flat reward
+action sensitivity remain blockers to imagined control. Improve data/action
+coverage and prediction quality, then repeat physical candidate checks and direct
+simulator policy optimization before imagined optimization. Final model-test and
+multi-seed evaluation remain pending.

@@ -13,7 +13,9 @@ three original T-scene development checks. A shorter-foot capital L is now in th
 official setup: the first matched scene succeeded for T and failed for L. GPC-based
 collection/training-data code remains separate reference work. Official L collection
 and episode-safe batches now work: the first eight-episode pilot has nonempty
-training/validation/test splits. World-model/policy training is next. All 26 capital letters and a
+training/validation/test splits. A first GPU visual world-model pilot now trains,
+but noncontact drift and nearly constant action-reward predictions remain
+problems; policy training is pending. All 26 capital letters and a
 near-T shape are available for separate frozen-policy exploration. In the first
 common scene, T and Y succeeded; other letters and near-T reached the step limit.
 The saved gallery records near misses and lost overlap as well as success. Core checks
@@ -27,6 +29,7 @@ run without installation; a resizable desktop viewer is available. See
 - [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
 - [Separate GPC reference collector](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
+- [Train and check the first visual world model](docs/WORLD_MODEL.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)

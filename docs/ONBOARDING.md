@@ -11,7 +11,8 @@
    succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
    sweep explores failures without changing the T-to-L learning milestone.
    Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
-   see `docs/OFFICIAL_COLLECTION.md`. Policy/world-model training remains pending.
+   see `docs/OFFICIAL_COLLECTION.md`. A first GPU world-model pilot and its
+   failures are in `docs/WORLD_MODEL.md`; policy optimization remains pending.
    A negative outcome is acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
@@ -53,8 +54,8 @@ Run the selected profile's doctor, then the opt-in real simulator checks describ
 in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
 `artifacts/` directories. On the training machine, verify required assets one by one
 and bound evaluation episodes before running the official T baseline using
-`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is a first
-visual world model using the official L data path in `docs/OFFICIAL_COLLECTION.md`.
+`docs/OFFICIAL_BASELINE.md`. The next shared task is improving the first visual
+model's contact/action predictions and noncontact drift, using `docs/WORLD_MODEL.md`.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

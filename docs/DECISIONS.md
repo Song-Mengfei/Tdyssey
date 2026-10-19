@@ -239,3 +239,35 @@ Reject mixed families in combined catalogs. Preserve legacy file/split semantics
 The first 800-control pilot validates storage/batches, not learned dynamics or
 policy improvement. Next implement the visual world-model training/validation
 path, then direct physical-simulator policy optimization before imagined updates.
+
+## D018 — First visual dynamics pilot and failed planning gate (2026-10-19)
+
+Train a separate 1.3-million-parameter CNN from scratch on official L data. Keep
+the official diffusion policy frozen and its visual representation unchanged.
+Inputs are two RGB/proprioception frames, goal and actions. Supervise image/agent
+prediction plus privileged object-motion, geometry ROI, reward and contact targets.
+Roll four controls autoregressively with predicted image/pusher history, never
+future ground truth. Fit motion normalization on unique training transitions only;
+use fixed workspace-coordinate scaling. Shuffle within shuffled episodes to avoid
+repeated full-episode decoding and duplicate disk windows.
+
+Use bounded CUDA-only training, fixed recorded losses, one best checkpoint and
+validation contact-position error for selection. Keep initial-model/persistence
+baselines separate and the real model-test arrays untouched. Record all/contact/
+noncontact metrics by horizon; global image reconstruction is insufficient.
+This is a visual system with privileged supervision, not a state-policy study or
+image-only-supervised model. Independent output heads can disagree physically.
+
+The first run is an implementation experiment, not a passed dynamics/planning
+gate: contact error improved on the selected validation episode, but noncontact
+motion and overall errors worsened. A matched fresh-space candidate probe found
+almost constant reward predictions. Its primary max-reward scores tied physically,
+so zero regret is uninformative. Separate posthoc final/sum diagnostics expose the
+lost-alignment action differences without rerunning physics. Do not silently
+reinterpret those score views as a preregistered improved planning result.
+
+Improve data/action coverage and suppress false motion; freeze future ranking/
+terminal protocols before comparisons. Require physical action checks and direct
+simulator policy optimization before imagined updates. This checkpoint is not
+ready to supply imagined policy training. Preserve the negative findings and
+single-seed/episode limitations rather than tuning against the model-test split.

@@ -12,6 +12,7 @@ original PushT environment; see `docs/OFFICIAL_BASELINE.md`. GPC is a separate
 reference/comparison. Do not treat their checkpoints, geometry, or data as interchangeable.
 Official capital-letter/near-T shape choices and matched-state rules live in `docs/OFFICIAL_SHAPES.md`.
 Use `docs/OFFICIAL_COLLECTION.md` for primary training data; never mix it with GPC fixtures.
+The first visual model and its current failure modes are documented in `docs/WORLD_MODEL.md`.
 Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 
