@@ -283,3 +283,20 @@ gradient and CUDA-training tests, plus source checks of geometry, accounting,
 resource caps and split leakage. Prefer focused behavior checks over growth in
 test count; changing the suite does not change any recorded experiment protocol
 or justify fewer final research evaluations.
+
+## D020 — Assess pretrained dynamics before extending the custom pilot (2026-10-19)
+
+The custom L-only CNN establishes a working training/evaluation path, but does
+not establish T-to-L model transfer or reliable imagined control. Keep it as a
+comparison. Prioritize a compatibility/resource assessment of the released GPC
+world model, with DINO-WM as an alternative. This is an investigation order, not
+a claim that either checkpoint has been loaded or validated in the official scene.
+
+Use metadata/source inspection first: pinned revisions, exact required assets and
+byte sizes, licenses/dependencies, image appearance/history, action normalization,
+goal conventions and control timing. Then make a bounded T prediction comparison
+against real physics before L adaptation, recording storage and GPU costs. Preserve
+the official policy baseline, frozen episode splits and real model-test quarantine.
+Large generalist models remain optional extensions after a compatible first model.
+Do not enlarge the present foundation milestone just to include every candidate;
+its actual completed work and negative pilot results are independently reviewable.

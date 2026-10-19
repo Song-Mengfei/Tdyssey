@@ -162,11 +162,17 @@ two eligible states, eight branches, 32 controls and one reset substep. Predicte
 reward ranges across candidates were below `2e-7`, while final physical reward
 ranges were about 0.077 and 0.101. See [complete evidence](VALIDATION.md).
 
-Next improve action-sensitive contact prediction and suppress false noncontact
-motion. Expand scene/contact diversity with bounded training-only data collection,
-keep scene groups disjoint, and compare controlled variants on validation only.
-Recheck image/motion consistency, final/sum action rankings and optimistic predicted
-rewards in matched physical branches. Model-test evaluation, multiple seeds and
-physical policy learning remain pending. Verify direct simulator policy optimization
-before any imagined-policy claim; this checkpoint is not ready to supply that
-imagined environment.
+Next assess the released pretrained GPC world model and its compatibility with
+the official T environment before spending more effort tuning this custom model.
+The assessment must identify exact assets, resource costs and image/action/timing
+differences; published availability alone does not establish compatibility.
+Then check bounded T predictions against real contact/noncontact action effects
+before attempting L adaptation. DINO-WM is an alternative candidate, with an
+additional image-decoding question for our existing visual policy. See decision
+D020 and [current next task](STATUS.md#next-task).
+
+Keep this CNN as the L-only pipeline baseline. Any future variants need more
+diverse contact data, reduced false noncontact motion and consistent image/motion
+predictions. Model-test evaluation, multiple seeds and physical policy learning
+remain pending. Verify direct simulator policy optimization before imagined-policy
+claims; this checkpoint is not ready to supply the imagined environment.
