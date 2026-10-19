@@ -10,10 +10,12 @@ deliverables even if the ambitious adaptation/generalization goals fail.
 
 **Current stage:** first implementation of T/I/L geometry, an adapter for the
 existing GPC PushT simulator, evaluation metrics, state/trajectory records, and a
-bounded image/state interaction collector with episode-safe training batches.
+bounded image/state interaction collector with episode-safe training batches,
+and verified pretrained-policy loading with bounded physical T/I/L rollouts.
 Core checks run without installing anything. The locked CPU/GPC profile and real
-T/I/L simulator checks are validated; pretrained-policy, CUDA, and training checks
-remain pending. See [validation evidence](docs/VALIDATION.md).
+T/I/L simulator and CPU checkpoint checks are validated. The first single-scene
+policy runs did not solve the task; repeated baseline evaluation, CUDA, and
+training remain pending. See [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
@@ -21,6 +23,7 @@ remain pending. See [validation evidence](docs/VALIDATION.md).
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Collect bounded interaction data](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
+- [Run and inspect the pretrained policy](docs/POLICY_BASELINE.md)
 - [Current status and next work](docs/STATUS.md)
 - [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
 - [Shared environment and storage](docs/ENVIRONMENT.md)
@@ -76,5 +79,5 @@ Use the same locked profile for matched experiments and record differences in
 hardware and numerical behavior.
 
 Keep datasets, environments, checkpoints, and videos outside Git. The tracked
-manifests record upstream revisions and, later, actual asset hashes. Configurable
+manifests record upstream revisions and verified asset hashes. Configurable
 paths allow moving the project to another machine or disk.

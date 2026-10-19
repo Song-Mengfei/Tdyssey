@@ -91,3 +91,22 @@ windows on demand rather than duplicating images on disk. Images become float32
 in [0,1]; position/action units remain pixels. Privileged labels stay separate
 from visual model observations. Pretrained-policy transforms/normalizers and
 actual model training remain separate integration tasks.
+
+## D011 — Compact pretrained policy and explicit baseline protocol (2026-10-19)
+
+Use only the hash-verified averaged policy checkpoint for original visual policy
+inference: it covers the encoder and action network with no remaining buffers.
+Avoid duplicate component weights and full training-array downloads for this task.
+Pin source/model/data revisions and inspect original array schema separately.
+Public resources do not require a Hugging Face account; never share tokens in Git.
+
+Evaluate one unranked policy sample, using the published domain18 normalization,
+two-observation history, 16 predicted actions, and configured eight executed actions
+at indices 1:9. Upstream `eval_baseline.py` instead uses world-model ranking,
+candidate spreading, and different slicing; do not claim exact evaluator/paper
+reproduction. Retain upstream randomized goals for this initial check, unlike
+fixed-goal play collection. Transfer full T initial states across shapes, reject
+unsafe scenes together, count reset/control/denoising work separately, and retain
+original terminal flags. Video replay is separately counted diagnostic interaction.
+The first one-scene T/I/L run is execution evidence; failed T performance requires
+behavior inspection and repeated seeds before interpreting adaptation results.

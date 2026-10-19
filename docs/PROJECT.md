@@ -15,7 +15,9 @@ shapes. H1 is the initial focus; H2/H3 are stretch questions, not promised resul
 
 The robot remains a circular 2D pusher. Shape variation concerns the pushed object.
 Start with T, I, and L, one rigid object, fixed physical/control parameters, and
-fixed target pose. Symmetry and shape-dependent mass/inertia must be explicit.
+fixed target pose for the adaptation study. The initial pretrained-policy check
+retains upstream randomized goals; record that distinct protocol before comparing
+it with fixed-goal play data. Symmetry and shape-dependent mass/inertia must be explicit.
 
 ## Course deliverables and gates
 
