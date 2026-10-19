@@ -110,3 +110,19 @@ unsafe scenes together, count reset/control/denoising work separately, and retai
 original terminal flags. Video replay is separately counted diagnostic interaction.
 The first one-scene T/I/L run is execution evidence; failed T performance requires
 behavior inspection and repeated seeds before interpreting adaptation results.
+
+## D012 — CUDA policy execution and an optional desktop view (2026-10-19)
+
+Use CUDA by default for policy inference; fail clearly if it is unavailable rather
+than silently executing on CPU. Keep explicit CPU debugging available to authors
+without a GPU, and keep simulator physics on CPU. Switch the existing environment
+between locked profiles instead of keeping duplicate environments. Install without
+a persistent download cache. GPU setup authorization remains machine-specific.
+
+Separate desktop visibility from compute device: `--display` opens a resizable
+768-pixel pygame window, enlarging only the display of the 96-pixel policy image.
+Escape/window close stops the run. Display pacing and final-frame hold count in
+elapsed time; synchronized planning times measure GPU inference separately.
+Record selected device, CUDA runtime, and GPU identity in local reports. CPU/CUDA
+random streams can differ for the same integer seed. Basic CUDA gradients and
+inference establish runtime support, not completed project training.

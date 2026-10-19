@@ -3,7 +3,7 @@
 Checked on 2026-10-19 with Linux x86_64, Python 3.12.3, uv 0.13.0, and the locked
 **CPU + GPC** profile. Evidence covers simulator/data development and the later
 pretrained-policy check below. No adaptation or model training has been completed.
-CUDA remains unvalidated.
+CUDA 12.4/Ada checks are recorded below; actual project training remains unvalidated.
 
 ## Versions and source
 
@@ -61,7 +61,7 @@ new interaction data, videos, and CUDA libraries are additional storage costs.
 
 ## Remaining checks
 
-- CUDA profile, GPU operators, and GPU policy/world-model throughput.
+- Other GPU generations, full model-training memory/throughput, and world-model throughput.
 - Repeated T policy evaluation and published-baseline performance reproduction.
 - Initial-state penetration, boundary coverage, and goal reachability across seeds.
 - Restoring during established contact, whose cached solver impulses are not saved.
@@ -157,7 +157,7 @@ Commands:
 
 ```bash
 python3 -B scripts/fetch_policy_assets.py --download --max-mib 400
-.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/policy-baseline-2026-10-19 --steps 300 --seconds 360
+.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/policy-baseline-2026-10-19 --steps 300 --seconds 360 --device cpu
 .venv/bin/python -B scripts/replay_policy.py --report artifacts/policy-baseline-2026-10-19/report.json --output artifacts/policy-baseline-2026-10-19/T-preview.mp4
 TDYSSEY_GPC_ROOT=third_party/gpc .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
 ```
@@ -208,3 +208,56 @@ not upstream's 50-candidate world-model ranking/spreading evaluator or a paper-s
 reproduction. The T failure must be investigated with trajectory inspection and
 repeated seeds. One scene provides no reliable success-rate comparison, adaptation
 benefit, or generalization claim. See `docs/POLICY_BASELINE.md` for the full contract.
+
+## CUDA and visible-window check (2026-10-19)
+
+Switched the existing `.venv` to the locked CUDA/GPC profile, replacing the two
+CPU torch packages; no second environment was created and dependency pins were
+unchanged. The resulting 98 packages passed consistency checks. CUDA 12.4,
+PyTorch `2.5.1+cu124`, and torchvision `0.20.1+cu124` passed on an Ada RTX 4060
+Laptop GPU with 8 GiB VRAM. This records a tested configuration, not a hardware
+requirement for every author. Other GPU generations require separate verification.
+
+```bash
+uv sync --locked --extra cu124 --extra gpc --python /path/to/python3.12 --no-python-downloads --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --gpc
+uv pip check --python .venv/bin/python --no-cache
+.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/cuda-visible-large-2026-10-19 --steps 300 --seconds 240 --display --hold-seconds 60
+```
+
+Doctor reported CUDA available, sum of squares 30, gradients `[2,4,6,8]` on
+`cuda:0`, a working GPU torchvision NMS operator, and no package/runtime errors.
+This verifies basic backward computation; it is not a trained project model.
+
+The policy process was independently observed using 530 MiB of GPU memory during
+inference. X11 inspection showed a real **768×768** pygame window. The viewer
+enlarges the 96×96 RGB display without changing model input, is resizable, and
+honors Escape/window close. Two new installed tests verify no CPU fallback when
+CUDA is absent and actual pygame drawing/resize/close behavior with an offscreen
+test driver. All **70 tests passed**; source-only discovery passed 48 and skipped 22.
+
+The visible GPU run used seed 100000 with identical initial physical states/goals
+across shapes:
+
+| Shape | Controls | Contact steps | Maximum IoU | Final IoU | Upstream success |
+| --- | --- | --- | --- | --- | --- |
+| T | 300 | 250 | 0.341957 | 0.184368 | No |
+| I | 300 | 89 | 0.417260 | 0.417260 | No |
+| L | 300 | 269 | 0.311426 | 0.029454 | No |
+
+Total: 900 controls / 9,000 control-physics substeps, three reset substeps, 114
+policy calls / 11,400 denoising steps. Synchronized median planning times were
+about 0.47 seconds per chunk for each shape. Visible elapsed time also includes
+10 Hz display pacing and final-frame hold; it is not a throughput benchmark.
+CPU/CUDA generators can produce different noise samples for the same seed, so
+the earlier CPU trajectories are not expected to match these GPU trajectories.
+These counts exclude an earlier 300-control small-window preview, interrupted
+during final-frame hold, plus unit/doctor diagnostics. No training was performed.
+
+CUDA/GPC allocated storage: **5,985,271,808 bytes**, about **5.57 GiB**, including
+torch and its required CUDA libraries. No project or uv download cache, retained
+wheel archive, or duplicate CPU environment remained after installation. Task-owned
+temporary message files and empty installer directories were removed. Installed
+libraries and the verified inference checkpoint remain necessary runtime assets.
+Other projects' environments/caches were left alone. Detailed device/path reports
+stay in ignored `artifacts/cuda-validation-2026-10-19` and rollout directories.

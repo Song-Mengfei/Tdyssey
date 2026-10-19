@@ -4,16 +4,41 @@ from dataclasses import replace
 import os
 import time
 import unittest
+from unittest.mock import patch
 
 from tdyssey.baseline import rollout
 from tdyssey.geometry import Pose, get_shape
-from tdyssey.policy import load_ema_parameters, policy_spec
+from tdyssey.policy import GPCDiffusionPolicy, load_ema_parameters, policy_spec
 from tdyssey.state import BodyState, Snapshot
 
 
 @unittest.skipUnless(os.environ.get("TDYSSEY_DATA_TESTS") or os.environ.get("TDYSSEY_GPC_ROOT"),
                      "Set TDYSSEY_DATA_TESTS=1 for installed policy-contract checks")
 class PolicyRuntimeChecks(unittest.TestCase):
+    def test_cuda_request_fails_without_cuda_instead_of_loading_on_cpu(self):
+        with patch("torch.cuda.is_available", return_value=False):
+            with self.assertRaisesRegex(ValueError, "No CPU fallback"):
+                GPCDiffusionPolicy("missing-source", "missing-checkpoint", device="cuda")
+
+    def test_optional_viewer_draws_and_honors_close_events_without_desktop(self):
+        import numpy as np
+        import pygame
+        from tdyssey.viewer import PushTViewer
+
+        with patch.dict(os.environ, {"SDL_VIDEODRIVER": "dummy"}):
+            viewer = PushTViewer()
+            try:
+                self.assertTrue(viewer.draw(np.zeros((96, 96, 3), dtype=np.uint8), "fixture"))
+                self.assertEqual(viewer.window.get_size(), (768, 768))
+                pygame.event.post(pygame.event.Event(pygame.VIDEORESIZE, size=(600, 600), w=600, h=600))
+                viewer.poll()
+                self.assertEqual(viewer.window.get_size(), (600, 600))
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
+                self.assertFalse(viewer.poll())
+                self.assertFalse(viewer.draw(np.zeros((96, 96, 3), dtype=np.uint8), "fixture"))
+            finally:
+                viewer.close()
+
     def test_ema_copies_all_parameters_and_rejects_partial_or_invalid_weights(self):
         import torch
 
@@ -54,6 +79,8 @@ class PolicyRuntimeChecks(unittest.TestCase):
         class Policy:
             spec = policy_spec()
             def __init__(self):
+                import torch
+                self.device = torch.device("cpu")
                 self.histories = []
             def reset_seed(self, seed):
                 self.seed = seed

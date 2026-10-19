@@ -70,11 +70,17 @@ def main() -> int:
                 if torch.version.cuda is not None:
                     report["errors"].append("Expected the locked CPU-only torch build")
                 device = "cpu"
-            values = torch.tensor([1.0, 2.0, 3.0, 4.0], device=device)
-            result = float((values * values).sum().item())
+            values = torch.tensor([1.0, 2.0, 3.0, 4.0], device=device, requires_grad=True)
+            loss = (values * values).sum()
+            result = float(loss.item())
             report["torch_calculation"] = result
             if result != 30.0:
                 raise RuntimeError("Unexpected tensor calculation result")
+            loss.backward()
+            report["gradient_device"] = str(values.grad.device)
+            report["torch_gradient"] = values.grad.tolist()
+            if values.grad.tolist() != [2.0, 4.0, 6.0, 8.0]:
+                raise RuntimeError("Unexpected tensor gradient result")
             # Load torchvision operators as a basic binary-compatibility check.
             from torchvision.ops import nms
 

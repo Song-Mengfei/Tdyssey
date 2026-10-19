@@ -2,7 +2,7 @@
 
 Updated: 2026-10-19. Stage: pretrained-policy integration; no model training completed.
 
-PR #1 merged the shared setup and first code milestone. PR #2 contains CPU setup,
+PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
 episode-safe training batches, and pretrained-policy baseline together.
 Review branch: `build/minimal-runtime-setup`.
@@ -20,7 +20,7 @@ Main changes continue through pull requests.
 - Added a GPC adapter that delegates T construction, physics, control, rendering,
   reward, and step results to upstream. I/L components attach to one rigid body.
 - Installed and checked the locked CPU/GPC profile using Python 3.12.3 and uv
-  0.13.0 without a persistent download cache. The environment uses about 1.33 GiB.
+  0.13.0 without a persistent download cache. That profile measured about 1.33 GiB.
 - Fetched a sparse, pinned upstream simulator checkout without datasets or weights.
 - Added opt-in real simulator tests and portable setup/validation instructions.
   Shared documents describe options for all authors; private machine details and
@@ -42,6 +42,9 @@ Main changes continue through pull requests.
 - Added action/state-checked video replay without loading the model again.
   Commands, normalization/horizons, and evaluator differences are in
   `docs/POLICY_BASELINE.md`.
+- Validated the locked CUDA/GPC profile in the same environment, replacing the
+  CPU build. CUDA policy execution is now the default with no automatic fallback.
+  Added a resizable 768×768 desktop viewer, independent of policy image size.
 
 ## Verification status
 
@@ -53,8 +56,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 68 tests passed together in the installed environment: 48 source-only and
-  20 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 70 tests passed together in the installed environment: 48 source-only and
+  22 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -74,10 +77,16 @@ See `docs/VALIDATION.md` for commands and limits.
 - A 301-frame T video decoded correctly; its 300 diagnostic replay steps matched
   recorded poses/velocities within 1e-7 and rewards within 1e-9. Replay accounting
   is separate from evaluation, and does not establish mid-contact restoration.
-- CUDA, repeated baseline evaluation, original dataset conversion, policy/world-model
+- CUDA 12.4 package/operator checks, calculations, gradients, and actual policy
+  inference passed on an Ada GPU. The CUDA/GPC environment measured about 5.57
+  GiB / 98 packages, replacing CPU PyTorch without retaining a download cache.
+- The visible CUDA comparison completed 300 controls per shape / 900 total;
+  maximum IoU T/I/L was 0.342/0.417/0.311, with no success on this scene. GPU and
+  CPU random streams differ. The enlarged desktop window was verified at 768×768.
+- Repeated baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
-- Original dataset schema inspection did not acquire image/action chunks. CUDA
-  libraries and training runs remain absent. Other project environments were untouched.
+- Original dataset schema inspection did not acquire image/action chunks.
+  Training runs remain absent. Other project environments were untouched.
 
 ## Next task
 
@@ -90,14 +99,14 @@ baseline performance is not reproduced.
 Then compare T/I/L with matched initial states and collect a meaningful target-shape
 dataset with nonempty frozen validation/test splits and contact diagnostics.
 Reproduce the T baseline before choosing visual route A or state route B, training
-the first world model, and adding policy optimization. GPU host setup is a separate
-machine task; current work focuses on the portable repository pipeline.
+the first world model, and adding policy optimization. Additional GPU hosts still
+need their own authorized compatibility/setup checks.
 
 ## Open questions
 
 - Course deadline, rubric details, and named workstream owners.
 - Training machine, GPU profile, shared artifact location, and compute budget.
-- CUDA runtime compatibility and reproduced pretrained-policy performance.
+- Compatibility on additional GPU generations and reproduced pretrained-policy performance.
 - Reset distribution coverage/dynamic goal reachability and mid-contact replay tolerance.
 
 ## Handoff convention

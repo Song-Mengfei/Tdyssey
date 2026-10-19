@@ -27,18 +27,29 @@ def main():
     parser.add_argument("--seed", type=int, default=100000)
     parser.add_argument("--seconds", type=int, default=240, help="Run-wide wall-time limit; an active denoising call finishes")
     parser.add_argument("--threads", type=int, default=4)
-    parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
+    parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda", help="CUDA by default; no automatic CPU fallback")
+    parser.add_argument("--display", action="store_true", help="Open a real pygame desktop window; Escape/close stops the run")
+    parser.add_argument("--window-size", type=int, default=768, help="Initial desktop window size in pixels, 256–1536")
+    parser.add_argument("--hold-seconds", type=int, default=0, help="Keep the last displayed frame briefly, at most 60 seconds")
     args = parser.parse_args()
     try:
         validate_budget(args.shapes, args.episodes, args.steps, args.seed, args.seconds)
         if not 1 <= args.threads <= 16:
             raise ValueError("Use 1–16 CPU threads")
+        if not 0 <= args.hold_seconds <= 60 or (args.hold_seconds and not args.display):
+            raise ValueError("Use 0–60 hold seconds with --display")
+        if not 256 <= args.window_size <= 1536:
+            raise ValueError("Use a window size of 256–1536 pixels")
         if args.output.exists():
             raise ValueError("Output already exists; choose a new directory")
     except ValueError as exc:
         parser.error(str(exc))
     gpc_root, checkpoint, output = args.gpc_root.resolve(), args.checkpoint.resolve(), args.output.resolve()
-    for key, value in {"SDL_VIDEODRIVER": "dummy", "SDL_AUDIODRIVER": "dummy", "MPLBACKEND": "Agg",
+    if args.display and os.environ.get("SDL_VIDEODRIVER") == "dummy":
+        parser.error("Remove SDL_VIDEODRIVER=dummy to open a desktop window")
+    if not args.display:
+        os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+    for key, value in {"SDL_AUDIODRIVER": "dummy", "MPLBACKEND": "Agg",
                        "PYGAME_HIDE_SUPPORT_PROMPT": "1"}.items():
         os.environ.setdefault(key, value)
     import torch
@@ -56,39 +67,53 @@ def main():
               "counts": dict.fromkeys(("reset_attempts", "reset_physics_substeps", "control_steps",
                                        "control_physics_substeps", "planning_calls", "denoising_steps"), 0),
               "matched_resets": [], "episodes": []}
+    report["inference_device"] = str(policy.device)
+    report["cuda_runtime"] = torch.version.cuda
+    report["gpu"] = torch.cuda.get_device_name(policy.device) if policy.device.type == "cuda" else None
     # Replace collector-specific provenance statements with the evaluation protocol.
     report["provenance"].update({"goal_protocol": "Unchanged upstream randomized goal, shared across shapes",
                                  "reset_protocol": "T-state reference; all shapes must pass geometry checks; fresh spaces",
                                  "action_prior": "One sampled pretrained diffusion action chunk; no object-state action input"})
-    paths = ["tdyssey/policy.py", "tdyssey/baseline.py", "scripts/evaluate_policy.py", "manifests/gpc_policy.json"]
+    paths = ["tdyssey/policy.py", "tdyssey/baseline.py", "tdyssey/viewer.py", "scripts/evaluate_policy.py", "manifests/gpc_policy.json"]
     report["provenance"]["source_sha256"].update({name: hash_file(ROOT / name) for name in paths})
     output.mkdir(parents=True, exist_ok=False)
-    old_cwd, environments = Path.cwd(), {}
+    old_cwd, environments, viewer = Path.cwd(), {}, None
     try:
         os.chdir(gpc_root / "gpc_rank_evaluation")
         cls = make_shape_env_class(module.PushTImageEnv)
         for name in dict.fromkeys(["T", *args.shapes]):
             environments[name] = cls(shape=name, domain_filename="push_t", resize_scale=96)
         reference = environments["T"]
+        if args.display:
+            from tdyssey.viewer import PushTViewer
+            viewer = PushTViewer(hold_seconds=args.hold_seconds, window_size=args.window_size)
         report["rates"] = {"simulation_hz": reference.sim_hz, "control_hz": reference.control_hz}
         for index in range(args.episodes):
-            if time.monotonic() - started >= args.seconds:
+            if time.monotonic() - started >= args.seconds or (viewer and viewer.closed):
                 break
             observations, resets = matched_resets(environments, args.seed + 20 * index, report["counts"])
             report["matched_resets"].append(resets)
             for name in args.shapes:
+                if viewer and viewer.closed:
+                    break
                 result = rollout(environments[name], policy, observations[name], args.steps,
-                                 derived_seed(args.seed, index, "policy"), started + args.seconds, report["counts"])
+                                 derived_seed(args.seed, index, "policy"), started + args.seconds, report["counts"], viewer=viewer)
                 result["episode_index"] = index
                 report["episodes"].append(result)
                 print(json.dumps({k: result[k] for k in ("shape", "control_steps", "contact_steps", "max_iou", "stop_reason")}), file=sys.stderr, flush=True)
                 (output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
         report["status"] = "complete" if (len(report["episodes"]) == args.episodes * len(args.shapes)
                                            and all(e["stop_reason"] != "wall_time_budget" for e in report["episodes"])) else "budget_exhausted"
+        if viewer and viewer.closed:
+            report["status"] = "viewer_closed"
+        if viewer:
+            viewer.finish()
     except BaseException as exc:
         report["status"], report["error"] = "failed", f"{type(exc).__name__}: {exc}"
         raise
     finally:
+        if viewer:
+            viewer.close()
         for env in environments.values():
             env.close()
         os.chdir(old_cwd)
