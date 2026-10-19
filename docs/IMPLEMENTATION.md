@@ -1,5 +1,9 @@
 # First code milestone: extend the existing PushT environment
 
+The primary policy baseline is now the [official CNN implementation](OFFICIAL_BASELINE.md).
+The GPC extension and data pipeline described here remain a separate reference;
+their L geometry/data must be ported and checked before official-policy adaptation.
+
 PushT is an existing benchmark. Reuse the pinned GPC `PushTImageEnv`, its Pymunk
 physics, controller, renderer, and diffusion-policy observation/action interface.
 This change does not implement another physics engine or a replacement policy.
@@ -20,12 +24,15 @@ This change does not implement another physics engine or a replacement policy.
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
 | `tdyssey/training_data.py` | Frozen combined catalogs, duplicate/split checks, and lazy episode-safe training windows |
 | `scripts/prepare_training_data.py` | Verify real CPU batches without training; see `docs/TRAINING_DATA.md` |
-| `tdyssey/policy.py` | Verified compact EMA loading and original visual diffusion-policy inference |
+| `tdyssey/policy.py` | Verified GPC-published EMA loading and reference-policy inference |
 | `tdyssey/baseline.py` | Matched initial scenes, bounded eight-action chunks, scores and accounting |
 | `scripts/evaluate_policy.py` | CPU/CUDA-selectable unranked policy runner; see `docs/POLICY_BASELINE.md` |
 | `scripts/fetch_policy_assets.py` | Plan-only default; explicitly download one size/hash-verified checkpoint |
 | `scripts/replay_policy.py` | Export recorded actions to a small video and check physical replay |
 | `tdyssey/viewer.py` | Optional 768×768 resizable pygame desktop viewer, independent of model input size |
+| `tdyssey/official.py` | Pinned official CNN/environment loader, saved normalizers, actual-collision metrics |
+| `scripts/fetch_official_assets.py` | Verify official training checkpoint, retain compact EMA, remove staging data |
+| `scripts/evaluate_official.py` | Bounded CUDA T baseline with original environment, optional window/video, and real costs |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
@@ -80,10 +87,11 @@ env = ShapeEnv(shape="I", domain_filename="push_t", resize_scale=96)
 The original image/proprioception and pixel position-target actions stay inherited.
 When starting inside GPC's evaluation directory, make Tdyssey importable via the
 process's `PYTHONPATH`; do not install it into an unrelated project environment.
-The original T checkpoint now loads through `tdyssey/policy.py`; the initial
+The GPC-published T checkpoint loads through `tdyssey/policy.py`; the initial
 unranked T/I/L comparison and its protocol are documented in
 `docs/POLICY_BASELINE.md`. Repeated T performance checks remain necessary before
-treating the pretrained baseline as reproduced.
+treating that reference performance as reproduced. The official policy instead
+loads through `tdyssey/official.py` and has separate evidence.
 
 ## Geometry and protocol decisions
 

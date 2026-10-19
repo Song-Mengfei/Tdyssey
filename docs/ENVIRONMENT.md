@@ -13,6 +13,12 @@ machine being used; keep those local details out of shared instructions.
 | CPU | Development and small correctness checks | `uv sync --locked --extra cpu --no-cache --link-mode copy` |
 | CPU + GPC | Real PushT simulator and policy-development dependencies | `uv sync --locked --extra cpu --extra gpc --no-cache --link-mode copy` |
 | CUDA + GPC | NVIDIA GPU policy/model work | `uv sync --locked --extra cu124 --extra gpc --no-cache --link-mode copy` |
+| CUDA + official DP | Primary official CNN baseline | `uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy` |
+
+Select both `--extra dp --extra gpc` to retain both runners in one environment.
+The combined CUDA/DP/GPC profile measured **5.72 GiB / 113 packages**. The `dp`
+extra adds the official encoder/config dependencies and includes its simulator
+requirements independently of GPC. See [official baseline setup](OFFICIAL_BASELINE.md).
 
 The CPU/GPC environment measured about **1.33 GiB** after installation, plus about
 38 MiB for a local uv executable and less than 1 MiB for the sparse GPC checkout.
@@ -121,7 +127,14 @@ remove task-owned temporary tooling/cache afterward.
 
 ## Training and data storage
 
-The current plain-policy runner needs one verified checkpoint of 364,554,150 bytes
+The primary official CNN inference asset is about **1.02 GiB**, retaining all EMA
+policy/encoder/normalizer state. Its published full training checkpoint is about
+4.0 GiB; conversion needs about 5.1 GiB temporarily and removes that source after
+verification. No original demonstration arrays are needed for inference.
+`scripts/fetch_official_assets.py` defaults to a download plan. The checkpoint is
+on the authors' website, so a Hugging Face account is unnecessary.
+
+The separate GPC reference-policy runner needs one verified checkpoint of 364,554,150 bytes
 (about 348 MiB), beyond the CPU environment. It does not need the full original
 dataset, duplicate component checkpoints, world-model weights, or CUDA libraries.
 See [policy resource commands](POLICY_BASELINE.md). Public GPC assets need no

@@ -8,15 +8,12 @@ The project is graded on effort. Substantial implementation, controlled
 experiments, reproducibility, and an honest explanation of failures are useful
 deliverables even if the ambitious adaptation/generalization goals fail.
 
-**Current stage:** first implementation of T/I/L geometry, an adapter for the
-existing GPC PushT simulator, evaluation metrics, state/trajectory records, and a
-bounded image/state interaction collector with episode-safe training batches,
-and verified pretrained-policy loading with bounded physical T/I/L rollouts.
-Core checks run without installing anything. The locked CPU/GPC profile and real
-T/I/L simulator and CPU/CUDA checkpoint checks are validated. The first
-single-scene policy runs did not solve the task; repeated baseline evaluation and
-training remain pending. A resizable desktop viewer is available. See
-[validation evidence](docs/VALIDATION.md).
+**Current stage:** the official RSS 2023 visual CNN policy loads on CUDA and solved
+three original T-scene development checks. GPC-based T/I/L geometry, collection,
+and training-data code are retained as a separate reference. Porting L to the
+official setup and implementing world-model/policy training are next. Core checks
+run without installation; a resizable desktop viewer is available. See
+[official baseline](docs/OFFICIAL_BASELINE.md) and [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
@@ -24,7 +21,8 @@ training remain pending. A resizable desktop viewer is available. See
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Collect bounded interaction data](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
-- [Run and inspect the pretrained policy](docs/POLICY_BASELINE.md)
+- [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
+- [Separate GPC reference-policy comparison](docs/POLICY_BASELINE.md)
 - [Current status and next work](docs/STATUS.md)
 - [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
 - [Shared environment and storage](docs/ENVIRONMENT.md)
@@ -62,8 +60,8 @@ uv sync --locked --extra cpu --extra gpc --no-cache --link-mode copy
 For GPU work, choose CUDA instead:
 
 ```bash
-uv sync --locked --extra cu124 --extra gpc --no-cache --link-mode copy
-.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --gpc
+uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --dp
 ```
 
 An existing environment can be used directly through `.venv/bin/python`; activation
@@ -72,10 +70,10 @@ Doctor checks packages, torch calculations/gradients, and Pymunk; it does not re
 No upstream repository, checkpoint, or dataset is downloaded by these checks.
 
 Policy runs default to CUDA with no automatic CPU fallback. After fetching the
-selected checkpoint using [policy setup](docs/POLICY_BASELINE.md), open PushT:
+selected checkpoint using [official setup](docs/OFFICIAL_BASELINE.md), open PushT:
 
 ```bash
-.venv/bin/python -B scripts/evaluate_policy.py --output artifacts/visible-policy --shapes T --steps 300 --display --hold-seconds 60
+.venv/bin/python -B scripts/evaluate_official.py --output artifacts/official-visible --display --video --hold-seconds 30
 ```
 
 The window starts at 768×768 and can be resized. `--display` controls window

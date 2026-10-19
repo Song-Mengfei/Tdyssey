@@ -5,12 +5,12 @@
 1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
-3. First code exists for geometry, the GPC shape adapter, interaction collection,
-   state/data records, and evaluation. Read `docs/IMPLEMENTATION.md`,
-   `docs/COLLECTION.md`, and `docs/VALIDATION.md`. The CPU/GPC
-   simulator checks pass; policy/model training and experiment results remain
-   pending. A negative outcome is acceptable for the course if the work and
-   analysis are substantial.
+3. The primary baseline is the official RSS 2023 visual CNN policy in original
+   PushT; three CUDA T-scene checks succeeded. Read `docs/OFFICIAL_BASELINE.md`.
+   Earlier GPC geometry/collection/data code remains separate reference work.
+   L must be ported before matched adaptation experiments. Policy/world-model
+   training remains pending. A negative outcome is acceptable for the course if
+   the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
@@ -24,7 +24,7 @@
 | Training machine / OS / GPU | Not yet selected |
 | Data and artifact location | Choose a configurable path on that machine |
 | Allowed disk / compute budget | Set before downloads or long jobs |
-| Development profile | CPU/GPC for small simulator checks; CUDA/GPC for GPU work |
+| Development profile | CPU/GPC for small reference checks; CUDA/DP for the official baseline; add GPC when needed |
 
 ## Suggested work split
 
@@ -50,7 +50,9 @@ their own checkout; no package installation is needed.
 Run the selected profile's doctor, then the opt-in real simulator checks described
 in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
 `artifacts/` directories. On the training machine, verify required assets one by one
-and bound evaluation episodes before running the T policy baseline.
+and bound evaluation episodes before running the official T baseline using
+`docs/OFFICIAL_BASELINE.md`. The next shared implementation task is porting L
+while preserving original T behavior, not treating the GPC adapter as interchangeable.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

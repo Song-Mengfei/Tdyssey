@@ -25,6 +25,7 @@ def main() -> int:
         example = json.loads((ROOT / "manifests/experiment.example.json").read_text())
         gym_metadata = json.loads((ROOT / "manifests/gym-metadata.json").read_text())
         policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
+        official = json.loads((ROOT / "manifests/official_dp.json").read_text())
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -52,6 +53,13 @@ def main() -> int:
     gpc_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "gpc")
     if policy["source_commit"] != gpc_commit:
         errors.append("Policy source revision differs from the simulator revision")
+    official_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "diffusion_policy")
+    if official["source_commit"] != official_commit:
+        errors.append("Official baseline source differs from the upstream manifest")
+    official_hashes = [official["checkpoint"]["sha256"], official["compact"]["sha256"],
+                       official["published_config"]["sha256"], *official["source_sha256"].values()]
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in official_hashes):
+        errors.append("Official baseline resources need recorded SHA-256 hashes")
     for asset in (policy["checkpoint"], policy["expert_dataset"]):
         if not re.fullmatch(r"[0-9a-f]{40}", asset["revision"]):
             errors.append("Policy/data resources need immutable revision SHAs")

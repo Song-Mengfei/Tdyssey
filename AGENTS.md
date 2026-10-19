@@ -7,6 +7,9 @@ policy to new object shapes using non-expert interaction data and a learned worl
 model. It changes the pushed object, not the robot embodiment. The course values
 substantial implementation, experiments, and analysis; useful negative results
 are acceptable. Do not reduce the project to a trivial demo just to guarantee success.
+The primary baseline is the official RSS 2023 visual CNN Diffusion Policy and
+original PushT environment; see `docs/OFFICIAL_BASELINE.md`. GPC is a separate
+reference/comparison. Do not treat their checkpoints, geometry, or data as interchangeable.
 Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 

@@ -126,3 +126,24 @@ elapsed time; synchronized planning times measure GPU inference separately.
 Record selected device, CUDA runtime, and GPU identity in local reports. CPU/CUDA
 random streams can differ for the same integer seed. Basic CUDA gradients and
 inference establish runtime support, not completed project training.
+
+## D013 — Official Diffusion Policy baseline and GPC's separate role (2026-10-19)
+
+Use the official RSS 2023 visual CNN checkpoint in its unchanged original PushT
+environment as the primary baseline. The earlier schedule preferred GPC reuse;
+that is a reference route, not evidence that GPC weights reproduce the original
+policy. Retain its code/results as explicitly separate comparisons. Start with
+one T-to-L adaptation question; Transformer and more shapes are later options.
+
+Preserve the official checkpoint's crop, encoder, saved normalizers, horizons,
+fixed goal, legacy reset convention, geometry/mass/inertia, reward, and scoring.
+Do not silently insert GPC resets, coordinates, weights, or datasets. First port
+and test L in the official setup. Reuse appropriate GPC world-model components
+after compatibility checks; our contribution is non-expert shape adaptation and
+physically evaluated policy improvement, not reproducing unchanged GPC.
+
+Keep one CUDA environment and add a self-contained locked `dp` extra. Retain only
+the official EMA state/config for inference after verifying the original training
+checkpoint and compact output. Source/checkpoint/config hashes and actual protocol
+are recorded separately. Three successful development scenes establish a working
+baseline, not reproduction of the full published evaluation or adaptation success.

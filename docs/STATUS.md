@@ -1,10 +1,11 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: pretrained-policy integration; no model training completed.
+Updated: 2026-10-19. Stage: official CNN T baseline verified; no model training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
-episode-safe training batches, and pretrained-policy baseline together.
+episode-safe training batches, the official CNN T baseline, and a separate GPC
+reference-policy runner together.
 Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
 
@@ -36,7 +37,7 @@ Main changes continue through pull requests.
 - Implemented on-demand visual history/future windows with one decoded episode
   cached, plus real CPU PyTorch batches. No image windows are duplicated on disk.
   Commands and timing/label assumptions are in `docs/TRAINING_DATA.md`.
-- Verified the original policy/data resource schemas and pinned immutable revisions.
+- Verified GPC-published policy/data resource schemas and pinned immutable revisions.
   Added compact EMA checkpoint loading, a cache-free selected-file downloader,
   and bounded matched-scene T/I/L policy evaluation. Public assets need no account.
 - Added action/state-checked video replay without loading the model again.
@@ -45,6 +46,11 @@ Main changes continue through pull requests.
 - Validated the locked CUDA/GPC profile in the same environment, replacing the
   CPU build. CUDA policy execution is now the default with no automatic fallback.
   Added a resizable 768×768 desktop viewer, independent of policy image size.
+- Added the official RSS 2023 visual CNN source/checkpoint as the primary baseline,
+  with its original T environment, saved normalizers, crop, and legacy reset setup.
+  The older GPC runner/results remain separate; see `docs/OFFICIAL_BASELINE.md`.
+- Added a locked self-contained `dp` extra, compact EMA asset preparation, bounded
+  official evaluation, optional video, and official-wrapper/inference parity tests.
 
 ## Verification status
 
@@ -56,8 +62,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 70 tests passed together in the installed environment: 48 source-only and
-  22 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 76 tests passed together in the installed environment: 51 source-only and
+  25 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -67,10 +73,10 @@ See `docs/VALIDATION.md` for commands and limits.
   uses 1,766 bytes and its report 1,587 bytes; no new interaction data was needed.
   Validation/test splits remain empty in these tiny examples, so no model-quality
   evaluation or learned improvement is claimed.
-- CPU policy loading passed for 208 EMA tensors / 91,123,778 parameters. One
+- GPC CPU policy loading passed for 208 EMA tensors / 91,123,778 parameters. One
   verified 364,554,150-byte checkpoint was downloaded; no duplicate component
   weights or original training arrays were acquired.
-- A real matched-scene run at seed 100000 executed 300 controls per shape: 900
+- A GPC matched-scene run at seed 100000 executed 300 controls per shape: 900
   controls, three reset substeps, 114 policy calls, 11,400 denoising steps, about
   140 seconds on CPU. Maximum IoU T/I/L: 0.510/0.226/0.229; none succeeded.
   This validates execution, not baseline quality or an adaptation benefit.
@@ -80,26 +86,36 @@ See `docs/VALIDATION.md` for commands and limits.
 - CUDA 12.4 package/operator checks, calculations, gradients, and actual policy
   inference passed on an Ada GPU. The CUDA/GPC environment measured about 5.57
   GiB / 98 packages, replacing CPU PyTorch without retaining a download cache.
-- The visible CUDA comparison completed 300 controls per shape / 900 total;
+- The GPC visible CUDA comparison completed 300 controls per shape / 900 total;
   maximum IoU T/I/L was 0.342/0.417/0.311, with no success on this scene. GPU and
   CPU random streams differ. The enlarged desktop window was verified at 768×768.
-- Repeated baseline evaluation, original dataset conversion, policy/world-model
+- The official CNN policy solved all three development T scenes (100000–100002)
+  in 128/157/273 controls. Total: 558 controls, three reset substeps, 71 policy calls,
+  7,100 denoising steps. Maximum IoU: 0.9241/0.9082/0.9236. These checks establish
+  a working baseline, not reproduction of the full paper evaluation.
+- Official loading/parity checks passed with the unchanged source class. All 300
+  EMA state entries, including normalizers, were retained in a 1.02 GiB asset;
+  the redundant 4.0 GiB training checkpoint was removed after verification.
+- The combined CUDA/DP/GPC environment has 113 packages and measured 5.72 GiB.
+  Torch/CUDA pins did not change. No demonstration dataset or second environment
+  was acquired for official inference.
+- Broader baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
 - Original dataset schema inspection did not acquire image/action chunks.
   Training runs remain absent. Other project environments were untouched.
 
 ## Next task
 
-Inspect recorded T trajectories and repeat several T seeds before freezing a
-baseline protocol. The first unranked single-scene run failed to solve T; check
-policy behavior and distinguish plain sampling from upstream world-model ranking
-before interpreting cross-shape differences. M0 execution is validated; published
-baseline performance is not reproduced.
+Port L to the official PushT setup while preserving original T behavior and
+recording the L coordinate/mass/inertia/reset decisions. Check matched T rollouts,
+collision/render/goal consistency, and safe L starts before comparing shapes.
+Do not load official weights through the GPC runner or silently use GPC play data
+as matched official-environment training data.
 
-Then compare T/I/L with matched initial states and collect a meaningful target-shape
+Then evaluate the frozen official T policy on L and collect meaningful target-shape
 dataset with nonempty frozen validation/test splits and contact diagnostics.
-Reproduce the T baseline before choosing visual route A or state route B, training
-the first world model, and adding policy optimization. Additional GPU hosts still
+Use the visual CNN route initially; train/validate the first world model and verify
+direct simulator policy optimization before imagined optimization. Additional GPU hosts still
 need their own authorized compatibility/setup checks.
 
 ## Open questions
