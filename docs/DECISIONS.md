@@ -196,3 +196,11 @@ Keep CUDA-only inference and stream small videos. Generate HTML/CSV from saved
 reports with the standard library; do not download fonts, new weights or datasets.
 A single scene per shape is an exploratory observation, not a success-rate estimate
 or proof of the policy's overall limit. Retain honest failures and partial-run flags.
+
+Near-miss analysis records the earliest best-IoU control, target coverage there,
+final coverage and best-to-final IoU loss. Decode peak frames from saved videos;
+run no additional inference/physics. These diagnostics were added after observing
+lost alignment and do not replace the original success threshold. Post-run best
+frame selection is not an implementable learned stopping policy. Any future
+shorter-prefix/stopping experiment needs a separate matched comparison and explicit
+disclosure of privileged geometric reward or state used to decide when to stop.

@@ -135,6 +135,8 @@ python3 -B scripts/preview_letters.py --output /tmp/official-alphabet.svg
 .venv/bin/python -B scripts/evaluate_shapes.py --shapes T T_narrow --output artifacts/official-near-t --display --video
 # All capitals plus near-T; save videos without desktop pacing:
 .venv/bin/python -B scripts/evaluate_shapes.py --alphabet --seconds 3600 --output artifacts/official-alphabet --video
+# Optional peak screenshots from existing videos (installed OpenCV):
+.venv/bin/python -B scripts/extract_peak_frames.py --report artifacts/official-alphabet/report.json
 # Portable local video gallery and exact CSV, without re-running the model:
 python3 -B scripts/summarize_shapes.py --report artifacts/official-alphabet/report.json --output artifacts/official-alphabet/summary.html
 ```
@@ -159,3 +161,28 @@ per shape maps examples of failure; it does not establish a generalization limit
 a reliable ranking, or an adaptation benefit. Freeze additional evaluation scenes
 before comparing learning methods, and keep these development scenes out of
 adaptation data and later final tests.
+
+The first completed sweep used common scene 100000: T and Y succeeded; the other
+24 letters and near-T failed within 300 controls. Near-T reached IoU 0.8717 before
+ending at 0.7751. These single-scene outcomes do not locate a reliable tolerance
+boundary. See [full results and costs](VALIDATION.md).
+
+### Near misses and lost progress
+
+The gallery/CSV records the earliest post-action best-IoU control, coverage at that
+moment, final coverage, and **best IoU minus final IoU**. Peak screenshots decode
+frame `best_step` from videos that include initial frame zero. Extraction runs no
+policy inference or physical replay. These are descriptive diagnostics added after
+observing near-aligned objects move away; they do not redefine success or change
+termination. Initial-frame overlap is not included in the post-action maximum.
+
+A visually close outline can still miss the original `coverage > 0.95` threshold.
+On the development scene, D reached IoU 0.8154 (about 89.8% target coverage) at
+control 201, then ended at IoU 0.4172. K reached IoU 0.7512 at control 163, then
+ended at 0.0620. These are near misses followed by lost overlap, not cases that
+satisfied the original threshold and were ignored. The cause of the later bad
+pushes needs further action/observation analysis. Shorter action prefixes, better
+fine alignment and a learned stopping decision are possible later experiments;
+compare them separately with matched scenes and report any use of privileged
+geometric reward for stopping. Selecting the best frame after the run does not
+provide an implementable stopping policy or demonstrate stable control.

@@ -37,7 +37,8 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/envs/official.py` | Preserve official T; add rigid capitals/near-T, matched centers, and checked snapshot restore |
 | `tdyssey/letters.py` | Versioned edge-connected block capitals with geometry-specific symmetry |
 | `scripts/preview_letters.py` | Small dependency-free SVG catalog of actual collision rectangles |
-| `scripts/summarize_shapes.py` | HTML/video gallery and CSV from recorded results, without policy execution |
+| `scripts/summarize_shapes.py` | HTML/video gallery and CSV with peak/final overlap and loss diagnostics |
+| `scripts/extract_peak_frames.py` | Best-overlap screenshots decoded from saved videos, without physical replay |
 | `scripts/evaluate_shapes.py` | Frozen official CNN on matched selected-letter scenes with geometry checks and explicit control/reset/denoising costs |
 
 The geometry/evaluation/data code runs with the standard library. Source-only

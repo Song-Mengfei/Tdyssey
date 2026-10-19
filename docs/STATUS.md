@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: official capital-letter/near-T evaluation; no training completed.
+Updated: 2026-10-19. Stage: first official capital-letter/near-T sweep complete; no training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
@@ -72,8 +72,8 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 90 tests passed together in the installed environment: 57 source-only and
-  33 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 92 tests passed together in the installed environment: 58 source-only and
+  34 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -117,9 +117,15 @@ See `docs/VALIDATION.md` for commands and limits.
   at zero overlap. T actions/body-state traces and video matched its earlier
   canonical run exactly. Total: 428 controls, two reset substeps, 54 policy calls.
   One pair establishes an executable probe, not a population performance estimate.
-- A one-scene all-capital/near-T CUDA sweep is running with at most 300 controls
-  per shape and streamed videos. Full outcomes/costs remain pending; saved partial
-  episodes are development observations, not a completed population estimate.
+- Completed a common-scene 27-shape CUDA sweep: T/Y succeeded in 128/235 controls;
+  other capitals and near-T failed at 300. Near-T best/final IoU: 0.8717/0.7751.
+  Total 7863 controls, 27 reset substeps, 996 policy calls, 1553.45 seconds.
+  All 7890 video frames decoded; T/L traces, rewards and videos exactly reproduced
+  the earlier paired run. Local gallery/CSV/27 best frames total about 28 MiB.
+- Added near-miss diagnostics after observing lost progress: D best/final IoU
+  0.8154/0.4172; K 0.7512/0.0620. Record peak step/coverage and final loss without
+  changing original success. One scene/checkpoint/font is not a generalization
+  limit or reliable success-rate estimate. Full results/hashes: `docs/VALIDATION.md`.
 - Broader baseline evaluation, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
 - Original dataset schema inspection did not acquire image/action chunks.

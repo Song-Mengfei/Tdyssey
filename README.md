@@ -13,7 +13,9 @@ three original T-scene development checks. A shorter-foot capital L is now in th
 official setup: the first matched scene succeeded for T and failed for L. GPC-based
 collection/training-data code remains separate reference work; official L data
 collection and world-model/policy training are next. All 26 capital letters and a
-near-T shape are available for separate frozen-policy exploration. Core checks
+near-T shape are available for separate frozen-policy exploration. In the first
+common scene, T and Y succeeded; other letters and near-T reached the step limit.
+The saved gallery records near misses and lost overlap as well as success. Core checks
 run without installation; a resizable desktop viewer is available. See
 [official baseline](docs/OFFICIAL_BASELINE.md) and [validation evidence](docs/VALIDATION.md).
 
