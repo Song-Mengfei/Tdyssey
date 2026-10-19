@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: first visual world-model GPU pilot trained; dynamics reliability and policy learning remain pending.
+Updated: 2026-10-19. Stage: pretrained GPC dynamics checked; official-domain adaptation, dynamics reliability and policy learning remain pending.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
 real simulator tests, shared documentation cleanup, bounded interaction collection,
@@ -78,6 +78,11 @@ Main changes continue through pull requests.
   training experiment and limitations are in `docs/WORLD_MODEL.md`.
   It was trained from scratch on L; no T world-model pretraining or transfer
   comparison has been performed. The frozen T policy has separate pretrained weights.
+- Added verified loading of the released GPC phase-two world model (8.73M
+  parameters, 33.42 MiB) with unchanged upstream sampling, isolated legacy imports,
+  four-frame/action alignment and a bounded native/official T prediction probe.
+  No new environment, dependency or dataset was needed. Compatibility findings
+  and reproducible commands are in `docs/WORLD_MODEL.md`.
 
 ## Verification status
 
@@ -89,9 +94,10 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 98 retained tests passed together in the installed environment: 55 source-only and
-  43 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 100 current tests passed together: 56 source-only and 44 opt-in runtime
+  checks. Source-only discovery passed 56 and skipped 44.
   Twelve peripheral/repeated checks were removed; simulator and GPU checks remain.
+  Pretrained integration adds only two focused timing/sampler-parity checks.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
@@ -160,25 +166,32 @@ See `docs/VALIDATION.md` for commands and limits.
   32 controls and one initialization reset. Reward predictions barely changed
   across actions. Primary max scores tied and were uninformative; posthoc final/
   sum views exposed bad choices. No useful planning or adaptation is established.
+- Pretrained GPC loader: all 298 state entries loaded, CUDA wrapper predictions
+  matched the released sampler exactly, and imports/random-state isolation passed.
+  Native/official T diagnostic: 76 controls, two resets, 64 forecast steps, 6.39
+  seconds and about 105.8 MiB peak allocated GPU memory. Native bottom pushing
+  improved image prediction over persistence, but native side rotation was missed.
+  Official inputs were recolored red and lost the green target; no reliable
+  official-world-model transfer or policy improvement is established.
 - Broader baseline evaluation, original demonstration conversion, reliable visual
   dynamics, policy optimization, reset coverage and mid-contact replay remain pending.
   Other project environments were untouched.
 
 ## Next task
 
-Assess the released pretrained GPC world model before further custom-model tuning.
-Record its pinned source/checkpoint revision, architecture, required files and byte
-sizes, dependencies/license, image histories, action units/normalization and control
-timing. Compare these with the official T environment and policy; do not assume
-that the existing GPC policy loader also loads its world model. DINO-WM is the
-alternative to assess if compatibility or resource costs make GPC unsuitable.
+Resolve the pretrained GPC appearance/domain mismatch on T before L adaptation.
+Freeze a matched validation protocol that separates appearance conversion from
+physics adaptation; preserve the official policy's observation stream. Check
+target retention, no-contact stability, contact/rotation and action effects, with
+both persistence and the unchanged pretrained model as comparisons. The native
+side-push failure needs investigation alongside the official red/gray mismatch.
+Use explicit training-only data if adaptation is needed; leave the real model-test
+split untouched. Freeze action-ranking/terminal scoring before comparisons.
 
-After that assessment, run a bounded pretrained prediction check on T, comparing
-contact/noncontact motion and action effects against matched physical branches.
-Record measured storage/GPU costs before L adaptation. Keep the custom L-only CNN
-as a pipeline baseline with its failed reliability gate; no pretrained integration
-or T-to-L world-model transfer is completed. Leave real model-test images untouched
-and freeze action-ranking/terminal scoring before comparisons. See decision D020.
+DINO-WM remains an alternative if GPC cannot pass physical prediction checks.
+Retain the custom CNN as an L-only comparison. Loading a public checkpoint does
+not establish adaptation, reliable planning or differentiable policy training;
+the released sampler rounds pixels and disables gradients. See decision D021.
 
 Verify direct physical-simulator policy optimization before imagined updates.
 Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before

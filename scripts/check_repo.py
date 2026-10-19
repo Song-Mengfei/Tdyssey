@@ -26,6 +26,7 @@ def main() -> int:
         gym_metadata = json.loads((ROOT / "manifests/gym-metadata.json").read_text())
         policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
         official = json.loads((ROOT / "manifests/official_dp.json").read_text())
+        world_model = json.loads((ROOT / "manifests/gpc_world_model.json").read_text())
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -53,6 +54,14 @@ def main() -> int:
     gpc_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "gpc")
     if policy["source_commit"] != gpc_commit:
         errors.append("Policy source revision differs from the simulator revision")
+    if world_model["source_commit"] != gpc_commit:
+        errors.append("World-model source revision differs from the simulator revision")
+    asset = world_model["checkpoint"]
+    if not re.fullmatch(r"[0-9a-f]{40}", asset["revision"]):
+        errors.append("World-model checkpoint needs an immutable revision")
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value)
+           for value in [asset["sha256"], *world_model["source_sha256"].values()]):
+        errors.append("World-model checkpoint/source need SHA-256 records")
     official_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "diffusion_policy")
     if official["source_commit"] != official_commit:
         errors.append("Official baseline source differs from the upstream manifest")

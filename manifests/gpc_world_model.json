@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/han20192019/gpc_code",
+  "source_commit": "a96146e568826ef46134f73c22fdf59a675e7264",
+  "source_sha256": {
+    "gpc_rank_evaluation/data/__init__.py": "d3fd870fd1619ebffdd51a939059c9b3c79fb9d8a4abb5dd13b542f3728e9165",
+    "gpc_rank_evaluation/data/batch.py": "cc9d5001cd274584241ca4039a2d636f0c248b0e7c4fce7b7b1464342744db6c",
+    "gpc_rank_evaluation/data/batch_sampler.py": "287b17e9ebc3ea8aa3ba7b8cc44fdfa9defb0fea082fed20d1e3df6c8c0b058e",
+    "gpc_rank_evaluation/data/dataset.py": "fb7374f670093cd1da95186b6b426fa195bbf2eb4d6190bc6a3eee315df45f99",
+    "gpc_rank_evaluation/data/episode.py": "3cb34c86ad4fe4eb1ea56c085bcd4c9dd0485de2509aeae1aca412b894c3ea9b",
+    "gpc_rank_evaluation/data/segment.py": "e57b9258279ce6c2a4220afa403e16d68806626d9bab2a9536d72f1ef1f38e27",
+    "gpc_rank_evaluation/data/utils.py": "41d014f7f6362f4fd95e69fc810374398b71ebbc5fb65c1b2b44ea3334fbec5a",
+    "gpc_rank_evaluation/diffusion/__init__.py": "43006eb7e74e2350d1eb5c7ddbab81c3ab327c56c98b986a56f6cc1ad0c1e5f7",
+    "gpc_rank_evaluation/diffusion/blocks.py": "04a67cca0df434286b96c9923ffd08f2017ff9f1babdfda250e6fd90676863f8",
+    "gpc_rank_evaluation/diffusion/denoiser.py": "e4ce1c17a26b97fcee1d863e56f49b3c32c247900d08d06586941ef337463c41",
+    "gpc_rank_evaluation/diffusion/diffusion_sampler.py": "d2995d0150e03f3115995b726786b213fa76167d8a589c21722fb797d0d06dd4",
+    "gpc_rank_evaluation/diffusion/inner_model.py": "e67a4b026ed98e10816a8e5bf469a61e3347b7a513e3c42714330d7547ef0be0",
+    "gpc_rank_evaluation/utils.py": "33d9592c73adee54a6846530ccc7d1734d058ccac473006ff373962dd23e308f",
+    "gpc_rank_evaluation/eval_baseline.py": "efc2c22750dc4b1e2b90f9003eab0de45f5e707d92d8edfa8722fb16fddee40c",
+    "world_model_train_phase_one/train.py": "b2527b87229aaef9a723016d6c8775d5bc195ed614940334c65313b438000bc6",
+    "world_model_train_phase_one/utils.py": "19a617c3b681cd9a66c5a1209bfd91e9907333c456b185284ded7796cf40594a",
+    "world_model_train_phase_two/train.py": "75031fc58e7c77d86ead1fa677274e81161d8b1c7673ede7a803ce58c01bf3aa",
+    "world_model_train_phase_two/utils.py": "46b108aeb8b924a16d33b5e6bfe470fc7fc857f4dba1a3025e82b6deaa65499e",
+    "environment.yml": "34722e859e7fb2b114ebd45660cb2c8ef47ca0652416d1f04b7d0e04324f6acd",
+    "README.md": "7b94b5051b5bcc368359ae5299780c6816be940f2f2a8fcc9defb0f914a71b35"
+  },
+  "checkpoint": {
+    "repo_id": "han2019/gpc_checkpoints",
+    "revision": "c16a467ec176af19bba5136564a81d8d61d72af9",
+    "path": "world_model_checkpoint/phase_two_checkpoint/denoiser.pth",
+    "filename": "denoiser.pth",
+    "bytes": 35043916,
+    "sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+    "format": "pytorch_state_dict"
+  },
+  "model": {
+    "img_channels": 3,
+    "num_steps_conditioning": 4,
+    "cond_channels": 256,
+    "depths": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "channels": [
+      96,
+      96,
+      96,
+      96
+    ],
+    "attn_depths": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "num_actions": 4,
+    "sigma_data": 0.5,
+    "sigma_offset_noise": 0.1,
+    "noise_previous_obs": true
+  },
+  "sampler": {
+    "num_steps_denoising": 3,
+    "sigma_min": 0.002,
+    "sigma_max": 5,
+    "rho": 7,
+    "order": 1,
+    "s_churn": 0,
+    "s_cond": 0
+  },
+  "protocol": {
+    "image_shape": [
+      3,
+      96,
+      96
+    ],
+    "image_range": [
+      0,
+      1
+    ],
+    "action_range_pixels": [
+      0,
+      511
+    ],
+    "action_semantics": "world_frame_position_target_pixels",
+    "conditioning": "images o[t-3:t+1], actions a[t-3:t+1], predict o[t+1]",
+    "control_hz": 10,
+    "simulation_hz": 100,
+    "image_range_evidence": "world_model_train_phase_two/utils.py: TrainDataset.__getitem__; no [-1,1] image conversion",
+    "sampling": "unchanged upstream quantized, no-grad sampler; no differentiable-rollout claim",
+    "license": "No top-level LICENSE or explicit code/weight grant found in pinned source or 31-byte model README; redistribution terms need clarification."
+  }
+}

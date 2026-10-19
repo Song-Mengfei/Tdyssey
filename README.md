@@ -29,7 +29,7 @@ run without installation; a resizable desktop viewer is available. See
 - [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
 - [Separate GPC reference collector](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
-- [Train and check the first visual world model](docs/WORLD_MODEL.md)
+- [Visual training and pretrained world-model checks](docs/WORLD_MODEL.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)

@@ -300,3 +300,26 @@ the official policy baseline, frozen episode splits and real model-test quaranti
 Large generalist models remain optional extensions after a compatible first model.
 Do not enlarge the present foundation milestone just to include every candidate;
 its actual completed work and negative pilot results are independently reviewable.
+
+## D021 — Preserve pretrained inference and expose its domain mismatch (2026-10-19)
+
+Load the released phase-two GPC checkpoint with pinned file/source hashes and an
+unchanged upstream sampler. Reuse the existing environment and one 33.42 MiB
+checkpoint; do not acquire its demonstration data or T-specific reward predictors.
+Use four RGB [0,1] frames, three past actions and the next proposed action;
+normalize absolute targets with the source dynamics scale, not the policy scale.
+Isolate legacy absolute imports and fork/restore CUDA inference randomness.
+
+Check two hand-constructed pre-contact scenes in each native/official T family,
+with matched cold-restored branches and noise. Count history/branch/reset work;
+disclose geometry-based scene/action priors. Keep generated reports/images ignored.
+ROI/physical labels are privileged evaluation only; appearance-based centroid/IoU
+metrics are proxies, not verified reward or pose decoding. Native side rotation
+fails and official predictions recolor the object/remove the goal. These findings
+do not pass the official dynamics gate despite successful loading and a good
+native bottom-push prediction. Separate appearance and physics adaptation on T
+before L. Keep DINO-WM as an alternative and the L-only CNN as a comparison.
+
+The released quantized/no-grad sampler is inference-only; no differentiable
+imagined optimization is validated. Pinned code/model metadata contains no explicit
+license grant; do not redistribute upstream code or weights without clarification.
