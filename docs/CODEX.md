@@ -16,20 +16,21 @@ Suggested first prompt:
 
 ```text
 Read AGENTS.md, docs/STATUS.md, and the relevant project documents. Summarize the
-current stage, source-only constraint, verified evidence, and next milestone.
-Continue the assigned task without installing packages or downloading assets.
+current stage, verified evidence, and next milestone. Use the environment/profile
+available for the assigned task. Respect the machine's current setup permissions
+and storage budget.
 ```
 
 Assign a concrete task and expected verification rather than asking an agent to
 implement the entire schedule at once. After substantial work, the agent updates
-status and decisions so the other author's next session can continue from Git.
+status and decisions so another author's next session can continue from Git.
 Keep secrets, personal account configuration, and absolute workstation paths out
 of shared files. This setup has no automated install hooks or background jobs.
 
 Small source-only changes use `python3 -B scripts/check_repo.py`. Runtime work uses
 the locked profile only on an authorized machine and records what was actually
-executed. The no-install instruction is an agent working agreement, not an OS
-security boundary; account/organization policies still govern execution.
+executed. Machine setup permissions are a working agreement, not an OS security
+boundary; account/organization policies still govern execution.
 
 Official references:
 

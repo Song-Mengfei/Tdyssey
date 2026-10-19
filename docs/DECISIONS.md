@@ -7,12 +7,12 @@ Keep cross-shape world-model adaptation as the research objective. Assess progre
 through implementation, controlled experiments, and failure analysis. Focus on H1
 before expanding to H2/H3; do not quietly redefine success as a trivial demo.
 
-## D002 — Source-only laptop (2026-10-13)
+## D002 — Separate source work from machine setup (2026-10-13)
 
-The user needs local disk space and may move machines. Prepare source, manifests,
-lockfile, and shared guidance without installing an environment or downloading
-research assets. Setup and training require authorization for the selected machine.
-Temporary metadata-only resolver work is allowed; leave no persistent tool/cache.
+Initial development used source-only checks. Keep that workflow available to all
+authors, alongside optional installed development. Setup and training require
+authorization for the selected machine. Minimize storage and remove temporary
+tooling/cache. See D008 for the first installed development profile.
 
 ## D003 — Shared candidate environment (2026-10-13)
 
@@ -22,7 +22,7 @@ PyTorch 2.5.1 / torchvision 0.20.1, NumPy 1.26.4, Zarr 2, and Pymunk 6 to target
 older upstream APIs. The CUDA profile uses the officially published cu124 wheels.
 These versions are a conservative starting point, not an experimentally verified
 combination. Revisit them for Blackwell hardware or concrete compatibility failures.
-The existing SAM3/realsense environment is not exported wholesale.
+Do not export or modify unrelated project environments to define this project.
 Gym's static dependency metadata is parsed from its checksum-verified published
 source archive so locking does not require a temporary build environment.
 
@@ -35,7 +35,7 @@ stay outside the repo. No automatic setup hooks or agent orchestration are added
 
 ## D005 — Three authors and shared review (2026-10-13)
 
-The owner works with two other coauthors. Propose one person per main workstream,
+The project has three coauthors. Propose one person per main workstream,
 with names and ownership agreed by the team. Shared setup and later changes go
 through branches and pull requests before becoming defaults on `main`. Use plain
 English in team chat and explain unfamiliar technical terms only when needed.
@@ -54,6 +54,16 @@ The user emphasized that PushT and diffusion-policy implementations already exis
 Reuse GPC's pinned simulator/controller/image interface, preserve the T construction
 path, and add I/L through its existing object hook. Do not build a replacement
 physics engine. Implement and test geometry, metrics, and state/data contracts with
-the standard library while this laptop remains source-only. Actual physics and
-policy reproduction wait for the authorized training machine. The GPC optional
+the standard library before installing the runtime. Physical simulation and
+policy reproduction require separate runtime verification. The GPC optional
 dependency set includes IPython because the upstream environment imports it.
+
+## D008 — Storage-saving runtime and shared documentation (2026-10-19)
+
+Use the existing locked CPU/GPC profile for initial real simulator validation.
+Avoid installing CUDA libraries until GPU work is needed. Install without a
+persistent package cache and fetch only pinned GPC simulator/domain source files.
+Keep environments, source checkouts, local tools, and machine-specific reports
+ignored. Write shared instructions for all three authors; machine-specific setup
+consent, paths, and limitations belong in local records. CPU validation does not
+establish CUDA, checkpoint, or training compatibility.

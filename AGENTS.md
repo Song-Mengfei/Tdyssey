@@ -15,25 +15,29 @@ For substantial project work, read `docs/STATUS.md` and the relevant sections of
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
 background, not evidence that anything has been implemented or validated.
 
-## Current execution constraint
+## Setup and resource use
 
-The owner requested source-only work on the current laptop to preserve disk space.
-By default, a new checkout is also source-only until a user authorizes setup on that
-machine. Do not install dependencies, create an environment, run `uv sync` or
-`uv run` (they can install automatically), download weights/datasets, start training,
-or pull container images without machine-specific authorization. Authorization on
-one author's machine does not authorize setup on another. Continue coding,
-documentation, static checks, and small standard-library checks without asking
-again. Metadata-only dependency locking with no package builds is permitted; use
-temporary storage and remove temporary tooling/cache afterward.
+Source-only work and installed development are both supported. Install packages,
+create environments, download research assets, or start training only within the
+scope authorized for the machine being used. Existing authorization persists in
+the session; do not ask again for the same setup step. Authorization on one
+author's machine does not authorize setup on another. `uv sync` and `uv run` can
+install packages automatically. Source checks need no environment or downloads.
+
+Prefer the locked CPU profile for storage-limited simulator development. Use the
+CUDA profile when GPU work is needed. Avoid duplicate environments, persistent
+download caches, and unneeded assets. Keep per-machine paths, installation consent,
+disk limits, and personal preferences in local settings or ignored artifacts.
+Shared documentation describes reproducible options for all three authors.
 
 Do not modify another project's environment. Do not treat hardware or package
 versions observed on one machine as requirements for every collaborator.
 
 ## Shared environment and code
 
-- `pyproject.toml`, `uv.lock`, and `.python-version` define the shared candidate
-  environment. It is not runtime-validated yet. Update manifest and lock together.
+- `pyproject.toml`, `uv.lock`, and `.python-version` define the shared environment.
+  See `docs/VALIDATION.md` for which profiles and behaviors have actually passed
+  runtime checks. Update manifest and lock together.
 - Use the documented CPU or CUDA profile consistently when setup is authorized.
   Do not install both profiles or manually upgrade packages inside `.venv`.
 - Reference training platform: Linux x86_64, Python 3.12. Other hardware/platforms

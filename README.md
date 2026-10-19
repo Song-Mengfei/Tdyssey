@@ -10,9 +10,9 @@ deliverables even if the ambitious adaptation/generalization goals fail.
 
 **Current stage:** first implementation of T/I/L geometry, an adapter for the
 existing GPC PushT simulator, evaluation metrics, and state/trajectory records.
-Core checks run without installing anything. Actual simulator, checkpoint, and
-training validation remain pending on the authorized training machine.
-The dependency lockfile is a candidate specification.
+Core checks run without installing anything. The locked CPU/GPC profile and real
+T/I/L simulator checks are validated; pretrained-policy, CUDA, and training checks
+remain pending. See [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
@@ -28,9 +28,8 @@ The dependency lockfile is a candidate specification.
 
 ## Work without installing anything
 
-This laptop is currently source-only. Edit source and documentation using an
-existing editor/Codex installation. The following check needs only Python 3.11+
-and creates no environment or cache:
+Source and documentation work needs only an existing editor and Python 3.11+.
+These commands create no environment or package cache:
 
 ```bash
 python3 -B scripts/check_repo.py
@@ -38,34 +37,32 @@ python3 -B -m unittest discover -s tests -p 'test_*.py'
 python3 -B -m tdyssey
 ```
 
-Do not run `uv sync`, `uv run`, package installers, training, or asset downloads on
-this laptop unless the owner later authorizes them.
-
-## Setup later on an authorized machine
+## Install a development environment
 
 Reference platform: Linux x86_64, Python 3.12.3, uv 0.13.0. The manifest offers
-CPU development and CUDA 12.4 training profiles. Compatibility with GPC is still
-pending runtime verification; see [environment notes](docs/ENVIRONMENT.md),
-particularly for Blackwell GPUs and other operating systems.
+CPU development and CUDA 12.4 training profiles. Choose one profile based on the
+machine and task. See [environment notes](docs/ENVIRONMENT.md) for storage-saving
+setup, the small upstream checkout, and platform limitations.
 
 With uv already installed on that machine, choose one profile:
 
 ```bash
-# NVIDIA training / GPC reproduction candidate
-uv sync --locked --extra cu124 --extra gpc
-uv run --locked --extra cu124 --extra gpc python -B scripts/doctor.py --runtime --require-cuda --gpc
+# Storage-saving CPU setup, including the existing GPC simulator
+uv sync --locked --extra cpu --extra gpc --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --gpc
 ```
 
-Or choose CPU development:
+For GPU work, choose CUDA instead:
 
 ```bash
-uv sync --locked --extra cpu
-uv run --locked --extra cpu python -B scripts/doctor.py --runtime
+uv sync --locked --extra cu124 --extra gpc --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --gpc
 ```
 
-Pass the same extras to subsequent `uv run` commands. Runtime verification here
-checks basic packages, torch, and Pymunk, not a reproduced GPC result. No upstream
-repository, checkpoint, or dataset is downloaded automatically by these scripts.
+An existing environment can be used directly through `.venv/bin/python`; activation
+is optional. If using `uv run`, pass the same extras to preserve the chosen profile.
+Doctor checks basic packages, torch, and Pymunk; it does not reproduce a policy.
+No upstream repository, checkpoint, or dataset is downloaded by these checks.
 
 ## Collaboration
 

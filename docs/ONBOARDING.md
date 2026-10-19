@@ -6,9 +6,10 @@
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
 3. First code exists for geometry, the GPC shape adapter, state/data records, and
-   evaluation. Read `docs/IMPLEMENTATION.md`. Simulator runtime, policy/model
-   training, and experiment results remain pending. A negative outcome is
-   acceptable for the course if the work and analysis are substantial.
+   evaluation. Read `docs/IMPLEMENTATION.md` and `docs/VALIDATION.md`. The CPU/GPC
+   simulator checks pass; policy/model training and experiment results remain
+   pending. A negative outcome is acceptable for the course if the work and
+   analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
@@ -22,7 +23,7 @@
 | Training machine / OS / GPU | Not yet selected |
 | Data and artifact location | Choose a configurable path on that machine |
 | Allowed disk / compute budget | Set before downloads or long jobs |
-| Laptop | Source-only; installation not authorized |
+| Development profile | CPU/GPC for small simulator checks; CUDA/GPC for GPU work |
 
 ## Suggested work split
 
@@ -45,9 +46,10 @@ their own checkout; no package installation is needed.
 
 ## First implementation task
 
-On an authorized training machine, run the profile's basic doctor, record its
-output, then clone the pinned GPC revision and verify required assets one by one.
-Patch local paths and bound evaluation episodes before running the T baseline.
+Run the selected profile's doctor, then the opt-in real simulator checks described
+in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
+`artifacts/` directories. On the training machine, verify required assets one by one
+and bound evaluation episodes before running the T policy baseline.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 
