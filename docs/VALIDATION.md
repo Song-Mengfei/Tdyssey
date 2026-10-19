@@ -345,8 +345,9 @@ seed paper reproduction, an estimated population success rate, or an adaptation
 result. Mean maximum clipped reward and observed success fraction were both 1.0
 on these three scenes; they are different metrics. Local CUDA RNG streams are
 recorded and differ from historical evaluation scheduling. Tests/compatibility
-probes are separate diagnostics, outside the 558 evaluation controls. L porting,
-matched target-shape datasets, world-model training, and policy updates remain pending.
+probes are separate diagnostics, outside the 558 evaluation controls. At this
+checkpoint L porting, matched target-shape data and learning were pending; the
+following sections record the later completed shape port and evaluation.
 
 ## Official capital L and matched physical centers (2026-10-19)
 
@@ -416,7 +417,89 @@ TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_pol
 python3 -B scripts/summarize_shapes.py --report artifacts/official-alphabet-2026-10-19/report.json --output artifacts/official-alphabet-2026-10-19/summary.html
 ```
 
-The full alphabet run is recorded separately from tests and the earlier T/L probe.
-Completed sweep findings, cost accounting and artifact hashes follow once the
-bounded evaluation has finished; partial reports retain status `running` and must
-not be treated as a completed 27-shape result.
+The full alphabet run completed separately from tests and the earlier T/L probe.
+After adding peak-overlap diagnostics/screenshots, the final installed suite passed
+**all 92 tests**: 58 source-only and 34 opt-in runtime checks. Source-only discovery
+passed 58 and skipped 34. The two additions verify earliest-peak/tie/lost-overlap
+handling and the correct decoded post-action frame after initial video frame zero.
+Source/whitespace checks passed. No additional policy evaluation was needed for
+these presentation changes.
+
+## Completed frozen-policy alphabet sweep (2026-10-19)
+
+All 27 shapes shared accepted development scene **100000** and CUDA noise seed
+**3486894925**. The first candidate passed every shape's checks. Original T and Y
+succeeded; all other letters and the 10%-shorter-cap T exhausted 300 controls.
+The policy/checkpoint remained frozen, with no target-shape data or training.
+
+| Shape | Success | Controls | Best IoU | Final IoU | Contact steps |
+| --- | --- | --- | --- | --- | --- |
+| T | Yes | 128 | 0.9241 | 0.9241 | 74 |
+| A | No | 300 | 0.5433 | 0.1848 | 81 |
+| B | No | 300 | 0.3695 | 0.2728 | 160 |
+| C | No | 300 | 0.2755 | 0.0645 | 118 |
+| D | No | 300 | 0.8154 | 0.4172 | 127 |
+| E | No | 300 | 0.3129 | 0.2453 | 151 |
+| F | No | 300 | 0.1749 | 0.1542 | 138 |
+| G | No | 300 | 0.3782 | 0.2302 | 109 |
+| H | No | 300 | 0.2261 | 0.1311 | 181 |
+| I | No | 300 | 0.4058 | 0.1898 | 139 |
+| J | No | 300 | 0.1876 | 0.1165 | 82 |
+| K | No | 300 | 0.7512 | 0.0620 | 175 |
+| L | No | 300 | 0.3015 | 0.0000 | 288 |
+| M | No | 300 | 0.3322 | 0.1233 | 129 |
+| N | No | 300 | 0.4352 | 0.2607 | 134 |
+| O | No | 300 | 0.3384 | 0.1099 | 128 |
+| P | No | 300 | 0.2332 | 0.2291 | 159 |
+| Q | No | 300 | 0.2599 | 0.1725 | 82 |
+| R | No | 300 | 0.4032 | 0.2456 | 205 |
+| S | No | 300 | 0.5755 | 0.5755 | 149 |
+| U | No | 300 | 0.3023 | 0.1137 | 184 |
+| V | No | 300 | 0.3422 | 0.1713 | 133 |
+| W | No | 300 | 0.3919 | 0.2577 | 221 |
+| X | No | 300 | 0.2896 | 0.1684 | 171 |
+| Y | Yes | 235 | 0.9121 | 0.9121 | 120 |
+| Z | No | 300 | 0.4648 | 0.1616 | 153 |
+| T_narrow | No | 300 | 0.8717 | 0.7751 | 69 |
+
+Cost: **7863 controls / 78630 control-physics substeps**, **27 reset substeps**,
+**996 policy calls / 99600 denoising steps**. Elapsed: **1553.45 seconds** (25.89
+minutes), including loading, rendering and streamed encoding, without display
+pacing or a final-frame hold. This is an execution measurement, not an isolated
+GPU throughput benchmark. Test/diagnostic controls and the earlier probes are
+separate from these counts.
+
+All **7890 frames across 27 videos** decoded at 512×512, including one starting
+frame per episode. Videos total 12,025,483 bytes. Read-back also verified per-step
+counts, final/max scores, contacts, success/cutoff consistency, common seeds and
+current source hashes. T and L actions, full states, contacts, flags, rewards and
+video bytes match the earlier paired probe **exactly**. Verification performed
+no inference, physical replay, training or downloading.
+
+Ignored output: `artifacts/official-alphabet-2026-10-19`. The full report is
+15,589,791 bytes, SHA-256:
+`e320ff873951cb6d676e23ca0df560ab9d9610fbe66adb6b17871166b8745a8f`.
+`verification.json` records all video sizes/frame counts/hashes and prior T/L
+comparisons. `summary.html`/`summary.csv` preserve all outcomes and peak/final
+measurements; 27 `*-best.png` screenshots show the earliest best-IoU post-action
+frames. Total local output including the gallery and screenshots is about **28
+MiB**, with no new environment, model asset, dataset or persistent download cache.
+The run started with a dirty tree at parent `7f0d457`; all recorded evaluation
+source hashes match the subsequently committed implementation `6b98c90`.
+
+Near misses are visible in the saved data: D peaked at control 201 with IoU
+0.8154 / 89.83% target coverage, then finished at IoU 0.4172. K peaked at 163 with
+IoU 0.7512 / 85.79% coverage, then finished at 0.0620. The near-T control peaked
+at 262 with IoU 0.8717 / 93.14% coverage, then finished at 0.7751. These missed
+the unchanged `coverage > 0.95` rule. The gallery records best control, coverage
+and best-to-final IoU loss rather than relabeling them successes. Y reached 95.40%
+coverage at control 235 and terminated successfully. Peak screenshots were selected
+after evaluation; they are descriptive diagnostics, not a learned stopping rule.
+
+These are one-scene observations for one T-trained checkpoint and one specified
+block alphabet. They neither establish Diffusion Policy's general limit nor a
+reliable success rate or ranking. Near-T failure here does not establish a 10%
+tolerance boundary. Repeat fixed evaluation scenes before making those claims.
+Area/inertia/density, contact contours, component seams and common reset rejection
+are disclosed in the [shape protocol](OFFICIAL_SHAPES.md). There is still no
+adaptation result; official-L collection and learned optimization remain next.
