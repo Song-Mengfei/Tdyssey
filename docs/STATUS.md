@@ -166,13 +166,19 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Improve the first model before using it for imagined control: expand bounded
-training scene/contact diversity, reduce false noncontact motion and make predicted
-reward/motion sensitive to actual action effects. Keep normalization/training data
-separate from validation choices; leave real model-test images untouched until a
-fixed comparison. Check image/motion consistency and frozen final/sum action
-ranking protocols in matched physical branches. The initial pilot is small and
-its mixed metrics do not pass the learned-dynamics reliability gate.
+Assess the released pretrained GPC world model before further custom-model tuning.
+Record its pinned source/checkpoint revision, architecture, required files and byte
+sizes, dependencies/license, image histories, action units/normalization and control
+timing. Compare these with the official T environment and policy; do not assume
+that the existing GPC policy loader also loads its world model. DINO-WM is the
+alternative to assess if compatibility or resource costs make GPC unsuitable.
+
+After that assessment, run a bounded pretrained prediction check on T, comparing
+contact/noncontact motion and action effects against matched physical branches.
+Record measured storage/GPU costs before L adaptation. Keep the custom L-only CNN
+as a pipeline baseline with its failed reliability gate; no pretrained integration
+or T-to-L world-model transfer is completed. Leave real model-test images untouched
+and freeze action-ranking/terminal scoring before comparisons. See decision D020.
 
 Verify direct physical-simulator policy optimization before imagined updates.
 Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before
