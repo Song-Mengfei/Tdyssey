@@ -62,6 +62,10 @@ Main changes continue through pull requests.
   CUDA sweep, exact SVG catalog, and report-driven HTML/video gallery and CSV.
   Alphabet exploration is separate from the core T-to-L learning study.
 
+- Published the 27 curated alphabet MP4 files directly in Git (about 11.5 MiB),
+  with a linked index and exact video hashes: `docs/ALPHABET_RESULTS.md`.
+  Complete raw reports, generated galleries and future videos remain outside Git.
+
 ## Verification status
 
 See `docs/VALIDATION.md` for commands and limits.

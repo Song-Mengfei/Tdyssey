@@ -503,3 +503,13 @@ tolerance boundary. Repeat fixed evaluation scenes before making those claims.
 Area/inertia/density, contact contours, component seams and common reset rejection
 are disclosed in the [shape protocol](OFFICIAL_SHAPES.md). There is still no
 adaptation result; official-L collection and learned optimization remain next.
+
+## Published alphabet video snapshot
+
+All 27 unchanged MP4 files are committed under
+`docs/media/official-alphabet-2026-10-19/`, totaling 12,025,483 bytes. Their copied
+sizes/SHA-256 values match the decoded originals in `verification.json`.
+[Browse the video table](ALPHABET_RESULTS.md); `videos.json` beside the clips
+records scene/noise seeds, original report hash, control costs and per-video hashes.
+This explicit curated snapshot is an exception to the default raw-artifact policy.
+No inference, replay, re-encoding, download or dependency installation was needed.
