@@ -88,10 +88,10 @@ earlier canonical official run exactly; its video was byte-identical. Reward
 differences were at most floating-point roundoff from polygon-area calculation.
 See [validation details](VALIDATION.md) for counts and artifact fingerprints.
 
-One scene does not establish a generalization rate or a learning benefit. Next,
-port bounded non-expert collection to this official L interface, preserve raw
-observations/actions and reset provenance, and freeze nonempty whole-episode
-train/validation/test splits separate from development evaluation scenes. The old
+One scene does not establish a generalization rate or a learning benefit.
+[Official non-expert collection](OFFICIAL_COLLECTION.md) is now implemented with
+raw observations/actions, full reset provenance, and nonempty frozen whole-episode
+train/validation/test splits separate from the known development scenes. The old
 GPC fixture datasets are not a matched training set for this new geometry/physics.
 Then train/validate the visual world model and verify direct simulator learning
 before imagined policy optimization.

@@ -22,6 +22,8 @@ This change does not implement another physics engine or a replacement policy.
 | `tests/test_gpc_runtime.py` | Opt-in real physics, rendering, T comparison, and state/replay checks |
 | `tdyssey/collection.py` | Bounded waypoint play with reset checks, seed records, contact diagnostics, and T+1 observations |
 | `tdyssey/dataset.py` | Compact episode persistence, byte limits, file hashes, frozen splits, and read-back validation |
+| `tdyssey/official_collection.py` | Official T/L play with evaluation-scene exclusions, full resets and nonempty frozen splits |
+| `scripts/collect_official_play.py` | Bounded official collection/read-back without model weights or training |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
 | `tdyssey/training_data.py` | Frozen combined catalogs, duplicate/split checks, and lazy episode-safe training windows |
 | `scripts/prepare_training_data.py` | Verify real CPU batches without training; see `docs/TRAINING_DATA.md` |
