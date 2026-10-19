@@ -1,6 +1,5 @@
-"""Source-only checks of official resource identity and namespace isolation."""
+"""Source-only checks of official source integrity and namespace isolation."""
 
-import json
 from pathlib import Path
 import sys
 import tempfile
@@ -8,21 +7,11 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from tdyssey.official import load_official_source, official_spec
+from tdyssey.official import load_official_source
 from tdyssey.policy import hash_file
 
 
 class OfficialSourceChecks(unittest.TestCase):
-    def test_official_identity_and_horizons_are_distinct_from_gpc(self):
-        spec = official_spec()
-        self.assertEqual(spec["source_repository"], "https://github.com/real-stanford/diffusion_policy")
-        self.assertEqual(spec["policy_config"]["crop_shape"], [84, 84])
-        self.assertTrue(spec["evaluation"]["legacy_test"])
-        self.assertEqual(spec["policy_config"]["horizon"], 16)
-        self.assertEqual(spec["policy_config"]["n_action_steps"], 8)
-        self.assertEqual(spec["policy_config"]["noise_scheduler"]["num_train_timesteps"], 100)
-        self.assertNotEqual(spec["source_commit"], json.loads(Path("manifests/gpc_policy.json").read_text())["source_commit"])
-
     def test_modified_source_is_rejected_before_any_import(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

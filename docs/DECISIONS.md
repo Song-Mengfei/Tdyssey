@@ -271,3 +271,15 @@ terminal protocols before comparisons. Require physical action checks and direct
 simulator policy optimization before imagined updates. This checkpoint is not
 ready to supply imagined policy training. Preserve the negative findings and
 single-seed/episode limitations rather than tuning against the model-test split.
+
+## D019 — Keep automated checks focused on research behavior (2026-10-19)
+
+Remove twelve peripheral or repeated unit checks: message-validator examples,
+gallery HTML/CSV formatting, fixed manifest values, seed-hash bookkeeping, basic
+window/split argument rejection and an angle helper already exercised through
+physical metrics. Keep the source checker and real commit/PR message validation.
+Retain all installed simulator, video-frame alignment, data-integrity, causal
+gradient and CUDA-training tests, plus source checks of geometry, accounting,
+resource caps and split leakage. Prefer focused behavior checks over growth in
+test count; changing the suite does not change any recorded experiment protocol
+or justify fewer final research evaluations.

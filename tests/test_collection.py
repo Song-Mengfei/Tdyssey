@@ -4,7 +4,7 @@ from dataclasses import replace
 import math
 import unittest
 
-from tdyssey.collection import CollectionConfig, WaypointPlay, derived_seed, reset_issues
+from tdyssey.collection import CollectionConfig, WaypointPlay, reset_issues
 from tdyssey.geometry import Pose, get_shape
 from tdyssey.state import BodyState, Snapshot
 
@@ -61,12 +61,6 @@ class CollectionProtocolChecks(unittest.TestCase):
         self.assertIn("pusher_outside_walls", reset_issues(shape, state(pusher=(10, 200))))
         initial_success = replace(state(), goal=state().object_body.pose)
         self.assertIn("already_near_goal", reset_issues(shape, initial_success))
-
-    def test_reset_action_and_episode_seed_streams_are_separate(self):
-        values = [derived_seed(2, "L", index, stream) for index in range(5) for stream in ("reset", "actions")]
-        self.assertEqual(len(set(values)), 10)
-        self.assertTrue(all(0 <= value < 2**32 for value in values))
-        self.assertEqual(derived_seed(2, "L", 0, "reset"), values[0])
 
 
 if __name__ == "__main__":
