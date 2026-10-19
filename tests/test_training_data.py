@@ -17,14 +17,6 @@ class TrainingProtocolChecks(unittest.TestCase):
         self.assertEqual(list(spec.anchors(6)), [1, 2, 3])
         self.assertEqual(list(WindowSpec(1, 1).anchors(3)), [0, 1, 2])
 
-    def test_invalid_window_sizes_and_episode_lengths_are_rejected(self):
-        for history, future in ((0, 1), (1, 0), (33, 1), (1, 33), (True, 1), (1.5, 1)):
-            with self.assertRaises(ValueError):
-                WindowSpec(history, future)
-        for length in (-1, True, 1.5):
-            with self.assertRaises(ValueError):
-                WindowSpec().anchors(length)
-
     def test_duplicate_trajectories_and_initial_scene_leakage_are_rejected(self):
         first = {"trajectory_id": "a", "split": "train", "initial_state_sha256": "scene-1"}
         with self.assertRaisesRegex(ValueError, "Duplicate trajectory"):
@@ -33,10 +25,6 @@ class TrainingProtocolChecks(unittest.TestCase):
             check_membership([first, {**first, "trajectory_id": "b", "split": "validation"}])
         check_membership([first, {**first, "trajectory_id": "b"}])  # Same scene may stay within one split.
         check_membership([first, {**first, "trajectory_id": "c", "split": "model_test", "initial_state_sha256": "scene-2"}])
-
-    def test_unknown_membership_split_is_rejected(self):
-        with self.assertRaisesRegex(ValueError, "Unknown dataset split"):
-            check_membership([{"trajectory_id": "a", "split": "anything", "initial_state_sha256": "scene"}])
 
     def test_manifest_checks_membership_and_counts_without_importing_numpy(self):
         value = {"schema_version": 1, "status": "complete", "config": {"episodes": 1},

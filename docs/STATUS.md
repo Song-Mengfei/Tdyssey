@@ -76,6 +76,8 @@ Main changes continue through pull requests.
   metrics, persistence baselines, compact checkpoints and physical candidate probes.
   This visual model uses privileged labels, not physical-state inputs. Its first
   training experiment and limitations are in `docs/WORLD_MODEL.md`.
+  It was trained from scratch on L; no T world-model pretraining or transfer
+  comparison has been performed. The frozen T policy has separate pretrained weights.
 
 ## Verification status
 
@@ -87,8 +89,9 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 110 tests passed together in the installed environment: 67 source-only and
+- All 98 retained tests passed together in the installed environment: 55 source-only and
   43 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+  Twelve peripheral/repeated checks were removed; simulator and GPU checks remain.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.

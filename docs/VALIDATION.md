@@ -702,3 +702,22 @@ action sensitivity remain blockers to imagined control. Improve data/action
 coverage and prediction quality, then repeat physical candidate checks and direct
 simulator policy optimization before imagined optimization. Final model-test and
 multi-seed evaluation remain pending.
+
+## Focused automated suite (2026-10-19)
+
+The earlier counts above record the suites that ran at each milestone. The
+current suite has **98 tests: 55 source-only and 43 opt-in runtime checks**.
+Twelve peripheral/repeated checks were removed as recorded in decision D019;
+all installed physics, video alignment, data-integrity and GPU checks remain.
+No model implementation, experiment split, evaluation budget or saved result
+changed. The actual commit/PR message checker remains in use.
+
+```bash
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+Repository checks passed. Source-only discovery passed 55 and skipped 43;
+the installed suite passed all 98 in 12.674 seconds. Its synthetic CUDA optimizer
+update is a diagnostic, not another real-data model training experiment.

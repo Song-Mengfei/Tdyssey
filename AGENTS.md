@@ -89,6 +89,11 @@ when the required environment is available. Otherwise report exactly which check
 were static and what runtime verification is pending. Never claim a dependency
 lockfile proves CUDA, simulator, or checkpoint compatibility.
 
+Keep tests focused on meaningful behavior. Reuse existing coverage instead of
+adding repeated input/default checks. Documentation wording and presentation-only
+changes normally need the source/message checks, not new unit tests. Preserve
+checks for physics, action timing, data separation, metrics and actual GPU updates.
+
 After a substantive milestone, update `docs/STATUS.md` with completed work,
 evidence, next task, and unresolved blockers. Record scope/dependency/protocol
 decisions in `docs/DECISIONS.md`. Keep these short; chat history is not shared

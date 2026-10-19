@@ -6,6 +6,14 @@ small CNN predictor, separate from the unchanged official Diffusion Policy.
 It uses no object pose, velocity, contact or reward as model input. It currently
 accepts official capital-L datasets only.
 
+**There is no pretrained world-model checkpoint in use.** The first run trains
+this predictor from scratch on six L play episodes (600 unique control steps).
+It has not been pretrained on T or initialized from GPC or the official policy.
+The official T-trained Diffusion Policy is a separate, frozen model. This pilot
+checks the learning pipeline; it does not yet demonstrate transferring a world
+model from T to L. A transfer comparison would need a recorded T training stage
+and a matched L-only baseline before claiming a benefit from pretraining.
+
 This is a functioning training/validation baseline, **not yet a reliable simulator
 for policy optimization**. The first GPU run improved one validation contact-motion
 metric but made noncontact drift and overall position error worse. Candidate
@@ -50,6 +58,19 @@ checkpoint is retained, with weights/config/normalization; optimizer/resume stat
 is deliberately not saved. The report records all completed validation passes.
 
 ## Model and training protocol
+
+| Part | Architecture |
+| --- | --- |
+| Image encoder | Stack two RGB frames into 6 channels; three 3×3 stride-2 convolutions, 16 → 32 → 64 channels, each with GroupNorm and SiLU. Spatial size: 96 → 48 → 24 → 12. |
+| Action/goal conditioning | Ten values: two pusher positions, relative action target, goal position and sine/cosine of goal angle. Fully connected layers 10 → 64 → 32; tile over the 12×12 map. |
+| Shared features | Concatenate 64 image and 32 conditioning channels; 3×3 convolution to 64 channels. |
+| Image decoder | Bilinear upsampling with encoder skip connections, 32 → 16 → 16 channels; predict an RGB change added to the latest image. |
+| Motion output | Flatten the shared map; fully connected layers 9216 → 128 → 5 predict pusher dx/dy and object dx/dy/angle change. |
+| Contact/reward output | Spatial average; fully connected layers 64 → 32 → 2. |
+
+Hidden weights use PyTorch's default random initialization. The final image and
+motion layers start at zero; the scalar output starts at training-mean reward
+and contact frequency. These are starting values, not pretrained dynamics.
 
 - Encode the two 96×96 RGB images together using three stride-2 convolution blocks
   with 16/32/64 channels, GroupNorm and SiLU. Condition the 12×12 feature map on

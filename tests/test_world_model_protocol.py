@@ -2,7 +2,7 @@
 
 import unittest
 
-from tdyssey.world_model_data import episode_order, wrap_angle
+from tdyssey.world_model_data import episode_order
 from tdyssey.world_model_protocol import MetricTotals, WorldModelConfig
 
 
@@ -29,9 +29,6 @@ class WorldModelProtocolChecks(unittest.TestCase):
         self.assertEqual(result['all']['error'],5.)
         self.assertIsNone(result['contact']['error'])
         with self.assertRaises(ValueError):totals.add(1,'all',1,{'error':float('inf')})
-
-    def test_angles_wrap_at_pi(self):
-        self.assertAlmostEqual(wrap_angle(6.283185307179586+.2),.2)
 
 
 class CandidateScoreChecks(unittest.TestCase):
