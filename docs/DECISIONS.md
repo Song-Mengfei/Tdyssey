@@ -67,3 +67,15 @@ Keep environments, source checkouts, local tools, and machine-specific reports
 ignored. Write shared instructions for all three authors; machine-specific setup
 consent, paths, and limitations belong in local records. CPU validation does not
 establish CUDA, checkpoint, or training compatibility.
+
+## D009 — Bounded play data protocol (2026-10-19)
+
+Collect small, explicitly bounded non-expert runs before building training loops.
+Store one uint8 image per observation and T+1 observations per T actions, plus
+physical labels, source hashes, reset/action seeds, and contact diagnostics.
+Use fixed-goal, geometry-checked resets and count rejected reset substeps as well
+as control actions. Default random waypoint exploration has no object-state action
+prior; optional object-directed exploration uses simulator position and must be
+reported as privileged exploration. Preserve upstream flags separately from the
+collector's horizon cutoff. Freeze whole-episode splits and verify files on read-back;
+small verification data is not a training or policy-performance result.

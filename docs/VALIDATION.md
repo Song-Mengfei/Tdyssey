@@ -69,3 +69,40 @@ new interaction data, videos, and CUDA libraries are additional storage costs.
 Legacy Gym prints its maintenance warning; NumPy remains pinned to 1.26.4 for
 upstream compatibility. Do not reinterpret these short simulator checks as
 evidence of policy success, exact mid-contact replay, or training compatibility.
+
+## Interaction collector checks (2026-10-19)
+
+The bounded collector and its loader were checked with the same CPU/GPC profile.
+All **48 tests passed** with `TDYSSEY_GPC_ROOT` set; source-only discovery passed
+38 tests and skipped ten runtime tests. Six new source-only checks cover limits,
+seed/action reproducibility, the object-state exploration prior, and rotated reset
+geometry. Five new runtime checks cover persistence/timing, uint8 quantization,
+reset rejection accounting, reproducibility, terminal handling, overwrite refusal,
+file corruption, byte limits, and failed-run labels.
+
+Retained small example outputs, all verified by reading their files back:
+
+| Shape / mode | Episodes | Control steps | Reset substeps | Contact steps | File bytes |
+| --- | --- | --- | --- | --- | --- |
+| T / random-waypoints | 1 | 10 | 1 | 0 | 54,412 |
+| I / random-waypoints | 1 | 10 | 1 | 0 | 53,418 |
+| L / object-directed | 2 | 120 | 2 | 15 | 482,194 |
+
+The four episodes above use 590,024 bytes total across three run directories.
+Counts describe these retained collector examples, not total project interaction
+cost. A prior 120-step prototype was removed after retaining its accounting summary;
+runtime tests and earlier smoke/replay checks are separate diagnostic work.
+
+Commands for the L example and fresh-process read-back:
+
+```bash
+.venv/bin/python -B scripts/collect_play.py --output artifacts/collection-check-L --shape L --episodes 2 --steps 60 --mode object-directed --max-mib 8
+.venv/bin/python -B scripts/collect_play.py --validate-only --output artifacts/collection-check-L
+```
+
+Outputs and detailed provenance remain under ignored `artifacts/`. Runs recorded
+the working-tree source hashes and dirty state, not a claimed clean training
+release. Object-directed exploration uses simulator object position. Tiny examples
+do not establish exploration coverage, learned dynamics quality, or policy success;
+their validation/test splits can be empty. Training loaders, combined dataset
+manifests, pretrained-policy loading, and training remain pending.

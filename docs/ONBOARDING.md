@@ -5,8 +5,9 @@
 1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
-3. First code exists for geometry, the GPC shape adapter, state/data records, and
-   evaluation. Read `docs/IMPLEMENTATION.md` and `docs/VALIDATION.md`. The CPU/GPC
+3. First code exists for geometry, the GPC shape adapter, interaction collection,
+   state/data records, and evaluation. Read `docs/IMPLEMENTATION.md`,
+   `docs/COLLECTION.md`, and `docs/VALIDATION.md`. The CPU/GPC
    simulator checks pass; policy/model training and experiment results remain
    pending. A negative outcome is acceptable for the course if the work and
    analysis are substantial.
