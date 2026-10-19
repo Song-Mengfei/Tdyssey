@@ -95,74 +95,100 @@ class DatasetWriter:
         self.closed = True
 
 
-def load_dataset(root):
-    """Validate hashes, episode timing, frame alignment, and complete split coverage.
-
-    Return manifest and episode records/arrays. Intended for the bounded pilot,
-    not as a streaming loader for a large future training dataset.
-    """
+def load_episode(root, entry):
+    """Verify one episode and load its arrays; used by the lazy training loader."""
     import numpy as np
 
     root = Path(root)
-    manifest = json.loads((root / "manifest.json").read_text())
+    payloads = {}
+    for file in entry["files"]:
+        name = file["name"]
+        if Path(name).name != name:
+            raise ValueError("Episode filenames must stay within the dataset directory")
+        payload = (root / name).read_bytes()
+        if len(payload) != file["bytes"] or digest(payload) != file["sha256"]:
+            raise ValueError(f"File hash/size mismatch: {name}")
+        payloads[name] = payload
+    record_name = next(name for name in payloads if name.endswith(".json"))
+    record = json.loads(payloads[record_name])
+    if type(record["schema_version"]) is not int or record["schema_version"] != 1:
+        raise ValueError("Unsupported episode schema")
+    trajectory = Trajectory.from_json(json.dumps(record["trajectory"]))
+    image_data = payloads[record["image_file"]]
+    if digest(image_data) != record["image_sha256"]:
+        raise ValueError("Image hash differs from episode record")
+    with np.load(io.BytesIO(image_data), allow_pickle=False) as data:
+        arrays = {name: data[name] for name in ("images", "agent_pos", "goal_pose")}
+    count = len(trajectory.transitions)
+    if (trajectory.trajectory_id != entry["trajectory_id"] or count != entry["control_steps"]
+            or entry["observation_count"] != count + 1 or len(record["step_diagnostics"]) != count):
+        raise ValueError("Episode metadata does not match control transitions")
+    for transition, diagnostics in zip(trajectory.transitions, record["step_diagnostics"]):
+        if (transition.terminated != diagnostics["upstream_terminated"]
+                or transition.truncated != (diagnostics["upstream_truncated"] or diagnostics["collector_truncated"])):
+            raise ValueError("Stored terminal flags differ from source/collector diagnostics")
+    if not (trajectory.transitions[-1].terminated or trajectory.transitions[-1].truncated):
+        raise ValueError("Collected episode has no recorded stopping condition")
+    if arrays["images"].dtype != np.uint8 or arrays["images"].shape != (count + 1, 3, 96, 96):
+        raise ValueError("Expected exactly T+1 uint8 image observations")
+    if arrays["agent_pos"].shape != (count + 1, 2) or arrays["goal_pose"].shape != (count + 1, 3):
+        raise ValueError("Proprioception/goal observation timing mismatch")
+    for name in ("agent_pos", "goal_pose"):
+        if not np.isfinite(arrays[name]).all():
+            raise ValueError("Non-finite observation")
+    states = [trajectory.transitions[0].before, *(t.after for t in trajectory.transitions)]
+    np.testing.assert_allclose(arrays["agent_pos"], [s.pusher_body.pose.position for s in states], rtol=0, atol=1e-9)
+    np.testing.assert_allclose(arrays["goal_pose"],
+                               [(*s.goal.position, s.goal.angle % (2 * np.pi)) for s in states], rtol=0, atol=1e-9)
+    return trajectory, record, arrays
+
+
+def read_manifest(root):
+    """Validate episode membership and run accounting without loading image arrays."""
+    manifest = json.loads((Path(root) / "manifest.json").read_text())
     if type(manifest["schema_version"]) is not int or manifest["schema_version"] != 1 or manifest["status"] != "complete":
         raise ValueError("Dataset must be complete with supported schema")
-    episodes = []
-    for entry in manifest["episodes"]:
-        payloads = {}
-        for file in entry["files"]:
-            name = file["name"]
-            if Path(name).name != name:
-                raise ValueError("Episode filenames must stay within the dataset directory")
-            payload = (root / name).read_bytes()
-            if len(payload) != file["bytes"] or digest(payload) != file["sha256"]:
-                raise ValueError(f"File hash/size mismatch: {name}")
-            payloads[name] = payload
-        record_name = next(name for name in payloads if name.endswith(".json"))
-        record = json.loads(payloads[record_name])
-        if type(record["schema_version"]) is not int or record["schema_version"] != 1:
-            raise ValueError("Unsupported episode schema")
-        trajectory = Trajectory.from_json(json.dumps(record["trajectory"]))
-        image_data = payloads[record["image_file"]]
-        if digest(image_data) != record["image_sha256"]:
-            raise ValueError("Image hash differs from episode record")
-        with np.load(io.BytesIO(image_data), allow_pickle=False) as data:
-            arrays = {name: data[name] for name in ("images", "agent_pos", "goal_pose")}
-        count = len(trajectory.transitions)
-        if (trajectory.trajectory_id != entry["trajectory_id"] or count != entry["control_steps"]
-                or entry["observation_count"] != count + 1 or len(record["step_diagnostics"]) != count):
-            raise ValueError("Episode metadata does not match control transitions")
-        for transition, diagnostics in zip(trajectory.transitions, record["step_diagnostics"]):
-            if (transition.terminated != diagnostics["upstream_terminated"]
-                    or transition.truncated != (diagnostics["upstream_truncated"] or diagnostics["collector_truncated"])):
-                raise ValueError("Stored terminal flags differ from source/collector diagnostics")
-        if not (trajectory.transitions[-1].terminated or trajectory.transitions[-1].truncated):
-            raise ValueError("Collected episode has no recorded stopping condition")
-        if arrays["images"].dtype != np.uint8 or arrays["images"].shape != (count + 1, 3, 96, 96):
-            raise ValueError("Expected exactly T+1 uint8 image observations")
-        if arrays["agent_pos"].shape != (count + 1, 2) or arrays["goal_pose"].shape != (count + 1, 3):
-            raise ValueError("Proprioception/goal observation timing mismatch")
-        for name in ("agent_pos", "goal_pose"):
-            if not np.isfinite(arrays[name]).all():
-                raise ValueError("Non-finite observation")
-        states = [trajectory.transitions[0].before, *(t.after for t in trajectory.transitions)]
-        np.testing.assert_allclose(arrays["agent_pos"], [s.pusher_body.pose.position for s in states], rtol=0, atol=1e-9)
-        np.testing.assert_allclose(arrays["goal_pose"],
-                                   [(*s.goal.position, s.goal.angle % (2 * np.pi)) for s in states], rtol=0, atol=1e-9)
-        episodes.append((trajectory, record, arrays))
-    ids = [episode[0].trajectory_id for episode in episodes]
+    entries = manifest["episodes"]
+    if not entries or len(entries) != manifest["config"]["episodes"]:
+        raise ValueError("Episode count differs from requested collection")
+    ids = [entry["trajectory_id"] for entry in entries]
     splits = manifest["splits"]
     if not isinstance(splits, dict) or set(splits) != {"train", "validation", "model_test"}:
         raise ValueError("Missing frozen whole-episode splits")
     assigned = [identifier for part in splits.values() for identifier in part]
     if len(ids) != len(set(ids)) or len(assigned) != len(ids) or set(assigned) != set(ids):
         raise ValueError("Splits are overlapping, incomplete, or contain unknown episodes")
-    if manifest["counts"]["control_steps"] != sum(len(episode[0].transitions) for episode in episodes):
-        raise ValueError("Stored and executed control-step counts differ")
-    resets = sum(len(episode[1]["reset_attempts"]) for episode in episodes)
+    for entry in entries:
+        if type(entry["control_steps"]) is not int or entry["control_steps"] < 1 or entry["observation_count"] != entry["control_steps"] + 1:
+            raise ValueError("Invalid episode length")
+        names = [file["name"] for file in entry["files"]]
+        if len(set(names)) != 2 or sorted(Path(name).suffix for name in names) != [".json", ".npz"]:
+            raise ValueError("Episode must contain one record and one image archive")
+        if any(Path(name).name != name for name in names):
+            raise ValueError("Episode filenames must stay within the dataset directory")
     counts, rates = manifest["counts"], manifest["rates"]
-    if (counts["reset_attempts"] != resets or counts["reset_physics_substeps"] != resets
-            or rates["simulation_hz"] % rates["control_hz"]
+    if (type(rates["simulation_hz"]) is not int or type(rates["control_hz"]) is not int
+            or rates["simulation_hz"] <= 0 or rates["control_hz"] <= 0
+            or rates["simulation_hz"] % rates["control_hz"]):
+        raise ValueError("Invalid simulation/control rates")
+    if (counts["control_steps"] != sum(entry["control_steps"] for entry in entries)
+            or counts["reset_attempts"] < len(entries)
+            or counts["reset_physics_substeps"] != counts["reset_attempts"]
             or counts["control_physics_substeps"] != counts["control_steps"] * rates["simulation_hz"] // rates["control_hz"]):
+        raise ValueError("Physics/reset cost accounting mismatch")
+    return manifest
+
+
+def load_dataset(root):
+    """Validate hashes, episode timing, frame alignment, and complete split coverage.
+
+    Return manifest and episode records/arrays. Intended for the bounded pilot,
+    not as a streaming loader for a large future training dataset.
+    """
+    root = Path(root)
+    manifest = read_manifest(root)
+    episodes = [load_episode(root, entry) for entry in manifest["episodes"]]
+    resets = sum(len(episode[1]["reset_attempts"]) for episode in episodes)
+    if manifest["counts"]["reset_attempts"] != resets:
         raise ValueError("Physics/reset cost accounting mismatch")
     return manifest, episodes

@@ -1,10 +1,10 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: bounded interaction collection; no training experiments completed.
+Updated: 2026-10-19. Stage: training-data preparation; no model training completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU setup,
-real simulator tests, shared documentation cleanup, and bounded interaction
-collection together. Review branch: `build/minimal-runtime-setup`.
+real simulator tests, shared documentation cleanup, bounded interaction collection,
+and episode-safe training batches together. Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
 
 ## Completed
@@ -30,6 +30,11 @@ Main changes continue through pull requests.
   contact diagnostics, source/file hashes, and frozen whole-episode splits.
 - Added read-back validation and refusal to overwrite earlier datasets. Collection
   and validation commands are in `docs/COLLECTION.md`.
+- Added frozen combined catalogs with source hashes, duplicate-episode and initial-scene
+  leakage checks, matching control rates, and preservation of existing splits.
+- Implemented on-demand visual history/future windows with one decoded episode
+  cached, plus real CPU PyTorch batches. No image windows are duplicated on disk.
+  Commands and timing/label assumptions are in `docs/TRAINING_DATA.md`.
 
 ## Verification status
 
@@ -41,12 +46,17 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 48 tests passed together in the installed environment: 38 source-only and
-  ten opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
+- All 60 tests passed together in the installed environment: 43 source-only and
+  17 opt-in runtime tests. Source-only discovery passed and skipped runtime tests.
 - Small collector examples passed for T/I/L: 140 control steps across four episodes,
   four reset substeps, 15 L-shape contact steps, and 590,024 bytes of saved output.
   These retained example counts exclude earlier prototype and diagnostic/test work.
   Raw data is ignored; portable findings are in `docs/VALIDATION.md`.
+- Existing example data produced 124 training windows with history 2/future 4;
+  two batches of four examples passed CPU shape/dtype/finite checks. The catalog
+  uses 1,766 bytes and its report 1,587 bytes; no new interaction data was needed.
+  Validation/test splits remain empty in these tiny examples, so no model-quality
+  evaluation or learned improvement is claimed.
 - CUDA, checkpoint loading, original dataset conversion, policy/world-model
   training, reset-safety coverage, and replay restored during contact remain pending.
 - No datasets, model checkpoints, CUDA libraries, or training runs were acquired
@@ -54,14 +64,17 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Build a training-data loader that constructs observation histories/transition
-windows without crossing episode boundaries. Freeze combined dataset splits and
-measure contact coverage before expanding collection or training a world model.
+Integrate original T-policy resource loading and a bounded baseline rollout command:
+verify checkpoint/data schema, image transforms, observation histories, action
+normalization/horizons, and executed prefixes. Record required assets separately
+from the small development datasets; download only selected verified files when
+the execution machine and storage budget are agreed.
 
-In parallel with source work, prepare the original T policy's resource-loading
-and observation/action compatibility checks. Load only the required pinned asset
-when ready, then compare T/I/L performance with matched initial states. Reproduce
-that baseline before choosing visual route A or state route B and before training.
+Then compare T/I/L with matched initial states and collect a meaningful target-shape
+dataset with nonempty frozen validation/test splits and contact diagnostics.
+Reproduce the T baseline before choosing visual route A or state route B, training
+the first world model, and adding policy optimization. GPU host setup is a separate
+machine task; current work focuses on the portable repository pipeline.
 
 ## Open questions
 
