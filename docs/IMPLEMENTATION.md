@@ -13,18 +13,20 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/evaluation.py` | Separate coverage/IoU/pose metrics and consecutive-step success tracking |
 | `tdyssey/state.py` | Versioned state records including velocity, angular velocity, force, torque, goal, and latest pusher target |
 | `tdyssey/trajectories.py` | Validated control-step records, JSON round trips, and deterministic whole-trajectory splits |
-| `examples/gpc_shape_env.py` | A later-machine interface check using a pinned, locally available GPC checkout |
+| `examples/gpc_shape_env.py` | An interface check using a pinned, locally available GPC checkout |
+| `tests/test_gpc_runtime.py` | Opt-in real physics, rendering, T comparison, and state/replay checks |
 
-The geometry/evaluation/data code runs with the standard library. Adapter tests
-use explicit construction/API doubles; they do not prove physical motion or real
-image rendering. Backend and checkpoint validation remain pending on the training
-machine. There is no world-model or policy training implementation yet.
+The geometry/evaluation/data code runs with the standard library. Source-only
+adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
+have passed with real Pymunk and GPC on the locked CPU profile; see
+`docs/VALIDATION.md`. CUDA and checkpoint validation remain pending. There is no
+world-model or policy training implementation yet.
 Trajectory records currently hold physical-state labels for diagnostics, not RGB
 frames or the original GPC training-data format. Visual frame/history storage and
 data conversion remain collection work. Training with these state labels must be
 reported as using privileged simulator supervision.
 
-## Run the code here without installation
+## Run the core code without installation
 
 ```bash
 python3 -B -m unittest discover -s tests -p 'test_*.py'
@@ -37,13 +39,13 @@ At scale 30, T/L area is 6,300 pixel² and I area is 3,600 pixel². The half-tur
 preview correctly gives I full overlap but not T/L. These are geometric checks,
 not robot success rates.
 
-## Use the existing environment later
+## Use the existing environment
 
-On a machine authorized for setup, obtain the GPC revision in
-`manifests/upstream.json`, install the documented profile, and run from this repo:
+Obtain the sparse GPC checkout and install a profile using `docs/ENVIRONMENT.md`.
+With the CPU/GPC environment installed, run from this repo:
 
 ```bash
-uv run --locked --extra cu124 --extra gpc python -B examples/gpc_shape_env.py --gpc-root /path/to/gpc_code --shape T --steps 5
+SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy MPLBACKEND=Agg .venv/bin/python -B examples/gpc_shape_env.py --gpc-root third_party/gpc --shape T --steps 5
 ```
 
 Then check I and L. The command verifies the Git revision and unchanged upstream
@@ -92,8 +94,9 @@ after upstream termination, a later evaluation wrapper needs an explicit protoco
 State restoration rebuilds a fresh space and restores bodies without an extra
 unrecorded simulation step. It covers the obstacle-free scene's physical/controller
 state, but does not preserve Chipmunk's cached contact impulses or random-generator
-state for future resets. Validate matched contact replay with a documented tolerance;
-do not claim exact replay solely from JSON round-trip tests. Check initial shape
+state for future resets. Repeated rollouts restored before first contact passed
+the documented tolerance, but restoration during contact remains unverified.
+Do not claim exact replay solely from JSON round-trip tests. Check initial shape
 penetration, boundaries, and goal reachability before collecting target-shape data.
 
 Record the source revision and local patches separately from the physics hash.

@@ -64,6 +64,6 @@ do not create empty framework layers to imply progress. Tracked configuration li
 `manifests/`; large outputs in ignored or external artifact directories.
 
 The original 16-week schedule assumes a full-time researcher and an unverified
-32 GB GPU. It is a reference plan, not the course deadline or this laptop's measured
-capacity. The team has three authors. Deadline, individual owners, available
+32 GB GPU. It is a reference plan, not the course deadline or a hardware requirement.
+The team has three authors. Deadline, individual owners, available
 training machine, and compute budget remain to be recorded in onboarding.
