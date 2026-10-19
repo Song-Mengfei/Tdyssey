@@ -1,5 +1,8 @@
 # First visual world-model pilot
 
+Selected original figures and compact reports are [published with the source](RESULTS.md).
+Full raw reports, frames and weights remain local/ignored; the index states access limits.
+
 The first model predicts the next scene from **two RGB frames, two pusher
 positions, the fixed goal pose and future pixel-position actions**. It is a new,
 small CNN predictor, separate from the unchanged official Diffusion Policy.

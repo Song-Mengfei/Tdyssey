@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -111,6 +112,36 @@ def main() -> int:
                 continue
             if not (path.parent / unquote(parsed.path)).exists():
                 errors.append(f"Broken local link in {path.relative_to(ROOT)}: {target}")
+
+    # A bounded evidence snapshot is the deliberate exception to ignored raw runs.
+    snapshot = ROOT / "docs/media/world-model-2026-10-19"
+    try:
+        publication = json.loads((snapshot / "manifest.json").read_text())
+        listed = [item["path"] for item in publication["files"]]
+        if len(set(listed)) != len(listed) or set(listed) | {"manifest.json"} != {p.name for p in snapshot.iterdir()}:
+            errors.append("Published evidence files differ from the snapshot manifest")
+        if publication["budget_bytes"] != 1024**2:
+            errors.append("World-model evidence snapshot must retain its 1 MiB cap")
+        total = (snapshot / "manifest.json").stat().st_size
+        for item in publication["files"]:
+            name = Path(item["path"])
+            if name.name != item["path"] or name.suffix not in {".png", ".json"}:
+                errors.append("Published evidence must be flat PNG/JSON files")
+                continue
+            data = (snapshot / name).read_bytes()
+            total += len(data)
+            if len(data) != item["bytes"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
+                errors.append(f"Published evidence size/hash mismatch: {name}")
+            if item["kind"] == "original_figure" and item["sha256"] != item["source"]["sha256"]:
+                errors.append(f"Published figure differs from its recorded original: {name}")
+            if name.suffix == ".json":
+                value = json.loads(data)
+                if value["source_report"] != item["source"]:
+                    errors.append(f"Published report provenance differs from manifest: {name}")
+        if total > publication["budget_bytes"]:
+            errors.append("Published world-model evidence exceeds its 1 MiB cap")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"Invalid published evidence snapshot: {exc}")
 
     for error in errors:
         print(f"FAIL: {error}", file=sys.stderr)

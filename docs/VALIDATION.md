@@ -898,3 +898,20 @@ to calibrate the pretrained predictor. Compare initial/adapted weights on disjoi
 validation scenes; preserve the final model-test split and original policy inputs.
 Keep the renderer-only palette result as an explanation/comparison, then assess
 L adaptation and actual physical action effects before imagined-policy claims.
+
+## Selected evidence publication (2026-10-19)
+
+Published four original PNG figures, three compact JSON report selections and a
+manifest under `docs/media/world-model-2026-10-19/`: **775,943 bytes (0.74 MiB)**.
+See [the review index](RESULTS.md). Images were copied byte-for-byte from the
+recorded runs. Each selected report names the exact source report with its size
+and SHA-256; the palette summary includes failed first-run accounting and per-scene
+push predictions as well as aggregate results. Successes and remaining failures
+are visible without runtime setup. The 27 alphabet MP4s remain published separately.
+
+The source checker verifies file membership, sizes, hashes, report provenance
+and the 1 MiB snapshot cap using the standard library. Selected metrics/fields and
+all image bytes were compared with the actual local originals before publication.
+No experiment, model, protocol, environment or dependency changed, and no additional
+unit tests were added for presentation. Full raw reports, data/frame archives,
+weights and caches remain ignored/local; no shared raw archive is configured.
