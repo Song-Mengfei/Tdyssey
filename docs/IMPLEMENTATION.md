@@ -15,15 +15,18 @@ This change does not implement another physics engine or a replacement policy.
 | `tdyssey/trajectories.py` | Validated control-step records, JSON round trips, and deterministic whole-trajectory splits |
 | `examples/gpc_shape_env.py` | An interface check using a pinned, locally available GPC checkout |
 | `tests/test_gpc_runtime.py` | Opt-in real physics, rendering, T comparison, and state/replay checks |
+| `tdyssey/collection.py` | Bounded waypoint play with reset checks, seed records, contact diagnostics, and T+1 observations |
+| `tdyssey/dataset.py` | Compact episode persistence, byte limits, file hashes, frozen splits, and read-back validation |
+| `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
 have passed with real Pymunk and GPC on the locked CPU profile; see
 `docs/VALIDATION.md`. CUDA and checkpoint validation remain pending. There is no
 world-model or policy training implementation yet.
-Trajectory records currently hold physical-state labels for diagnostics, not RGB
-frames or the original GPC training-data format. Visual frame/history storage and
-data conversion remain collection work. Training with these state labels must be
+The collector now stores RGB frames once as uint8 alongside physical-state labels
+and exact observation timing. History-window loading and conversion to the original
+GPC training-data format remain pending. Training with physical labels must be
 reported as using privileged simulator supervision.
 
 ## Run the core code without installation
