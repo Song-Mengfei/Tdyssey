@@ -3,8 +3,8 @@
 Updated: 2026-10-19. Stage: bounded interaction collection; no training experiments completed.
 
 PR #1 merged the shared setup and first code milestone. PR #2 contains CPU setup,
-real simulator tests, and shared documentation cleanup. Collector work on
-`feat/bounded-interaction-collector` builds on that branch while PR #2 is reviewed.
+real simulator tests, shared documentation cleanup, and bounded interaction
+collection together. Review branch: `build/minimal-runtime-setup`.
 Main changes continue through pull requests.
 
 ## Completed
