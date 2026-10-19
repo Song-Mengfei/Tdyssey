@@ -4,10 +4,22 @@
   "status": "pinned_sources_with_partial_runtime_validation",
   "repositories": [
     {
+      "name": "diffusion_policy",
+      "url": "https://github.com/real-stanford/diffusion_policy.git",
+      "commit": "5ba07ac6661db573af695b419a7947ecb704690f",
+      "role": "Primary official visual CNN PushT baseline",
+      "validation": {
+        "checked_on": "2026-10-19",
+        "profile": "cu124+dp",
+        "scope": "official_cnn_ema_and_original_t_environment_three_scenes",
+        "record": "docs/VALIDATION.md"
+      }
+    },
+    {
       "name": "gpc",
       "url": "https://github.com/han20192019/gpc_code.git",
       "commit": "a96146e568826ef46134f73c22fdf59a675e7264",
-      "role": "Primary PushT reproduction candidate",
+      "role": "Optional world-model/planning reference and separate GPC-policy comparison",
       "validation": {
         "checked_on": "2026-10-19",
         "profile": "cpu+gpc and cu124+gpc",

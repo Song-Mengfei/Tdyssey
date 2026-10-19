@@ -19,6 +19,7 @@ def main() -> int:
     parser.add_argument("--runtime", action="store_true", help="Run tiny torch/Pymunk checks")
     parser.add_argument("--require-cuda", action="store_true", help="Check the cu124 profile and GPU")
     parser.add_argument("--gpc", action="store_true", help="Also check optional GPC package versions")
+    parser.add_argument("--dp", action="store_true", help="Also check official Diffusion Policy package versions")
     args = parser.parse_args()
     if args.require_cuda and not args.runtime:
         parser.error("--require-cuda requires --runtime")
@@ -29,6 +30,8 @@ def main() -> int:
     requirements.extend(project["optional-dependencies"][profile])
     if args.gpc:
         requirements.extend(project["optional-dependencies"]["gpc"])
+    if args.dp:
+        requirements.extend(project["optional-dependencies"]["dp"])
     report: dict = {
         "python": platform.python_version(),
         "python_executable": sys.executable,

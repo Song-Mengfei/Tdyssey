@@ -1,4 +1,4 @@
-"""Optional desktop viewer for GPC RGB frames; uses existing pygame, not OpenCV GUI."""
+"""Optional desktop viewer for PushT RGB frames; uses existing pygame, not OpenCV GUI."""
 
 import time
 

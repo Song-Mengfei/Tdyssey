@@ -1,4 +1,9 @@
-# Pretrained policy baseline
+# GPC reference-policy comparison
+
+This is a separate GPC-published policy and environment, not the official RSS 2023
+Diffusion Policy baseline. Start with [the official baseline](OFFICIAL_BASELINE.md).
+Earlier GPC development results remain useful integration evidence but do not
+establish official-policy performance or compatibility of its weights/data.
 
 This command loads GPC's published T-trained visual diffusion policy and executes
 one sampled action chunk at a time in the physical simulator. It uses no world

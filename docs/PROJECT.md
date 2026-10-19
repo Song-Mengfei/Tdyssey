@@ -2,7 +2,8 @@
 
 ## Research question
 
-Start from a diffusion policy trained on T expert demonstrations. Collect
+Start from the official RSS 2023 visual CNN Diffusion Policy trained on T expert
+demonstrations and verified in its original PushT environment. Collect
 non-expert interactions with a new shape, adapt a world model, freeze that model,
 and improve the policy through imagined experience. Evaluate the resulting policy
 in an independent physical simulator.
@@ -15,9 +16,10 @@ shapes. H1 is the initial focus; H2/H3 are stretch questions, not promised resul
 
 The robot remains a circular 2D pusher. Shape variation concerns the pushed object.
 Start with T, I, and L, one rigid object, fixed physical/control parameters, and
-fixed target pose for the adaptation study. The initial pretrained-policy check
-retains upstream randomized goals; record that distinct protocol before comparing
-it with fixed-goal play data. Symmetry and shape-dependent mass/inertia must be explicit.
+fixed target pose for the adaptation study. Prior GPC reference runs used a
+different environment and randomized goals; they are not the official baseline.
+Prioritize T-to-L adaptation before adding I or architecture comparisons.
+Symmetry and shape-dependent mass/inertia must be explicit.
 
 ## Course deliverables and gates
 
@@ -36,15 +38,18 @@ the failure and competing explanations instead of inventing an improvement.
 
 ## Implementation routes
 
-Route A reuses GPC's visual policy/world model. GPC and DPPO/DiWA are not plug-and-play:
-align network parameterization, histories, normalizers, action horizons, rewards,
-and diffusion likelihoods. Upstream reward geometry is T-specific.
+Route A starts with the official visual CNN policy. Reuse suitable GPC world-model
+components as implementation references or comparisons after checking compatibility.
+GPC and DPPO/DiWA are not plug-and-play: align model inputs, histories, normalizers,
+action horizons, rewards, and diffusion likelihoods. GPC learned reward geometry
+is T-specific. Running unchanged GPC is not the adaptation contribution.
 
 Route B uses explicit state and shape geometry with a smaller learned dynamics
 model. Retrain a compatible diffusion policy on the same T demonstrations.
 This is a substantial mechanism study, with matched state-observation baselines;
 it cannot be reported as visual-policy adaptation. Select A/B after resource and
-throughput verification on the actual training machine.
+throughput verification on the actual training machine. The visual CNN route is
+the current starting point; a representation change needs an explicit decision.
 
 ## Minimum comparisons
 

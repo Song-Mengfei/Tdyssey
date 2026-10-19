@@ -261,3 +261,89 @@ temporary message files and empty installer directories were removed. Installed
 libraries and the verified inference checkpoint remain necessary runtime assets.
 Other projects' environments/caches were left alone. Detailed device/path reports
 stay in ignored `artifacts/cuda-validation-2026-10-19` and rollout directories.
+
+## Official RSS visual CNN baseline (2026-10-19)
+
+The primary baseline now uses `real-stanford/diffusion_policy` commit
+`5ba07ac6661db573af695b419a7947ecb704690f`, with 18 relevant source files hashed
+in `manifests/official_dp.json`. No upstream source was patched. It loads the
+authors' `image/pusht/diffusion_policy_cnn/train_0` checkpoint named
+`epoch=0500-test_mean_score=0.884.ckpt` in the original `PushTImageEnv(legacy=True)`.
+The earlier GPC runs use different weights, body construction/coordinates, and
+randomized goals; they are not official baseline measurements or a fair method
+comparison against this run.
+
+The full published checkpoint was 4,293,295,813 bytes; recorded SHA-256:
+`bac7221f7e34cd51162dc1972e1a39ffcddc87de1dc1780c44ffa61b88c4ff76`.
+Its embedded policy configuration exactly matched the independently downloaded
+publisher configuration. The retained EMA file has all 300 state entries,
+including encoder/denoiser parameters, normalizers, and buffers. Size:
+1,095,708,090 bytes; SHA-256:
+`102fd63b53e9e2ba8261c843e770725740ebdddebe4b1e96dbd92089477ba7c4`.
+The original training checkpoint was removed after compact-load and physical
+execution checks. No expert demonstration arrays were downloaded.
+
+The unchanged official class constructed and loaded strictly, with 262,709,056
+parameters including saved normalizer parameters. Original preprocessing retained
+the 84×84 evaluation crop, GroupNorm, checkpoint normalization, two-observation
+history, DDPM with 100 reverse steps, and eight-action prefix of 16 predictions.
+Original environment reset distribution, fixed goal, T geometry/dynamics, rewards,
+and terminal threshold were retained. No GPC wrapper, geometry rejection, world
+model, action ranking, or training was involved.
+
+Commands, with the source/asset setup in `docs/OFFICIAL_BASELINE.md`:
+
+```bash
+uv sync --locked --extra cu124 --extra gpc --extra dp --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --gpc --dp
+.venv/bin/python -B scripts/evaluate_official.py --output artifacts/official-cnn-baseline-2026-10-19 --display --video --hold-seconds 30
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All **76 tests passed**: 51 source-only and 25 opt-in installed/runtime tests.
+New tests cover official resource identity, modified-source rejection, namespace
+isolation, history/budget agreement with the official `MultiStepWrapper`, actual
+collision-based metrics, and CUDA inference parity against a direct call to the
+unchanged official class. The wrapper and direct call produced identical actions
+with the same observations and CUDA RNG seed; the returned eight actions exactly
+matched prediction indices 1:9. Saved normalizer keys were action/agent_pos/image.
+
+Three development test scenes, all on CUDA:
+
+| Scene seed | Policy RNG seed | Controls to success | Contact steps | Maximum/final IoU | Maximum clipped reward |
+| --- | --- | --- | --- | --- | --- |
+| 100000 | 3486894925 | 128 | 74 | 0.924145 | 1.0 |
+| 100001 | 3690532503 | 157 | 66 | 0.908241 | 1.0 |
+| 100002 | 2649433489 | 273 | 86 | 0.923627 | 1.0 |
+
+Total evaluation cost: **558 controls / 5,580 control-physics substeps**, three
+reset substeps, 71 policy calls / 7,100 denoising steps. Evaluation elapsed time
+was 163.03 seconds including loading and display pacing, excluding the 30-second
+final-frame hold. Median synchronized planning times were about 1.48 seconds per
+chunk; concurrent tests and display work mean this is not an isolated throughput
+benchmark. Report size: 784,788 bytes; SHA-256:
+`9188295f1ec2fe3fd45b80aa8d5e2315824d5a577a2bed1f286bafbe34112f12`.
+The report records its dirty working tree and source hashes rather than claiming
+a clean experiment release.
+
+Video read-back verified 129/158/274 frames for 128/157/273 actions, including the
+initial frame. Three 512×512 previews occupied 176,503/215,592/341,647 bytes.
+The videos were streamed during evaluation, with no additional replay controls.
+Source-only checks and help/plan commands require no optional runtime packages.
+
+The combined CUDA/DP/GPC environment has 113 packages and allocated 6,138,802,176
+bytes, about **5.72 GiB**. Fifteen added official-policy dependencies did not change
+torch/torchvision/CUDA pins or create another environment. Doctor and package
+consistency checks passed. The trimmed official checkout used 12,898,304 bytes
+including Git metadata; retained official asset directory used 1,095,725,056 bytes.
+No source checkpoint, wheel archive, project/uv download cache, or dataset remains
+from setup beyond the deliberately retained inference asset and small metadata.
+Other projects' caches/environments were untouched.
+
+These are **three successful development scenes**, not a 50-scene/multiple-training-
+seed paper reproduction, an estimated population success rate, or an adaptation
+result. Mean maximum clipped reward and observed success fraction were both 1.0
+on these three scenes; they are different metrics. Local CUDA RNG streams are
+recorded and differ from historical evaluation scheduling. Tests/compatibility
+probes are separate diagnostics, outside the 558 evaluation controls. L porting,
+matched target-shape datasets, world-model training, and policy updates remain pending.
