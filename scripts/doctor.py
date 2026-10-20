@@ -19,6 +19,7 @@ def main() -> int:
     parser.add_argument("--runtime", action="store_true", help="Run tiny torch/Pymunk checks")
     parser.add_argument("--require-cuda", action="store_true", help="Check the cu124 profile and GPU")
     parser.add_argument("--gpc", action="store_true", help="Also check optional GPC package versions")
+    parser.add_argument("--dp", action="store_true", help="Also check official Diffusion Policy package versions")
     args = parser.parse_args()
     if args.require_cuda and not args.runtime:
         parser.error("--require-cuda requires --runtime")
@@ -29,6 +30,8 @@ def main() -> int:
     requirements.extend(project["optional-dependencies"][profile])
     if args.gpc:
         requirements.extend(project["optional-dependencies"]["gpc"])
+    if args.dp:
+        requirements.extend(project["optional-dependencies"]["dp"])
     report: dict = {
         "python": platform.python_version(),
         "python_executable": sys.executable,
@@ -70,11 +73,17 @@ def main() -> int:
                 if torch.version.cuda is not None:
                     report["errors"].append("Expected the locked CPU-only torch build")
                 device = "cpu"
-            values = torch.tensor([1.0, 2.0, 3.0, 4.0], device=device)
-            result = float((values * values).sum().item())
+            values = torch.tensor([1.0, 2.0, 3.0, 4.0], device=device, requires_grad=True)
+            loss = (values * values).sum()
+            result = float(loss.item())
             report["torch_calculation"] = result
             if result != 30.0:
                 raise RuntimeError("Unexpected tensor calculation result")
+            loss.backward()
+            report["gradient_device"] = str(values.grad.device)
+            report["torch_gradient"] = values.grad.tolist()
+            if values.grad.tolist() != [2.0, 4.0, 6.0, 8.0]:
+                raise RuntimeError("Unexpected tensor gradient result")
             # Load torchvision operators as a basic binary-compatibility check.
             from torchvision.ops import nms
 

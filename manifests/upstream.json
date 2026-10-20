@@ -1,13 +1,31 @@
 {
   "schema_version": 1,
-  "checked_on": "2026-10-13",
-  "status": "metadata_only_not_cloned_or_executed",
+  "checked_on": "2026-10-19",
+  "status": "pinned_sources_with_partial_runtime_validation",
   "repositories": [
+    {
+      "name": "diffusion_policy",
+      "url": "https://github.com/real-stanford/diffusion_policy.git",
+      "commit": "5ba07ac6661db573af695b419a7947ecb704690f",
+      "role": "Primary official visual CNN PushT baseline",
+      "validation": {
+        "checked_on": "2026-10-19",
+        "profile": "cu124+dp",
+        "scope": "official_cnn_ema_and_original_t_environment_three_scenes",
+        "record": "docs/VALIDATION.md"
+      }
+    },
     {
       "name": "gpc",
       "url": "https://github.com/han20192019/gpc_code.git",
       "commit": "a96146e568826ef46134f73c22fdf59a675e7264",
-      "role": "Primary PushT reproduction candidate"
+      "role": "Optional world-model/planning reference and separate GPC-policy comparison",
+      "validation": {
+        "checked_on": "2026-10-19",
+        "profile": "cpu+gpc and cu124+gpc",
+        "scope": "simulator_and_unranked_cpu_cuda_policy_execution",
+        "record": "docs/VALIDATION.md"
+      }
     },
     {
       "name": "dppo",
@@ -26,16 +44,50 @@
     {
       "repo_id": "han2019/gpc_checkpoints",
       "repo_type": "model",
-      "status": "not_downloaded",
-      "revision": null,
-      "verified_files": []
+      "status": "selected_policy_and_world_model_files_verified_not_vendored",
+      "revision": "c16a467ec176af19bba5136564a81d8d61d72af9",
+      "verified_files": [
+        {
+          "path": "action_policy_checkpoint/checkpoint_epoch_300/ema_nets.pth",
+          "bytes": 364554150,
+          "sha256": "62c8f664bf371cc3a18c4a7eeaecab2e07d99be5afec997ac7a8703da1954eba"
+        },
+        {
+          "path": "world_model_checkpoint/phase_two_checkpoint/denoiser.pth",
+          "bytes": 35043916,
+          "sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892"
+        }
+      ],
+      "record": "docs/VALIDATION.md"
     },
     {
       "repo_id": "han2019/gpc_pushT_data",
       "repo_type": "dataset",
-      "status": "not_downloaded",
-      "revision": null,
-      "verified_files": []
+      "status": "schema_only_verified_no_training_chunks",
+      "revision": "2e852997c3fc38e855353e232a9141b78a496470",
+      "verified_files": [
+        {
+          "path": "diffusion_policy_data/domain18/domain18.zarr/data/action/.zarray",
+          "sha256": "88d984c0c7296dcb40e856087160daa1563d2281b53df41aae8a71b8aae61fc1",
+          "kind": "zarr_array_schema"
+        },
+        {
+          "path": "diffusion_policy_data/domain18/domain18.zarr/data/state/.zarray",
+          "sha256": "bcceab5ebdc16837cf153606db85b31a85636fc36bf0fe5da2d0321497f289d5",
+          "kind": "zarr_array_schema"
+        },
+        {
+          "path": "diffusion_policy_data/domain18/domain18.zarr/data/img/.zarray",
+          "sha256": "830107604cae20c8cd2e408b007872c531cc108f751f489c96b7c38a3e310e86",
+          "kind": "zarr_array_schema"
+        },
+        {
+          "path": "diffusion_policy_data/domain18/domain18.zarr/meta/episode_ends/.zarray",
+          "sha256": "76335d5dace39ecaae3670869209fa6fd60f503a41e41837f1fd0820c58ff99d",
+          "kind": "zarr_array_schema"
+        }
+      ],
+      "record": "docs/VALIDATION.md"
     }
   ]
 }

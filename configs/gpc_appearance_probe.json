@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "protocol": "gpc-t-appearance-v1",
+  "families": ["official", "gpc"],
+  "official_views": ["original", "source_palette"],
+  "native_views": ["source_palette"],
+  "scenes": [
+    {"name": "bottom", "angle": 0.0, "pusher_offset": [0, 115], "push_direction": [0, -1], "previously_examined": true},
+    {"name": "left", "angle": 0.0, "pusher_offset": [-40, 35], "push_direction": [1, 0], "previously_examined": true},
+    {"name": "right", "angle": 0.0, "pusher_offset": [40, 35], "push_direction": [-1, 0], "previously_examined": false},
+    {"name": "top", "angle": 0.0, "pusher_offset": [0, -70], "push_direction": [0, 1], "previously_examined": false},
+    {"name": "left_rotated", "angle": 0.5235987755982988, "pusher_offset": [-40, 35], "push_direction": [1, 0], "previously_examined": false},
+    {"name": "right_rotated", "angle": -0.5235987755982988, "pusher_offset": [40, 35], "push_direction": [-1, 0], "previously_examined": false}
+  ],
+  "object_physical_center": [256, 285],
+  "goal_official_origin": [256, 256],
+  "goal_angle": 0.7853981633974483,
+  "future": 4,
+  "history_controls": 3,
+  "target_increment_pixels": 12,
+  "candidates": ["hold", "push", "away", "side"],
+  "noise_seeds": [300000, 300100, 300200],
+  "image_color_tolerance": 0.15,
+  "max_seconds": 180,
+  "max_output_bytes": 8388608,
+  "notes": [
+    "Frozen before running this experiment; all scenes are development diagnostics, not final tests.",
+    "Secondary palette rendering uses simulator access. It is not an image-only deployable color adapter.",
+    "Each physical branch is shared across views and noise seeds; all forecasts receive full identical controls.",
+    "No fixed success threshold or reward ranking is inferred from image-proxy metrics."
+  ]
+}

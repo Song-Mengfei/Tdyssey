@@ -7,6 +7,16 @@ policy to new object shapes using non-expert interaction data and a learned worl
 model. It changes the pushed object, not the robot embodiment. The course values
 substantial implementation, experiments, and analysis; useful negative results
 are acceptable. Do not reduce the project to a trivial demo just to guarantee success.
+The primary baseline is the official RSS 2023 visual CNN Diffusion Policy and
+original PushT environment; see `docs/OFFICIAL_BASELINE.md`. GPC is a separate
+reference/comparison. Do not treat their checkpoints, geometry, or data as interchangeable.
+Official capital-letter/near-T shape choices and matched-state rules live in `docs/OFFICIAL_SHAPES.md`.
+Use `docs/OFFICIAL_COLLECTION.md` for primary training data; never mix it with GPC fixtures.
+The custom visual model and pretrained GPC compatibility failures are documented
+in `docs/WORLD_MODEL.md`. Pretrained loading is verified; official-domain adaptation
+and reliable contact prediction are not. The released GPC sampler disables gradients.
+The T palette comparison uses privileged auxiliary rendering, not an image-only
+adapter; it explains much of the appearance gap but retains a left-push failure.
 Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 
@@ -15,33 +25,41 @@ For substantial project work, read `docs/STATUS.md` and the relevant sections of
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
 background, not evidence that anything has been implemented or validated.
 
-## Current execution constraint
+## Setup and resource use
 
-The owner requested source-only work on the current laptop to preserve disk space.
-By default, a new checkout is also source-only until a user authorizes setup on that
-machine. Do not install dependencies, create an environment, run `uv sync` or
-`uv run` (they can install automatically), download weights/datasets, start training,
-or pull container images without machine-specific authorization. Authorization on
-one author's machine does not authorize setup on another. Continue coding,
-documentation, static checks, and small standard-library checks without asking
-again. Metadata-only dependency locking with no package builds is permitted; use
-temporary storage and remove temporary tooling/cache afterward.
+Source-only work and installed development are both supported. Install packages,
+create environments, download research assets, or start training only within the
+scope authorized for the machine being used. Existing authorization persists in
+the session; do not ask again for the same setup step. Authorization on one
+author's machine does not authorize setup on another. `uv sync` and `uv run` can
+install packages automatically. Source checks need no environment or downloads.
+
+Prefer the locked CPU profile for storage-limited simulator development. Use the
+CUDA profile when GPU work is needed. Avoid duplicate environments, persistent
+download caches, and unneeded assets. Keep per-machine paths, installation consent,
+disk limits, and personal preferences in local settings or ignored artifacts.
+Shared documentation describes reproducible options for all three authors.
 
 Do not modify another project's environment. Do not treat hardware or package
 versions observed on one machine as requirements for every collaborator.
 
 ## Shared environment and code
 
-- `pyproject.toml`, `uv.lock`, and `.python-version` define the shared candidate
-  environment. It is not runtime-validated yet. Update manifest and lock together.
+- `pyproject.toml`, `uv.lock`, and `.python-version` define the shared environment.
+  See `docs/VALIDATION.md` for which profiles and behaviors have actually passed
+  runtime checks. Update manifest and lock together.
 - Use the documented CPU or CUDA profile consistently when setup is authorized.
   Do not install both profiles or manually upgrade packages inside `.venv`.
 - Reference training platform: Linux x86_64, Python 3.12. Other hardware/platforms
   need a documented compatibility decision, not silent dependency substitutions.
 - Upstream commit IDs live in `manifests/upstream.json`; models and datasets need
   separate revision/hash records once actually downloaded.
-- Keep generated data, checkpoints, caches, and video outside Git. Use configurable
-  paths, never author-specific absolute paths.
+- Keep generated data, checkpoints, caches, and raw video outside Git. The curated
+  MP4 snapshot under `docs/media/official-alphabet-2026-10-19/` and reviewed PNG/JSON
+  snapshot under `docs/media/world-model-2026-10-19/` are explicit publication
+  exceptions; see `docs/RESULTS.md`. The latter has a manifest and 1 MiB cap.
+  Keep full raw reports/frames and model weights out of these snapshots. Use configurable paths,
+  never author-specific absolute paths.
 - Use a branch or isolated checkout per author. Inspect `git status` before edits
   and preserve unrelated work. Split file ownership before any parallel work.
 
@@ -76,6 +94,11 @@ For implementation changes, add and run focused checks for meaningful behavior
 when the required environment is available. Otherwise report exactly which checks
 were static and what runtime verification is pending. Never claim a dependency
 lockfile proves CUDA, simulator, or checkpoint compatibility.
+
+Keep tests focused on meaningful behavior. Reuse existing coverage instead of
+adding repeated input/default checks. Documentation wording and presentation-only
+changes normally need the source/message checks, not new unit tests. Preserve
+checks for physics, action timing, data separation, metrics and actual GPU updates.
 
 After a substantive milestone, update `docs/STATUS.md` with completed work,
 evidence, next task, and unresolved blockers. Record scope/dependency/protocol

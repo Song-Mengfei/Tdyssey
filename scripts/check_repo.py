@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import json
 from pathlib import Path
 import re
@@ -24,6 +25,10 @@ def main() -> int:
         upstream = json.loads((ROOT / "manifests/upstream.json").read_text())
         example = json.loads((ROOT / "manifests/experiment.example.json").read_text())
         gym_metadata = json.loads((ROOT / "manifests/gym-metadata.json").read_text())
+        policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
+        official = json.loads((ROOT / "manifests/official_dp.json").read_text())
+        world_model = json.loads((ROOT / "manifests/gpc_world_model.json").read_text())
+        json.loads((ROOT / "configs/gpc_appearance_probe.json").read_text())
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -48,6 +53,37 @@ def main() -> int:
     for repo in upstream["repositories"]:
         if not re.fullmatch(r"[0-9a-f]{40}", repo["commit"]):
             errors.append(f"Upstream commit must be a full SHA: {repo['name']}")
+    gpc_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "gpc")
+    if policy["source_commit"] != gpc_commit:
+        errors.append("Policy source revision differs from the simulator revision")
+    if world_model["source_commit"] != gpc_commit:
+        errors.append("World-model source revision differs from the simulator revision")
+    asset = world_model["checkpoint"]
+    if not re.fullmatch(r"[0-9a-f]{40}", asset["revision"]):
+        errors.append("World-model checkpoint needs an immutable revision")
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value)
+           for value in [asset["sha256"], *world_model["source_sha256"].values()]):
+        errors.append("World-model checkpoint/source need SHA-256 records")
+    official_commit = next(repo["commit"] for repo in upstream["repositories"] if repo["name"] == "diffusion_policy")
+    if official["source_commit"] != official_commit:
+        errors.append("Official baseline source differs from the upstream manifest")
+    official_hashes = [official["checkpoint"]["sha256"], official["compact"]["sha256"],
+                       official["published_config"]["sha256"], *official["source_sha256"].values()]
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in official_hashes):
+        errors.append("Official baseline resources need recorded SHA-256 hashes")
+    for asset in (policy["checkpoint"], policy["expert_dataset"]):
+        if not re.fullmatch(r"[0-9a-f]{40}", asset["revision"]):
+            errors.append("Policy/data resources need immutable revision SHAs")
+    hashes = [policy["checkpoint"]["sha256"], *policy["source_sha256"].values(),
+              *(item["sha256"] for item in policy["expert_dataset"]["schema"].values())]
+    if any(not re.fullmatch(r"[0-9a-f]{64}", value) for value in hashes):
+        errors.append("Policy/source/data metadata need SHA-256 records")
+    config = policy["policy"]
+    if any(type(config[key]) is not int or config[key] < 1 for key in
+           ("obs_horizon", "pred_horizon", "action_horizon", "num_diffusion_iters")):
+        errors.append("Policy horizons/denoising count must be positive integers")
+    elif config["obs_horizon"] - 1 + config["action_horizon"] > config["pred_horizon"]:
+        errors.append("Policy action prefix exceeds its prediction horizon")
     gym_entries = [item for item in project["tool"]["uv"].get("dependency-metadata", [])
                    if item["name"] == "gym" and item["version"] == gym_metadata["version"]]
     if len(gym_entries) != 1 or gym_entries[0]["requires-dist"] != gym_metadata["requires_dist"]:
@@ -76,6 +112,36 @@ def main() -> int:
                 continue
             if not (path.parent / unquote(parsed.path)).exists():
                 errors.append(f"Broken local link in {path.relative_to(ROOT)}: {target}")
+
+    # A bounded evidence snapshot is the deliberate exception to ignored raw runs.
+    snapshot = ROOT / "docs/media/world-model-2026-10-19"
+    try:
+        publication = json.loads((snapshot / "manifest.json").read_text())
+        listed = [item["path"] for item in publication["files"]]
+        if len(set(listed)) != len(listed) or set(listed) | {"manifest.json"} != {p.name for p in snapshot.iterdir()}:
+            errors.append("Published evidence files differ from the snapshot manifest")
+        if publication["budget_bytes"] != 1024**2:
+            errors.append("World-model evidence snapshot must retain its 1 MiB cap")
+        total = (snapshot / "manifest.json").stat().st_size
+        for item in publication["files"]:
+            name = Path(item["path"])
+            if name.name != item["path"] or name.suffix not in {".png", ".json"}:
+                errors.append("Published evidence must be flat PNG/JSON files")
+                continue
+            data = (snapshot / name).read_bytes()
+            total += len(data)
+            if len(data) != item["bytes"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
+                errors.append(f"Published evidence size/hash mismatch: {name}")
+            if item["kind"] == "original_figure" and item["sha256"] != item["source"]["sha256"]:
+                errors.append(f"Published figure differs from its recorded original: {name}")
+            if name.suffix == ".json":
+                value = json.loads(data)
+                if value["source_report"] != item["source"]:
+                    errors.append(f"Published report provenance differs from manifest: {name}")
+        if total > publication["budget_bytes"]:
+            errors.append("Published world-model evidence exceeds its 1 MiB cap")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        errors.append(f"Invalid published evidence snapshot: {exc}")
 
     for error in errors:
         print(f"FAIL: {error}", file=sys.stderr)

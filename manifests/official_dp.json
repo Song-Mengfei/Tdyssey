@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/real-stanford/diffusion_policy",
+  "source_commit": "5ba07ac6661db573af695b419a7947ecb704690f",
+  "source_sha256": {
+    "diffusion_policy/policy/diffusion_unet_hybrid_image_policy.py": "d8ead767ed3b1501c358aa3dd97ab479ebdf77a62ec9ab7081d6a2211c2d2e76",
+    "diffusion_policy/policy/base_image_policy.py": "32fd3fe35e2827f4472e195381e642dd8d78f4f0038f4f9625e0128c76e1aecd",
+    "diffusion_policy/common/robomimic_config_util.py": "e782f9ba46ea433a77dfe95525a879bcf3033969f07ba9f776268c247e8a8a30",
+    "diffusion_policy/common/pytorch_util.py": "96ce50e191b4c837532529040af65d2b9a1f433f33a5187f8cf256b62d84b6b4",
+    "diffusion_policy/model/common/normalizer.py": "92322852fc04d956d0dd43a2e41fb461dee246bbf97ddc7940186a9307525ed3",
+    "diffusion_policy/model/common/dict_of_tensor_mixin.py": "158b63a244bcfb9aa377206730f5f59778c6aeb9138ff55c76d2c28ec46952d1",
+    "diffusion_policy/model/common/module_attr_mixin.py": "658dececa20f7628960fc1a8db89e4be3693e1bba47f63d1ff8a4faa2d481e45",
+    "diffusion_policy/model/common/tensor_util.py": "751b042aa5390ddf1f5b6220a465dfa20dbb9304e3c057f04512d6ee55f4e1b1",
+    "diffusion_policy/model/diffusion/conditional_unet1d.py": "8a95014f8aa52ade086f967c9018a66bf0c68f2133969c8f7a8522da01b472ac",
+    "diffusion_policy/model/diffusion/conv1d_components.py": "ea2aa10e297cf253bc1a1919ba47fe6ae32049b5eaaab292ed9cc145d8d2adc0",
+    "diffusion_policy/model/diffusion/positional_embedding.py": "2266c75ecc9c9ac8ca126839d39a7bafbdd7af8800d6de903f66815e64cc366c",
+    "diffusion_policy/model/diffusion/mask_generator.py": "23dba4c112ed57e41d530612c79d9841c9b3c5bd3d6790863d1739190a9ab7b0",
+    "diffusion_policy/model/vision/crop_randomizer.py": "85787b6becd337352c2a1795f1e77be977c073134f91c3d0924b9d0e36c92978",
+    "diffusion_policy/env/pusht/pusht_env.py": "759107dc0ea6017b8afe3380ce23817713edf26af725fc4f03c0416ced940bd0",
+    "diffusion_policy/env/pusht/pusht_image_env.py": "b0a15ddbdfedfea1ffbd6119fd1266fc2b238ef08b1758dc3e1db0f7054353cc",
+    "diffusion_policy/env/pusht/pymunk_override.py": "85e7c54b5e9630a9f7e675250ee514ae9b2249d11654ec0811d8e4bcf413fe39",
+    "diffusion_policy/gym_util/multistep_wrapper.py": "2923e73c13ff9f782451ab61bed43a802670bbf29419471f82878c690f26a342",
+    "diffusion_policy/env_runner/pusht_image_runner.py": "84faa24e803635fe1f07b1907ef04fcb74d07c6ecfce5f2ff598601019232f03"
+  },
+  "published_config": {
+    "url": "https://diffusion-policy.cs.columbia.edu/data/experiments/image/pusht/diffusion_policy_cnn/config.yaml",
+    "sha256": "a335ac5d4fda88ef53b4c04788b58966e2a72c7540abb5465a22d4edac2e6f9b"
+  },
+  "checkpoint": {
+    "url": "https://diffusion-policy.cs.columbia.edu/data/experiments/image/pusht/diffusion_policy_cnn/train_0/checkpoints/epoch%3D0500-test_mean_score%3D0.884.ckpt",
+    "bytes": 4293295813,
+    "sha256": "bac7221f7e34cd51162dc1972e1a39ffcddc87de1dc1780c44ffa61b88c4ff76",
+    "headers": {
+      "Content-Length": "4293295813",
+      "ETag": "\"ffe67ec5-5f5ddb66ce2ee\"",
+      "Last-Modified": "Wed, 01 Mar 2023 21:51:20 GMT"
+    }
+  },
+  "compact": {
+    "filename": "ema_policy.pt",
+    "bytes": 1095708090,
+    "sha256": "102fd63b53e9e2ba8261c843e770725740ebdddebe4b1e96dbd92089477ba7c4",
+    "state_entries": 300
+  },
+  "policy": {
+    "obs_horizon": 2,
+    "pred_horizon": 16,
+    "action_horizon": 8,
+    "num_diffusion_iters": 100
+  },
+  "evaluation": {
+    "legacy_test": true,
+    "goal": [
+      256,
+      256,
+      0.7853981633974483
+    ],
+    "test_start_seed": 100000,
+    "max_steps": 300,
+    "success_coverage_threshold": 0.95,
+    "metric": "mean of maximum clipped upstream rewards; distinct from success fraction"
+  },
+  "policy_config": {
+    "_target_": "diffusion_policy.policy.diffusion_unet_hybrid_image_policy.DiffusionUnetHybridImagePolicy",
+    "shape_meta": {
+      "obs": {
+        "image": {
+          "shape": [
+            3,
+            96,
+            96
+          ],
+          "type": "rgb"
+        },
+        "agent_pos": {
+          "shape": [
+            2
+          ],
+          "type": "low_dim"
+        }
+      },
+      "action": {
+        "shape": [
+          2
+        ]
+      }
+    },
+    "noise_scheduler": {
+      "_target_": "diffusers.schedulers.scheduling_ddpm.DDPMScheduler",
+      "num_train_timesteps": 100,
+      "beta_start": 0.0001,
+      "beta_end": 0.02,
+      "beta_schedule": "squaredcos_cap_v2",
+      "variance_type": "fixed_small",
+      "clip_sample": true,
+      "prediction_type": "epsilon"
+    },
+    "horizon": 16,
+    "n_action_steps": 8,
+    "n_obs_steps": 2,
+    "num_inference_steps": 100,
+    "obs_as_global_cond": true,
+    "crop_shape": [
+      84,
+      84
+    ],
+    "diffusion_step_embed_dim": 128,
+    "down_dims": [
+      512,
+      1024,
+      2048
+    ],
+    "kernel_size": 5,
+    "n_groups": 8,
+    "cond_predict_scale": true,
+    "obs_encoder_group_norm": true,
+    "eval_fixed_crop": true
+  }
+}
