@@ -3,12 +3,18 @@
 ## Five-minute orientation
 
 1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
+   Open [published figures and results](RESULTS.md) to inspect evidence without setup.
 2. The project asks whether a T-trained pushing policy can acquire useful behavior
    for new object shapes using non-expert data and imagined training.
-3. First code exists for geometry, the GPC shape adapter, state/data records, and
-   evaluation. Read `docs/IMPLEMENTATION.md`. Simulator runtime, policy/model
-   training, and experiment results remain pending. A negative outcome is
-   acceptable for the course if the work and analysis are substantial.
+3. The primary baseline is the official RSS 2023 visual CNN policy in original
+   PushT; three CUDA T-scene checks succeeded. Read `docs/OFFICIAL_BASELINE.md`.
+   Official capital L is implemented and its first matched scene failed while T
+   succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
+   sweep explores failures without changing the T-to-L learning milestone.
+   Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
+   see `docs/OFFICIAL_COLLECTION.md`. A first GPU world-model pilot and its
+   failures are in `docs/WORLD_MODEL.md`; policy optimization remains pending.
+   A negative outcome is acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
@@ -22,7 +28,7 @@
 | Training machine / OS / GPU | Not yet selected |
 | Data and artifact location | Choose a configurable path on that machine |
 | Allowed disk / compute budget | Set before downloads or long jobs |
-| Laptop | Source-only; installation not authorized |
+| Development profile | CPU/GPC for small reference checks; CUDA/DP for the official baseline; add GPC when needed |
 
 ## Suggested work split
 
@@ -45,9 +51,12 @@ their own checkout; no package installation is needed.
 
 ## First implementation task
 
-On an authorized training machine, run the profile's basic doctor, record its
-output, then clone the pinned GPC revision and verify required assets one by one.
-Patch local paths and bound evaluation episodes before running the T baseline.
+Run the selected profile's doctor, then the opt-in real simulator checks described
+in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
+`artifacts/` directories. On the training machine, verify required assets one by one
+and bound evaluation episodes before running the official T baseline using
+`docs/OFFICIAL_BASELINE.md`. The next shared task is improving the first visual
+model's contact/action predictions and noncontact drift, using `docs/WORLD_MODEL.md`.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

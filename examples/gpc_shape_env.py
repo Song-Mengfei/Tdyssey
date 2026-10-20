@@ -1,4 +1,4 @@
-"""Later-machine smoke check using the existing GPC simulator, not a new engine.
+"""Smoke check using the existing GPC simulator, not a new engine.
 
 Requires an authorized environment and an existing pinned GPC source checkout.
 No checkpoint/data download, policy training, or environment installation occurs.
@@ -22,6 +22,32 @@ from tdyssey.evaluation import goal_metrics
 from tdyssey.geometry import get_shape
 
 
+def load_upstream(source_root):
+    """Load unchanged simulator code from the shared pinned GPC revision.
+
+    GPC construction/reset still needs cwd set to gpc_rank_evaluation. Callers
+    control that process-local change explicitly; this loader does not change cwd.
+    """
+    source_root = Path(source_root).resolve()
+    source_file = source_root / "gpc_rank_evaluation/pusht_env.py"
+    domain_file = source_file.parent / "domains_yaml/push_t.yml"
+    manifest = json.loads((ROOT / "manifests/upstream.json").read_text())
+    expected = next(repo["commit"] for repo in manifest["repositories"] if repo["name"] == "gpc")
+    actual = subprocess.check_output(["git", "-C", str(source_root), "rev-parse", "HEAD"], text=True).strip()
+    if actual != expected:
+        raise ValueError(f"Expected GPC revision {expected}; found {actual}")
+    for path in (source_file, domain_file):
+        relative = path.relative_to(source_root).as_posix()
+        published = subprocess.check_output(["git", "-C", str(source_root), "show", f"HEAD:{relative}"])
+        if path.read_bytes() != published:
+            raise ValueError(f"Source baseline has an unrecorded local patch: {relative}")
+    spec = importlib.util.spec_from_file_location("tdyssey_gpc_upstream", source_file)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module, actual
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--gpc-root", type=Path, required=True, help="Existing pinned GPC checkout")
@@ -33,19 +59,9 @@ def main():
         parser.error("Use 1–100 smoke steps and a nonnegative seed")
     source_root = args.gpc_root.resolve()
     source_file = source_root / "gpc_rank_evaluation/pusht_env.py"
-    domain_file = source_file.parent / "domains_yaml/push_t.yml"
-    manifest = json.loads((ROOT / "manifests/upstream.json").read_text())
-    expected = next(repo["commit"] for repo in manifest["repositories"] if repo["name"] == "gpc")
     try:
-        actual = subprocess.check_output(["git", "-C", str(source_root), "rev-parse", "HEAD"], text=True).strip()
-        if actual != expected:
-            raise ValueError(f"Expected GPC revision {expected}; found {actual}")
-        for path in (source_file, domain_file):
-            relative = path.relative_to(source_root).as_posix()
-            published = subprocess.check_output(["git", "-C", str(source_root), "show", f"HEAD:{relative}"])
-            if path.read_bytes() != published:
-                raise ValueError(f"Source baseline has an unrecorded local patch: {relative}")
-    except (OSError, ValueError, subprocess.CalledProcessError) as exc:
+        module, actual = load_upstream(source_root)
+    except (OSError, ValueError, ImportError, subprocess.CalledProcessError) as exc:
         parser.error(str(exc))
 
     # Upstream resolves its domain YAML relative to process cwd. Keep this change
@@ -53,10 +69,6 @@ def main():
     previous_cwd, env = Path.cwd(), None
     try:
         os.chdir(source_file.parent)
-        spec = importlib.util.spec_from_file_location("tdyssey_gpc_upstream", source_file)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[spec.name] = module
-        spec.loader.exec_module(module)
         environment_class = make_shape_env_class(module.PushTImageEnv)
         env = environment_class(shape=args.shape, domain_filename="push_t", resize_scale=96)
         env.seed(args.seed)

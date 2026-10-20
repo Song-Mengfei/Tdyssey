@@ -8,16 +8,33 @@ The project is graded on effort. Substantial implementation, controlled
 experiments, reproducibility, and an honest explanation of failures are useful
 deliverables even if the ambitious adaptation/generalization goals fail.
 
-**Current stage:** first implementation of T/I/L geometry, an adapter for the
-existing GPC PushT simulator, evaluation metrics, and state/trajectory records.
-Core checks run without installing anything. Actual simulator, checkpoint, and
-training validation remain pending on the authorized training machine.
-The dependency lockfile is a candidate specification.
+**Current stage:** the official RSS 2023 visual CNN policy loads on CUDA and solved
+three original T-scene development checks. A shorter-foot capital L is now in the
+official setup: the first matched scene succeeded for T and failed for L. GPC-based
+collection/training-data code remains separate reference work. Official L collection
+and episode-safe batches now work: the first eight-episode pilot has nonempty
+training/validation/test splits. A first GPU visual world-model pilot now trains,
+but noncontact drift and nearly constant action-reward predictions remain
+problems; policy training is pending. All 26 capital letters and a
+near-T shape are available for separate frozen-policy exploration. In the first
+common scene, T and Y succeeded; other letters and near-T reached the step limit.
+The saved gallery records near misses and lost overlap as well as success. Core checks
+run without installation; a resizable desktop viewer is available. See
+[official baseline](docs/OFFICIAL_BASELINE.md) and [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
 - [Project scope and milestones](docs/PROJECT.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
+- [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
+- [Separate GPC reference collector](docs/COLLECTION.md)
+- [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
+- [Visual training and pretrained world-model checks](docs/WORLD_MODEL.md)
+- [Browse published experiment figures and results](docs/RESULTS.md)
+- [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
+- [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
+- [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
+- [Separate GPC reference-policy comparison](docs/POLICY_BASELINE.md)
 - [Current status and next work](docs/STATUS.md)
 - [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
 - [Shared environment and storage](docs/ENVIRONMENT.md)
@@ -28,9 +45,8 @@ The dependency lockfile is a candidate specification.
 
 ## Work without installing anything
 
-This laptop is currently source-only. Edit source and documentation using an
-existing editor/Codex installation. The following check needs only Python 3.11+
-and creates no environment or cache:
+Source and documentation work needs only an existing editor and Python 3.11+.
+These commands create no environment or package cache:
 
 ```bash
 python3 -B scripts/check_repo.py
@@ -38,34 +54,42 @@ python3 -B -m unittest discover -s tests -p 'test_*.py'
 python3 -B -m tdyssey
 ```
 
-Do not run `uv sync`, `uv run`, package installers, training, or asset downloads on
-this laptop unless the owner later authorizes them.
-
-## Setup later on an authorized machine
+## Install a development environment
 
 Reference platform: Linux x86_64, Python 3.12.3, uv 0.13.0. The manifest offers
-CPU development and CUDA 12.4 training profiles. Compatibility with GPC is still
-pending runtime verification; see [environment notes](docs/ENVIRONMENT.md),
-particularly for Blackwell GPUs and other operating systems.
+CPU simulator-development and CUDA 12.4 policy/training profiles. Choose one profile based on the
+machine and task. See [environment notes](docs/ENVIRONMENT.md) for storage-saving
+setup, the small upstream checkout, and platform limitations.
 
 With uv already installed on that machine, choose one profile:
 
 ```bash
-# NVIDIA training / GPC reproduction candidate
-uv sync --locked --extra cu124 --extra gpc
-uv run --locked --extra cu124 --extra gpc python -B scripts/doctor.py --runtime --require-cuda --gpc
+# Storage-saving CPU setup, including the existing GPC simulator
+uv sync --locked --extra cpu --extra gpc --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --gpc
 ```
 
-Or choose CPU development:
+For GPU work, choose CUDA instead:
 
 ```bash
-uv sync --locked --extra cpu
-uv run --locked --extra cpu python -B scripts/doctor.py --runtime
+uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy
+.venv/bin/python -B scripts/doctor.py --runtime --require-cuda --dp
 ```
 
-Pass the same extras to subsequent `uv run` commands. Runtime verification here
-checks basic packages, torch, and Pymunk, not a reproduced GPC result. No upstream
-repository, checkpoint, or dataset is downloaded automatically by these scripts.
+An existing environment can be used directly through `.venv/bin/python`; activation
+is optional. If using `uv run`, pass the same extras to preserve the chosen profile.
+Doctor checks packages, torch calculations/gradients, and Pymunk; it does not reproduce a policy.
+No upstream repository, checkpoint, or dataset is downloaded by these checks.
+
+Policy runs default to CUDA with no automatic CPU fallback. After fetching the
+selected checkpoint using [official setup](docs/OFFICIAL_BASELINE.md), open PushT:
+
+```bash
+.venv/bin/python -B scripts/evaluate_official.py --output artifacts/official-visible --display --video --hold-seconds 30
+```
+
+The window starts at 768×768 and can be resized. `--display` controls window
+visibility independently of GPU use; physics remains on CPU.
 
 ## Collaboration
 
@@ -75,6 +99,7 @@ substantial task, agree on file ownership, and finish with a handoff in
 Use the same locked profile for matched experiments and record differences in
 hardware and numerical behavior.
 
-Keep datasets, environments, checkpoints, and videos outside Git. The tracked
-manifests record upstream revisions and, later, actual asset hashes. Configurable
+Keep datasets, environments, checkpoints, and raw videos outside Git. The
+[curated alphabet clips](docs/ALPHABET_RESULTS.md) are the documented exception. The tracked
+manifests record upstream revisions and verified asset hashes. Configurable
 paths allow moving the project to another machine or disk.
