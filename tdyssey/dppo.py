@@ -49,8 +49,16 @@ class TailPPO:
         if not self.network.obs_as_global_cond:
             raise ValueError("The pilot requires official global image conditioning")
         self.network.requires_grad_(False).eval()
-        self.actor = self.network.model.final_conv if config.trainable == "head" else self.network.model
-        self.base = copy.deepcopy(self.actor).eval().requires_grad_(False)
+        self.lora_layers = []
+        if config.trainable == "lora":
+            from .lora import inject_lora
+            target = self.network.model.final_conv if config.lora_target == "head" else self.network.model
+            self.lora_layers = inject_lora(target, config.lora_rank, config.lora_alpha)
+            self.actor = nn.ModuleDict({str(i): layer.delta for i, layer in enumerate(self.lora_layers)})
+            self.base = None
+        else:
+            self.actor = self.network.model.final_conv if config.trainable == "head" else self.network.model
+            self.base = copy.deepcopy(self.actor).eval().requires_grad_(False)
         self.actor.requires_grad_(True)
         self.names = [name for name, p in self.network.named_parameters() if p.requires_grad]
         self.critic = nn.Sequential(nn.Linear(self.network.obs_feature_dim*2, 128), nn.Tanh(),
@@ -59,6 +67,16 @@ class TailPPO:
 
     @contextmanager
     def module(self, updated):
+        if self.lora_layers:
+            original = [layer.enabled for layer in self.lora_layers]
+            for layer in self.lora_layers:
+                layer.enabled = updated
+            try:
+                yield
+            finally:
+                for layer, enabled in zip(self.lora_layers, original):
+                    layer.enabled = enabled
+            return
         target = self.actor if updated else self.base
         if self.config.trainable == "head":
             old = self.network.model.final_conv
@@ -121,6 +139,9 @@ class TailPPO:
         if (payload["kind"] != "official_tail_ppo" or payload["base_sha256"] != self.official.spec["compact"]["sha256"]
                 or any(payload["config"][k] != getattr(self.config, k) for k in ("trainable", "train_timesteps"))):
             raise ValueError("Adapter base or policy parameterization differs")
+        if self.config.trainable == "lora" and any(payload["config"][k] != getattr(self.config, k)
+                                                  for k in ("lora_rank", "lora_alpha", "lora_target")):
+            raise ValueError("LoRA configuration differs")
         self.actor.load_state_dict(payload["actor"], strict=True)
         self.critic.load_state_dict(payload["critic"], strict=True)
 

@@ -21,6 +21,70 @@ class DPPORuntimeChecks(unittest.TestCase):
                                                os.environ["TDYSSEY_OFFICIAL_CHECKPOINT"])
         cls.agent = TailPPO(cls.official, RLConfig(train_timesteps=2, minibatch_size=2))
 
+    def test_lora_zero_delta_dense_kernel_equivalence_and_frozen_base(self):
+        import torch
+        from tdyssey.lora import LoRAConv1d
+        base = torch.nn.Conv1d(5, 7, 3, stride=2, padding=1).cuda().requires_grad_(False)
+        layer = LoRAConv1d(base, rank=2, alpha=4.)
+        x = torch.randn(2, 5, 16, device="cuda")
+        frozen = base.weight.detach().clone()
+        torch.testing.assert_close(layer(x), base(x), rtol=0, atol=0)
+        with torch.no_grad():
+            layer.delta.b.normal_(0, .1)
+        kernel = base.weight + layer.delta.scale*(layer.delta.b @ layer.delta.a).reshape(base.weight.shape)
+        expected = torch.nn.functional.conv1d(x, kernel, base.bias, stride=2, padding=1)
+        torch.testing.assert_close(layer(x), expected)
+        layer(x).square().mean().backward()
+        self.assertGreater(float(layer.delta.a.grad.abs().sum()), 0)
+        self.assertGreater(float(layer.delta.b.grad.abs().sum()), 0)
+        self.assertIsNone(base.weight.grad)
+        torch.testing.assert_close(base.weight, frozen, rtol=0, atol=0)
+        layer.enabled = False
+        torch.testing.assert_close(layer(x), base(x), rtol=0, atol=0)
+
+    def test_distributed_lora_initial_sampler_update_and_compact_reload(self):
+        from dataclasses import replace
+        import numpy as np
+        import torch
+        from tdyssey.dppo import TailPPO, ppo_update
+        from tdyssey.official import OfficialDiffusionPolicy, load_official_source
+        from tdyssey.policy_training import frozen_digest
+        official = OfficialDiffusionPolicy(os.environ["TDYSSEY_OFFICIAL_ROOT"],
+                                            os.environ["TDYSSEY_OFFICIAL_CHECKPOINT"])
+        env = load_official_source(os.environ["TDYSSEY_OFFICIAL_ROOT"])(legacy=True)
+        self.addCleanup(env.close)
+        env.seed(100000)
+        history = [env.reset()]*2
+        official.reset_seed(456)
+        expected = official.predict_actions(history)
+        agent = TailPPO(official, replace(self.agent.config, trainable="lora", lora_target="action_network",
+                                         train_timesteps=1, minibatch_size=1))
+        self.assertGreater(len(agent.lora_layers), 2)
+        condition = agent.encode(history)
+        agent.generator.manual_seed(456)
+        actual, first = agent.sample(condition)
+        np.testing.assert_array_equal(actual, expected)
+        _, second = agent.sample(condition)
+        frozen = frozen_digest(agent.network)
+        before = {k: v.detach().clone() for k, v in agent.actor.state_dict().items()}
+        records = [{"condition": condition, "transitions": t} for t in (first, second)]
+        metrics = ppo_update(agent, records, [1., -1.], [1., -1.],
+            torch.optim.Adam(agent.actor.parameters(), lr=1e-5),
+            torch.optim.Adam(agent.critic.parameters(), lr=3e-4))
+        self.assertTrue(metrics["minibatches"])
+        self.assertTrue(any(not torch.equal(v, before[k]) for k, v in agent.actor.state_dict().items()))
+        self.assertEqual(frozen, frozen_digest(agent.network))
+        with tempfile.TemporaryDirectory(prefix="tdyssey-distributed-lora-") as root:
+            path = Path(root)/"lora.pt"
+            torch.save(agent.state(), path)
+            self.assertLess(path.stat().st_size, 64*1024**2)
+            rng = agent.generator.get_state()
+            expected, _ = agent.sample(condition)
+            agent.load(torch.load(path, map_location="cuda", weights_only=True))
+            agent.generator.set_state(rng)
+            actual, _ = agent.sample(condition)
+            np.testing.assert_array_equal(actual, expected)
+
     def test_ddpm_conditional_and_joint_density_match_independent_calculation(self):
         import torch
         from tdyssey.dppo import ddpm_mean_std, gaussian_log_prob

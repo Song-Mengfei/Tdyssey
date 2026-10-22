@@ -25,6 +25,17 @@ failure identifies the useful comparison. Implementing all six at once would
 confound debugging and consume the experiment budget. A new method is not required
 to make adapting a visual policy across shape/contact changes substantial work.
 
+### CNN and Transformer versions of the original policy
+
+The authors trained both action-denoising architectures and published visual
+PushT runs/checkpoints for [CNN and Transformer](https://diffusion-policy.cs.columbia.edu/data/experiments/image/pusht/).
+This label concerns the action network; the image encoder is a separate component.
+Our pinned checkpoint uses the visual CNN/1D U-Net route. The Transformer is a
+valid later architecture comparison, with its own checkpoint/configuration,
+sampler/loading checks and frozen-policy baseline. It is not downloaded or
+supported by this CNN-specific trainer yet. Do not assume it is faster or better
+for new shapes without a matched measurement.
+
 ## Exact first variant: train selected stochastic tail transitions
 
 The implementation is `tdyssey/dppo.py`, called by
@@ -61,6 +72,45 @@ for a larger GPU; its runtime validation must be reported separately.
 The frozen last transition can also restrict adaptation. If it becomes a measured
 limitation, test stochastic-final-step fine-tuning as a separate variant, with a
 matched untrained sampler baseline. It is not silently enabled in this pilot.
+
+### Weight scope and LoRA are separate from the RL algorithm
+
+The first two learning runs updated the output head only. This changes the
+denoised actions, but does not establish sufficient capacity for new contact
+strategies. It was a functioning-loop check, not a reason to restrict the main
+adaptation study to the head. The intended capacity comparison is full action-U-Net
+updates versus low-rank updates distributed through that U-Net, with head-only
+updates as a limited baseline. The image encoder remains frozen in these profiles;
+updating it would require a separate implementation that recomputes image features
+with gradients during actor updates.
+
+`trainable="lora"` now adds native-PyTorch low-rank convolution updates. This is
+the established [LoRA](https://arxiv.org/abs/2106.09685) parameterization applied to
+Conv1d, not a new RL algorithm. For a kernel flattened to `out x (in*width)`:
+
+```text
+effective_weight = frozen_weight + (alpha/rank) * B @ A
+A: rank x (in*width); B: out x rank
+```
+
+Initialize B to zero so initial inference matches the frozen policy. Train only
+A/B; freeze base kernels, biases and normalization. Rank is capped at the smaller
+kernel dimension. A pair of convolutions implements the same kernel update
+without storing a dense delta. The conditional probability and PPO rule stay the
+same. Disable the factors for the frozen denoising steps, including t=0.
+
+`lora_target="head"` affects two final convolutions. Its rank-8 profile trains
+25,604 parameters versus 1,313,282 in full head tuning, and passes a 64-control
+GPU update/reload check. `lora_target="action_network"` covers ordinary Conv1d
+layers throughout the action U-Net; transposed convolutions, conditioning linear
+layers and image encoder are excluded. Its dedicated profile is the broader
+adaptation comparison. Compact checkpoints save factors/critic/Adam, not frozen
+base kernels. No PEFT installation or dependency change is needed.
+
+Neither head-only tuning, LoRA nor the derivations here constitute a novel tuning
+algorithm. The current contribution is the working baseline and experimental
+system. A new-method claim would require a new objective/update component,
+analysis under explicit assumptions, a literature comparison and ablations.
 
 ## Derivation 1: why rewards can update denoising weights
 
@@ -227,7 +277,43 @@ python3 -B -m unittest discover -s tests -p 'test_rl_protocol.py' -v
 
 # Then the full action-network learning pilot:
 .venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_action_network.json --output artifacts/dppo-action-network-001
+
+# Small LoRA check, or broader LoRA throughout the action U-Net:
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_lora_smoke.json --output artifacts/dppo-lora-smoke-001
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_lora_action_network_smoke.json --output artifacts/dppo-lora-network-smoke-001
+# After that check, use configs/dppo_lora_action_network.json for a longer comparison.
 ```
+
+To see a trained checkpoint in the desktop window:
+
+```bash
+.venv/bin/python -B scripts/evaluate_trained_policy.py --adapter artifacts/dppo-local-pilot-001/last.pt --shape L --steps 300 --display --window-size 768 --output artifacts/dppo-L-preview-001.json
+```
+
+The trainer itself runs without a display. This separate program performs GPU
+inference and physical evaluation, not new training. Use `--shape T` for T;
+`--reference-report PATH` checks each action/reward/overlap against that checkpoint's
+saved final evaluation on the matching seed. Closing the window stops the preview.
+The large display does not change the policy's 96x96 inputs.
+
+### Training speed and the desktop window
+
+Training is headless and has no playback rate limit; the preview draws frames
+and deliberately paces controls at 10 Hz. Keep it outside timed training. The
+visual policy still requires observation rendering when no desktop window is
+open. A bigger GPU or fewer trainable weights does not eliminate the 100 sequential
+denoising calls per plan. Our small head and head-LoRA checks both took about
+119 seconds end-to-end, so reduced parameter count did not produce a measured
+overall speed gain in those checks.
+
+Next speed experiments: time sampling/updates/evaluation separately; batch multiple
+simulators for GPU inference; assess fewer-step DDIM with a matched frozen-policy
+baseline; then measure mixed precision or compilation against accuracy, startup
+cost and storage. These optimizations are not enabled by the current profiles.
+Use the installed PyTorch version and [official tuning guidance](https://docs.pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
+as a reference, not an instruction to upgrade dependencies. Keep held-out evaluation
+while reducing unnecessary development overhead; do not report fewer evaluations
+as a faster learning algorithm.
 
 Output paths must be new. The smoke profile requests one update / at most 64
 training controls, plus before/after evaluation capped at 128 controls per T/L.
@@ -244,8 +330,8 @@ per-control reward/coverage/contact/action traces, trainable names, source hashe
 before/after performance, frozen-weight integrity, actor change and checkpoint
 action parity. It records failures/timeouts instead of calling them completed.
 The checkpoint contains selected actor weights, critic, configuration and Adam
-states; the original pinned base is still required. Automatic resume and standalone
-video evaluation of a trained delta are not implemented yet. Interruptions retain
+states; the original pinned base is still required. Automatic resume and MP4
+export from trained-delta evaluation are not implemented yet. Interruptions retain
 progress reports after completed updates but do not yet save recovery checkpoints
 each update. Completed checkpoints are saved after final evaluation.
 

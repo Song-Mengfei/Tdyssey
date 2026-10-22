@@ -495,3 +495,27 @@ before considering bigger experiments. Keep checkpoints/reports ignored. Initial
 checkpoints contain actor deltas, critic and Adam states but have no automatic
 resume; original pinned weights and configuration remain required. Keep PR #4's
 inspection/plan milestone reviewable; training uses `feat/direct-dppo-pilot`.
+
+## D029 — Separate parameter scope, LoRA and visible evaluation (2026-10-23)
+
+The initial head-only runs check the learning system, not sufficient capacity
+for shape adaptation. Make full action-U-Net updates versus distributed Conv1d
+LoRA the main capacity comparison; retain head-only variants as limited controls.
+Image encoder updates need a separate gradient/data implementation. LoRA is an
+established weight parameterization, not a new RL algorithm; the current work
+does not establish algorithmic novelty. Keep the original CNN primary. The
+authors also released a Transformer PushT policy; it requires its own asset and
+baseline compatibility checks before a comparison, not a silent replacement.
+
+Add native-PyTorch Conv1d factors, zero-initialized B, configurable rank/scaling
+and head/action-network targets. Freeze base kernels/biases/normalization and
+disable factors on frozen denoising steps. Save only factors/critic/Adam state.
+Check dense-kernel equivalence, original-policy parity, distributed gradients,
+unchanged frozen parameters and compact reload. No extra dependency is needed.
+
+Keep training headless. Add a separate trained-delta desktop evaluator, with
+optional action/reward/overlap checks against the saved development rollout.
+Label previews as evaluation, not ongoing training. Count their physical work
+separately. A small LoRA check saves parameters/storage but did not make the
+100-step sampling/evaluation run faster; optimize measured stages and preserve
+matched baselines for sampler/precision changes.

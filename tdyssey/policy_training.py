@@ -86,7 +86,7 @@ def train(source_root, checkpoint, output, config):
     counters = {key: 0 for key in ("training_controls", "training_plans", "evaluation_controls",
                                    "evaluation_plans", "checkpoint_verification_plans",
                                    "reset_physics_substeps", "optimizer_minibatches")}
-    paths = ("tdyssey/dppo.py", "tdyssey/rl_protocol.py", "tdyssey/policy_training.py",
+    paths = ("tdyssey/dppo.py", "tdyssey/lora.py", "tdyssey/rl_protocol.py", "tdyssey/policy_training.py",
              "scripts/train_official_policy.py", "tdyssey/official.py", "tdyssey/envs/official.py")
     report = {"schema_version": 1, "kind": "official_visual_tail_ppo_pilot", "status": "running",
               "config": asdict(config), "counts": counters, "updates": [], "resets": [],
