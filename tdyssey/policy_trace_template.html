@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside the original PushT Diffusion Policy</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;font:16px/1.5 system-ui,sans-serif;color:#23384b;background:#f7f8fa}main{max-width:1180px;margin:auto}h1{font-size:27px;margin:0 0 8px}h2{font-size:18px;margin:8px 0}p{margin:8px 0}label{display:block;margin:10px 0}select,button,input{font:inherit}select{max-width:100%;padding:8px}button{padding:7px 13px;margin-right:8px;cursor:pointer}input[type=range]{width:100%}.controls{padding:16px;background:white;border:1px solid #dce2e8;border-radius:8px;margin:16px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid section{min-width:0}canvas{display:block;width:100%;height:auto;background:white;border:1px solid #c9d2dc}#timeline{margin-top:16px}.small{font-size:14px;color:#455c70}.legend{display:flex;gap:18px;flex-wrap:wrap}.key{font-weight:650}#facts{padding:14px;background:#edf2f7;border-radius:8px}a{color:#185b93}@media(max-width:740px){body{padding:12px}.grid{grid-template-columns:1fr}h1{font-size:23px}}
+</style>
+<main>
+<h1>Inside the original PushT Diffusion Policy</h1>
+<p>Actual recorded DDPM samples from the frozen T-trained policy. No world model or policy training is used.</p>
+<p><strong>The dots are proposed pusher targets, not predicted object positions.</strong> The network conditions on two images and two pusher positions. Reward is measured for analysis; it is not an input to this policy.</p>
+<div class="controls">
+<label>Recorded planning decision <select id="plan"></select></label>
+<button id="play" type="button">Play denoising</button><button id="execute" type="button">Play physical execution</button>
+<label>Denoising progress: <strong id="stageLabel"></strong><input id="stage" type="range" min="0" max="100" value="0"></label>
+<label>Physical controls executed: <strong id="physicalLabel"></strong><input id="physical" type="range" min="0" max="8" value="0"></label>
+<p class="small">During denoising, the input scene stays fixed. Physical execution uses the final sample and then shows the measured simulator frames. The policy plans 16 targets; only indices 1-8 are executed before replanning.</p>
+</div>
+<div class="grid">
+<section><h2 id="sceneTitle">Policy input scene</h2><canvas id="scene" width="600" height="600" aria-label="Scene with sampled pusher targets"></canvas></section>
+<section><h2>All sampled targets, including outside the scene</h2><canvas id="scatter" width="600" height="600" aria-label="Unclipped target coordinates with workspace boundary"></canvas></section>
+</div>
+<p class="legend"><span><span class="key">Black:</span> noisy targets</span><span style="color:#147b3f"><span class="key">Green:</span> final executed prefix</span><span style="color:#777"><span class="key">Gray:</span> unused final targets</span><span style="color:#2366ba"><span class="key">Blue:</span> measured pusher path</span></p>
+<p id="details" aria-live="polite"></p>
+<h2>Original physical rollout</h2>
+<canvas id="timeline" width="1180" height="260" aria-label="Coverage and intersection-over-union over physical controls"></canvas>
+<p class="small">Blue: coverage. Orange: IoU (intersection over union). Dashed line: success requires coverage above 95%. Green shading: selected action chunk. Red line: earliest best IoU. The chart includes the full saved episode, beyond the diagnostic replay window.</p>
+<div id="facts"></div>
+<p class="small">This reveals the sampled decision sequence, not a causal explanation of individual neural features. The hold comparison is a posthoc intervention using the known best moment; it is not a deployable stopping rule. Data and images are embedded, so this page works offline without a server.</p>
+</main>
+<script id="data" type="application/json">__TRACE_DATA__</script>
+<script>
+"use strict";
+const data=JSON.parse(document.getElementById('data').textContent), el=id=>document.getElementById(id);
+let selected=0,timer=null,images=[],view=null,loadVersion=0;
+const percent=v=>(100*v).toFixed(1)+'%';
+function stop(){if(timer!==null)clearInterval(timer);timer=null;el('play').textContent='Play denoising';}
+data.views.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${v.shape}: plan before controls ${v.start+1}-${v.start+v.frames.length-1}`;el('plan').appendChild(o);});
+function choose(i){
+ stop();selected=i;view=data.views[i];el('plan').value=i;el('stage').max=view.samples.length-1;el('stage').value=0;el('physical').max=view.frames.length-1;el('physical').value=0;
+ const token=++loadVersion;images=view.frames.map(src=>{const image=new Image();image.onload=()=>{if(token===loadVersion)draw();};image.src=src;return image;});draw();
+}
+function line(ctx,points,map,color,width=2){if(!points.length)return;ctx.strokeStyle=color;ctx.lineWidth=width;ctx.beginPath();points.forEach((p,i)=>{const [x,y]=map(p);if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y);});ctx.stroke();}
+function points(ctx,sample,map,final){
+ if(final)line(ctx,sample,map,'#a1a7ad',1.5);
+ if(final)line(ctx,view.indices.map(i=>sample[i]),map,'#147b3f',3);
+ sample.forEach((p,i)=>{const [x,y]=map(p);ctx.fillStyle=final?(view.indices.includes(i)?'#147b3f':'#777'):'#111';ctx.beginPath();ctx.arc(x,y,final?5:4,0,Math.PI*2);ctx.fill();ctx.fillStyle='#111';ctx.font='13px system-ui';ctx.fillText(i,x+6,y-6);});
+}
+function draw(){
+ if(!view)return;
+ const stage=+el('stage').value, physical=+el('physical').value, sample=view.samples[stage], final=stage===view.samples.length-1;
+ el('stageLabel').textContent=stage===0?'0: initial Gaussian noise':`${stage}/${view.samples.length-1}; completed scheduler timestep ${view.timesteps[stage-1]}`;
+ el('physicalLabel').textContent=`${physical}/${view.frames.length-1} (global control ${view.start+physical})`;
+ el('sceneTitle').textContent=physical?'Actual physical execution':'Frozen input scene during denoising';
+ const scene=el('scene').getContext('2d');scene.clearRect(0,0,600,600);scene.imageSmoothingEnabled=false;
+ const image=images[physical];if(image&&image.complete&&image.naturalWidth)scene.drawImage(image,0,0,600,600);
+ points(scene,sample,p=>[p[0]/512*600,p[1]/512*600],final);
+ line(scene,view.positions.slice(0,physical+1),p=>[p[0]/512*600,p[1]/512*600],'#2366ba',3);
+ const scatter=el('scatter').getContext('2d');scatter.clearRect(0,0,600,600);
+ const [low,high]=view.extent,map=p=>[40+(p[0]-low)/(high-low)*520,40+(p[1]-low)/(high-low)*520];
+ scatter.strokeStyle='#8795a3';scatter.setLineDash([6,5]);const a=map([0,0]),b=map([512,512]);scatter.strokeRect(a[0],a[1],b[0]-a[0],b[1]-a[1]);scatter.setLineDash([]);
+ scatter.fillStyle='#455c70';scatter.font='15px system-ui';scatter.fillText('Workspace: 0 to 512 pixels',22,25);scatter.fillText(`Fixed coordinate range: ${low.toFixed(0)} to ${high.toFixed(0)} pixels`,22,584);points(scatter,sample,map,final);
+ const outside=sample.filter(p=>p.some(c=>c<0||c>512)).length;
+ el('details').textContent=`${outside}/16 sampled targets are outside the scene. Coordinates are inverse-normalized with the checkpoint's own action normalizer; none are clipped in the data. The full-range view uses the same scale throughout denoising.`;
+ timeline();facts();
+}
+function timeline(){
+ const c=el('timeline').getContext('2d'),w=1180,h=260,left=52,top=18,bottom=216;
+ c.clearRect(0,0,w,h);const x=t=>left+t/view.curve.length*(w-left-20),y=v=>bottom-v*(bottom-top);
+ c.fillStyle='#e5f3e8';c.fillRect(x(view.start),top,x(view.start+view.frames.length-1)-x(view.start),bottom-top);
+ c.font='14px system-ui';c.fillStyle='#334b60';
+ [0,.5,.95,1].forEach(v=>{c.strokeStyle='#dce2e8';c.beginPath();c.moveTo(left,y(v));c.lineTo(w-20,y(v));c.stroke();c.fillText(v.toFixed(2),5,y(v)+4);});
+ c.strokeStyle='#555';c.setLineDash([6,5]);c.beginPath();c.moveTo(left,y(.95));c.lineTo(w-20,y(.95));c.stroke();c.setLineDash([]);
+ for(const [key,color] of [['coverage','#2366ba'],['iou','#b66a1c']])line(c,view.curve.map((r,i)=>[i+1,r[key]]),p=>[x(p[0]),y(p[1])],color,2);
+ const peak=data.cases[view.shape].facts.best_control;c.strokeStyle='#ad2828';c.beginPath();c.moveTo(x(peak),top);c.lineTo(x(peak),bottom);c.stroke();
+ for(let t=0;t<=view.curve.length;t+=50)c.fillText(t,x(t)-8,240);
+ c.fillText('Physical control step',w/2-60,257);
+ const current=view.start+(+el('physical').value);c.fillStyle='#147b3f';c.beginPath();c.arc(x(current),bottom,5,0,Math.PI*2);c.fill();
+}
+function facts(){
+ const value=data.cases[view.shape],f=value.facts;
+ const lines=[`${view.shape}: best IoU ${percent(f.best_iou)} at control ${f.best_control}; coverage ${percent(f.best_coverage)}.`,
+ `That was action ${f.best_action_slot_1_based} of the chunk covering controls ${f.planned_controls[0]}-${f.planned_controls[1]}. ${f.best_exceeds_success_threshold?'It exceeded':'It did not exceed'} the 95% success threshold.`,
+ f.first_iou_drop_before_replan?`IoU first declined at control ${f.first_iou_drop_before_replan}, before the next replan.`:'No IoU decline was recorded within that same chunk after the peak.'];
+ if(value.hold_comparison){const h=value.hold_comparison,last=h.hold_results[h.hold_results.length-1];lines.push(`Posthoc ${h.controls}-control hold at the best moment: final IoU ${percent(last.metrics.iou)}, compared with ${percent(h.original_endpoint_metrics.iou)} when continuing the original policy.`);}
+ el('facts').replaceChildren(...lines.map(s=>{const p=document.createElement('p');p.textContent=s;return p;}));
+}
+el('plan').onchange=()=>choose(+el('plan').value);
+el('stage').oninput=()=>{stop();el('physical').value=0;draw();};
+el('physical').oninput=()=>{stop();el('stage').value=el('stage').max;draw();};
+el('play').onclick=()=>{if(timer!==null){stop();return;}el('physical').value=0;el('stage').value=0;el('play').textContent='Pause';draw();timer=setInterval(()=>{const i=+el('stage').value;if(i>=+el('stage').max){stop();return;}el('stage').value=i+1;draw();},70);};
+el('execute').onclick=()=>{stop();el('stage').value=el('stage').max;el('physical').value=0;draw();timer=setInterval(()=>{const i=+el('physical').value;if(i>=+el('physical').max){stop();return;}el('physical').value=i+1;draw();},300);};
+choose(Math.max(0,data.views.findIndex(v=>v.shape==='D'&&v.start===data.cases.D?.facts.plan_start_control)));
+</script>
+</html>

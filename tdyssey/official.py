@@ -99,6 +99,30 @@ class OfficialDiffusionPolicy:
             raise ValueError("Unexpected action chunk from the official policy")
         return actions
 
+    def predict_actions_with_trace(self, history):
+        """Return the usual actions plus every actual DDPM sample for inspection.
+
+        Pixel-space intermediate samples are display coordinates, not predicted
+        object positions or valid executable plans. No clipping is applied here.
+        The unchanged upstream sampler still supplies all executed actions.
+        """
+        import torch
+        from .policy_diagnostics import capture_scheduler_steps
+
+        if not self.network.obs_as_global_cond:
+            raise ValueError("Denoising capture currently supports the official global-conditioning policy")
+        with capture_scheduler_steps(self.network.noise_scheduler) as record:
+            actions = self.predict_actions(history)
+        with torch.inference_mode():
+            samples = torch.stack(record["samples"])[:, 0, :, :self.network.action_dim]
+            pixels = self.network.normalizer["action"].unnormalize(samples)
+        start = self.network.n_obs_steps - 1
+        trace = {"normalized_samples": samples.cpu().numpy(),
+                 "pixel_samples": pixels.cpu().numpy(),
+                 "timesteps": record["timesteps"],
+                 "executed_indices": list(range(start, start + self.network.n_action_steps))}
+        return actions, trace
+
 
 def physical_state(env):
     def body_state(body):
