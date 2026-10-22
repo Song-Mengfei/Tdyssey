@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT))
 from tdyssey.collection import derived_seed
 from tdyssey.official import OfficialDiffusionPolicy, load_official_source, physical_metrics, physical_state
 from tdyssey.policy import hash_file
+from tdyssey.policy_diagnostics import post_success_facts
 
 
 def main():
@@ -27,6 +28,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True, help="New report directory")
     parser.add_argument("--episodes", type=int, default=3)
     parser.add_argument("--steps", type=int, default=300)
+    parser.add_argument("--continue-after-success", action="store_true",
+                        help="Diagnostic: keep raw success flags but continue up to --steps (maximum 500)")
     parser.add_argument("--seed", type=int, default=100000, help="First official test-scene seed")
     parser.add_argument("--policy-seed", type=int, default=42)
     parser.add_argument("--seconds", type=int, default=360)
@@ -36,11 +39,13 @@ def main():
     parser.add_argument("--hold-seconds", type=int, default=0)
     parser.add_argument("--video", action="store_true", help="Stream small previews, one per episode")
     args = parser.parse_args()
-    if not (1 <= args.episodes <= 3 and 1 <= args.steps <= 300 and 1 <= args.seconds <= 900
+    max_steps = 500 if args.continue_after_success else 300
+    if not (1 <= args.episodes <= 3 and 1 <= args.steps <= max_steps and 1 <= args.seconds <= 900
             and 100000 <= args.seed < 2**32 - 3 and 0 <= args.policy_seed < 2**32
             and 1 <= args.threads <= 16 and 256 <= args.window_size <= 1536
             and 0 <= args.hold_seconds <= 60 and (not args.hold_seconds or args.display)):
-        parser.error("Use bounded runs: 1–3 episodes, 1–300 controls, 1–900 seconds, valid seeds/display options")
+        parser.error("Use 1-3 episodes, 1-300 controls (500 with --continue-after-success), "
+                     "1-900 seconds and valid seeds/display options")
     output, source, checkpoint = args.output.resolve(), args.source_root.resolve(), args.checkpoint.resolve()
     if output.exists():
         parser.error("Output already exists; choose a new directory")
@@ -58,8 +63,12 @@ def main():
     with contextlib.redirect_stdout(sys.stderr):
         policy = OfficialDiffusionPolicy(source, checkpoint, device="cuda")
         cls = load_official_source(source, policy.spec)
-    paths = ["tdyssey/official.py", "scripts/evaluate_official.py", "tdyssey/viewer.py", "manifests/official_dp.json", "pyproject.toml", "uv.lock"]
-    report = {"schema_version": 1, "kind": "official_rss_diffusion_policy_cnn_t_baseline", "status": "running",
+    paths = ["tdyssey/official.py", "scripts/evaluate_official.py", "tdyssey/policy_diagnostics.py",
+             "tdyssey/viewer.py", "manifests/official_dp.json", "pyproject.toml", "uv.lock"]
+    kind = "official_cnn_t_success_continuation_diagnostic" if args.continue_after_success else "official_rss_diffusion_policy_cnn_t_baseline"
+    metric = ("ever crossed original success, final overlap, and post-success retention; not paper score"
+              if args.continue_after_success else "mean episode maximum clipped upstream reward; not success fraction")
+    report = {"schema_version": 1, "kind": kind, "status": "running",
               "config": {key: value for key, value in vars(args).items() if key not in ("source_root", "checkpoint", "output")},
               "asset_spec": policy.spec, "inference_device": str(policy.device), "gpu": torch.cuda.get_device_name(),
               "cuda_runtime": torch.version.cuda, "parameter_count": policy.parameter_count,
@@ -71,7 +80,10 @@ def main():
               "counts": dict.fromkeys(("control_steps", "control_physics_substeps", "reset_physics_substeps", "planning_calls", "denoising_steps"), 0),
               "episodes": [], "protocol": {"shape": "T", "legacy_test": True, "geometry_rejection": False,
                                             "world_model": False, "training": False,
-                                            "metric": "mean episode maximum clipped upstream reward; not success fraction",
+                                            "stop_on_success": not args.continue_after_success,
+                                            "success_flag": "unchanged raw coverage > 0.95; not IoU",
+                                            "continuation": "no reset, hold, velocity change or history/RNG reset after success",
+                                            "metric": metric,
                                             "rng": "local CUDA generator seeded per episode; not exact original evaluation RNG stream"}}
     output.mkdir(parents=True, exist_ok=False)
     env, viewer, video = None, None, None
@@ -91,18 +103,28 @@ def main():
             history = deque([observation] * 2, maxlen=2)
             policy.reset_seed(action_seed)
             episode = {"scene_seed": scene_seed, "policy_seed": action_seed, "initial_state": physical_state(env),
+                       "initial_metrics": physical_metrics(env),
                        "steps": [], "planning_seconds": [], "stop_reason": "control_budget", "success": False}
             report["episodes"].append(episode)
             if args.video:
                 import cv2
-                video = cv2.VideoWriter(str(output / f"T-{scene_seed}.mp4"), cv2.VideoWriter_fourcc(*"mp4v"), 10, (512, 512))
+                video_height = 576 if args.continue_after_success else 512
+                video = cv2.VideoWriter(str(output / f"T-{scene_seed}.mp4"), cv2.VideoWriter_fourcc(*"mp4v"), 10, (512, video_height))
                 if not video.isOpened():
                     raise RuntimeError("Installed OpenCV cannot encode video")
 
             def draw():
                 image = env.render(mode="rgb_array")
                 if video is not None:
-                    video.write(cv2.resize(cv2.cvtColor(image, cv2.COLOR_RGB2BGR), (512, 512)))
+                    frame = cv2.resize(cv2.cvtColor(image, cv2.COLOR_RGB2BGR), (512, 512))
+                    if args.continue_after_success:
+                        frame = cv2.copyMakeBorder(frame, 64, 0, 0, 0, cv2.BORDER_CONSTANT, value=(255, 255, 255))
+                        metrics = episode["steps"][-1]["metrics"] if episode["steps"] else episode["initial_metrics"]
+                        cv2.putText(frame, f"T | control {len(episode['steps'])}/{args.steps} | continue after success",
+                                    (12, 23), cv2.FONT_HERSHEY_SIMPLEX, .47, (35, 35, 35), 1, cv2.LINE_AA)
+                        cv2.putText(frame, f"Coverage {metrics['coverage']:.1%} | IoU {metrics['iou']:.1%}",
+                                    (12, 49), cv2.FONT_HERSHEY_SIMPLEX, .54, (35, 35, 35), 1, cv2.LINE_AA)
+                    video.write(frame)
                 if viewer:
                     viewer.draw(image, f"Official Diffusion Policy | T | seed {scene_seed} | {len(episode['steps'])}/{args.steps} | CUDA", 10)
 
@@ -134,8 +156,17 @@ def main():
                                              "metrics": physical_metrics(env)})
                     draw()
                     if done:
-                        episode["success"], episode["stop_reason"] = True, "upstream_success"
-                        break
+                        if not episode["success"]:
+                            print(f"T seed {scene_seed}: first success at control {len(episode['steps'])}" +
+                                  ("; continuing without reset" if args.continue_after_success else ""),
+                                  file=sys.stderr, flush=True)
+                        episode["success"] = True
+                        if not args.continue_after_success:
+                            episode["stop_reason"] = "upstream_success"
+                            break
+                    if args.continue_after_success and len(episode["steps"]) % 100 == 0:
+                        print(f"T seed {scene_seed}: {len(episode['steps'])}/{args.steps} controls; "
+                              f"coverage {episode['steps'][-1]['metrics']['coverage']:.4f}", file=sys.stderr, flush=True)
                 if episode["stop_reason"] != "control_budget":
                     break
             if video is not None:
@@ -146,12 +177,33 @@ def main():
                             "max_iou": max((r["metrics"]["iou"] for r in rows), default=0),
                             "final_iou": rows[-1]["metrics"]["iou"] if rows else None,
                             "contact_steps": sum(r["contacts"] > 0 for r in rows)})
+            episode["post_success"] = post_success_facts(rows)
             print(json.dumps({key: episode[key] for key in ("scene_seed", "control_steps", "max_reward", "max_iou", "success", "stop_reason")}), file=sys.stderr, flush=True)
             (output / "report.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
         report["status"] = "complete" if (len(report["episodes"]) == args.episodes and all(e["stop_reason"] in ("control_budget", "upstream_success") for e in report["episodes"])) else "stopped_early"
         report["mean_max_upstream_reward"] = float(np.mean([e["max_reward"] for e in report["episodes"]])) if report["episodes"] else None
         report["success_fraction"] = float(np.mean([e["success"] for e in report["episodes"]])) if report["episodes"] else None
         report["evaluation_elapsed_seconds"] = time.monotonic() - start
+        if args.continue_after_success and report["episodes"]:
+            # This finite-duration diagnostic is reported separately from the
+            # paper's terminate-on-success evaluation. No sampler is modified.
+            import matplotlib.pyplot as plt
+            figure, axes = plt.subplots(len(report["episodes"]), 1, figsize=(10, 3.5 * len(report["episodes"])), squeeze=False,
+                                        constrained_layout=True)
+            for axis, episode in zip(axes[:, 0], report["episodes"]):
+                rows = episode["steps"]
+                controls = range(1, len(rows) + 1)
+                axis.plot(controls, [r["metrics"]["coverage"] for r in rows], label="Coverage", color="#2366ba")
+                axis.plot(controls, [r["metrics"]["iou"] for r in rows], label="IoU", color="#b66a1c")
+                axis.axhline(.95, color="#555555", ls="--", label="Original success: coverage > 95%")
+                first = episode["post_success"]["first_success_control"]
+                if first is not None:
+                    axis.axvline(first, color="#a32424", lw=1, label=f"First success: control {first}")
+                axis.set(xlabel="Physical control step (10 Hz)", ylabel="Overlap", ylim=(0, 1.03), xlim=(0, args.steps),
+                         title=f"T | scene {episode['scene_seed']} | policy continues after success")
+                axis.legend(loc="lower right", fontsize=8)
+            figure.savefig(output / "continuation.png", dpi=150)
+            plt.close(figure)
         if viewer:
             viewer.finish()
     except BaseException as exc:
