@@ -28,6 +28,12 @@ inspection/plan review milestone.
 
 ## Completed
 
+- Surveyed newer image/flow RL objectives and closely related world-model policy
+  work; added `docs/DIFFUSION_RL_RESEARCH.md` with primary sources, a DDPM-NFT
+  specification, loss algebra, model-reliability limits and three-developer tasks.
+  Recommend it as the next objective comparison alongside the existing PPO;
+  no forward-process/imagined trainer or new training result is added. Course
+  scope remains shared multi-shape adaptation; algorithmic novelty is not required.
 - Added a direct-simulator visual tail-PPO trainer, physical-time shaping/GAE,
   value estimator and compact checkpoint/reload path. Supports output-head or
   full action-network updates with frozen encoder/normalizers and identical
@@ -274,6 +280,13 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
+Implement the separately identified DDPM-NFT forward-process comparison using
+[the research handoff](DIFFUSION_RL_RESEARCH.md): matched-context physical branches,
+noise-prediction loss, full action-network/distributed-LoRA updates and independent
+evaluation. Preserve the PPO baseline and first verify direct simulator learning;
+world-model scoring follows prediction checks. This selects a next implementation
+task, not a claim that the alternative is implemented or better.
+
 Measure physical learning on separate development scenes, diagnose reward/contact
 coverage, and validate full action-network updates on an authorized larger GPU.
 The first tail-PPO sampler/likelihood/update/serialization checks now pass;
@@ -317,8 +330,9 @@ Retain the custom CNN as an L-only comparison. Loading a public checkpoint does
 not establish adaptation, reliable planning or differentiable policy training;
 the released sampler rounds pixels and disables gradients. That blocks direct
 backpropagation through its predictions, not likelihood-ratio policy gradients
-such as DPPO. See decision D021 and `docs/POLICY_DIAGNOSTICS.md` for the separate
-policy-sampling inspection; no RL trainer exists yet.
+such as DPPO, or reward-based forward regression. See decision D021 and
+`docs/POLICY_DIAGNOSTICS.md` for the separate policy-sampling inspection. The direct
+PPO trainer now exists; a world-model policy-learning loop remains pending.
 
 Verify direct physical-simulator policy optimization before imagined updates.
 Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before

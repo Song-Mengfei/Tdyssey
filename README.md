@@ -26,6 +26,7 @@ separate from the official baseline. See [results](docs/RESULTS.md),
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
 - [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
+- [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
@@ -90,6 +91,13 @@ observations without using it for test-time planning.
 Read the [detailed implementation and experiment plan](docs/LEARNING_PLAN.md) for
 data sizes/splits, model losses, reward equations, training steps, proposed starting
 settings and three developer work packages. Proposed settings are not tested defaults.
+
+The [extended RL survey](docs/DIFFUSION_RL_RESEARCH.md) recommends a DDPM-compatible
+DiffusionNFT experiment alongside PPO, then world-model-scored updates after
+prediction checks. It includes the proposed loss, limitations and developer tasks;
+the alternative trainer is not implemented yet. Using and comparing established
+methods fits this course project; an original algorithm is not required. The
+shared multi-shape goal remains unchanged.
 
 To check a small real GPU policy update using an existing authorized CUDA/DP setup:
 

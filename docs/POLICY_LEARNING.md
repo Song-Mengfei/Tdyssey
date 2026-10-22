@@ -5,6 +5,11 @@ method. The [whole-project plan](LEARNING_PLAN.md) still governs data exposure,
 world-model work and evaluation. Runtime evidence is recorded in [status](STATUS.md)
 and [validation](VALIDATION.md); an implementation is not an improvement result.
 
+The [extended image/flow RL survey](DIFFUSION_RL_RESEARCH.md) adds DiffusionNFT,
+AdvantageFlow, RAM, FPO/V-GRPO, QAM and related world-model policy work. It recommends
+a separate DDPM-compatible forward-process trainer next, with concrete losses
+and checks. That is proposed work, not behavior provided by this PPO trainer.
+
 ## Which method fits this project?
 
 Primary-source survey checked 2026-10-23. The fit judgments are our assessment,
@@ -20,9 +25,10 @@ best for our geometry, checkpoint or data budget.
 | [OGPO](https://arxiv.org/abs/2605.03065) | Off-policy critics score generated actions for PPO-style generative-policy improvement | Promising second full-network method if data reuse matters. Requires reliable critics and stabilization; its internal denoising optimization is not a world-model environment rollout. |
 | [DiPOD](https://arxiv.org/abs/2606.13795) | Self-distillation/ELBO regularization addresses drift in surrogate diffusion-policy optimization | Relevant caution about proxy likelihoods. We use explicit conditional Gaussian densities, not an ELBO substituted for final-action likelihood; this is not a claim that all its concerns disappear. |
 
-Select a checked DPPO-style baseline first, then residual PPO or OGPO when a
-failure identifies the useful comparison. Implementing all six at once would
-confound debugging and consume the experiment budget. A new method is not required
+The checked DPPO-style baseline now exists. The broader survey recommends
+DiffusionNFT as the next different update rule; residual PPO and OGPO remain
+useful alternatives when a failure identifies the comparison. Implementing every
+method at once would confound debugging. An original algorithm is not required
 to make adapting a visual policy across shape/contact changes substantial work.
 
 ### CNN and Transformer versions of the original policy

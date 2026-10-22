@@ -5,6 +5,11 @@ Updated: 2026-10-23. This defines the shared experiments; read
 The first direct trainer and its precise variant, survey, derivations and commands
 are now in [policy learning](POLICY_LEARNING.md). The ambitious learning stages
 below are not established by a successful optimizer check.
+The [extended RL research note](DIFFUSION_RL_RESEARCH.md) specifies a proposed
+DiffusionNFT alternative and its world-model extension. DPPO below describes the
+first implementation, not a requirement that all later learning use PPO. The
+course project can implement and compare established methods without claiming
+algorithmic novelty; its shared multi-shape scope remains unchanged.
 
 ## The idea in one minute
 
@@ -13,8 +18,9 @@ learn to push other letters using automated interaction and simulator-derived
 rewards, without new human demonstrations. First establish learning on L while
 checking T retention; then expand to mixed shapes and potentially A-Z.
 
-A world model predicts what an action will do. DPPO changes the policy using
-the rewards from trying actions. They are different models with different losses.
+A world model predicts what an action will do. A policy-learning method changes
+the policy using rewards from trying actions; DPPO is the implemented starting
+method. They are different models with different losses.
 The reward specifies the task; an image predictor does not automatically supply
 a reliable reward. Original expert T pretraining and privileged simulator labels
 remain part of the method and must be disclosed.
@@ -54,7 +60,8 @@ not hidden by moving to a more complex predictor.
 | Policy inspection | Actual denoising replay, near-miss analysis and 500-control T continuation completed | Review behavior; no training is provided by these tools |
 | Custom 1.3M-parameter L predictor | Small supervised pilot; unreliable rewards/drift | Keep as a comparison, not the imagined environment |
 | Pretrained 8.73M-parameter GPC predictor | Loading verified; official-domain/contact failures measured | Assess official-domain adaptation against frozen weights |
-| Direct DPPO-style trainer and value network | Tail-transition PPO implemented; initial real GPU update/reload check passed | Establish physical learning curves and validate full action-network training; no added adapter architecture yet |
+| Direct DPPO-style trainer and value network | Tail-transition PPO and Conv1d LoRA implemented; initial real GPU update/reload checks passed | Establish physical learning curves and validate full action-network training |
+| Forward-process policy learning | Research/specification only; no trainer | Implement the DDPM-NFT alternative and matched simulator comparison from the research note |
 | Shared multi-shape world model / imagined trainer | **Not implemented** | Build only after the relevant interfaces and checks work |
 
 The committed [result index](RESULTS.md) contains selected earlier evidence.
@@ -245,6 +252,7 @@ reserve fresh geometry variants before using them as a stronger final test.
 | Model training window | Past observations through time `t`, future actions starting at `t`, targets after those actions; no future frame among inputs; see [window timing](TRAINING_DATA.md) |
 | Imagined transition | Model/version and initial-history provenance; chosen action, predicted next RGB/pusher/coverage, derived reward and predicted termination; no unseen true future labels |
 | On-policy DPPO buffer | Current actor/version, exact conditioning observations, full sampled denoising chain, old conditional log probabilities, executed prefix length, per-control rewards, value estimates and terminal/truncation masks |
+| Proposed forward-process buffer | Exact shared context/prefix provenance, rollout-actor version, complete normalized sampled plans, actually executed prefixes, physical or predicted score provenance, normalization rule and split; see [research note](DIFFUSION_RL_RESEARCH.md) |
 | Evaluation record | Frozen method/checkpoint, scene/policy seeds, physical action/state/metric traces, costs and stop reason; no optimizer updates |
 
 For the actor, preserve two 96x96 RGB frames, original cropping and pusher-history
@@ -408,6 +416,10 @@ not a separate policy per letter.
 These are proposed boundaries, not assigned author names. Agree on owners before
 simultaneous edits. Each workstream uses a branch; coordinate edits to common
 contracts/configuration and let one owner update status/decisions per milestone.
+For the next method comparison, the [research handoff](DIFFUSION_RL_RESEARCH.md)
+adds concrete forward-trainer, matched-branch collection and evaluation tasks to
+these same three workstreams; it does not assign extra developers or require a
+new policy architecture.
 
 | Workstream | First build task and suggested file ownership | Acceptance evidence |
 | --- | --- | --- |
