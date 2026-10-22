@@ -45,6 +45,15 @@ inspection/plan review milestone.
   Frozen weights and checkpoint action parity passed. This establishes no L
   adaptation benefit. Elapsed 431.609 seconds, peak allocated CUDA about 1.11 GiB,
   with about 16.2 MiB of ignored output; commands/hashes in `docs/VALIDATION.md`.
+- Added native Conv1d LoRA with head or distributed action-U-Net targets and
+  separate trained-checkpoint desktop evaluation. A head-LoRA 64-control update
+  trained 25,604 factors, preserved base weights and reloaded exact actions.
+  Distributed LoRA passed original-sampler parity, real GPU updates and compact
+  reload checks; a physical learning improvement is not established. Visible
+  L/T previews matched all 300/297 saved evaluation actions/rewards/overlaps.
+  See D029 and `docs/POLICY_LEARNING.md`; training itself remains headless.
+  Latest checks: all 111 installed tests passed in 42.356 seconds; source-only
+  discovery passed 62 and skipped 49 runtime checks. No new dependency or asset.
 
 - Defined the three-author course project's research question, staged milestones,
   candidate dependency lock, upstream revisions, and contribution rules.
@@ -269,7 +278,8 @@ Measure physical learning on separate development scenes, diagnose reward/contac
 coverage, and validate full action-network updates on an authorized larger GPU.
 The first tail-PPO sampler/likelihood/update/serialization checks now pass;
 an actual learning improvement has not been established. Add periodic recovery
-checkpoints and a standalone trained-delta evaluator before long experiments.
+checkpoints before long experiments. A standalone trained-delta desktop evaluator
+now exists; MP4 export and automatic resume remain pending.
 In parallel, define the frozen/adapted predictor comparison and
 collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
 Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,

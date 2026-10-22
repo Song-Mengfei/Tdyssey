@@ -12,6 +12,9 @@ class RLConfig:
     minibatch_size: int = 4
     train_timesteps: int = 4
     trainable: str = "head"
+    lora_rank: int = 8
+    lora_alpha: float = 8.
+    lora_target: str = "head"
     gamma: float = .99
     gae_lambda: float = .95
     beta: float = 1.
@@ -37,8 +40,14 @@ class RLConfig:
             value = getattr(self, name)
             if type(value) is not int or not 1 <= value <= limit:
                 raise ValueError(f"Invalid {name}")
-        if self.trainable not in ("head", "action_network"):
-            raise ValueError("trainable must be head or action_network")
+        if self.trainable not in ("head", "action_network", "lora"):
+            raise ValueError("trainable must be head, action_network or lora")
+        if type(self.lora_rank) is not int or not 1 <= self.lora_rank <= 64:
+            raise ValueError("Invalid LoRA rank")
+        if not math.isfinite(self.lora_alpha) or not 0 < self.lora_alpha <= 128:
+            raise ValueError("Invalid LoRA alpha")
+        if self.lora_target not in ("head", "action_network"):
+            raise ValueError("Invalid LoRA target")
         for name in ("gamma", "gae_lambda", "clip", "actor_lr", "critic_lr", "max_grad_norm", "target_kl"):
             value = getattr(self, name)
             if not math.isfinite(value) or not 0 < value <= 1:

@@ -100,6 +100,14 @@ To check a small real GPU policy update using an existing authorized CUDA/DP set
 The [policy-learning guide](docs/POLICY_LEARNING.md) explains the DPPO-style variant,
 rewards, small/full-network configurations, mathematical limits and current evidence.
 The smoke run tests mechanics; it is not an L-learning result.
+For the main capacity comparison, use full action-network or distributed LoRA
+profiles in the [training guide](docs/POLICY_LEARNING.md), rather than assuming
+head-only updates suffice. LoRA changes which parameters learn; the PPO objective
+remains the same.
+
+Training runs without a window. To watch a saved trained policy, use
+[`scripts/evaluate_trained_policy.py`](scripts/evaluate_trained_policy.py) with
+`--adapter PATH/last.pt --display`; see the [preview command](docs/POLICY_LEARNING.md#run-and-inspect).
 
 ## Work without installing anything
 

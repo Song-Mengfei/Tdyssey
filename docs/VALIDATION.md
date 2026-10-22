@@ -1171,3 +1171,51 @@ The full installed command from the preceding PR-verification section passed all
 109 tests, no skips, in 30.882 seconds. Source/link/syntax, CLI help, all five
 configuration profiles and whitespace checks passed. No full-network performance,
 multi-seed adaptation, imagined RL or theorem of policy improvement is claimed.
+
+## LoRA and trained-policy desktop previews (2026-10-23)
+
+Added native-PyTorch Conv1d low-rank factors, with a head or distributed action-U-Net
+target. Zero-initialized B preserves original inference; the head profile trains
+25,604 parameters. It does not train the visual encoder or change the PPO objective.
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_lora_smoke.json --output artifacts/dppo-lora-smoke-2026-10-23
+.venv/bin/python -B scripts/evaluate_trained_policy.py --adapter artifacts/dppo-local-pilot-2026-10-23/last.pt --reference-report artifacts/dppo-local-pilot-2026-10-23/report.json --shape L --steps 300 --display --window-size 768 --hold-seconds 30 --output artifacts/dppo-local-pilot-2026-10-23-L-preview.json
+# The T preview used --shape T, --hold-seconds 60 and a new T-preview.json path.
+```
+
+The LoRA smoke completed 64 training controls, two optimizer minibatches and
+512 evaluation controls. Eight training / 64 evaluation / two checkpoint plans,
+six reset substeps and 7,400 denoising steps. Elapsed 118.994 seconds; peak allocated
+CUDA 1,166,400,512 bytes. Base/frozen parameters were unchanged and checkpoint
+reload reproduced actions exactly. All initial baseline traces match the earlier
+head-only smoke's initial traces exactly. The first 64 training rewards were zero;
+this is an update check, not an adaptation benefit.
+
+Checkpoint including factor/critic/Adam state: 722,458 bytes; total output 891,599
+bytes. Checkpoint SHA-256
+`af13f4ebbdec2f0f37360039e464d87a60c8b5eef0d624e3bdaba13b94c29e50`;
+report SHA-256 `dfd4284d4df4acbf6bd95038dc95f1c87b4c8518a6fa337b4d831b000509c7bf`.
+The earlier head run took 118.643 seconds: no overall speed gain is established
+by reducing trainable parameters. Sampling and evaluation are unchanged.
+
+Four focused CUDA checks passed in 28.130 seconds. They include independent
+low-rank-versus-dense kernel equivalence (with stride/padding), zero-initialized
+parity, gradients on both factors with frozen base kernels, and distributed LoRA
+original-sampler equality, actual optimizer changes and compact saved-action reload.
+The distributed check uses synthetic advantages, not physical task learning.
+
+Separate desktop previews loaded the trained head checkpoint. All L 300 and T 297
+actions, rewards, coverage/IoU and raw success flags matched the saved final
+evaluations. T succeeded, L did not. Extra preview work: 597 controls / 5,970
+control-physics substeps, four reset substeps, 76 plans / 7,600 denoising steps.
+Elapsed L 118.555 / T 149.150 seconds includes real-time display and 30/60-second
+final holds, so it is not a training-throughput measurement. The requested
+768-pixel desktop display was enabled; no MP4 was exported. Output reports are
+58,369 / 66,267 bytes, ignored separately from the original training outputs.
+
+Final LoRA/preview verification: source discovery passed 62 / skipped 49 (111
+total); full installed CUDA/DP/GPC discovery passed all 111 in 42.356 seconds.
+All eight RL configurations, source/link/syntax checks, CLI help and whitespace
+checks passed. Full dense action-network execution, distributed-LoRA physical
+learning, visual-encoder updates and any novel tuning algorithm remain unestablished.
