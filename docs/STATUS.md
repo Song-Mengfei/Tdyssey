@@ -1,7 +1,8 @@
 # Shared project status
 
-Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
-reliable world-model rollouts and policy learning remain pending.
+Updated: 2026-10-23. Stage: direct-simulator tail-PPO trainer implemented and first
+real GPU update/reload check passed; physical adaptation and imagined learning
+remain unestablished.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -20,9 +21,30 @@ world-model data/validation, proposed reward and DPPO losses, physical/imagined
 training steps, bounded starting experiments and concrete three-developer tasks.
 README gives a short human overview; agents should read the full plan before
 learning work. Settings and proposed trainer files are not implemented by this
-documentation. See D027.
+documentation. See D027. The later training implementation now exists on
+`feat/direct-dppo-pilot`; read `docs/POLICY_LEARNING.md` and D028. It is a specified
+DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
+inspection/plan review milestone.
 
 ## Completed
+
+- Added a direct-simulator visual tail-PPO trainer, physical-time shaping/GAE,
+  value estimator and compact checkpoint/reload path. Supports output-head or
+  full action-network updates with frozen encoder/normalizers and identical
+  original 100-step sampling before updates. Full-network runtime is pending.
+- Recorded a six-method primary-source survey and derivations of latent-chain
+  policy gradients, potential shaping, chunk returns and an assumption-dependent
+  model-bias bound. Independent source and CUDA checks passed; see
+  `docs/POLICY_LEARNING.md`. A bounded 64-control GPU run updated 1,313,282 head
+  parameters, preserved all frozen parameters and reloaded identical actions.
+  It produced zero training reward and establishes no adaptation benefit.
+- Completed a short head-only pilot: 16 update rounds / 64 optimizer minibatches,
+  1,008 physical training controls (T 500 / L 508). On one paired development
+  scene, T remained successful but slowed from 270 to 297 controls; L remained
+  unsuccessful with essentially unchanged peak coverage (0.410331 to 0.409394).
+  Frozen weights and checkpoint action parity passed. This establishes no L
+  adaptation benefit. Elapsed 431.609 seconds, peak allocated CUDA about 1.11 GiB,
+  with about 16.2 MiB of ignored output; commands/hashes in `docs/VALIDATION.md`.
 
 - Defined the three-author course project's research question, staged milestones,
   candidate dependency lock, upstream revisions, and contribution rules.
@@ -236,14 +258,19 @@ See `docs/VALIDATION.md` for commands and limits.
   CUDA/DP/GPC environment and pretrained assets enabled. Source-only discovery
   passed 59 and skipped 45. This includes real inference/parity, simulator and
   existing world-model update checks, not a diffusion-policy RL update.
+- Training milestone checks on 2026-10-23: source discovery passed 62 / skipped
+  47 (109 total); installed CUDA/DP/GPC discovery passed all 109 in 30.882 seconds.
+  This includes independent reward/return checks and real denoising likelihood,
+  action/RNG parity, actor update, frozen-weight integrity and delta reload checks.
 
 ## Next task
 
-Implement the direct-simulator diffusion-policy RL loop on T/L with correct
-denoising probabilities, physical control-step rewards and terminal handling.
-Start with limited action-network updates; record trainable weights and budgets.
-Begin with a bounded update/serialization check, then measure learning on separate
-physical scenes. In parallel, define the frozen/adapted predictor comparison and
+Measure physical learning on separate development scenes, diagnose reward/contact
+coverage, and validate full action-network updates on an authorized larger GPU.
+The first tail-PPO sampler/likelihood/update/serialization checks now pass;
+an actual learning improvement has not been established. Add periodic recovery
+checkpoints and a standalone trained-delta evaluator before long experiments.
+In parallel, define the frozen/adapted predictor comparison and
 collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
 Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,
 interfaces, reward/return rules and starting budgets.

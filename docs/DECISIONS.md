@@ -470,3 +470,28 @@ with explicit success/time-limit handling. Keep raw upstream rewards and origina
 success in reports; sustained completion is a separate task. Freeze dynamics
 during policy phases, derive imagined rewards from predictions and test learned
 policies physically. Include all model-data collection in end-to-end costs.
+
+## D028 — Implement a checked direct-simulator tail-PPO pilot (2026-10-23)
+
+The method survey and derivations are in `docs/POLICY_LEARNING.md`. Start with a
+specified DPPO-style variant rather than claiming a new algorithm or reproducing
+all published DPPO settings. Keep the official 100-step DDPM and update Gaussian
+transitions t=K..1; freeze early steps and deterministic t=0. Use joint conditional
+densities over all 16x2 latent coordinates, no ELBO/marginal-likelihood proxy,
+coordinate averaging, extra noise or changed inference prefix. Denoising discount
+is 1. The evaluated/saved policy must follow this same parameter-use schedule.
+
+Support final-convolution-head or full action-network updates through one script;
+keep the image encoder/normalizers frozen. These modes differ in trainable capacity
+and memory and need separate evidence. Retain original expert pretraining and
+privileged coverage reward disclosure. Use physical-time potential shaping and
+GAE, success-only zero bootstrap and explicit timeout/reset boundaries. No new
+human demonstrations, learned dynamics, teacher term or stopping head is added.
+
+First verify probability calculations, unchanged initial actions/RNG, real CUDA
+weight updates, frozen-weight integrity and checkpoint action parity. A 64-control
+run verifies mechanics, not L learning. Run a bounded longer development pilot
+before considering bigger experiments. Keep checkpoints/reports ignored. Initial
+checkpoints contain actor deltas, critic and Adam states but have no automatic
+resume; original pinned weights and configuration remain required. Keep PR #4's
+inspection/plan milestone reviewable; training uses `feat/direct-dppo-pilot`.

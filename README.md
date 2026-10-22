@@ -17,13 +17,15 @@ deliverables even if the ambitious adaptation/generalization goals fail.
 three original T development scenes. T/L data collection, alphabet evaluation and
 actual denoising/continuation inspection work. In one common alphabet scene, only
 T and Y succeeded. World-model pilots expose contact/reward failures; reliable
-imagined rollouts and policy training remain pending. GPC reference work stays
+imagined rollouts remain pending. A direct-simulator tail-PPO trainer now passes
+an initial GPU update/reload check; policy improvement is not established. GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
+- [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
@@ -79,14 +81,25 @@ physical performance must be measured rather than assumed. A useful negative
 result is that the learned model adds cost or errors without improving the policy.
 
 **Ready today:** official policy/environment, T/L collection and batches, alphabet
-evaluation, world-model pilots, and denoising/continuation inspection. **Still to
-build:** DPPO training, a reliable shared world model and imagined policy updates.
+evaluation, world-model pilots, denoising/continuation inspection and a bounded
+direct-simulator tail-PPO trainer. **Still to establish:** useful learned adaptation,
+a reliable shared world model and imagined policy updates.
 The world model is intended as a training aid; the updated policy can act on real
 observations without using it for test-time planning.
 
 Read the [detailed implementation and experiment plan](docs/LEARNING_PLAN.md) for
 data sizes/splits, model losses, reward equations, training steps, proposed starting
 settings and three developer work packages. Proposed settings are not tested defaults.
+
+To check a small real GPU policy update using an existing authorized CUDA/DP setup:
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_smoke.json --output artifacts/dppo-smoke-001
+```
+
+The [policy-learning guide](docs/POLICY_LEARNING.md) explains the DPPO-style variant,
+rewards, small/full-network configurations, mathematical limits and current evidence.
+The smoke run tests mechanics; it is not an L-learning result.
 
 ## Work without installing anything
 

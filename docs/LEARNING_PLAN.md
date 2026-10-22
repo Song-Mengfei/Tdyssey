@@ -1,7 +1,10 @@
 # Learning plan and developer handoff
 
-Updated: 2026-10-22. This is the shared implementation plan, not a report of
-completed policy training. Read [current evidence](STATUS.md) alongside it.
+Updated: 2026-10-23. This defines the shared experiments; read
+[completed checks and results](STATUS.md) alongside it.
+The first direct trainer and its precise variant, survey, derivations and commands
+are now in [policy learning](POLICY_LEARNING.md). The ambitious learning stages
+below are not established by a successful optimizer check.
 
 ## The idea in one minute
 
@@ -51,7 +54,7 @@ not hidden by moving to a more complex predictor.
 | Policy inspection | Actual denoising replay, near-miss analysis and 500-control T continuation completed | Review behavior; no training is provided by these tools |
 | Custom 1.3M-parameter L predictor | Small supervised pilot; unreliable rewards/drift | Keep as a comparison, not the imagined environment |
 | Pretrained 8.73M-parameter GPC predictor | Loading verified; official-domain/contact failures measured | Assess official-domain adaptation against frozen weights |
-| Direct DPPO trainer, value network, adapter | **Not implemented** | First policy-learning work package below |
+| Direct DPPO-style trainer and value network | Tail-transition PPO implemented; initial real GPU update/reload check passed | Establish physical learning curves and validate full action-network training; no added adapter architecture yet |
 | Shared multi-shape world model / imagined trainer | **Not implemented** | Build only after the relevant interfaces and checks work |
 
 The committed [result index](RESULTS.md) contains selected earlier evidence.
@@ -408,17 +411,16 @@ contracts/configuration and let one owner update status/decisions per milestone.
 
 | Workstream | First build task and suggested file ownership | Acceptance evidence |
 | --- | --- | --- |
-| Policy learning | Add the training sampler/probability calculation, rollout buffer, value estimator and bounded CUDA update; proposed new `tdyssey/policy_rl.py`, `scripts/train_official_policy.py`, focused tests | Old/new likelihood consistency before an update; finite gradients; intended CUDA weights change and frozen weights do not; saved weights reload; correct short-chunk/terminal returns |
+| Policy learning | Extend existing `tdyssey/dppo.py`, `tdyssey/rl_protocol.py`, `tdyssey/policy_training.py` and `scripts/train_official_policy.py`; start from checked tail-transition PPO | Establish physical learning curves; validate full-network mode, periodic checkpoints/evaluation and a standalone trained-delta evaluator before claiming reliable adaptation |
 | Data and world model | Existing `tdyssey/gpc_world_model.py`, world-model collection/training/probe scripts; start with a versioned T/L comparison protocol and frozen/adapted GPC interface assessment | Whole-episode/scene separation; action normalization verified; contact/reward/ranking failures preserved; reproducible resource/error table |
 | Evaluation and integration | Official evaluator/metrics, baseline scene lists, experiment configuration and result summaries; coordinate any edits to `tdyssey/official.py` with policy owner | Frozen checkpoint baseline; disjoint learning/evaluation scenes; no accidental reward/success change; original versus learned physical rollouts and interaction counts |
 
-The proposed training files above **do not exist yet**. The world-model module
-name in the table is existing code; extending it does not make it training-ready.
-The first policy PR should implement a bounded update check before a longer
-learning run. Proposed command-line requirements are source/checkpoint paths,
-output path, config path and hard update/control/time/storage caps; finalize the
-actual command when the trainer exists. Do not advertise a runnable training command
-for code that has not been implemented.
+The first policy training script now exists and accepts source/checkpoint paths,
+config and a new output directory, with control/update/time/storage limits in
+the configuration. See [actual commands and limitations](POLICY_LEARNING.md).
+The world-model module remains an inference wrapper; extending it does not make
+pretrained-model adaptation or imagined training ready. Existing dynamics-training
+commands still train a different model from the acting diffusion policy.
 
 The shared experiment configuration must record: checkpoint/source hashes,
 shape exposure, training/validation/evaluation scene IDs, observation/action
