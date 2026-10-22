@@ -121,7 +121,9 @@ simulator updates with imagined RL using the same policy-update mechanism. Freez
 the world model within a policy-learning phase; any later data/model refresh is
 separately budgeted and recorded. DPPO/DiWA support the mechanism, but DiWA's use
 of expert skill/reward data is not evidence that our no-new-human-data variant
-has already been solved. No RL trainer or trained adapter exists in this repo yet.
+has already been solved. A first direct-simulator tail-transition PPO trainer is
+now implemented; see [method, derivations and commands](POLICY_LEARNING.md).
+Its small update check does not establish successful shape adaptation or imagined RL.
 
 Route B uses explicit state and shape geometry with a smaller learned dynamics
 model. Retrain a compatible diffusion policy on the same T demonstrations.

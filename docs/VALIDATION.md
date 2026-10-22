@@ -1075,3 +1075,99 @@ continued stepping, data/physics checks, pretrained prediction compatibility and
 the existing tiny supervised world-model update check. It does not implement or
 validate a DPPO update. The earlier measured diagnostic rollouts were not repeated
 for this documentation update. Repository source/link and whitespace checks passed.
+
+## Direct tail-transition PPO: first CUDA update (2026-10-23)
+
+This is the DPPO-style variant specified in [policy learning](POLICY_LEARNING.md),
+not an upstream DPPO reproduction. No world model or new human demonstrations
+are used. New files run in the existing CUDA/DP environment without installation.
+
+```bash
+python3 -B -m unittest discover -s tests -p 'test_rl_protocol.py' -v
+TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_dppo_runtime.py' -v
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_smoke.json --output artifacts/dppo-smoke-2026-10-23
+```
+
+Three independent source checks passed: discounted shaping telescopes with correct
+terminal potential, timeout bootstrap does not leak GAE across a reset, and short
+prefixes use physical discount/lambda. Two installed CUDA checks passed in 19.249
+seconds: DDPM conditional means/variance match the pinned scheduler exactly,
+joint log density matches `Independent(Normal(...), 2)`, deterministic t=0 is
+excluded, original actions/following RNG match exactly, recorded likelihoods
+recompute exactly, gradients update intended weights, frozen weights remain
+unchanged, and reloaded deltas reproduce actions under the same RNG.
+
+The end-to-end smoke run completed 64 training controls / eight plans and two
+optimizer minibatches. Before/after physical evaluation used 512 controls / 64
+plans total, capped at 128 controls per shape per evaluation. Checkpoint action
+verification used two additional plans. Total: 576 physical controls / 5,760
+control-physics substeps, six reset-physics substeps and 7,400 denoising steps.
+Elapsed: 118.643 seconds; peak allocated CUDA memory: 1,194,854,912 bytes.
+
+The 1,313,282-parameter final convolution head changed by L2 norm 0.0161563;
+all frozen parameters were byte-identical. Saved actor/critic/Adam state is
+16,176,490 bytes, with exact reloaded-action parity. Output totals 16,345,516 bytes.
+
+| 128-control development evaluation | Frozen initial peak/final coverage | Updated peak/final coverage |
+| --- | --- | --- |
+| T | 0.841069 / 0.773810 | 0.839500 / 0.807566 |
+| L | 0.410331 / 0 | 0.410384 / 0 |
+
+Neither evaluation succeeds under this short budget. The training reward was
+zero for these first 64 controls; updates used the initial value estimates and
+their bootstrapped advantages. This checks mechanics, not meaningful adaptation.
+The evaluation uses a derived policy seed different from the earlier canonical
+alphabet rollout and a shorter horizon; do not compare their success counts.
+
+Raw report remains ignored: 169,026 bytes, SHA-256
+`ef2c63d4518e9caf59293c093c090736b45d175df0f93c3ba5e40002edc0578f`.
+Checkpoint SHA-256:
+`37f38e81ecce57e6bbc6082059a79db0b5f106a4c9da242e168484583fbca8f1`.
+Source hashes in the report identify the exact uncommitted implementation used.
+Full action-network updates and automatic resume have not been runtime-validated.
+
+### Short learning pilot, same day
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_local_pilot.json --output artifacts/dppo-local-pilot-2026-10-23
+```
+
+The executed config was an identical temporary JSON; the checked-in local profile
+preserves its values. Completed 16 update rounds / 64 optimizer minibatches, with
+1,008 training controls: T 500, L 508. Early completion/short prefixes leave this
+below the 1,024-control cap. Two T training episodes succeeded; no L training
+episode did. Rewards became nonzero after the first batch, including positive
+progress and lost progress. All minibatches had finite nonzero actor gradients;
+maximum sampled approximate KL was 0.000330605, with no KL early stops.
+
+| 300-control paired development scene 100000 | Frozen initial | Updated |
+| --- | --- | --- |
+| T success / controls | True / 270 | True / 297 |
+| T peak/final coverage | 0.950411 / 0.950411 | 0.957375 / 0.957375 |
+| L success / controls | False / 300 | False / 300 |
+| L peak/final coverage | 0.410331 / 0 | 0.409394 / 0 |
+
+No L adaptation benefit is established; T completion is retained on this case
+but is slower. One training seed, one physical development scene and a small
+head-only budget cannot establish broader learning or retention. These scenes
+are known development cases, not untouched final tests.
+
+Before/after evaluation used 1,167 controls / 148 plans. Including training and
+two checkpoint verification plans: 2,175 physical controls / 21,750 control-physics
+substeps, ten reset-physics substeps and 27,800 denoising steps. Elapsed 431.609
+seconds; peak allocated CUDA memory 1,194,854,912 bytes. Actor change L2: 0.121798;
+all frozen weights unchanged and saved/reloaded actions exactly equal.
+
+Raw output stays ignored: report 770,949 bytes, SHA-256
+`f50cd13f41901ebed50ce0f7d4d4d110793533c7834d67c5b4027394b8566532`;
+checkpoint 16,176,490 bytes, SHA-256
+`874057b195187f3710b5202ea5174f36d7845b9d21d8f35cf5d6e858a3aec95e`.
+Combined output: 16,947,439 bytes. Together with the smoke run, retained outputs
+are 33,292,955 bytes. No new environment, dataset, model download or cache was
+created. The full-network profile is a next runtime check on a suitable machine.
+
+Final verification: dependency-free discovery passed 62 / skipped 47 (109 total).
+The full installed command from the preceding PR-verification section passed all
+109 tests, no skips, in 30.882 seconds. Source/link/syntax, CLI help, all five
+configuration profiles and whitespace checks passed. No full-network performance,
+multi-seed adaptation, imagined RL or theorem of policy improvement is claimed.

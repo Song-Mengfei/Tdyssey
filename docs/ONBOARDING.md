@@ -17,7 +17,8 @@
    sweep explores failures without changing the T-to-L learning milestone.
    Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
    see `docs/OFFICIAL_COLLECTION.md`. A first GPU world-model pilot and its
-   failures are in `docs/WORLD_MODEL.md`; policy optimization remains pending.
+   failures are in `docs/WORLD_MODEL.md`. Direct tail-PPO now runs, with no L
+   improvement in the first short pilot; see `docs/POLICY_LEARNING.md`.
    A negative outcome is acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
@@ -49,7 +50,8 @@ simultaneous edits; pull and inspect shared status before changing a common cont
 The [learning plan's work packages](LEARNING_PLAN.md#three-developer-work-packages-that-can-start-now)
 give concrete next files, acceptance checks and experiment settings. Policy work
 starts with a bounded direct-simulator update; world-model assessment/data work
-can proceed alongside it. No DPPO training script exists yet.
+can proceed alongside it. A first [tail-PPO training script](POLICY_LEARNING.md)
+now passes a bounded GPU update/reload check; physical improvement remains to establish.
 
 Put shared setup and later changes through branches and pull requests so both
 other authors can review them before they become the default on `main`.
