@@ -519,3 +519,22 @@ Label previews as evaluation, not ongoing training. Count their physical work
 separately. A small LoRA check saves parameters/storage but did not make the
 100-step sampling/evaluation run faster; optimize measured stages and preserve
 matched baselines for sampler/precision changes.
+
+## D030 — Compare forward-process RL without requiring novelty (2026-10-23)
+
+The course project does not require an original algorithm. Keep the intended
+world-model/RL and shared multi-shape scope; assess established methods through
+substantial implementation and controlled experiments. Use
+`docs/DIFFUSION_RL_RESEARCH.md` for the extended primary-source survey and next
+handoff. Retain tail-PPO and build a separately identified DDPM-compatible
+DiffusionNFT comparison; AdvantageFlow is a later loss comparison on common data.
+This decision adds a specification, not an alternative trainer or learning result.
+
+Preserve the official checkpoint's representation/schedule initially and verify
+the epsilon-prediction adaptation. Disclose differences in parameter use across
+denoising steps versus tail-PPO. Generate candidate groups from the same context;
+replay the full physical prefix to reconstruct contacts and count all branch,
+replay and continuation controls. Use physical feedback first, then frozen-model
+feedback only after action/reward validation. Confidence-weighted feedback is an
+optional measured ablation, not a novelty or physical-improvement guarantee.
+Motus2, WISE and model-error-aware RL already establish related combinations.
