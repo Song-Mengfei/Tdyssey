@@ -915,3 +915,163 @@ all image bytes were compared with the actual local originals before publication
 No experiment, model, protocol, environment or dependency changed, and no additional
 unit tests were added for presentation. Full raw reports, data/frame archives,
 weights and caches remain ignored/local; no shared raw archive is configured.
+
+## Exact policy decision replay and near-miss inspection (2026-10-20)
+
+Command (existing CUDA/DP installation, no downloads or training):
+
+```bash
+.venv/bin/python -B scripts/inspect_official_policy.py \
+  --report artifacts/official-alphabet-2026-10-19/report.json \
+  --shapes T D T_narrow \
+  --output artifacts/policy-decisions-2026-10-20 \
+  --seconds 420 --video
+```
+
+The completed run took **143.085 seconds** for model/replay computation and
+**147.960 seconds** including export. It verified **616 original physical controls,
+77 CUDA policy calls and 7700 denoising steps**: T through 128, D through 216,
+near-T through 272. All sampled executed actions matched the original saved
+float32 actions exactly. Numeric body/controller states and geometry metrics
+matched within `1e-7`; rewards within `1e-9`; contacts and termination matched.
+Eight selected plans retain all 101 sampler states (initial noise plus 100 steps).
+
+The posthoc hold intervention separately replayed **463 prefix controls** and
+executed **16 hold controls**. All experiment branches together used **1095 control
+steps / 10950 physics substeps, five reset substeps and five initial-state restores**.
+No mid-contact restore, object teleport or velocity reset was used. Test work is
+separate from these counts.
+
+| Shape | Best control | Best IoU / coverage | Position in 8-action chunk | First IoU loss before replan |
+| --- | --- | --- | --- | --- |
+| T | 128 | 0.924145 / 0.960577 | 8, controls 121-128 | None; upstream success |
+| D | 201 | 0.815351 / 0.898285 | 1, controls 201-208 | 202 |
+| Near-T | 262 | 0.871654 / 0.931426 | 6, controls 257-264 | 263 |
+
+Neither failing shape reaches the strict coverage > 0.95 stopping rule. Its first
+loss happens while executing a plan sampled before that best state, before the
+policy can condition a new plan on the improved image. This identifies the timing
+of lost progress, not the feature-level cause of the unsuitable plan.
+
+| Posthoc intervention after known best moment | IoU after holding 8 controls | Original continuation at same endpoint |
+| --- | --- | --- |
+| D, control 201 to 209 | 0.825425 | 0.680307 |
+| Near-T, control 262 to 270 | 0.860574 | 0.758507 |
+
+Holding preserves more overlap in these two cases; **neither hold branch succeeds**.
+It is privileged posthoc analysis, not a usable stop detector, a modified official
+success score or evidence of adaptation. More frequent replanning remains an
+untested follow-up, with additional compute and changed noise consumption to report.
+
+The final local directory uses **5,865,462 bytes (5.59 MiB)**, including the offline
+HTML viewer, eight compressed NPZ traces, three overview PNGs, three MP4s, the raw
+report and an inspected video-preview PNG. Generated outputs remain ignored and
+are not a new publication exception. `report.json` is **29,631 bytes**, SHA-256
+`020f3a7de55e3bd86606786b34fb7c987b714b9e7c3c1dd062373a36d6ac10f6`.
+It identifies the original full alphabet report and all source/trace hashes.
+
+Verification:
+
+- Source-only discovery: **58 passed, 45 runtime checks skipped** (103 discovered).
+- Three focused official simulator/checkpoint tests passed in **17.534 seconds**.
+  Existing CUDA parity coverage now checks traced actions, unchanged next-plan RNG,
+  displayed final-prefix equality, and scheduler restoration. Two new source-only
+  checks cover within-chunk peak timing and cleanup after a sampling error.
+- All three exported MP4s decoded completely: **179 frames each**. Overview and
+  video-preview images were visually inspected; embedded viewer data parsed.
+- Generated JavaScript syntax passed. Plan selection, both sliders and both
+  animation handlers passed an eight-view DOM/canvas-stub smoke check. This is
+  **not a browser rendering check**; no browser surface was available in the session.
+- Repository source/manifest/link and whitespace checks passed. No environment,
+  dependency, upstream source or checkpoint was changed.
+
+See [interpretation and controls](POLICY_DIAGNOSTICS.md). The official checkpoint
+is already trained on T; these are frozen-policy diagnostics, not an untrained
+network or a policy-learning experiment.
+
+## Original T continued for 500 controls after ignoring the success stop (2026-10-20)
+
+```bash
+.venv/bin/python -B scripts/evaluate_official.py \
+  --episodes 1 --steps 500 --continue-after-success \
+  --seed 100000 --policy-seed 42 --seconds 300 --video \
+  --output artifacts/official-T-500-continuation-2026-10-20
+```
+
+Completed exactly **500 physical controls**, including the pre-success prefix,
+at 10 Hz simulated control time. Counts: **5000 control physics substeps, one
+reset substep, 63 CUDA planning calls and 6300 denoising steps**. The last chunk
+executes four controls. Evaluation took **121.926 seconds**, total including the
+plot/export **123.065 seconds**. No training, asset download or dependency change.
+
+Initial state, derived policy seed and **all 128 original pre-stop rows matched
+the prior official baseline exactly**, including actions, physical states,
+contacts, reward, metrics and raw done flags. No reset, velocity change, artificial
+hold or history/RNG restart occurred at success. All **501 MP4 frames decoded**.
+The coverage/IoU figure and extracted success/later frames were visually inspected.
+
+| Control | Coverage | IoU | Raw original success |
+| --- | --- | --- | --- |
+| 128 | 0.960577 | 0.924145 | True, first crossing |
+| 129 | 0.921633 | 0.854656 | False |
+| 200 | 0.808109 | 0.678005 | False |
+| 300 | 0.760216 | 0.613184 | False |
+| 400 | 0 | 0 | False |
+| 500 | 0 | 0 | False |
+
+Only controls **128 and 182** exceed the original strict coverage > 0.95 rule.
+There are 372 controls after first success; only one of those retains/re-enters
+success (1/372 = 0.002688). Coverage and IoU first reach zero after success at
+**363**, and remain zero through 500. Final success is false. The report's
+`success: true` and `success_fraction: 1.0` mean **ever reached success**; the
+`post_success` fields separately record final success and retention. The report
+has a distinct continuation-diagnostic kind and is not a paper-score evaluation.
+
+This gives an original-T control case for lost progress. Here first success is
+the last action in controls 121-128 and the first loss occurs under the next plan
+at 129. That differs from the D/near-T within-chunk loss documented above.
+The observation does not prove that the policy fails generally, that chunk length
+alone causes either failure, or that unseen-shape adaptation is unnecessary. The
+original task normally stops on success; stability beyond that stop is a different
+diagnostic question. This experiment covers one development scene/policy seed.
+
+Local outputs include the annotated `T-100000.mp4`, `continuation.png`, raw report,
+verification record and extracted frame comparisons. They remain ignored, with
+no new publication exception. Raw report: **698,228 bytes**, SHA-256
+`3bec784ac818cad45ddfc1fc7c1ae77e208a585f8c0aa0939320f28a421b745b`.
+Final output directory: **2,444,337 bytes (2.33 MiB)**.
+
+Focused verification: three policy-diagnostic source tests passed, including loss,
+reentry and exclusion of the first success from retention counts. Two installed
+official simulator checks passed (CUDA parity was skipped in that focused call);
+the real 500-control CUDA run and exact historical-prefix comparison supply the
+inference evidence. The simulator check also confirms that raw stepping after
+success preserves the original reward/flag instead of resetting or absorbing.
+Source/CLI-help and whitespace checks passed. A subsequent empty-episode plotting
+guard and early diagnostic metric labeling do not change this completed rollout.
+Final dependency-free discovery passed **59 tests** and skipped **45 runtime
+checks**, with repository source/link and whitespace checks passing as well.
+
+## Learning-plan and diagnostic PR verification (2026-10-22)
+
+The shared handoff now documents existing versus planned components, proposed
+data/budgets, prediction checks, reward/DPPO losses, developer work packages and
+the simulator-only versus world-model-assisted comparison. This is documentation
+of future experiments, not a new policy-training result.
+
+Verification in the existing installed environment, with no new packages/assets:
+
+```bash
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+git diff --check
+```
+
+Source discovery passed **59**, skipped **45** (104 discovered). Installed
+discovery passed **all 104 tests**, no skips, in **34.468 seconds**. It covers
+official CUDA inference/current-next-plan trace parity, original simulator
+continued stepping, data/physics checks, pretrained prediction compatibility and
+the existing tiny supervised world-model update check. It does not implement or
+validate a DPPO update. The earlier measured diagnostic rollouts were not repeated
+for this documentation update. Repository source/link and whitespace checks passed.

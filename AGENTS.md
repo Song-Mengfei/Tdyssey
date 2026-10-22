@@ -4,7 +4,11 @@
 
 This is a three-author course research project on adapting a T-trained pushing
 policy to new object shapes using non-expert interaction data and a learned world
-model. It changes the pushed object, not the robot embodiment. The course values
+model. The goal is one shared policy across multiple letter shapes, with no new
+human demonstrations for adaptation. The released T checkpoint already uses
+expert demonstrations. T-to-L is the first implementation check, not the final
+shape scope; see `docs/PROJECT.md` and decision D026. It changes the pushed object,
+not the robot embodiment. The course values
 substantial implementation, experiments, and analysis; useful negative results
 are acceptable. Do not reduce the project to a trivial demo just to guarantee success.
 The primary baseline is the official RSS 2023 visual CNN Diffusion Policy and
@@ -21,7 +25,9 @@ Use plain English in chat with the team. Avoid jargon where ordinary words work;
 briefly explain technical terms when they are needed.
 
 For substantial project work, read `docs/STATUS.md` and the relevant sections of
-`docs/PROJECT.md`. Use `docs/ENVIRONMENT.md` for dependency changes and setup;
+`docs/PROJECT.md`. For learning work, also read `docs/LEARNING_PLAN.md` for data,
+interfaces, rewards, DPPO details and work packages; proposed settings are not
+implemented defaults. Use `docs/ENVIRONMENT.md` for dependency changes and setup;
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
 background, not evidence that anything has been implemented or validated.
 
@@ -65,8 +71,14 @@ versions observed on one machine as requirements for every collaborator.
 
 ## Research correctness
 
-- Prioritize one-shape adaptation before expanding to continual learning or
-  unseen-shape generalization. Preserve the ambitious questions as stretch goals.
+- Verify the learning loop on one new shape, then expand to a shared multi-shape
+  world model and policy. Keep genuine unseen-shape transfer and continual learning
+  as separate stretch questions. Training on every letter cannot establish
+  unseen-letter generalization; use disjoint scene splits and explicit shape exposure.
+- Adaptation uses machine-generated interaction, not new human target-shape
+  demonstrations or human success labels. Simulator-derived rewards/geometry are
+  privileged supervision and must be disclosed. Do not use true future simulator
+  states to score imagined transitions as if the world model had predicted them.
 - A state-based mechanism study is valid but must be distinguished from a visual
   system. Changing representation requires matched policy training and baselines.
 - Target-shape play data means adaptation, not zero-shot generalization.

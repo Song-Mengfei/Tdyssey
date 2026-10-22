@@ -15,8 +15,9 @@ trust setting. It does not enforce package versions or share private conversatio
 Suggested first prompt:
 
 ```text
-Read AGENTS.md, docs/STATUS.md, and the relevant project documents. Summarize the
-current stage, verified evidence, and next milestone. Use the environment/profile
+Read AGENTS.md, docs/STATUS.md, docs/PROJECT.md and docs/LEARNING_PLAN.md. Summarize
+the current stage, verified evidence, and the assigned work package. Distinguish
+implemented commands from proposed settings/files. Use the environment/profile
 available for the assigned task. Respect the machine's current setup permissions
 and storage budget.
 ```
