@@ -538,3 +538,32 @@ replay and continuation controls. Use physical feedback first, then frozen-model
 feedback only after action/reward validation. Confidence-weighted feedback is an
 optional measured ablation, not a novelty or physical-improvement guarantee.
 Motus2, WISE and model-error-aware RL already establish related combinations.
+
+## D031 — Implement physical forward learning and multi-shape data (2026-10-23)
+
+Add a separate `official_forward_rl` actor/checkpoint and trainer for NFT and
+AdvantageFlow. Use the original 100-step epsilon DDPM, with actor weights at all
+steps; preserve tail-PPO as a distinct baseline. Train full action U-Net or
+distributed Conv1d LoRA with a frozen image encoder. Forward-noising tensors must
+not mutate the inference scheduler: diffusers' helper moves its alpha buffer and
+changes scalar rounding, breaking unchanged-policy/fresh-load parity.
+
+Group candidates by exact RGB/pusher context, rebuild contacts through initial
+state plus full action-prefix replay, and verify state/contact/history agreement.
+Score actual finite-horizon shaped returns with frozen-policy continuation and
+no critic bootstrap. Keep true-success versus horizon-cutoff handling explicit.
+Use fixed positive score scale, neutral ties and a positive AdvantageFlow anchor;
+T retention uses initial-policy-generated plans, never new human data. Contexts
+advance via the last IID trial, not a reward-selected oracle trajectory.
+
+Save complete optimizer-update boundaries atomically. Resume into a new output
+directory with matching source/config and restored optimizer/RNG/episode ledgers.
+Charge recorded discarded work from the parent report; flag unknown partial work
+after interruption. Keep physical, replay, evaluation and inference counts separate.
+
+Extend official collection to the existing alphabet/near-T registry without
+changing T/L physics or GPC data identity. Shared visual-model windows use each
+episode's geometry for labels/masks; actor/model inputs gain no letter ID.
+T/L remains the learning check; the explicit T/L/I/Y/near-T profile is a proposed
+development expansion. This does not supply a reliable predictor, pretrained GPC
+training or imagined RL. Keep all new raw reports/deltas/video ignored.

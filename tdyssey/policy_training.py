@@ -35,7 +35,7 @@ def frozen_digest(network):
 def evaluate(agent, cls, config, counters, deadline):
     """Paired development scenes, original strict success, no policy updates."""
     saved_rng = agent.generator.get_state()
-    envs = {shape: cls(shape=shape, legacy=True) for shape in ("T", "L")}
+    envs = {shape: cls(shape=shape, legacy=True) for shape in getattr(config, "eval_shapes", ("T", "L"))}
     episodes = []
     try:
         for seed in config.eval_seeds:

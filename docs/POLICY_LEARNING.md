@@ -7,8 +7,9 @@ and [validation](VALIDATION.md); an implementation is not an improvement result.
 
 The [extended image/flow RL survey](DIFFUSION_RL_RESEARCH.md) adds DiffusionNFT,
 AdvantageFlow, RAM, FPO/V-GRPO, QAM and related world-model policy work. It recommends
-a separate DDPM-compatible forward-process trainer next, with concrete losses
-and checks. That is proposed work, not behavior provided by this PPO trainer.
+a separate DDPM-compatible forward-process comparison, with concrete losses
+and checks. The [NFT/AdvantageFlow trainer](FORWARD_POLICY_LEARNING.md) now exists;
+its all-step parameter use and checkpoint type differ from this PPO trainer.
 
 ## Which method fits this project?
 

@@ -22,10 +22,12 @@ class OfficialCollectionChecks(unittest.TestCase):
         config=OfficialCollectionConfig()
         self.assertEqual((config.episodes,config.steps),(8,100))
         self.assertTrue(set(DEVELOPMENT_SEEDS).issubset(config.excluded_reset_seeds))
-        for changes in ({'shape':'I'},{'seconds':0},{'seconds':601},{'episodes':20,'steps':100},
+        for changes in ({'shape':'not-a-letter'},{'seconds':0},{'seconds':601},{'episodes':20,'steps':100},
                         {'excluded_reset_seeds':()}, {'excluded_reset_seeds':(100000,100001,100002,True)}):
             with self.subTest(changes=changes), self.assertRaises(ValueError):
                 OfficialCollectionConfig(**changes)
+        for shape in tuple('ABCDEFGHIJKLMNOPQRSTUVWXYZ')+('T_narrow',):
+            self.assertEqual(OfficialCollectionConfig(shape=shape).shape, shape)
 
     def test_frozen_whole_episode_splits_are_nonempty_disjoint_and_repeatable(self):
         rows=[trajectory(i) for i in range(8)]

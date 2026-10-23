@@ -1,5 +1,7 @@
 # Runtime validation
 
+Newest policy work: [forward RL, recovery and mixed-shape checks](#forward-rl-recovery-and-mixed-shape-checks-2026-10-23).
+
 Checked on 2026-10-19 with Linux x86_64, Python 3.12.3, uv 0.13.0, and the locked
 **CPU + GPC** profile. Evidence covers simulator/data development and the later
 pretrained-policy check below. No adaptation or model training has been completed.
@@ -1219,3 +1221,156 @@ total); full installed CUDA/DP/GPC discovery passed all 111 in 42.356 seconds.
 All eight RL configurations, source/link/syntax checks, CLI help and whitespace
 checks passed. Full dense action-network execution, distributed-LoRA physical
 learning, visual-encoder updates and any novel tuning algorithm remain unestablished.
+
+## Forward RL, recovery and mixed-shape checks (2026-10-23)
+
+The [runnable forward guide](FORWARD_POLICY_LEARNING.md) describes the separate
+DDPM-NFT/AdvantageFlow implementation. Checks used the existing Linux/Python
+3.12.3, PyTorch 2.5.1+cu124, official/GPC environment and RTX 4060 Laptop GPU.
+No package, environment, base checkpoint or dataset download was added. Runs
+recorded source hashes and dirty working-tree provenance based on `71a8050`;
+that commit alone is not claimed to contain the implementation.
+
+Verification commands:
+
+```bash
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All **120 installed tests passed in 61.286 seconds**, with no skips. Source-only
+discovery passed **64** and skipped **56** runtime tests. A subsequent focused
+four-test forward run passed in 25.679 seconds, explicitly loading resume state
+on CPU before Adam restores CUDA moments, preserving CPU step scalars. The
+checkpoint-continuation comparison isolates serialization/RNG from convolution
+backward nondeterminism; normal training does not force deterministic kernels.
+All nine forward configurations parse. Source/links/AST and whitespace checks
+pass; none of these checks installs dependencies.
+
+Coverage includes independent loss derivatives/positive curvature, neutral
+feedback, official unchanged initial actions/RNG, immutable scheduler buffers,
+real distributed-LoRA updates for both losses, frozen-base integrity, refreshed
+rollout weights, optimizer/RNG restoration and fresh-model action parity. Real
+physics tests replay established contacts and detect altered contact records;
+native presentation rendering preserves physical state and 96px observations.
+Mixed-shape mask/label and train-only normalization checks also passed.
+
+### Corrected NFT development pilot
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/nft_local_pilot.json --output artifacts/nft-local-pilot-v2-2026-10-23
+```
+
+This updates **1,652,824 distributed Conv1d LoRA parameters** across the action
+U-Net, with frozen vision and base weights. It completed six updates / 88
+optimizer minibatches and stopped when no complete candidate group fit the
+remaining 4096-control cap. Actual training cost: **3712 controls**, comprising
+704 candidate controls, 2944 full-prefix replay controls and 64 policy warmup
+controls. Eleven groups compare four candidates each with up to 16 scored
+controls. Evaluation used another 512 controls / 64 plans; checkpoint parity
+used two plans. Total: 4224 physical controls / 42,240 control-physics substeps,
+six reset substeps and 16,800 denoising steps including six T-reference queries.
+
+Elapsed **295.393 seconds**; peak allocated CUDA **1,194,914,816 bytes** (about
+1.11 GiB). Actor-factor L2 change **0.0489364653**; frozen weights unchanged and
+checkpoint action reload passed. Results below use one paired development scene
+(seed 100000) and a **128-control evaluation cap**, not an untouched final test.
+
+| Shape | Before peak / final coverage | After peak / final coverage | Success before / after |
+| --- | --- | --- | --- |
+| T | 0.841069 / 0.773810 | 0.842750 / 0.767869 | No / no within 128 controls |
+| L | 0.410331 / 0.000000 | 0.409805 / 0.000000 | No / no |
+
+**No L adaptation benefit is established.** The short T cutoff is not evidence
+that the original policy cannot solve T. Four of five L candidate groups had
+zero contact controls and exactly tied scores; only the first L group supplied
+differentiated scores. This identifies a data/score-signal limitation to investigate,
+not proof that one particular exploration change will solve it. More data,
+longer-horizon feedback and repeated held-out scenes remain necessary.
+
+Ignored pilot outputs:
+
+- `last.pt`: 27,053,605 bytes; SHA-256 `e8d19198bf71c39902016b63a8720402855659bae80510cc4e08534c5e3c0007`.
+- `report.json`: 1,879,922 bytes; SHA-256 `01646ebfdfabe6cc4fd92f7cd38c016eab35eeb96d5b45ed16cf515c763031aa`.
+
+### Corrected AdvantageFlow and resume checks
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/advantage_flow_smoke.json --output artifacts/advantage-flow-smoke-v2-2026-10-23
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/advantage_flow_resume_check.json --resume artifacts/advantage-flow-smoke-v2-2026-10-23/last.pt --output artifacts/advantage-flow-resume-2026-10-23
+```
+
+The first run used 32 candidate controls, 128 evaluation controls and 2300
+denoising steps in **43.181 seconds**. Scores tied, gradients and factor change
+were zero, and before/after physical actions and outcomes matched exactly.
+This is a meaningful no-signal case, not an improvement result.
+
+Resume added a second update in a new directory. The actual run used a temporary
+configuration identical to the tracked resume-check profile. New-session cost:
+64 training controls (32 candidate / 32 replay), 64 evaluation controls, two
+resets and 1500 denoising steps in **30.434 seconds**. Cumulative lineage: 96
+training controls, 192 evaluation controls, eight reset substeps, eight optimizer
+minibatches and 3800 denoising steps. The original baseline was reused, not rerun.
+Parent cost audit found no discarded controls; checkpoint parity and unchanged
+neutral-policy physical traces passed. Peak CUDA matched the NFT pilot.
+
+Parent checkpoint: 26,580,709 bytes, SHA-256
+`0673f691f9324e1b2e9911c13dd275062254ce22f37dd5e2bcb1568d398968e3`.
+Resumed checkpoint: 26,606,565 bytes, SHA-256
+`614ed095449448d46ba88527a005bcc8ee2398e10e2afaa6fd079cadad62c5dd`.
+The resumed report is 228,663 bytes, SHA-256
+`dab2520fe032a2327c26acdbf4b4b2457fdd83be779463176f1ccef5d294edd3`.
+
+### Fresh-process video/evaluation
+
+```bash
+.venv/bin/python -B scripts/evaluate_trained_policy.py --adapter artifacts/nft-local-pilot-v2-2026-10-23/last.pt --shape L --steps 128 --reference-report artifacts/nft-local-pilot-v2-2026-10-23/report.json --video artifacts/nft-trained-L-native-2026-10-23.mp4 --output artifacts/nft-trained-L-native-preview-2026-10-23.json
+```
+
+The fresh process reproduced every saved L action, reward, coverage, IoU and
+termination value. Native video decoded **129 frames at 512x512**, 283,177 bytes,
+SHA-256 `ea7547ad61f962c2170c34b78287076e1aa97862234b30b2ed4cf23f153e4067`.
+Elapsed 31.608 seconds. Policy observations remain 96x96. This preview added 128
+physical controls / 1280 substeps, two reset substeps and 1600 denoising steps;
+it trained no weights. An earlier 96x96 export also matched all 128 actions and
+decoded 129 frames (55,853 bytes, 31.235 seconds), adding the same separate work.
+Neither preview was a GUI visual inspection or a successful L rollout.
+
+### Multi-shape primary data
+
+```bash
+.venv/bin/python -B scripts/collect_official_play.py --shape Y --episodes 7 --steps 8 --max-mib 8 --output artifacts/official-play-Y-check-2026-10-23
+.venv/bin/python -B scripts/collect_official_play.py --validate-only --output artifacts/official-play-Y-check-2026-10-23
+.venv/bin/python -B scripts/prepare_training_data.py --datasets artifacts/official-play-L-2026-10-19 artifacts/official-play-Y-check-2026-10-23 --output artifacts/official-mixed-LY-check-2026-10-23.catalog.json --history 2 --future 4 --max-batches 1
+```
+
+Y collected/read back **56 controls**, 560 physics substeps, seven reset substeps
+and five contact controls. Frozen splits: 5/1/1 episodes; **272,344 bytes**.
+Manifest SHA-256 `c5ceff4677c41eddc96decd0ffeaa8b362bd4d9a16d948cef2e5df013827704e`.
+The mixed real L/Y catalog gives 596/100/100 windows and 11/2/2 episodes across
+train/validation/model-test. Actual L and Y visual-dynamics samples loaded with
+their own geometry; fitted normalization used only **640 unique train controls**.
+Model-test pixels were not used for this check. This does not establish reliable
+multi-shape dynamics. The pretrained GPC wrapper still has no adaptation trainer.
+
+### Superseded prototype work
+
+The earlier `nft-smoke-2026-10-23`, `advantage-flow-smoke-2026-10-23` and interrupted
+`nft-local-pilot-2026-10-23` used the library's mutating noising helper. Moving the
+scheduler's alpha buffer changed sampling rounding even without weight changes.
+They are **excluded from policy comparisons**; the latter is explicitly failed.
+Their reports remain ignored for accounting. The two prototypes each used 32
+training and 128 evaluation controls; the interrupted one recorded 1712 training
+and 256 evaluation controls. Its partial in-flight sampling work is not fully
+counted. Elapsed: 65.678 / 43.112 / 162.547 seconds respectively.
+
+Only these three superseded generated checkpoints were removed to save space;
+their hashes/sizes and cost records are retained in ignored
+`artifacts/forward-prototype-lifecycle-2026-10-23.json`. Valid corrected checkpoints
+and original reports remain available locally. No raw output or new video is
+published by this milestone; portable commands/results are shared in Git.
+
+The three removed checkpoints freed **79,992,687 bytes**. Retained new training,
+resume, data and preview outputs plus prototype reports/lifecycle metadata total
+**84,493,136 bytes (80.58 MiB)**. Existing environments/base assets are unchanged.

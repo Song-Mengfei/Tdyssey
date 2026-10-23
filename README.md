@@ -18,14 +18,20 @@ three original T development scenes. T/L data collection, alphabet evaluation an
 actual denoising/continuation inspection work. In one common alphabet scene, only
 T and Y succeeded. World-model pilots expose contact/reward failures; reliable
 imagined rollouts remain pending. A direct-simulator tail-PPO trainer now passes
-an initial GPU update/reload check; policy improvement is not established. GPC reference work stays
+an initial GPU update/reload check. Forward-process NFT/AdvantageFlow training,
+matched physical branches and recovery checkpoints are also implemented;
+policy improvement is not established. GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
+The latest forward pilot changed distributed LoRA weights over six updates but
+did not improve L; most L candidate groups had no contact and tied scores.
+The next learning work is improving that feedback and checking longer evaluations.
 
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
 - [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
+- [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
 - [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
@@ -56,9 +62,9 @@ learning check; A-Z is a later expansion, not a prerequisite for getting started
 
 | Order | What we build | How we know it works |
 | --- | --- | --- |
-| Now, policy work | A bounded DPPO learning loop in the physical T/L simulator | Correct probabilities/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
+| Now, policy work | Compare implemented PPO, NFT and AdvantageFlow in the physical T/L simulator | Correct losses/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
 | Now, world-model work | Compare compatible pretrained prediction models; adapt one if necessary using automated data | Predict contact, rotation, pusher position and reward; correctly rank actions, including near the goal |
-| Join the two | Freeze validated dynamics and let DPPO practice in short predicted rollouts | Updated policy improves in the physical simulator, compared with direct-simulator training |
+| Join the two | Freeze validated dynamics and use the chosen update method with short predicted rollouts | Updated policy improves in the physical simulator, compared with the same method using simulator feedback |
 | Expand | Train shared dynamics/policy on a fixed diverse shape set, then A-Z if affordable | Per-shape results, costs, failures and retained T performance |
 
 **What does the reward teach?** The proposed training reward combines completion
@@ -76,7 +82,7 @@ training every letter cannot demonstrate unseen-letter generalization.
 
 **Why not just use the physical simulator?** We can, and it may be the better
 choice for cheap 2D PushT physics. The central comparison is frozen policy vs
-simulator-trained DPPO vs world-model-assisted DPPO. Count world-model data and
+simulator-trained RL vs the same update method with world-model feedback. Count world-model data and
 training costs too; lower physical interaction use, faster training or better
 physical performance must be measured rather than assumed. A useful negative
 result is that the learned model adds cost or errors without improving the policy.
@@ -94,8 +100,9 @@ settings and three developer work packages. Proposed settings are not tested def
 
 The [extended RL survey](docs/DIFFUSION_RL_RESEARCH.md) recommends a DDPM-compatible
 DiffusionNFT experiment alongside PPO, then world-model-scored updates after
-prediction checks. It includes the proposed loss, limitations and developer tasks;
-the alternative trainer is not implemented yet. Using and comparing established
+prediction checks. The [forward trainer](docs/FORWARD_POLICY_LEARNING.md) now
+implements NFT and AdvantageFlow with physical feedback, shared shape support and
+recovery checkpoints. Learned-model scores remain pending. Using and comparing established
 methods fits this course project; an original algorithm is not required. The
 shared multi-shape goal remains unchanged.
 
@@ -116,6 +123,7 @@ remains the same.
 Training runs without a window. To watch a saved trained policy, use
 [`scripts/evaluate_trained_policy.py`](scripts/evaluate_trained_policy.py) with
 `--adapter PATH/last.pt --display`; see the [preview command](docs/POLICY_LEARNING.md#run-and-inspect).
+The same evaluator accepts forward checkpoints and optional `--video PATH.mp4`.
 
 ## Work without installing anything
 

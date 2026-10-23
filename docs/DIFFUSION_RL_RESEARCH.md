@@ -1,14 +1,15 @@
 # RL for diffusion and flow policies: research and implementation choices
 
 Checked: 2026-10-23, using the primary sources linked below. This is a method
-selection note, not evidence that these methods run in Tdyssey. The implemented
-trainer remains [tail-transition PPO](POLICY_LEARNING.md). This survey installed
-no packages and downloaded no model weights or training datasets.
+selection note. The selected [NFT/AdvantageFlow adaptations](FORWARD_POLICY_LEARNING.md)
+are now implemented alongside [tail-transition PPO](POLICY_LEARNING.md); this
+does not imply successful adaptation or that every surveyed method runs here.
+No new packages or pretrained assets were needed.
 
 ## Recommendation and project scope
 
 Keep the official CNN Diffusion Policy and the existing PPO implementation as
-the starting baseline. **Build a DDPM-compatible DiffusionNFT experiment next**:
+the starting baseline. **Compare DDPM-compatible DiffusionNFT next**:
 it offers a substantially different weight-update rule without requiring a new
 policy architecture, a differentiable simulator or a learned action-value critic.
 Compare AdvantageFlow's regularized regression loss after the common collection
@@ -249,7 +250,7 @@ comparison with cheap physics. Useful failures include no L improvement,
 forgetting T, better predicted returns with worse physical returns, or a world
 model that costs more than the simulator.
 
-This note adds research and a buildable specification. **It does not add an NFT,
-flow-policy or imagined-RL trainer, establish a reliable world model, or start a
-new training run.** Current runtime evidence remains in [status](STATUS.md) and
-[validation](VALIDATION.md).
+This specification now has a separate [physical forward trainer](FORWARD_POLICY_LEARNING.md).
+The code implements both losses, matched branches and recovery without introducing
+a new flow-policy architecture. **Imagined RL and reliable learned dynamics remain
+unestablished.** Runtime evidence is in [status](STATUS.md) and [validation](VALIDATION.md).

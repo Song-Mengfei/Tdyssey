@@ -31,8 +31,11 @@ class CollectionConfig:
     max_bytes: int = 16 * 1024 * 1024
     reset_attempts: int = 20
 
+    def resolve_shape(self):
+        return get_shape(self.shape)
+
     def __post_init__(self):
-        object.__setattr__(self, "shape", get_shape(self.shape).name)
+        object.__setattr__(self, "shape", self.resolve_shape().name)
         integer(self.episodes, "episodes", 1, 20)
         integer(self.steps, "steps", 1, 250)
         integer(self.seed, "seed", 0, 2**32 - 1)
