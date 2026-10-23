@@ -31,6 +31,8 @@ class ForwardConfig:
     eval_shapes: tuple = ("T", "L")
     eval_seeds: tuple = (100000,)
     eval_steps: int = 128
+    eval_every: int = 0
+    report_detail_updates: int = 20
     episode_steps: int = 300
     seed: int = 42
     seconds: int = 1200
@@ -42,6 +44,7 @@ class ForwardConfig:
                 ("group_size", 2, 32), ("score_chunks", 1, 64), ("warmup_controls", 0, 499),
                 ("epochs", 1, 10), ("minibatch_size", 1, 64), ("lora_rank", 1, 64),
                 ("eval_steps", 1, 500), ("episode_steps", 1, 500), ("seconds", 1, 604800),
+                ("eval_every", 0, 10000), ("report_detail_updates", 0, 10000),
                 ("max_train_controls", 1, 10000000), ("max_bytes", 1, 16*1024**3),
                 ("seed", 0, 2**32-1)):
             value = getattr(self, name)

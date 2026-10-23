@@ -88,6 +88,21 @@ class ForwardRuntimeChecks(unittest.TestCase):
                     "advantage": 2*r-1, "anchor": 1.01, "reference_plan": first if r else None}
                    for plan, r in ((first, 1.), (second, 0.))]
         frozen = frozen_digest(agent.network)
+        from tdyssey.denoising_probe import DenoisingProbe
+        diagnostic = DenoisingProbe()
+        plan_rng, noise_rng, order_rng = (agent.generator.get_state(),
+            agent.noise_generator.get_state(), agent.order_generator.get_state())
+        global_rng = torch.get_rng_state()
+        diagnostic.capture('T',100000,condition,first)
+        diagnostic.capture('T',100001,condition,second)
+        self.assertEqual(len(diagnostic.rows),1)
+        initial_probe = diagnostic.evaluate(agent)
+        self.assertEqual(initial_probe['probe/T/initial_policy_drift_mse'],0)
+        self.assertEqual(initial_probe,diagnostic.evaluate(agent))
+        for before, after in ((plan_rng,agent.generator.get_state()),
+                (noise_rng,agent.noise_generator.get_state()),
+                (order_rng,agent.order_generator.get_state()),(global_rng,torch.get_rng_state())):
+            torch.testing.assert_close(before,after,rtol=0,atol=0)
         initial = {k: v.clone() for k, v in agent.actor.state_dict().items()}
         optimizer = torch.optim.Adam(agent.actor.parameters(), lr=config.actor_lr)
         for objective in ("nft", "advantage_flow"):
@@ -95,6 +110,7 @@ class ForwardRuntimeChecks(unittest.TestCase):
             metrics = forward_update(agent, records, optimizer)
             self.assertTrue(any(m["gradient_norm"] > 0 for m in metrics))
         self.assertTrue(any(not torch.equal(v, initial[k]) for k, v in agent.actor.state_dict().items()))
+        self.assertGreater(diagnostic.evaluate(agent)['probe/T/initial_policy_drift_mse'],0)
         self.assertEqual(frozen, frozen_digest(agent.network))
         for name, value in agent.old.state_dict().items():
             torch.testing.assert_close(value, agent.actor.state_dict()[name], rtol=0, atol=0)

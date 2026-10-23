@@ -19,6 +19,7 @@ and load each checkpoint through its own actor class.
 | Original sampler, NFT/AdvantageFlow loss, frozen rollout/reference actors | `tdyssey/forward_policy.py` |
 | Full-prefix replay and matched physical trials | `tdyssey/policy_branches.py` |
 | Bounded training, periodic checkpoints and source-checked resume | `tdyssey/forward_training.py` |
+| Flushed metrics, optional W&B and fixed diagnostic | `tdyssey/tracking.py`, `tdyssey/denoising_probe.py` |
 | Commands | `scripts/train_forward_policy.py`, `scripts/evaluate_trained_policy.py` |
 
 The image encoder stays frozen. Distributed LoRA affects ordinary Conv1d kernels
@@ -31,6 +32,9 @@ U-Net. Dense training requires a separate memory/runtime check. The required
 
 Use an existing authorized environment. These commands do not install packages.
 Training requires CUDA and runs headless; previews are separate evaluation jobs.
+For new machines, longer comparisons and live charts, use the
+[training-machine handoff](TRAINING_MACHINE.md). Tracking defaults to local
+`metrics.jsonl`; optional `--tracking offline` or `online` mirrors scalars to W&B.
 
 ```bash
 .venv/bin/python -B scripts/train_forward_policy.py --config configs/nft_smoke.json --output artifacts/nft-smoke-001
@@ -46,6 +50,8 @@ Training requires CUDA and runs headless; previews are separate evaluation jobs.
 | `nft_full_network_smoke.json`, `nft_full_network.json` | Dense action-U-Net comparison; check the smoke profile on a suitable authorized GPU first |
 | `nft_multishape.json` | Explicit T/L/I/Y/near-T development set after the T/L check; not an unseen-shape test |
 | `advantage_flow_resume_check.json` | Extend the matching smoke profile to a second update in a new output directory |
+| `tracking_smoke.json` | Check fixed probe, periodic evaluation, trace pruning, best/last checkpoints and tracking |
+| `nft_extended.json`, `nft_full_network_extended.json` | Unexecuted longer T/L presets for a checked training machine; five development scenes, periodic evaluation and explicit larger caps |
 
 Budgets are starting experiments, not known sufficient data. Dense profiles allow
 up to 12 GiB of output; LoRA uses smaller checkpoints. Temporary atomic checkpoint
@@ -86,7 +92,15 @@ only actor inputs; physical state and geometric rewards are privileged feedback.
 `last.pt` stores trainable/rollout weights, Adam, three RNG states and completed
 update state. LoRA saves factors, not the original base weights. The pinned base
 checkpoint remains required. `report.json` stores source/configuration, episode
-and candidate traces, physical evaluations and costs. Keep raw outputs out of Git.
+prefixes, scalar update summaries, the most recent detailed candidate traces,
+physical evaluations and costs. `report_detail_updates` bounds detailed update
+retention; active prefixes needed for contact replay are preserved. Keep raw outputs out of Git.
+
+`eval_every=0` retains the original before/after checks; a positive value adds
+physical development checks every specified number of updates, counted separately
+from training controls. `best.pt` selects trained checkpoints by macro shape
+success, then final coverage; it need not beat the frozen baseline. Fixed noise
+probes reuse baseline-generated plans/noise and never feed gradients or selection.
 
 Copy the original configuration and increase its update/control caps to extend:
 
@@ -96,7 +110,9 @@ Copy the original configuration and increase its update/control caps to extend:
 
 Resume always writes a new directory. Only update/control/time/storage caps may
 change; source hashes and other protocol settings must match. Roll back unfinished
-updates to the saved boundary. Available parent reports charge discarded physical
+updates to the saved boundary. Copy matching `best.pt` beside `last.pt` to preserve
+the lineage's selected checkpoint. Each invocation has a separate tracking run.
+Available parent reports charge discarded physical
 work too. A hard kill may leave unreported work; the cost audit records this
 uncertainty. Interrupted reports count completed plans/controls and may omit a
 partial model/physics call. Keep parent reports for lineage. RNG is restored exactly; later CUDA

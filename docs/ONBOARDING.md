@@ -23,6 +23,10 @@
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,
    completed work, and next milestone before assigning a substantial task.
+6. For another GPU machine, follow [the training handoff](TRAINING_MACHINE.md).
+   It covers exact asset/dependency transfer, preflight/smoke checks, repeated
+   seeds, recovery, and live local or W&B charts. Setup is performed by that
+   machine's author; a preset does not authorize a long job automatically.
 
 ## Record before training
 

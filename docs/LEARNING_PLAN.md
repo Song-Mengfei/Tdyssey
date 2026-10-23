@@ -9,6 +9,10 @@ The [extended RL research note](DIFFUSION_RL_RESEARCH.md) specifies a
 DiffusionNFT alternative and its world-model extension. The
 [forward training guide](FORWARD_POLICY_LEARNING.md) covers its implemented
 physical NFT/AdvantageFlow path and recovery; imagined feedback remains pending.
+The [training-machine handoff](TRAINING_MACHINE.md) supplies live logging,
+fixed diagnostics, regular physical development evaluation, repeated-seed jobs
+and candidate cu128 setup. Extended budgets are untested proposals; larger jobs
+must first pass the target machine's smoke checks.
 DPPO below describes the
 first implementation, not a requirement that all later learning use PPO. The
 course project can implement and compare established methods without claiming

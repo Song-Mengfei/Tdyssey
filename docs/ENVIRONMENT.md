@@ -14,6 +14,14 @@ machine being used; keep those local details out of shared instructions.
 | CPU + GPC | Real PushT simulator and policy-development dependencies | `uv sync --locked --extra cpu --extra gpc --no-cache --link-mode copy` |
 | CUDA + GPC | NVIDIA GPU policy/model work | `uv sync --locked --extra cu124 --extra gpc --no-cache --link-mode copy` |
 | CUDA + official DP | Primary official CNN baseline | `uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy` |
+| CUDA 12.8 + official DP | Blackwell training candidate; target runtime checks pending | `uv sync --locked --extra cu128 --extra dp --no-cache --link-mode copy` |
+
+Select exactly one of `cpu`, `cu124`, `cu128`; `dp` no longer pins a second torch
+version independently of that choice. `cu128` pins torch 2.7.1 / torchvision
+0.22.1. Add `--extra tracking` for pinned W&B 0.18.7 without installing the GPC
+extra. Default local scalar logging/live charts use only the standard library.
+See [training-machine handoff](TRAINING_MACHINE.md) for transfer, recovery and
+repeatable jobs. No existing profile is upgraded by this manifest change alone.
 
 Select both `--extra dp --extra gpc` to retain both runners in one environment.
 The combined CUDA/DP/GPC profile measured **5.72 GiB / 113 packages**. The `dp`
@@ -30,7 +38,7 @@ pretrained inference passed on an Ada GPU. This does not prove full training
 memory requirements or compatibility with every GPU generation.
 See `docs/VALIDATION.md` for the checks that actually ran.
 
-CPU and CUDA extras conflict intentionally. Keep one `.venv` per checkout and
+All three backend extras conflict intentionally. Keep one `.venv` per checkout and
 switch its profile with an explicit `uv sync`, rather than retaining duplicate
 environments. Use `.venv/bin/python` directly to avoid an implicit sync. If using
 `uv run`, pass the same extras used for setup; plain `uv run` can change the
@@ -94,9 +102,11 @@ Gym prints its upstream maintenance warning even with the pinned NumPy 1.26.4.
 Headless OpenCV supports image/video IO, not its GUI functions. Video export may
 also need a system `ffmpeg`; SDL/display requirements depend on the host.
 
-Check NVIDIA driver compatibility before CUDA setup. cu124 is an initial profile
-for Ada-generation GPUs; **Blackwell requires a newer compatible PyTorch/CUDA
-profile and a new lock/validation decision**. Other operating systems or CPU
+Check NVIDIA driver compatibility before CUDA setup. cu124 is the locally checked
+profile for Ada-generation GPUs; Blackwell has a separate **cu128 candidate
+profile**, not yet runtime-validated on Blackwell (D032). Use doctor
+`--runtime --require-cuda --backend cu128 --dp` and an actual policy smoke run
+on that machine before longer jobs. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.
 CPU simulator checks do not prove GPU or training compatibility. CPU/CUDA
 checkpoint loading and GPU gradient checks have separate evidence in
