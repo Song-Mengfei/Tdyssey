@@ -151,7 +151,7 @@ class ForwardPolicy:
         self.order_generator.set_state(payload["order_rng"].cpu())
 
 
-def forward_update(agent, records, optimizer, deadline=lambda: None):
+def forward_update(agent, records, optimizer, deadline=lambda: None, on_minibatch=None):
     """A fixed rollout batch; fresh forward noise/time, no trajectory gradients."""
     config, device = agent.config, agent.device
     metrics = []
@@ -194,6 +194,9 @@ def forward_update(agent, records, optimizer, deadline=lambda: None):
             norm = nn.utils.clip_grad_norm_(agent.actor.parameters(), config.max_grad_norm, error_if_nonfinite=True)
             optimizer.step()
             metrics.append({"loss": float(loss.detach()), "T_retention_loss": float(retention.detach()),
+                            "batch_size": len(batch),
                             "gradient_norm": float(norm), "noise_timesteps": t.tolist()})
+            if on_minibatch is not None:
+                on_minibatch(metrics[-1])
     agent.refresh_old()
     return metrics

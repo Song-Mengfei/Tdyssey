@@ -28,6 +28,30 @@ inspection/plan review milestone.
 
 ## Completed
 
+- Added [training-machine handoff](TRAINING_MACHINE.md), optional W&B plus flushed
+  local scalar logs and a no-account live viewer for all three trainers. Forward
+  runs now record fixed baseline-plan/noise diagnostics, contact/tied-score
+  feedback, periodic physical development evaluations and selected `best.pt`.
+  Recovery preserves the best checkpoint and starts a new tracking run with
+  cumulative axes. Detailed update traces are bounded; active replay prefixes remain.
+- Added a no-install read-only GPU/asset/disk preflight, source-only multi-seed
+  comparison planner/sequential launcher, bounded longer T/L presets and a locked
+  cu128 candidate profile (torch 2.7.1 / torchvision 0.22.1) plus independent W&B
+  extra. The current cu124 environment was unchanged. Blackwell and dense extended
+  training remain untested; presets do not establish useful settings or permission.
+- Custom visual dynamics now save rolling optimizer/RNG/window-cursor recovery,
+  including partial epochs, and accept explicit longer budgets. A synthetic CUDA
+  check kept model-test images unread, restored the exact cursor/RNG, and matched
+  uninterrupted updates under deterministic GPU operations. Normal training is
+  not promised bit-identical across GPU executions. GPC adaptation remains absent.
+- A real forward monitoring check and fresh-process resume completed: cumulative
+  352 training controls, 192 physical evaluation controls, four optimizer
+  minibatches, about 1.11 GiB peak CUDA, frozen-weight/reload checks passed.
+  Offline W&B and local fixed/per-shape events were recorded; live-viewer HTTP
+  routes and JavaScript parsing passed. This is a mechanics check with a 32-control
+  evaluation cap, not useful adaptation. Online W&B authentication/upload and
+  browser appearance were not verified. See [validation evidence](VALIDATION.md).
+
 - Implemented the [forward training path](FORWARD_POLICY_LEARNING.md): NFT and
   AdvantageFlow epsilon-prediction adaptations, full action-U-Net/head/distributed
   LoRA scopes, frozen rollout/T references, matched physical candidate trials,
@@ -311,6 +335,11 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
+Use the [machine handoff](TRAINING_MACHINE.md) to recreate the selected profile
+and pass the short preflight/smoke run on the training GPU. Then review live
+per-shape feedback on the bounded pilot before launching repeated longer jobs.
+Fix contact-free/tied trials if they persist; extra GPU time alone is insufficient.
+
 Measure the implemented NFT/AdvantageFlow methods against PPO using
 [the runnable guide](FORWARD_POLICY_LEARNING.md). Diagnose contact coverage,
 finite-horizon score signal and physical learning curves before scaling; retain
@@ -324,9 +353,9 @@ selection or geometric curriculum and retain full-reset physical evaluation.
 Measure physical learning on separate development scenes, diagnose reward/contact
 coverage, and validate full action-network updates on an authorized larger GPU.
 The first tail-PPO sampler/likelihood/update/serialization checks now pass;
-an actual learning improvement has not been established. Add periodic recovery
-checkpoints before long experiments. A standalone trained-delta desktop evaluator
-now exists; MP4 export and automatic resume remain pending.
+an actual learning improvement has not been established. Tail-PPO still needs its
+own periodic recovery before long experiments; the forward trainer has it.
+A standalone trained-delta desktop evaluator and bounded MP4 export now exist.
 In parallel, define the frozen/adapted predictor comparison and
 collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
 Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,

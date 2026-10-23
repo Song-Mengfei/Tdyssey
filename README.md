@@ -26,12 +26,17 @@ separate from the official baseline. See [results](docs/RESULTS.md),
 The latest forward pilot changed distributed LoRA weights over six updates but
 did not improve L; most L candidate groups had no contact and tied scores.
 The next learning work is improving that feedback and checking longer evaluations.
+For another GPU machine, use the [training handoff](docs/TRAINING_MACHINE.md):
+locked CUDA 12.4/12.8 profiles, setup checks, repeated-seed jobs, recovery and
+live local or W&B charts. Larger presets are proposed budgets, not validated
+learning settings.
 
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
 - [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
 - [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
+- [Move to a training machine and view live training](docs/TRAINING_MACHINE.md)
 - [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
@@ -139,7 +144,7 @@ python3 -B -m tdyssey
 ## Install a development environment
 
 Reference platform: Linux x86_64, Python 3.12.3, uv 0.13.0. The manifest offers
-CPU simulator-development and CUDA 12.4 policy/training profiles. Choose one profile based on the
+CPU simulator-development and CUDA 12.4/12.8 policy/training profiles. Choose one profile based on the
 machine and task. See [environment notes](docs/ENVIRONMENT.md) for storage-saving
 setup, the small upstream checkout, and platform limitations.
 
@@ -157,6 +162,19 @@ For GPU work, choose CUDA instead:
 uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy
 .venv/bin/python -B scripts/doctor.py --runtime --require-cuda --dp
 ```
+
+For Blackwell use `--extra cu128` and doctor `--backend cu128`; target-machine
+model checks are still required. Add `--extra tracking` for W&B. Training commands
+accept `--tracking online --wandb-entity TEAM_OR_ACCOUNT`; local scalar logging
+is always enabled. No account is needed for the local live viewer:
+
+```bash
+python3 -B scripts/view_training.py --run PATH/TO/TRAINING/RUN
+```
+
+Open http://127.0.0.1:8765. Charts show loss, fixed noise diagnostics, contact and
+physical results per letter. See the [handoff](docs/TRAINING_MACHINE.md) for
+authentication, remote viewing and repeatable longer runs.
 
 An existing environment can be used directly through `.venv/bin/python`; activation
 is optional. If using `uv run`, pass the same extras to preserve the chosen profile.

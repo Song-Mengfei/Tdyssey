@@ -35,6 +35,10 @@ AdvantageFlow adaptations, matched branches, checkpoint/recovery and data suppor
 The forward trainer currently uses physical scores only, not a learned world model. This
 course project can use established methods without reducing its agreed scope.
 Use `docs/ENVIRONMENT.md` for dependency changes and setup;
+use `docs/TRAINING_MACHINE.md` for machine transfer, live tracking, extended run
+profiles and recovery. Extended settings are unvalidated budgets. The cu128
+profile is locked but must pass target-hardware smoke checks; do not replace
+an existing validated environment without that machine's authorization.
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
 background, not evidence that anything has been implemented or validated.
 

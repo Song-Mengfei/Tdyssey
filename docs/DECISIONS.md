@@ -567,3 +567,27 @@ episode's geometry for labels/masks; actor/model inputs gain no letter ID.
 T/L remains the learning check; the explicit T/L/I/Y/near-T profile is a proposed
 development expansion. This does not supply a reliable predictor, pretrained GPC
 training or imagined RL. Keep all new raw reports/deltas/video ignored.
+
+## D032 — Portable training, live scalars and a Blackwell profile (2026-10-23)
+
+Always keep flushed local scalar logs; mirror to W&B only with an explicit
+offline/online tracking choice. Separate monitoring settings from learning
+settings. Use a new tracking run for each recovery invocation, preserving
+cumulative optimizer/control axes and checkpoint lineage. Do not upload raw
+weights/data/code/console through the tracking adapter. W&B failure falls back to
+local events and is recorded. A local standard-library viewer needs no account.
+
+Add fixed baseline-plan/noise denoising diagnostics without changing training RNG
+or using those examples for optimization/selection. Physical per-shape development
+success/final coverage selects `best.pt`; retain the original frozen comparison.
+Add regular forward evaluations, bounded detailed-update retention, sequential
+multi-seed/objective plans and a read-only GPU/asset/disk preflight. Custom visual
+dynamics gain step/cursor/optimizer recovery and explicit longer caps. Tail-PPO
+logging is supported, but its older recovery limits remain unchanged.
+
+Keep cu124 unchanged. Add mutually exclusive cu128 (torch 2.7.1 / torchvision
+0.22.1) for Blackwell candidates, plus an independent W&B 0.18.7 tracking extra;
+remove torch pins from `dp` so callers choose exactly one backend. Manifest and
+lock change together. Metadata resolution does not validate Blackwell, dense
+full-network training, or useful adaptation; perform machine-specific runtime
+checks. No new environment or package installation is part of this change.

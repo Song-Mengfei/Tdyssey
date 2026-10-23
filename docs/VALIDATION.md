@@ -1,6 +1,6 @@
 # Runtime validation
 
-Newest policy work: [forward RL, recovery and mixed-shape checks](#forward-rl-recovery-and-mixed-shape-checks-2026-10-23).
+Newest work: [portable training and live monitoring](#portable-training-and-live-monitoring-2026-10-23).
 
 Checked on 2026-10-19 with Linux x86_64, Python 3.12.3, uv 0.13.0, and the locked
 **CPU + GPC** profile. Evidence covers simulator/data development and the later
@@ -1374,3 +1374,113 @@ published by this milestone; portable commands/results are shared in Git.
 The three removed checkpoints freed **79,992,687 bytes**. Retained new training,
 resume, data and preview outputs plus prototype reports/lifecycle metadata total
 **84,493,136 bytes (80.58 MiB)**. Existing environments/base assets are unchanged.
+
+## Portable training and live monitoring (2026-10-23)
+
+Implementation and reproducible machine commands are in
+[TRAINING_MACHINE.md](TRAINING_MACHINE.md). No package/environment installation or
+model/data download was performed for this milestone. Metadata-only uv resolution
+added cu128 and the independent tracking extra to the shared manifest/lock:
+
+```bash
+third_party/uv/uv lock --python .venv/bin/python --no-python-downloads --no-build-isolation --cache-dir /tmp/tdyssey-training-lock-cache
+third_party/uv/uv lock --check --offline --python .venv/bin/python --no-python-downloads --no-build-isolation --cache-dir /tmp/tdyssey-training-lock-cache
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All 136 lock entries/source/link checks passed. Source discovery ran 123 tests:
+67 passed, 56 runtime checks skipped. All 20 policy configurations parsed.
+The task-owned 29 MiB metadata cache was removed after lock verification.
+
+```bash
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All **123 installed tests passed in 63.353 seconds**. The added fixed probe checks
+unchanged training RNG, original-policy drift zero before updates, nonzero drift
+after an update and repeatable measurements. Source tests check flushed local
+events, remote-service failure isolation, event byte caps, per-shape metrics,
+duplicate job refusal and preservation of evaluation settings across methods/seeds.
+
+The custom world-model fixture still corrupts model-test images to prove they are
+not decoded by training/validation. Its one-step checkpoint resumes inside the
+same partial epoch, reaching two steps/four windows. A separate uninterrupted
+two-step run matches loss/weights within strict tolerance and exact CPU RNG/cursor.
+The comparison temporarily enables deterministic GPU operations and restores the
+flag; ordinary training does not force these slower paths. CUDA bilinear resize
+backward can otherwise differ, as described by [PyTorch](https://docs.pytorch.org/docs/2.7/generated/torch.nn.functional.interpolate.html).
+The short-horizon metric uses explicit ordered sums so it also works in strict
+deterministic mode. This is a synthetic recovery check, not learned contact accuracy.
+
+### Physical forward tracking and recovery
+
+```bash
+.venv/bin/python -B scripts/check_training_setup.py --config configs/nft_smoke.json --backend cu124 --output-root artifacts --tracking
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/tracking_smoke.json --output artifacts/portable-training-check-2026-10-23 --tracking offline --run-group portable-validation --log-every 1
+```
+
+The read-only preflight passed package pins, CUDA/torchvision/convolution
+gradients, every upstream source hash, the base checkpoint and available disk.
+It performed no policy training or installation.
+
+For recovery, copy `configs/tracking_smoke.json` to a new JSON file and set only
+`updates=2`, `max_train_controls=1024`, then run:
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config PATH/portable-resume.json --resume artifacts/portable-training-check-2026-10-23/last.pt --output artifacts/portable-training-resume-2026-10-23 --tracking offline --run-group portable-validation --log-every 1
+```
+
+| Run | Training controls | Evaluation controls | Optimizer minibatches | Session time |
+| --- | --- | --- | --- | --- |
+| Initial tracking check | 160 = 32 candidate + 64 prefix replay + 64 warmup | 128 | 2 | 57.417 s |
+| New work during recovery | 192 = 32 candidate + 160 prefix replay | 64 | 2 | 32.186 s |
+| Cumulative lineage | 352 | 192 | 4 | Two sessions; parent audit also charges 0.095 s finalization |
+
+Peak allocated CUDA was **1,194,923,008 bytes (about 1.11 GiB)**. Actor factors
+changed; frozen-parameter and saved-checkpoint action checks passed. Every update
+ran fixed diagnostics and physical evaluation. With `report_detail_updates=0`,
+reports pruned candidate/minibatch detail while preserving scalar summaries,
+episode prefixes and recovery. Both runs' recorded training source hashes match
+the final source files. The fresh process retained fixed probe data and cumulative
+counts; the parent audit found no discarded controls/minibatches. Best checkpoint
+carry-forward and current-invocation selection completed.
+
+This is a **32-control development evaluation**, not evidence of useful learning:
+T and L both remained unsuccessful at that short cutoff. Final L coverage changed
+from 0.158075 to 0.158456 between the two trained evaluations. Do not interpret
+that tiny one-scene difference as an adaptation benefit.
+
+Offline W&B runs `d756f991` and `8a3c7a96` recorded per-shape, fixed-noise, training
+and resource events. The two tracking invocations have distinct IDs. No online
+authentication/upload was attempted. The local viewer's HTML and `/events` routes
+returned 200, arbitrary report paths returned 404, and its JavaScript parsed in
+V8. Browser appearance could not be inspected because no browser was connected.
+Port 8765 was already occupied; the local check used 8897 without altering that
+service. View the retained run with:
+
+```bash
+python3 -B scripts/view_training.py --run artifacts/portable-training-resume-2026-10-23 --port 8897
+```
+
+The six-job planner produced NFT/AdvantageFlow × seeds 42/43/44 with identical
+evaluation settings, without creating its proposed output directory or starting
+training. The full-network preset kept its intended dense scope. Extended jobs,
+Blackwell runtime, dense full-network training and shared cloud access remain
+unverified. No world-model-scored policy learning is added.
+
+| Local artifact | Bytes | SHA-256 |
+| --- | --- | --- |
+| `artifacts/portable-training-check-2026-10-23/last.pt` | 26,608,509 | `0a48439edbbec7c3bcb98d18e713753bd8a69bce5c7cb7142be96a8b45a4d0c7` |
+| `artifacts/portable-training-check-2026-10-23/report.json` | 177,703 | `750168d6cb1ea34ce8c155c6cb58d0612d848b79aaa22ddd0c354a073da2d120` |
+| `artifacts/portable-training-resume-2026-10-23/last.pt` | 26,623,677 | `a47ff7ccf550cfe565a954f55ded0bd26984f8fba35d8b727e32342170af2ca0` |
+| `artifacts/portable-training-resume-2026-10-23/report.json` | 224,989 | `5f3a48361fb4b54ae4b70238eab2c7d8a489e7bed2bb5fa4dac090204476ea04` |
+
+Raw outputs remain ignored/local. Monitoring outputs retained about **102.20 MiB**
+after removing two exclusively task-owned checkpoints from an earlier monitoring
+check, freeing 53,209,658 bytes. Original reports/scalars/offline logs remain; the
+hash-verified removals are recorded in ignored
+`artifacts/portable-training-lifecycle-2026-10-23.json`. The earlier check cost
+160 training / 128 evaluation controls and 57.273 seconds and is not part of the
+final resumed lineage. Existing base weights, environments and older assets
+were untouched. A Git hash alone does not transfer these local artifacts.

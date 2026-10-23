@@ -9,6 +9,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tdyssey.rl_protocol import RLConfig
+from tdyssey.tracking import add_tracking_arguments, tracking_from_args
 
 
 def main():
@@ -17,6 +18,7 @@ def main():
     parser.add_argument("--source-root", type=Path, default=ROOT/"third_party/diffusion_policy")
     parser.add_argument("--checkpoint", type=Path, default=ROOT/"checkpoints/official-dp/ema_policy.pt")
     parser.add_argument("--output", type=Path, required=True)
+    add_tracking_arguments(parser)
     args = parser.parse_args()
     try:
         config = RLConfig(**json.loads(args.config.read_text()))
@@ -26,7 +28,7 @@ def main():
                        "PYGAME_HIDE_SUPPORT_PROMPT": "1", "MPLBACKEND": "Agg"}.items():
         os.environ.setdefault(key, value)
     from tdyssey.policy_training import train
-    report = train(args.source_root, args.checkpoint, args.output, config)
+    report = train(args.source_root, args.checkpoint, args.output, config, tracking_from_args(args))
     print(json.dumps({k: report[k] for k in ("status", "counts", "elapsed_seconds")}))
     if report["status"] != "complete":
         raise SystemExit(1)

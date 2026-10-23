@@ -8,6 +8,10 @@ from pathlib import Path
 import tempfile
 import unittest
 
+# Set before CUDA libraries are initialized by installed-test discovery. Strict
+# determinism below is scoped to the continuation test, not ordinary training.
+os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
+
 from tdyssey.collection import CollectedEpisode, CollectionConfig
 from tdyssey.dataset import DatasetWriter
 from tdyssey.envs.official import official_shape
@@ -125,6 +129,10 @@ class WorldModelRuntimeChecks(unittest.TestCase):
     def test_training_updates_on_cuda_and_does_not_read_model_test_images(self):
         torch=self.torch
         if not torch.cuda.is_available():self.skipTest('CUDA required for optimizer check')
+        previous=torch.are_deterministic_algorithms_enabled()
+        warn_only=torch.is_deterministic_algorithms_warn_only_enabled()
+        torch.use_deterministic_algorithms(True)
+        self.addCleanup(torch.use_deterministic_algorithms,previous,warn_only=warn_only)
         from tdyssey.world_model_training import load_checkpoint,train
         # Corrupt the quarantined model-test payload. Training/validation must
         # succeed without decoding it; catalog metadata still remains intact.
@@ -138,6 +146,25 @@ class WorldModelRuntimeChecks(unittest.TestCase):
         self.assertTrue(all(p.device.type=='cuda' for p in model.parameters()))
         self.assertGreater(float(model.image_head.weight.norm()),0)
         self.assertEqual(payload['catalog_sha256'],report['catalog_sha256'])
+        self.assertEqual(len((self.root/'model/metrics.jsonl').read_text().splitlines()),3)
+        resumed=train(self.catalog,self.root/'resumed',replace(config,max_steps=2),
+                      resume=self.root/'model/last.pt')
+        self.assertEqual(resumed['steps'],2)
+        self.assertEqual(resumed['training_windows_seen'],4)
+        self.assertEqual(resumed['sessions'][-1]['optimizer_steps'],1)
+        recovery=torch.load(self.root/'resumed/last.pt',map_location='cpu',weights_only=True)
+        self.assertEqual(recovery['training_state']['epoch_cursor'],4)
+        self.assertEqual(recovery['training_state']['completed_epochs'],0)
+        self.assertFalse(resumed['model_test_used'])
+        full=train(self.catalog,self.root/'uninterrupted',replace(config,max_steps=2))
+        uninterrupted=torch.load(self.root/'uninterrupted/last.pt',map_location='cpu',weights_only=True)
+        self.assertAlmostEqual(resumed['epochs'][-1]['train_loss'],full['epochs'][-1]['train_loss'],places=6)
+        for name,value in recovery['state_dict'].items():
+            # Deterministic resize/backward isolates recovery from CUDA reduction
+            # order; ordinary training does not promise bit-identical updates.
+            torch.testing.assert_close(value,uninterrupted['state_dict'][name],rtol=1e-6,atol=1e-8)
+        torch.testing.assert_close(recovery['training_state']['torch_rng'],
+                                   uninterrupted['training_state']['torch_rng'],rtol=0,atol=0)
         with self.assertRaisesRegex(ValueError,'hash/size'):self.dataset('model_test')[0]
 
 

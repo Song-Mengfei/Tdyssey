@@ -19,6 +19,7 @@ from .official import OfficialDiffusionPolicy, load_official_source, physical_me
 from .official_collection import DEVELOPMENT_SEEDS
 from .policy import hash_file
 from .rl_protocol import advantages, block_return, shaped_reward
+from .tracking import RunLogger, evaluation_scalars
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -32,7 +33,7 @@ def frozen_digest(network):
     return digest.hexdigest()
 
 
-def evaluate(agent, cls, config, counters, deadline):
+def evaluate(agent, cls, config, counters, deadline, on_plan=None):
     """Paired development scenes, original strict success, no policy updates."""
     saved_rng = agent.generator.get_state()
     envs = {shape: cls(shape=shape, legacy=True) for shape in getattr(config, "eval_shapes", ("T", "L"))}
@@ -47,8 +48,11 @@ def evaluate(agent, cls, config, counters, deadline):
                 rows, done = [], False
                 for start in range(0, config.eval_steps, 8):
                     deadline()
-                    actions, _ = agent.sample(agent.encode(history))
+                    condition = agent.encode(history)
+                    actions, sample = agent.sample(condition)
                     counters["evaluation_plans"] += 1
+                    if on_plan is not None:
+                        on_plan(shape, seed, condition, sample)
                     for action in actions[:min(8, config.eval_steps-start)]:
                         deadline()
                         obs, raw, done, info = env.step(action)
@@ -72,7 +76,7 @@ def evaluate(agent, cls, config, counters, deadline):
     return episodes
 
 
-def train(source_root, checkpoint, output, config):
+def train(source_root, checkpoint, output, config, tracking=None):
     output = Path(output)
     if output.exists():
         raise ValueError("Output exists; choose a new directory")
@@ -102,6 +106,9 @@ def train(source_root, checkpoint, output, config):
                            "evaluation": "paired development scenes, not untouched final tests",
                            "resume": "not implemented; checkpoints contain final weights/optimizer state"}}
     envs = {}
+    logger = RunLogger(output, tracking, {"trainer": "tail_ppo", "config": asdict(config),
+                                        "source_sha256": report["source_sha256"]})
+    report["tracking"] = logger.state
 
     def deadline():
         if time.monotonic()-start > config.seconds:
@@ -123,6 +130,7 @@ def train(source_root, checkpoint, output, config):
         if estimated > config.max_bytes or shutil.disk_usage(output).free < estimated+8*1024**2:
             raise ValueError("Checkpoint estimate exceeds configured output budget or free storage")
         report["baseline"] = evaluate(agent, cls, config, counters, deadline)
+        logger.log(evaluation_scalars(report["baseline"]), counters["optimizer_minibatches"])
         optimizer = torch.optim.Adam(agent.actor.parameters(), lr=config.actor_lr)
         critic_optimizer = torch.optim.Adam(agent.critic.parameters(), lr=config.critic_lr)
         episodes = {shape: 0 for shape in ("T", "L")}
@@ -208,6 +216,12 @@ def train(source_root, checkpoint, output, config):
                     adv[index], targets[index] = aa, vv
             metrics = ppo_update(agent, records, adv, targets, optimizer, critic_optimizer)
             counters["optimizer_minibatches"] += len(metrics["minibatches"])
+            if metrics["minibatches"]:
+                logger.log({"train/"+k: float(np.mean([m[k] for m in metrics["minibatches"]]))
+                            for k in metrics["minibatches"][0]} | {
+                    "progress/update": update+1, "progress/training_controls": counters["training_controls"],
+                    "rollout/mean_reward": float(np.mean([r["reward"] for r in records]))},
+                    counters["optimizer_minibatches"])
             report["updates"].append({"update": update+1, "metrics": metrics,
                 "plans": [{k: v for k, v in r.items() if k not in ("condition", "transitions")}
                           for r in records]})
@@ -218,6 +232,7 @@ def train(source_root, checkpoint, output, config):
             del records
             deadline()
         report["final"] = evaluate(agent, cls, config, counters, deadline)
+        logger.log(evaluation_scalars(report["final"]), counters["optimizer_minibatches"])
         report["actor_l2_change"] = sum(float((v.detach().cpu()-initial[k]).double().square().sum())
                                          for k, v in agent.actor.state_dict().items())**.5
         report["frozen_parameters_unchanged"] = frozen_before == frozen_digest(agent.network)
@@ -258,6 +273,7 @@ def train(source_root, checkpoint, output, config):
                                           +counters["checkpoint_verification_plans"])
         report["elapsed_seconds"] = time.monotonic()-start
         report["peak_cuda_bytes"] = torch.cuda.max_memory_allocated()
+        logger.finish(report["status"])
         text = json.dumps(report, indent=2, allow_nan=False)+"\n"
         if sum(p.stat().st_size for p in output.iterdir() if p.is_file())+len(text.encode()) > config.max_bytes:
             report["status"], report["error"] = "failed", "Output budget exceeded"
