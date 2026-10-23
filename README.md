@@ -4,27 +4,28 @@ A three-author course research project: can a policy trained to push a T-shaped
 object learn useful pushing behavior for new shapes through non-expert interaction
 data and reinforcement learning inside a learned world model?
 
+The intended outcome is one shared policy across multiple shapes, using no new
+human demonstrations for adaptation. The released T policy already uses expert
+pretraining. T-to-L is the first learning check before expanding to mixed shapes;
+it is not the final project scope.
+
 The project is graded on effort. Substantial implementation, controlled
 experiments, reproducibility, and an honest explanation of failures are useful
 deliverables even if the ambitious adaptation/generalization goals fail.
 
-**Current stage:** the official RSS 2023 visual CNN policy loads on CUDA and solved
-three original T-scene development checks. A shorter-foot capital L is now in the
-official setup: the first matched scene succeeded for T and failed for L. GPC-based
-collection/training-data code remains separate reference work. Official L collection
-and episode-safe batches now work: the first eight-episode pilot has nonempty
-training/validation/test splits. A first GPU visual world-model pilot now trains,
-but noncontact drift and nearly constant action-reward predictions remain
-problems; policy training is pending. All 26 capital letters and a
-near-T shape are available for separate frozen-policy exploration. In the first
-common scene, T and Y succeeded; other letters and near-T reached the step limit.
-The saved gallery records near misses and lost overlap as well as success. Core checks
-run without installation; a resizable desktop viewer is available. See
-[official baseline](docs/OFFICIAL_BASELINE.md) and [validation evidence](docs/VALIDATION.md).
+**Current stage:** the official RSS 2023 visual CNN policy runs on CUDA and solved
+three original T development scenes. T/L data collection, alphabet evaluation and
+actual denoising/continuation inspection work. In one common alphabet scene, only
+T and Y succeeded. World-model pilots expose contact/reward failures; reliable
+imagined rollouts and policy training remain pending. GPC reference work stays
+separate from the official baseline. See [results](docs/RESULTS.md),
+[status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
 
 ## Start here
 
+- [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
 - [Project scope and milestones](docs/PROJECT.md)
+- [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
 - [Separate GPC reference collector](docs/COLLECTION.md)
@@ -42,6 +43,50 @@ run without installation; a resizable desktop viewer is available. See
 - [Decisions](docs/DECISIONS.md)
 - [Commit and pull request rules](docs/GIT.md)
 - [Original detailed research schedule](跨形状机器人世界模型研究_详细执行时间表.md)
+
+## The plan at a glance
+
+**Goal:** improve one T-trained visual diffusion policy across multiple letters,
+using automated interaction and rewards, with no new human adaptation demonstrations.
+The original T policy was trained on expert demonstrations. T/L is the first
+learning check; A-Z is a later expansion, not a prerequisite for getting started.
+
+| Order | What we build | How we know it works |
+| --- | --- | --- |
+| Now, policy work | A bounded DPPO learning loop in the physical T/L simulator | Correct probabilities/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
+| Now, world-model work | Compare compatible pretrained prediction models; adapt one if necessary using automated data | Predict contact, rotation, pusher position and reward; correctly rank actions, including near the goal |
+| Join the two | Freeze validated dynamics and let DPPO practice in short predicted rollouts | Updated policy improves in the physical simulator, compared with direct-simulator training |
+| Expand | Train shared dynamics/policy on a fixed diverse shape set, then A-Z if affordable | Per-shape results, costs, failures and retained T performance |
+
+**What does the reward teach?** The proposed training reward combines completion
+at the original **coverage > 95%** threshold with a carefully discounted coverage
+progress term. Coverage is target area occupied by the object; it differs from
+IoU. DPPO increases the likelihood of denoising decisions that lead to better
+future rewards. Maintaining alignment after success is a separate training/evaluation
+task; stopping the original episode at first success does not train that behavior.
+
+**Why not just choose the biggest world model?** It must accept our continuous
+actions and predict their physical consequences, not merely generate plausible
+video. Pretrained GPC loading works, but its official-domain contact prediction
+is not reliable yet. A-Z training is needed only as justified by the expansion;
+training every letter cannot demonstrate unseen-letter generalization.
+
+**Why not just use the physical simulator?** We can, and it may be the better
+choice for cheap 2D PushT physics. The central comparison is frozen policy vs
+simulator-trained DPPO vs world-model-assisted DPPO. Count world-model data and
+training costs too; lower physical interaction use, faster training or better
+physical performance must be measured rather than assumed. A useful negative
+result is that the learned model adds cost or errors without improving the policy.
+
+**Ready today:** official policy/environment, T/L collection and batches, alphabet
+evaluation, world-model pilots, and denoising/continuation inspection. **Still to
+build:** DPPO training, a reliable shared world model and imagined policy updates.
+The world model is intended as a training aid; the updated policy can act on real
+observations without using it for test-time planning.
+
+Read the [detailed implementation and experiment plan](docs/LEARNING_PLAN.md) for
+data sizes/splits, model losses, reward equations, training steps, proposed starting
+settings and three developer work packages. Proposed settings are not tested defaults.
 
 ## Work without installing anything
 

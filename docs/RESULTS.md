@@ -6,6 +6,15 @@ limitations. No policy learning or successful T-to-L adaptation is established.
 See [current status](STATUS.md), [full evidence and commands](VALIDATION.md) and
 [world-model protocols](WORLD_MODEL.md).
 
+The newer [policy decision diagnostic](POLICY_DIAGNOSTICS.md) explains actual
+noise-to-action sampling and near-goal loss on D/near-T. Its source and commands
+are shared; generated interactive views, PNGs and MP4s currently remain local,
+not part of the published snapshots below.
+An additional 500-control original-T continuation first succeeds at 128, loses
+success at 129 and ends at zero overlap. Its [protocol and evidence](VALIDATION.md#original-t-continued-for-500-controls-after-ignoring-the-success-stop-2026-10-20)
+separate post-goal stability from the original terminate-on-success task; generated
+video/plots currently remain local as well.
+
 ## Available in Git
 
 | Experiment | Figures / videos | Machine-readable results |

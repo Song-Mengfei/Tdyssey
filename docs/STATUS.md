@@ -1,18 +1,26 @@
 # Shared project status
 
-Updated: 2026-10-19. Stage: matched T palette experiment completed; pretrained calibration, reliable dynamics and policy learning remain pending.
+Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
+reliable world-model rollouts and policy learning remain pending.
 
-PR #1 merged the shared setup and first code milestone. PR #2 contains CPU/CUDA setup,
-real simulator tests, shared documentation cleanup, bounded interaction collection,
-episode-safe training batches, the official CNN T baseline, and a separate GPC
-reference-policy runner together.
-The official letter extension and matched frozen-policy probes continue in that PR.
-Review branch: `build/minimal-runtime-setup`.
-Main changes continue through pull requests.
-Review milestone: baseline, data/training infrastructure and world-model diagnostics
-are complete enough for coauthor review. Selected figures/reports are now in
-`docs/RESULTS.md`. Finish review of PR #2 before starting the next training milestone
-on a new branch after merge; the PR does not claim completed adaptation or policy learning.
+PRs #1 and #2 are merged. The baseline, data/training infrastructure and
+world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
+New decision-inspection work uses `feat/policy-decision-replay`, based on merged
+main. It adds no policy training or successful adaptation claim. Continue shared
+changes through pull requests; do not rewrite or append to the closed PR branch.
+
+Scope clarified on 2026-10-20: the goal is one shared policy across letter shapes,
+using world models and RL with no new human adaptation demonstrations. T-to-L is
+the first functional check, not the final scope. The initial expert-trained T
+checkpoint and privileged simulator reward labels must remain disclosed. See
+`docs/PROJECT.md` and D026. This is a plan update, not completed multi-shape training.
+
+The [learning plan](LEARNING_PLAN.md) now defines the two concurrent workstreams,
+world-model data/validation, proposed reward and DPPO losses, physical/imagined
+training steps, bounded starting experiments and concrete three-developer tasks.
+README gives a short human overview; agents should read the full plan before
+learning work. Settings and proposed trainer files are not implemented by this
+documentation. See D027.
 
 ## Completed
 
@@ -95,6 +103,15 @@ on a new branch after merge; the PR does not claim completed adaptation or polic
   with source hashes in a 775,943-byte reviewed snapshot. The result index links
   these and all 27 alphabet MP4s without setup. Raw reports/data/checkpoints remain
   local/ignored, with no shared raw archive configured; see `docs/RESULTS.md`.
+- Added read-only capture of actual official DDPM samples, an offline interactive
+  viewer, overview PNGs and compact MP4s. Replayed T/D/near-T decisions exactly,
+  including the action chunks containing their best overlap. A posthoc physical
+  hold comparison preserves more overlap on D and near-T but solves neither.
+  Commands, interpretation and limits: `docs/POLICY_DIAGNOSTICS.md`.
+- Added explicit fixed-duration T continuation, preserving normal stop-on-success
+  defaults. A 500-control run matches the original successful 128-control prefix
+  exactly, then loses success at 129 and ends at zero coverage/IoU. The policy
+  and simulator were not reset or frozen at success; see `docs/VALIDATION.md`.
 
 ## Verification status
 
@@ -106,7 +123,7 @@ See `docs/VALIDATION.md` for commands and limits.
 - Five real simulator tests passed: original/adapted T rollout agreement, actual
   I/L contacts, collision geometry/reward agreement, state restoration, and fresh
   pre-contact replay. This is not a trained-policy performance result.
-- All 101 current tests passed together: 56 source-only and 45 opt-in runtime
+- The previous full suite passed all 101 tests together: 56 source-only and 45 opt-in runtime
   checks. Source-only discovery passed 56 and skipped 45.
   Twelve peripheral/repeated checks were removed; simulator and GPU checks remain.
   Pretrained integration adds only two focused timing/sampler-parity checks.
@@ -195,8 +212,58 @@ See `docs/VALIDATION.md` for commands and limits.
 - Broader baseline evaluation, original demonstration conversion, reliable visual
   dynamics, policy optimization, reset coverage and mid-contact replay remain pending.
   Other project environments were untouched.
+- Decision replay: 616 original controls and all 77 CUDA plans matched saved
+  actions/states/contacts/rewards. Captured eight actual 100-step denoising chains.
+  Hold checks separately used 463 prefix-replay controls and 16 intervention
+  controls; five reset substeps and five initial-state restores in total.
+  D's best IoU occurs at action 1 of controls 201-208 and declines at 202; near-T
+  peaks at action 6 of controls 257-264 and declines at 263. Both remain below
+  0.95 coverage. These are development-case timing/intervention results.
+- Decision-replay source discovery: 58 passed / 45 runtime checks skipped. Three focused
+  official runtime tests passed, including current/next-plan RNG and trace parity.
+  All three exported MP4s decoded (179 frames each); figures were visually checked.
+  Viewer JavaScript parsed and control handlers passed a DOM/canvas-stub smoke
+  check. Actual browser rendering was not checked because no browser surface was
+  available. No dependencies, downloads, training or checkpoint changes were needed.
+- T continuation: 500 controls / 5000 physics substeps, one reset, 63 CUDA plans /
+  6300 denoising steps; 501 video frames decoded. The first success occurs at 128,
+  drops below threshold at 129, briefly recurs at 182, and is absent at the end.
+  Coverage first reaches zero after success at control 363. This is one scene and
+  one policy seed, not a population stability rate or a replacement benchmark.
+  Retention accounting and continued raw-simulator stepping passed focused checks.
+  Latest source discovery: 59 passed / 45 runtime checks skipped (104 total).
+- PR preparation on 2026-10-22 reran all 104 tests successfully with the existing
+  CUDA/DP/GPC environment and pretrained assets enabled. Source-only discovery
+  passed 59 and skipped 45. This includes real inference/parity, simulator and
+  existing world-model update checks, not a diffusion-policy RL update.
 
 ## Next task
+
+Implement the direct-simulator diffusion-policy RL loop on T/L with correct
+denoising probabilities, physical control-step rewards and terminal handling.
+Start with limited action-network updates; record trainable weights and budgets.
+Begin with a bounded update/serialization check, then measure learning on separate
+physical scenes. In parallel, define the frozen/adapted predictor comparison and
+collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
+Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,
+interfaces, reward/return rules and starting budgets.
+Extend the official collector to a fixed, diverse multi-shape development set,
+using machine-generated play/current-policy interaction and per-shape episode
+splits. The existing collector/pilot covers T/L only, not the alphabet training set.
+Assess a shared pretrained predictor on those domains; adapt it when measured
+errors justify doing so, and require physical action/reward checks before imagined
+RL. Compare partial updates/adapters with full updates under matched budgets,
+then expand shared-model/policy training to more letters while checking T retention.
+
+Diagnostic follow-up: predeclare a small comparison of eight-action execution
+against more frequent replanning on the same development scenes. Repeat policy
+noise seeds and report extra inference work; changing prefix length also changes
+RNG consumption. Do not turn the posthoc best-state hold into an official stopping
+rule or treat it as completed adaptation. This diagnostic does not expand the
+first learning milestone beyond T-to-L.
+Include the successful-T continuation as a control when investigating goal loss;
+its first loss follows a new plan at 129, whereas D/near-T first decline within
+an existing chunk. Keep these different timings explicit.
 
 Calibrate the pretrained GPC world model on bounded official-RGB T training data
 with varied contact/rotation. This addresses appearance without requiring the
@@ -211,7 +278,10 @@ adaptation after validating actual action effects. See decision D022.
 DINO-WM remains an alternative if GPC cannot pass physical prediction checks.
 Retain the custom CNN as an L-only comparison. Loading a public checkpoint does
 not establish adaptation, reliable planning or differentiable policy training;
-the released sampler rounds pixels and disables gradients. See decision D021.
+the released sampler rounds pixels and disables gradients. That blocks direct
+backpropagation through its predictions, not likelihood-ratio policy gradients
+such as DPPO. See decision D021 and `docs/POLICY_DIAGNOSTICS.md` for the separate
+policy-sampling inspection; no RL trainer exists yet.
 
 Verify direct physical-simulator policy optimization before imagined updates.
 Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before
