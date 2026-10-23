@@ -64,6 +64,15 @@ class OfficialRuntimeChecks(unittest.TestCase):
         self.assertAlmostEqual(metrics["iou"], 1.0)
         self.assertEqual(physical_state(env)["object"]["position"], [256.0, 256.0])
 
+        # The raw simulator does not reset or absorb successful states. A runner
+        # can explicitly continue while preserving the original per-step flags.
+        target = np.asarray(env.agent.position, dtype=np.float64)
+        for _ in range(3):
+            _, reward, done, _ = env.step(target)
+            self.assertTrue(done)
+            self.assertEqual(reward, 1.0)
+            self.assertAlmostEqual(physical_metrics(env)["coverage"], 1.0)
+
     @unittest.skipUnless(os.environ.get("TDYSSEY_OFFICIAL_CHECKPOINT"), "Set TDYSSEY_OFFICIAL_CHECKPOINT for real CUDA policy parity")
     def test_checkpoint_normalizers_and_prediction_match_direct_official_class(self):
         import numpy as np
@@ -89,6 +98,18 @@ class OfficialRuntimeChecks(unittest.TestCase):
         np.testing.assert_array_equal(adapter_actions, direct["action"][0].cpu().numpy())
         np.testing.assert_array_equal(adapter_actions, direct["action_pred"][0, 1:9].cpu().numpy())
         self.assertEqual(adapter_actions.shape, (8, 2))
+
+        # Instrumentation must preserve both current actions and the RNG stream
+        # used by the next plan; it must not leave a patched scheduler behind.
+        expected_next = policy.predict_actions(history)
+        policy.reset_seed(123)
+        traced, trace = policy.predict_actions_with_trace(history)
+        np.testing.assert_array_equal(traced, adapter_actions)
+        np.testing.assert_array_equal(policy.predict_actions(history), expected_next)
+        np.testing.assert_array_equal(trace["pixel_samples"][-1, 1:9], traced)
+        self.assertEqual(trace["normalized_samples"].shape, (101, 16, 2))
+        self.assertEqual(trace["timesteps"], list(range(99, -1, -1)))
+        self.assertNotIn("step", vars(policy.network.noise_scheduler))
 
 
 if __name__ == "__main__":

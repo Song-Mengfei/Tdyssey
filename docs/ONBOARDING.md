@@ -2,10 +2,14 @@
 
 ## Five-minute orientation
 
-1. Read `README.md`, `docs/PROJECT.md`, and `docs/STATUS.md`.
+1. Read the quick plan in `README.md`, then `docs/PROJECT.md`, `docs/STATUS.md`
+   and [the detailed learning/developer handoff](LEARNING_PLAN.md).
    Open [published figures and results](RESULTS.md) to inspect evidence without setup.
-2. The project asks whether a T-trained pushing policy can acquire useful behavior
-   for new object shapes using non-expert data and imagined training.
+2. The project asks whether a T-trained pushing policy can become one shared
+   multi-shape policy through world models and RL without new human adaptation
+   demonstrations. Machine-generated interaction supplies new data; the original
+   expert T pretraining and simulator-derived rewards remain disclosed. T-to-L
+   is the first implementation check; see `docs/PROJECT.md` and D026.
 3. The primary baseline is the official RSS 2023 visual CNN policy in original
    PushT; three CUDA T-scene checks succeeded. Read `docs/OFFICIAL_BASELINE.md`.
    Official capital L is implemented and its first matched scene failed while T
@@ -42,6 +46,10 @@ For three authors, propose one person per workstream. These are not assigned own
 yet: agree on names and boundaries together. Schedule short reviews of how the
 parts connect. Use one branch/checkout per author. Agree on file ownership before
 simultaneous edits; pull and inspect shared status before changing a common contract.
+The [learning plan's work packages](LEARNING_PLAN.md#three-developer-work-packages-that-can-start-now)
+give concrete next files, acceptance checks and experiment settings. Policy work
+starts with a bounded direct-simulator update; world-model assessment/data work
+can proceed alongside it. No DPPO training script exists yet.
 
 Put shared setup and later changes through branches and pull requests so both
 other authors can review them before they become the default on `main`.
@@ -55,8 +63,12 @@ Run the selected profile's doctor, then the opt-in real simulator checks describ
 in `docs/ENVIRONMENT.md`. Keep reports and absolute machine paths in ignored
 `artifacts/` directories. On the training machine, verify required assets one by one
 and bound evaluation episodes before running the official T baseline using
-`docs/OFFICIAL_BASELINE.md`. The next shared task is improving the first visual
-model's contact/action predictions and noncontact drift, using `docs/WORLD_MODEL.md`.
+`docs/OFFICIAL_BASELINE.md`. The next implementation milestone is direct-simulator
+policy RL on T/L, followed by shared-model imagined updates and mixed-shape
+expansion. Extend machine-generated collection to a fixed diverse shape set and
+validate pretrained dynamics/rewards on those domains before imagined training;
+the custom L-only model remains a comparison. Use `docs/STATUS.md` for the current
+task and `docs/PROJECT.md` for the no-new-human-data and evaluation rules.
 Record local patches and whether the checkpoint actually loads. Do not start a
 full training run as an installation check.
 

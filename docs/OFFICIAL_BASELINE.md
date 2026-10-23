@@ -95,6 +95,18 @@ repeat the first observation and update after every control. Runtime tests check
 these histories against the official `MultiStepWrapper`, including a partial final
 chunk, and compare inference with a direct official-class call using the same RNG.
 
+For actual noise-to-action samples, executed-prefix overlays and near-miss timing,
+see [policy decision inspection](POLICY_DIAGNOSTICS.md). Its observer preserves
+the current actions and the following plan's RNG stream; it does not alter this
+baseline's success rule or introduce a world model.
+
+For a separately labeled fixed-duration diagnostic, use `--continue-after-success`
+with `--steps 500` to keep executing after the original coverage threshold. This
+changes the runner's stopping decision only; original rewards/flags remain
+recorded. See [the continuation command](POLICY_DIAGNOSTICS.md#continue-original-t-pushing-after-success).
+Default baseline runs still stop immediately on success and allow at most 300
+controls. Continuation results must not be presented as the original paper score.
+
 The paper's `test/mean_score` averages each episode's maximum clipped upstream
 reward. It is **not** the success fraction or polygon IoU. This command reports all
 three separately. Its local per-episode CUDA RNG is recorded; it does not reproduce

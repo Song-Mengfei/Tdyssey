@@ -369,3 +369,104 @@ no presentation-only unit tests or new runtime experiment are needed.
 This completes a foundation/diagnostic review milestone for PR #2. Review/merge
 does not require successful adaptation. Continue the next training milestone on
 a new branch after coauthor review and an authorized merge; do not merge automatically.
+
+## D024 — Inspect real denoising and near-miss action timing (2026-10-20)
+
+Observe the official scheduler instance temporarily, copying its initial sample
+and actual DDPM outputs without consuming RNG, replacing outputs or patching
+upstream files. Verify both current and following action chunks against unchanged
+inference, and mark the original executed indices 1:9 separately from the full
+16-target prediction. Intermediate inverse-normalized action samples are display
+coordinates, may be outside the scene, and are not object predictions.
+
+Replay the original alphabet report from its initial snapshots and policy seeds,
+checking saved actions, physical/controller states, contacts, metrics and terminal
+flags. Capture the plan containing earliest best IoU and its neighbors for T, D
+and near-T. This is posthoc development analysis, not a new held-out-shape result.
+The offline viewer separates fixed-scene denoising from physical execution.
+
+Compare continuation with a privileged eight-control hold at the known best
+moment. Recreate contact history by replaying the complete initial prefix; do not
+restore a mid-contact snapshot or zero object velocities. Preserve the original
+strict coverage > 0.95 success rule and record all extra interactions separately.
+Holding preserves more overlap in the two examined failures but does not achieve
+success. It supports a future predeclared prefix-length study, not a deployable
+stop detector or a full explanation of the encoder's internal representation.
+
+No dependency or asset change. Keep generated HTML, NPZ, PNG, MP4 and raw reports
+ignored. Source and reproducible commands are shared; generated diagnostics are
+not included in the existing publication exceptions. PR #2 is already merged;
+this feature starts on a new branch from merged main.
+
+## D025 — Fixed-duration original T continuation diagnostic (2026-10-20)
+
+Add an explicit `--continue-after-success` mode to the official T runner, allowing
+at most 500 controls while preserving its normal 300-control, stop-on-success
+default. Keep the exact original coverage > 0.95 reward/success calculation.
+Continuing means ignoring the raw flag only as a runner stopping condition;
+never reset/freeze the simulator or reset policy history/RNG at that crossing.
+Use a distinct diagnostic report kind and preserve every raw flag. Distinguish
+ever reaching success from final success and post-success retention. Label the
+video with controls, coverage and IoU, and keep outputs ignored.
+
+The first requested experiment is one 500-control rollout using the original
+development scene 100000 and policy seed derived from base seed 42. Compare the
+prefix through first success against the existing baseline, then inspect all
+remaining controls. This is a development-case stability observation, not an
+adaptation result or a new estimate of overall policy performance. See the
+actual outputs and limits in `docs/VALIDATION.md`.
+
+## D026 — Shared multi-shape learning without new human data (2026-10-20)
+
+The team clarified the intended outcome: improve one T-initialized diffusion
+policy across multiple letter shapes using world models and RL, without new
+human demonstrations or human success labels. The released policy's original
+expert T training remains a dependency; simulator-derived reward/geometry labels
+are privileged supervision, not a claim of learning without any supervision.
+
+Keep T-to-L as the first functional learning check, then train/validate a shared
+world model and policy on a predeclared, diverse development set and expand to
+the alphabet as resources permit. Machine-generated data can mix automated play
+and frozen/current-policy interaction, including contact, rotation, near-goal
+and recovery states. A pretrained model need not be trained on every letter if
+its predictions transfer, but each imagined-training domain must pass physical
+action/reward validation. Freeze model weights during policy updates. Do not
+query true future simulator states to score imagined transitions.
+
+Compare limited action-network updates, optional small adapters and full
+fine-tuning with matched data/control/compute records. First establish direct
+simulator RL, then compare imagined RL. Include T practice or frozen-T-policy
+imitation using automatically collected observations, and measure forgetting.
+No RL trainer, adapter or multi-shape training result is implemented by this
+scope decision.
+
+Keep official coverage > 0.95 success and separately report final/peak alignment
+and retention. Any learned hold/retreat or end-zone objective requires a declared
+task/reward comparison. Training all letters tests multi-shape competence on new
+scenes; unseen-shape claims require exclusions from both model and policy data.
+Previously explored letters are development shapes, not an untouched final test.
+This clarification supersedes L-only final-scope wording; it does not justify
+starting unbounded all-letter collection or training before the basic loop works.
+
+## D027 — Specify the learning handoff and separate its two workstreams (2026-10-22)
+
+Use `docs/LEARNING_PLAN.md` as the detailed implementation/experiment handoff,
+with a short README overview and links from agent instructions/onboarding. It
+defines data sources/splits, world-model compatibility and contact/reward checks,
+supervised versus policy losses, action timing, proposed reward, physical/imagined
+iterations and three developer work packages. Proposed settings/file names are
+not implemented defaults or completed training. Record the actual configuration,
+owners, numerical prediction tolerances and resource caps before each experiment.
+
+Develop direct-simulator DPPO and pretrained prediction assessment independently;
+require a checked physical learning loop and validated dynamics before imagined
+policy claims. Model compatibility/action effects precede size comparisons.
+Start with T/L, then a declared diverse subset, then A-Z if justified. No new
+large-model download or all-letter training is required by this plan. Favor one
+shared predictor; adapt pretrained components when measured failures justify it.
+
+Propose sparse original completion plus discounted coverage-potential shaping,
+with explicit success/time-limit handling. Keep raw upstream rewards and original
+success in reports; sustained completion is a separate task. Freeze dynamics
+during policy phases, derive imagined rewards from predictions and test learned
+policies physically. Include all model-data collection in end-to-end costs.

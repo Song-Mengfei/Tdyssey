@@ -3,19 +3,26 @@
 Selected original figures and compact reports are [published with the source](RESULTS.md).
 Full raw reports, frames and weights remain local/ignored; the index states access limits.
 
+This page records experiments already run. The [shared learning plan](LEARNING_PLAN.md)
+explains the next model comparisons, automated data, prediction gate, policy rewards
+and how validated dynamics will support DPPO. Direct simulator learning can be
+implemented alongside model assessment; it does not wait for alphabet dynamics.
+
 The first model predicts the next scene from **two RGB frames, two pusher
 positions, the fixed goal pose and future pixel-position actions**. It is a new,
 small CNN predictor, separate from the unchanged official Diffusion Policy.
 It uses no object pose, velocity, contact or reward as model input. It currently
 accepts official capital-L datasets only.
 
-**There is no pretrained world-model checkpoint in use.** The first run trains
-this predictor from scratch on six L play episodes (600 unique control steps).
+**This custom CNN pilot uses no pretrained world-model checkpoint.** Its first run
+trains from scratch on six L play episodes (600 unique control steps).
 It has not been pretrained on T or initialized from GPC or the official policy.
 The official T-trained Diffusion Policy is a separate, frozen model. This pilot
 checks the learning pipeline; it does not yet demonstrate transferring a world
 model from T to L. A transfer comparison would need a recorded T training stage
 and a matched L-only baseline before claiming a benefit from pretraining.
+The later GPC compatibility experiments below do load a separate pretrained world
+model; that model has not supplied an imagined policy-training environment.
 
 This is a functioning training/validation baseline, **not yet a reliable simulator
 for policy optimization**. The first GPU run improved one validation contact-motion
