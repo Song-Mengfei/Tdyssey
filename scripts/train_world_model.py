@@ -1,4 +1,4 @@
-"""Train a bounded visual L world-model pilot on CUDA; no installation/downloads."""
+"""Train a bounded official visual world-model pilot on CUDA; no new installs."""
 
 import argparse
 from pathlib import Path

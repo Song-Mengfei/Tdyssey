@@ -1,8 +1,8 @@
 # Shared project status
 
-Updated: 2026-10-23. Stage: direct-simulator tail-PPO trainer implemented and first
-real GPU update/reload check passed; physical adaptation and imagined learning
-remain unestablished.
+Updated: 2026-10-23. Stage: direct-simulator tail-PPO and forward-process
+NFT/AdvantageFlow trainers implemented; real GPU update/reload checks passed.
+Physical adaptation and imagined learning remain unestablished.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -28,11 +28,42 @@ inspection/plan review milestone.
 
 ## Completed
 
+- Implemented the [forward training path](FORWARD_POLICY_LEARNING.md): NFT and
+  AdvantageFlow epsilon-prediction adaptations, full action-U-Net/head/distributed
+  LoRA scopes, frozen rollout/T references, matched physical candidate trials,
+  periodic atomic checkpoints and source/config/optimizer/RNG-checked resume.
+  The distributed rank-8 actor has 1,652,824 trainable factors. The actor uses RGB
+  and pusher history; geometric rewards/physical traces are privileged feedback.
+- Added full-prefix warm-contact replay checks and all-step original-sampler
+  parity. Analytic training noising preserves the scheduler's original CPU buffer;
+  the library's mutating noising helper caused a prototype mismatch and is no
+  longer used. Fresh-model checkpoint loading is checked, not only same-object
+  reload. Small tied-score batches correctly report no weight change.
+- Extended the trained-policy evaluator to forward checkpoints, every registered
+  shape and optional bounded MP4 output. The official play collector now supports
+  A-Z/near-T; custom visual-dynamics windows use each episode's geometry. A tiny
+  Y path check collected 56 controls in seven episodes (272,344 bytes); a mixed
+  L/Y catalog read real windows and fitted stats on 640 training controls only.
+  This is data support, not learned shared-world-model accuracy or GPC adaptation.
+- Completed the corrected distributed-LoRA NFT pilot: six updates, 88 optimizer
+  minibatches, 3712 training controls including replay, 295.393 seconds and about
+  1.11 GiB peak allocated CUDA. Factors changed and frozen weights/reload parity
+  passed. On one 128-control development evaluation, L remained unsuccessful
+  (peak coverage 0.410331 to 0.409805, final zero); four of five L training groups
+  had zero contact and tied scores. No useful L adaptation is established.
+- Corrected AdvantageFlow smoke and a fresh-directory resume passed. Neutral
+  batches kept weights and before/after actions identical. The resumed lineage
+  accounts for 96 training / 192 evaluation controls without double-counting its
+  parent. Fresh-process L previews matched all 128 saved actions/outcomes, and a
+  native 512x512 MP4 decoded all 129 frames. Raw outputs remain ignored/local.
+  Full installed verification: 120 passed; source discovery: 64 passed / 56
+  skipped. See `docs/VALIDATION.md` for commands, hashes and prototype exclusions.
 - Surveyed newer image/flow RL objectives and closely related world-model policy
   work; added `docs/DIFFUSION_RL_RESEARCH.md` with primary sources, a DDPM-NFT
   specification, loss algebra, model-reliability limits and three-developer tasks.
   Recommend it as the next objective comparison alongside the existing PPO;
-  no forward-process/imagined trainer or new training result is added. Course
+  that research milestone added no trainer; the later forward implementation is
+  documented above. No imagined trainer or useful adaptation is established. Course
   scope remains shared multi-shape adaptation; algorithmic novelty is not required.
 - Added a direct-simulator visual tail-PPO trainer, physical-time shaping/GAE,
   value estimator and compact checkpoint/reload path. Supports output-head or
@@ -280,12 +311,15 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Implement the separately identified DDPM-NFT forward-process comparison using
-[the research handoff](DIFFUSION_RL_RESEARCH.md): matched-context physical branches,
-noise-prediction loss, full action-network/distributed-LoRA updates and independent
-evaluation. Preserve the PPO baseline and first verify direct simulator learning;
-world-model scoring follows prediction checks. This selects a next implementation
-task, not a claim that the alternative is implemented or better.
+Measure the implemented NFT/AdvantageFlow methods against PPO using
+[the runnable guide](FORWARD_POLICY_LEARNING.md). Diagnose contact coverage,
+finite-horizon score signal and physical learning curves before scaling; retain
+the original success criterion. Validate dense action-network mode on its intended
+GPU. World-model scoring still follows contact/reward/ranking checks.
+The first forward pilot identifies mostly contact-free/tied L groups. Improve
+automated context/contact coverage and assess score horizons before simply running
+more copies of the same uninformative interaction. Disclose any play-based context
+selection or geometric curriculum and retain full-reset physical evaluation.
 
 Measure physical learning on separate development scenes, diagnose reward/contact
 coverage, and validate full action-network updates on an authorized larger GPU.
@@ -297,9 +331,10 @@ In parallel, define the frozen/adapted predictor comparison and
 collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
 Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,
 interfaces, reward/return rules and starting budgets.
-Extend the official collector to a fixed, diverse multi-shape development set,
+Use the extended official collector on a fixed, diverse multi-shape development set,
 using machine-generated play/current-policy interaction and per-shape episode
-splits. The existing collector/pilot covers T/L only, not the alphabet training set.
+splits. Existing substantial data remains L-only; the tiny Y check is not an
+alphabet training set or enough data for shared dynamics.
 Assess a shared pretrained predictor on those domains; adapt it when measured
 errors justify doing so, and require physical action/reward checks before imagined
 RL. Compare partial updates/adapters with full updates under matched budgets,

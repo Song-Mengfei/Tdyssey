@@ -30,7 +30,9 @@ interfaces, rewards, DPPO details and work packages; proposed settings are not
 implemented defaults. Read `docs/POLICY_LEARNING.md` before modifying the implemented
 tail-transition PPO variant; it is not an upstream DPPO reproduction or evidence
 of successful adaptation. `docs/DIFFUSION_RL_RESEARCH.md` surveys newer image/flow
-RL and specifies the proposed DDPM-NFT comparison; it is not implemented. This
+RL. `docs/FORWARD_POLICY_LEARNING.md` describes the implemented DDPM-NFT and
+AdvantageFlow adaptations, matched branches, checkpoint/recovery and data support.
+The forward trainer currently uses physical scores only, not a learned world model. This
 course project can use established methods without reducing its agreed scope.
 Use `docs/ENVIRONMENT.md` for dependency changes and setup;
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is

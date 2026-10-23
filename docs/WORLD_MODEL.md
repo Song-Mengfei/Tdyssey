@@ -11,8 +11,12 @@ implemented alongside model assessment; it does not wait for alphabet dynamics.
 The first model predicts the next scene from **two RGB frames, two pusher
 positions, the fixed goal pose and future pixel-position actions**. It is a new,
 small CNN predictor, separate from the unchanged official Diffusion Policy.
-It uses no object pose, velocity, contact or reward as model input. It currently
-accepts official capital-L datasets only.
+It uses no object pose, velocity, contact or reward as model input. The original
+experiments below used only L. The loader now supports mixed official-letter
+catalogs, deriving labels/masks from each episode's geometry without adding a
+letter ID to inputs. This enables shared-model experiments; it does not establish
+shared accuracy or adapt pretrained GPC. See the
+[forward-learning/data handoff](FORWARD_POLICY_LEARNING.md).
 
 **This custom CNN pilot uses no pretrained world-model checkpoint.** Its first run
 trains from scratch on six L play episodes (600 unique control steps).

@@ -5,8 +5,11 @@ Updated: 2026-10-23. This defines the shared experiments; read
 The first direct trainer and its precise variant, survey, derivations and commands
 are now in [policy learning](POLICY_LEARNING.md). The ambitious learning stages
 below are not established by a successful optimizer check.
-The [extended RL research note](DIFFUSION_RL_RESEARCH.md) specifies a proposed
-DiffusionNFT alternative and its world-model extension. DPPO below describes the
+The [extended RL research note](DIFFUSION_RL_RESEARCH.md) specifies a
+DiffusionNFT alternative and its world-model extension. The
+[forward training guide](FORWARD_POLICY_LEARNING.md) covers its implemented
+physical NFT/AdvantageFlow path and recovery; imagined feedback remains pending.
+DPPO below describes the
 first implementation, not a requirement that all later learning use PPO. The
 course project can implement and compare established methods without claiming
 algorithmic novelty; its shared multi-shape scope remains unchanged.
@@ -36,16 +39,18 @@ a joint experiment:
 ```text
 Existing T policy + official T/L simulator
   |
-  +-- Physical practice --> reward + DPPO --> directly trained policy
+  +-- Physical practice --> reward + policy update --> directly trained policy
   |
   +-- Automated data --> assess/adapt world model --> pass prediction checks
                                                    |
-                            imagined practice + DPPO
+                            imagined practice + same update method
                                                    |
                           test policy in physical simulator
 ```
 
 The direct-simulator route is both a debugging check and a scientific baseline.
+Implemented update choices are tail-PPO and the NFT/AdvantageFlow adaptations.
+Hold the update method fixed when comparing simulator versus world-model feedback.
 It must work before imagined policy improvement is claimed. World-model evaluation
 need not wait for it. A negative learning result should be diagnosed and reported,
 not hidden by moving to a more complex predictor.
@@ -56,12 +61,12 @@ not hidden by moving to a more complex predictor.
 | --- | --- | --- |
 | Official visual CNN policy and T/L physics | CUDA inference and physical checks passed | Reuse this baseline and its saved normalizers |
 | Alphabet/near-T environments | Frozen-policy development sweep completed | Extend the T/L training collector before mixed-shape collection |
-| Automated T/L collection and split-safe batches | Implemented; tiny L pilot available only locally | More varied, disjoint training/validation scenes |
+| Automated letter collection and split-safe batches | Implemented; L pilot and tiny Y path check available locally | More varied, disjoint training/validation scenes and balanced shape exposure |
 | Policy inspection | Actual denoising replay, near-miss analysis and 500-control T continuation completed | Review behavior; no training is provided by these tools |
 | Custom 1.3M-parameter L predictor | Small supervised pilot; unreliable rewards/drift | Keep as a comparison, not the imagined environment |
 | Pretrained 8.73M-parameter GPC predictor | Loading verified; official-domain/contact failures measured | Assess official-domain adaptation against frozen weights |
 | Direct DPPO-style trainer and value network | Tail-transition PPO and Conv1d LoRA implemented; initial real GPU update/reload checks passed | Establish physical learning curves and validate full action-network training |
-| Forward-process policy learning | Research/specification only; no trainer | Implement the DDPM-NFT alternative and matched simulator comparison from the research note |
+| Forward-process policy learning | NFT/AdvantageFlow, matched physical branches and recovery implemented | Diagnose physical learning curves, compare objectives/capacity, then validate learned-model feedback |
 | Shared multi-shape world model / imagined trainer | **Not implemented** | Build only after the relevant interfaces and checks work |
 
 The committed [result index](RESULTS.md) contains selected earlier evidence.
@@ -252,7 +257,7 @@ reserve fresh geometry variants before using them as a stronger final test.
 | Model training window | Past observations through time `t`, future actions starting at `t`, targets after those actions; no future frame among inputs; see [window timing](TRAINING_DATA.md) |
 | Imagined transition | Model/version and initial-history provenance; chosen action, predicted next RGB/pusher/coverage, derived reward and predicted termination; no unseen true future labels |
 | On-policy DPPO buffer | Current actor/version, exact conditioning observations, full sampled denoising chain, old conditional log probabilities, executed prefix length, per-control rewards, value estimates and terminal/truncation masks |
-| Proposed forward-process buffer | Exact shared context/prefix provenance, rollout-actor version, complete normalized sampled plans, actually executed prefixes, physical or predicted score provenance, normalization rule and split; see [research note](DIFFUSION_RL_RESEARCH.md) |
+| Forward-process buffer | Implemented physical groups include exact context/prefix provenance, rollout round, full normalized sampled plans, executed prefixes, simulator scores and normalization; predicted scoring remains pending; see [guide](FORWARD_POLICY_LEARNING.md) |
 | Evaluation record | Frozen method/checkpoint, scene/policy seeds, physical action/state/metric traces, costs and stop reason; no optimizer updates |
 
 For the actor, preserve two 96x96 RGB frames, original cropping and pusher-history
