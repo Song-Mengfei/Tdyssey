@@ -30,10 +30,11 @@ class OfficialCollectionConfig(CollectionConfig):
     seconds: int = 120
     excluded_reset_seeds: tuple = DEVELOPMENT_SEEDS
 
+    def resolve_shape(self):
+        return official_shape(self.shape)
+
     def __post_init__(self):
         super().__post_init__()
-        if self.shape not in ("T", "L"):
-            raise ValueError("The official collector focuses on T/L")
         integer(self.seconds, "seconds", 1, 600)
         seeds = tuple(self.excluded_reset_seeds)
         for seed in seeds:

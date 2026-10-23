@@ -15,13 +15,15 @@ class WorldModelConfig:
     seconds: int = 300
     seed: int = 42
     learning_rate: float = .0003
-    max_bytes: int = 32*1024*1024
+    max_bytes: int = 64*1024*1024
+    checkpoint_every: int = 250
 
     def __post_init__(self):
-        for value,name,low,high in ((self.epochs,'epochs',1,50),(self.batch_size,'batch size',1,32),
-                (self.future,'future',1,4),(self.max_steps,'optimizer steps',1,3000),
-                (self.seconds,'seconds',1,900),(self.seed,'seed',0,2**32-1),
-                (self.max_bytes,'output bytes',1024*1024,64*1024*1024)):
+        for value,name,low,high in ((self.epochs,'epochs',1,10000),(self.batch_size,'batch size',1,1024),
+                (self.future,'future',1,4),(self.max_steps,'optimizer steps',1,10000000),
+                (self.seconds,'seconds',1,604800),(self.seed,'seed',0,2**32-1),
+                (self.max_bytes,'output bytes',1024*1024,16*1024**3),
+                (self.checkpoint_every,'checkpoint interval',1,1000000)):
             integer(value,name,low,high)
         if not math.isfinite(self.learning_rate) or not 0 < self.learning_rate <= .01:
             raise ValueError('Learning rate must be finite and in (0,.01]')

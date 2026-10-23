@@ -1,4 +1,4 @@
-"""Collect bounded official T/L non-expert data; no checkpoint, download or training."""
+"""Collect bounded official letter-shape play; no checkpoint, download or training."""
 
 import argparse
 from dataclasses import asdict
@@ -23,7 +23,7 @@ from tdyssey.official_collection import (DEVELOPMENT_SEEDS, ENVIRONMENT_FAMILY, 
 
 def provenance(config):
     paths = ["tdyssey/official_collection.py", "tdyssey/collection.py", "tdyssey/envs/official.py", "tdyssey/official.py",
-             "tdyssey/geometry.py", "tdyssey/state.py", "tdyssey/dataset.py", "tdyssey/trajectories.py",
+             "tdyssey/geometry.py", "tdyssey/letters.py", "tdyssey/state.py", "tdyssey/dataset.py", "tdyssey/trajectories.py",
              "tdyssey/evaluation.py", "scripts/collect_official_play.py", "manifests/official_dp.json", "pyproject.toml", "uv.lock"]
     spec = official_spec()
     return {"environment_family": ENVIRONMENT_FAMILY, "collector_version": VERSION,
@@ -46,7 +46,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-root', type=Path, default=ROOT/'third_party/diffusion_policy')
     parser.add_argument('--output', type=Path, required=True)
-    parser.add_argument('--shape', choices=('T','L'), default='L')
+    parser.add_argument('--shape', choices=tuple('ABCDEFGHIJKLMNOPQRSTUVWXYZ')+('T_narrow',), default='L')
     parser.add_argument('--episodes', type=int, default=8)
     parser.add_argument('--steps', type=int, default=100)
     parser.add_argument('--seed', type=int, default=200000)

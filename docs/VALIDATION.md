@@ -1,5 +1,7 @@
 # Runtime validation
 
+Newest work: [portable training and live monitoring](#portable-training-and-live-monitoring-2026-10-23).
+
 Checked on 2026-10-19 with Linux x86_64, Python 3.12.3, uv 0.13.0, and the locked
 **CPU + GPC** profile. Evidence covers simulator/data development and the later
 pretrained-policy check below. No adaptation or model training has been completed.
@@ -1075,3 +1077,410 @@ continued stepping, data/physics checks, pretrained prediction compatibility and
 the existing tiny supervised world-model update check. It does not implement or
 validate a DPPO update. The earlier measured diagnostic rollouts were not repeated
 for this documentation update. Repository source/link and whitespace checks passed.
+
+## Direct tail-transition PPO: first CUDA update (2026-10-23)
+
+This is the DPPO-style variant specified in [policy learning](POLICY_LEARNING.md),
+not an upstream DPPO reproduction. No world model or new human demonstrations
+are used. New files run in the existing CUDA/DP environment without installation.
+
+```bash
+python3 -B -m unittest discover -s tests -p 'test_rl_protocol.py' -v
+TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_dppo_runtime.py' -v
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_smoke.json --output artifacts/dppo-smoke-2026-10-23
+```
+
+Three independent source checks passed: discounted shaping telescopes with correct
+terminal potential, timeout bootstrap does not leak GAE across a reset, and short
+prefixes use physical discount/lambda. Two installed CUDA checks passed in 19.249
+seconds: DDPM conditional means/variance match the pinned scheduler exactly,
+joint log density matches `Independent(Normal(...), 2)`, deterministic t=0 is
+excluded, original actions/following RNG match exactly, recorded likelihoods
+recompute exactly, gradients update intended weights, frozen weights remain
+unchanged, and reloaded deltas reproduce actions under the same RNG.
+
+The end-to-end smoke run completed 64 training controls / eight plans and two
+optimizer minibatches. Before/after physical evaluation used 512 controls / 64
+plans total, capped at 128 controls per shape per evaluation. Checkpoint action
+verification used two additional plans. Total: 576 physical controls / 5,760
+control-physics substeps, six reset-physics substeps and 7,400 denoising steps.
+Elapsed: 118.643 seconds; peak allocated CUDA memory: 1,194,854,912 bytes.
+
+The 1,313,282-parameter final convolution head changed by L2 norm 0.0161563;
+all frozen parameters were byte-identical. Saved actor/critic/Adam state is
+16,176,490 bytes, with exact reloaded-action parity. Output totals 16,345,516 bytes.
+
+| 128-control development evaluation | Frozen initial peak/final coverage | Updated peak/final coverage |
+| --- | --- | --- |
+| T | 0.841069 / 0.773810 | 0.839500 / 0.807566 |
+| L | 0.410331 / 0 | 0.410384 / 0 |
+
+Neither evaluation succeeds under this short budget. The training reward was
+zero for these first 64 controls; updates used the initial value estimates and
+their bootstrapped advantages. This checks mechanics, not meaningful adaptation.
+The evaluation uses a derived policy seed different from the earlier canonical
+alphabet rollout and a shorter horizon; do not compare their success counts.
+
+Raw report remains ignored: 169,026 bytes, SHA-256
+`ef2c63d4518e9caf59293c093c090736b45d175df0f93c3ba5e40002edc0578f`.
+Checkpoint SHA-256:
+`37f38e81ecce57e6bbc6082059a79db0b5f106a4c9da242e168484583fbca8f1`.
+Source hashes in the report identify the exact uncommitted implementation used.
+Full action-network updates and automatic resume have not been runtime-validated.
+
+### Short learning pilot, same day
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_local_pilot.json --output artifacts/dppo-local-pilot-2026-10-23
+```
+
+The executed config was an identical temporary JSON; the checked-in local profile
+preserves its values. Completed 16 update rounds / 64 optimizer minibatches, with
+1,008 training controls: T 500, L 508. Early completion/short prefixes leave this
+below the 1,024-control cap. Two T training episodes succeeded; no L training
+episode did. Rewards became nonzero after the first batch, including positive
+progress and lost progress. All minibatches had finite nonzero actor gradients;
+maximum sampled approximate KL was 0.000330605, with no KL early stops.
+
+| 300-control paired development scene 100000 | Frozen initial | Updated |
+| --- | --- | --- |
+| T success / controls | True / 270 | True / 297 |
+| T peak/final coverage | 0.950411 / 0.950411 | 0.957375 / 0.957375 |
+| L success / controls | False / 300 | False / 300 |
+| L peak/final coverage | 0.410331 / 0 | 0.409394 / 0 |
+
+No L adaptation benefit is established; T completion is retained on this case
+but is slower. One training seed, one physical development scene and a small
+head-only budget cannot establish broader learning or retention. These scenes
+are known development cases, not untouched final tests.
+
+Before/after evaluation used 1,167 controls / 148 plans. Including training and
+two checkpoint verification plans: 2,175 physical controls / 21,750 control-physics
+substeps, ten reset-physics substeps and 27,800 denoising steps. Elapsed 431.609
+seconds; peak allocated CUDA memory 1,194,854,912 bytes. Actor change L2: 0.121798;
+all frozen weights unchanged and saved/reloaded actions exactly equal.
+
+Raw output stays ignored: report 770,949 bytes, SHA-256
+`f50cd13f41901ebed50ce0f7d4d4d110793533c7834d67c5b4027394b8566532`;
+checkpoint 16,176,490 bytes, SHA-256
+`874057b195187f3710b5202ea5174f36d7845b9d21d8f35cf5d6e858a3aec95e`.
+Combined output: 16,947,439 bytes. Together with the smoke run, retained outputs
+are 33,292,955 bytes. No new environment, dataset, model download or cache was
+created. The full-network profile is a next runtime check on a suitable machine.
+
+Final verification: dependency-free discovery passed 62 / skipped 47 (109 total).
+The full installed command from the preceding PR-verification section passed all
+109 tests, no skips, in 30.882 seconds. Source/link/syntax, CLI help, all five
+configuration profiles and whitespace checks passed. No full-network performance,
+multi-seed adaptation, imagined RL or theorem of policy improvement is claimed.
+
+## LoRA and trained-policy desktop previews (2026-10-23)
+
+Added native-PyTorch Conv1d low-rank factors, with a head or distributed action-U-Net
+target. Zero-initialized B preserves original inference; the head profile trains
+25,604 parameters. It does not train the visual encoder or change the PPO objective.
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_lora_smoke.json --output artifacts/dppo-lora-smoke-2026-10-23
+.venv/bin/python -B scripts/evaluate_trained_policy.py --adapter artifacts/dppo-local-pilot-2026-10-23/last.pt --reference-report artifacts/dppo-local-pilot-2026-10-23/report.json --shape L --steps 300 --display --window-size 768 --hold-seconds 30 --output artifacts/dppo-local-pilot-2026-10-23-L-preview.json
+# The T preview used --shape T, --hold-seconds 60 and a new T-preview.json path.
+```
+
+The LoRA smoke completed 64 training controls, two optimizer minibatches and
+512 evaluation controls. Eight training / 64 evaluation / two checkpoint plans,
+six reset substeps and 7,400 denoising steps. Elapsed 118.994 seconds; peak allocated
+CUDA 1,166,400,512 bytes. Base/frozen parameters were unchanged and checkpoint
+reload reproduced actions exactly. All initial baseline traces match the earlier
+head-only smoke's initial traces exactly. The first 64 training rewards were zero;
+this is an update check, not an adaptation benefit.
+
+Checkpoint including factor/critic/Adam state: 722,458 bytes; total output 891,599
+bytes. Checkpoint SHA-256
+`af13f4ebbdec2f0f37360039e464d87a60c8b5eef0d624e3bdaba13b94c29e50`;
+report SHA-256 `dfd4284d4df4acbf6bd95038dc95f1c87b4c8518a6fa337b4d831b000509c7bf`.
+The earlier head run took 118.643 seconds: no overall speed gain is established
+by reducing trainable parameters. Sampling and evaluation are unchanged.
+
+Four focused CUDA checks passed in 28.130 seconds. They include independent
+low-rank-versus-dense kernel equivalence (with stride/padding), zero-initialized
+parity, gradients on both factors with frozen base kernels, and distributed LoRA
+original-sampler equality, actual optimizer changes and compact saved-action reload.
+The distributed check uses synthetic advantages, not physical task learning.
+
+Separate desktop previews loaded the trained head checkpoint. All L 300 and T 297
+actions, rewards, coverage/IoU and raw success flags matched the saved final
+evaluations. T succeeded, L did not. Extra preview work: 597 controls / 5,970
+control-physics substeps, four reset substeps, 76 plans / 7,600 denoising steps.
+Elapsed L 118.555 / T 149.150 seconds includes real-time display and 30/60-second
+final holds, so it is not a training-throughput measurement. The requested
+768-pixel desktop display was enabled; no MP4 was exported. Output reports are
+58,369 / 66,267 bytes, ignored separately from the original training outputs.
+
+Final LoRA/preview verification: source discovery passed 62 / skipped 49 (111
+total); full installed CUDA/DP/GPC discovery passed all 111 in 42.356 seconds.
+All eight RL configurations, source/link/syntax checks, CLI help and whitespace
+checks passed. Full dense action-network execution, distributed-LoRA physical
+learning, visual-encoder updates and any novel tuning algorithm remain unestablished.
+
+## Forward RL, recovery and mixed-shape checks (2026-10-23)
+
+The [runnable forward guide](FORWARD_POLICY_LEARNING.md) describes the separate
+DDPM-NFT/AdvantageFlow implementation. Checks used the existing Linux/Python
+3.12.3, PyTorch 2.5.1+cu124, official/GPC environment and RTX 4060 Laptop GPU.
+No package, environment, base checkpoint or dataset download was added. Runs
+recorded source hashes and dirty working-tree provenance based on `71a8050`;
+that commit alone is not claimed to contain the implementation.
+
+Verification commands:
+
+```bash
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All **120 installed tests passed in 61.286 seconds**, with no skips. Source-only
+discovery passed **64** and skipped **56** runtime tests. A subsequent focused
+four-test forward run passed in 25.679 seconds, explicitly loading resume state
+on CPU before Adam restores CUDA moments, preserving CPU step scalars. The
+checkpoint-continuation comparison isolates serialization/RNG from convolution
+backward nondeterminism; normal training does not force deterministic kernels.
+All nine forward configurations parse. Source/links/AST and whitespace checks
+pass; none of these checks installs dependencies.
+
+Coverage includes independent loss derivatives/positive curvature, neutral
+feedback, official unchanged initial actions/RNG, immutable scheduler buffers,
+real distributed-LoRA updates for both losses, frozen-base integrity, refreshed
+rollout weights, optimizer/RNG restoration and fresh-model action parity. Real
+physics tests replay established contacts and detect altered contact records;
+native presentation rendering preserves physical state and 96px observations.
+Mixed-shape mask/label and train-only normalization checks also passed.
+
+### Corrected NFT development pilot
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/nft_local_pilot.json --output artifacts/nft-local-pilot-v2-2026-10-23
+```
+
+This updates **1,652,824 distributed Conv1d LoRA parameters** across the action
+U-Net, with frozen vision and base weights. It completed six updates / 88
+optimizer minibatches and stopped when no complete candidate group fit the
+remaining 4096-control cap. Actual training cost: **3712 controls**, comprising
+704 candidate controls, 2944 full-prefix replay controls and 64 policy warmup
+controls. Eleven groups compare four candidates each with up to 16 scored
+controls. Evaluation used another 512 controls / 64 plans; checkpoint parity
+used two plans. Total: 4224 physical controls / 42,240 control-physics substeps,
+six reset substeps and 16,800 denoising steps including six T-reference queries.
+
+Elapsed **295.393 seconds**; peak allocated CUDA **1,194,914,816 bytes** (about
+1.11 GiB). Actor-factor L2 change **0.0489364653**; frozen weights unchanged and
+checkpoint action reload passed. Results below use one paired development scene
+(seed 100000) and a **128-control evaluation cap**, not an untouched final test.
+
+| Shape | Before peak / final coverage | After peak / final coverage | Success before / after |
+| --- | --- | --- | --- |
+| T | 0.841069 / 0.773810 | 0.842750 / 0.767869 | No / no within 128 controls |
+| L | 0.410331 / 0.000000 | 0.409805 / 0.000000 | No / no |
+
+**No L adaptation benefit is established.** The short T cutoff is not evidence
+that the original policy cannot solve T. Four of five L candidate groups had
+zero contact controls and exactly tied scores; only the first L group supplied
+differentiated scores. This identifies a data/score-signal limitation to investigate,
+not proof that one particular exploration change will solve it. More data,
+longer-horizon feedback and repeated held-out scenes remain necessary.
+
+Ignored pilot outputs:
+
+- `last.pt`: 27,053,605 bytes; SHA-256 `e8d19198bf71c39902016b63a8720402855659bae80510cc4e08534c5e3c0007`.
+- `report.json`: 1,879,922 bytes; SHA-256 `01646ebfdfabe6cc4fd92f7cd38c016eab35eeb96d5b45ed16cf515c763031aa`.
+
+### Corrected AdvantageFlow and resume checks
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/advantage_flow_smoke.json --output artifacts/advantage-flow-smoke-v2-2026-10-23
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/advantage_flow_resume_check.json --resume artifacts/advantage-flow-smoke-v2-2026-10-23/last.pt --output artifacts/advantage-flow-resume-2026-10-23
+```
+
+The first run used 32 candidate controls, 128 evaluation controls and 2300
+denoising steps in **43.181 seconds**. Scores tied, gradients and factor change
+were zero, and before/after physical actions and outcomes matched exactly.
+This is a meaningful no-signal case, not an improvement result.
+
+Resume added a second update in a new directory. The actual run used a temporary
+configuration identical to the tracked resume-check profile. New-session cost:
+64 training controls (32 candidate / 32 replay), 64 evaluation controls, two
+resets and 1500 denoising steps in **30.434 seconds**. Cumulative lineage: 96
+training controls, 192 evaluation controls, eight reset substeps, eight optimizer
+minibatches and 3800 denoising steps. The original baseline was reused, not rerun.
+Parent cost audit found no discarded controls; checkpoint parity and unchanged
+neutral-policy physical traces passed. Peak CUDA matched the NFT pilot.
+
+Parent checkpoint: 26,580,709 bytes, SHA-256
+`0673f691f9324e1b2e9911c13dd275062254ce22f37dd5e2bcb1568d398968e3`.
+Resumed checkpoint: 26,606,565 bytes, SHA-256
+`614ed095449448d46ba88527a005bcc8ee2398e10e2afaa6fd079cadad62c5dd`.
+The resumed report is 228,663 bytes, SHA-256
+`dab2520fe032a2327c26acdbf4b4b2457fdd83be779463176f1ccef5d294edd3`.
+
+### Fresh-process video/evaluation
+
+```bash
+.venv/bin/python -B scripts/evaluate_trained_policy.py --adapter artifacts/nft-local-pilot-v2-2026-10-23/last.pt --shape L --steps 128 --reference-report artifacts/nft-local-pilot-v2-2026-10-23/report.json --video artifacts/nft-trained-L-native-2026-10-23.mp4 --output artifacts/nft-trained-L-native-preview-2026-10-23.json
+```
+
+The fresh process reproduced every saved L action, reward, coverage, IoU and
+termination value. Native video decoded **129 frames at 512x512**, 283,177 bytes,
+SHA-256 `ea7547ad61f962c2170c34b78287076e1aa97862234b30b2ed4cf23f153e4067`.
+Elapsed 31.608 seconds. Policy observations remain 96x96. This preview added 128
+physical controls / 1280 substeps, two reset substeps and 1600 denoising steps;
+it trained no weights. An earlier 96x96 export also matched all 128 actions and
+decoded 129 frames (55,853 bytes, 31.235 seconds), adding the same separate work.
+Neither preview was a GUI visual inspection or a successful L rollout.
+
+### Multi-shape primary data
+
+```bash
+.venv/bin/python -B scripts/collect_official_play.py --shape Y --episodes 7 --steps 8 --max-mib 8 --output artifacts/official-play-Y-check-2026-10-23
+.venv/bin/python -B scripts/collect_official_play.py --validate-only --output artifacts/official-play-Y-check-2026-10-23
+.venv/bin/python -B scripts/prepare_training_data.py --datasets artifacts/official-play-L-2026-10-19 artifacts/official-play-Y-check-2026-10-23 --output artifacts/official-mixed-LY-check-2026-10-23.catalog.json --history 2 --future 4 --max-batches 1
+```
+
+Y collected/read back **56 controls**, 560 physics substeps, seven reset substeps
+and five contact controls. Frozen splits: 5/1/1 episodes; **272,344 bytes**.
+Manifest SHA-256 `c5ceff4677c41eddc96decd0ffeaa8b362bd4d9a16d948cef2e5df013827704e`.
+The mixed real L/Y catalog gives 596/100/100 windows and 11/2/2 episodes across
+train/validation/model-test. Actual L and Y visual-dynamics samples loaded with
+their own geometry; fitted normalization used only **640 unique train controls**.
+Model-test pixels were not used for this check. This does not establish reliable
+multi-shape dynamics. The pretrained GPC wrapper still has no adaptation trainer.
+
+### Superseded prototype work
+
+The earlier `nft-smoke-2026-10-23`, `advantage-flow-smoke-2026-10-23` and interrupted
+`nft-local-pilot-2026-10-23` used the library's mutating noising helper. Moving the
+scheduler's alpha buffer changed sampling rounding even without weight changes.
+They are **excluded from policy comparisons**; the latter is explicitly failed.
+Their reports remain ignored for accounting. The two prototypes each used 32
+training and 128 evaluation controls; the interrupted one recorded 1712 training
+and 256 evaluation controls. Its partial in-flight sampling work is not fully
+counted. Elapsed: 65.678 / 43.112 / 162.547 seconds respectively.
+
+Only these three superseded generated checkpoints were removed to save space;
+their hashes/sizes and cost records are retained in ignored
+`artifacts/forward-prototype-lifecycle-2026-10-23.json`. Valid corrected checkpoints
+and original reports remain available locally. No raw output or new video is
+published by this milestone; portable commands/results are shared in Git.
+
+The three removed checkpoints freed **79,992,687 bytes**. Retained new training,
+resume, data and preview outputs plus prototype reports/lifecycle metadata total
+**84,493,136 bytes (80.58 MiB)**. Existing environments/base assets are unchanged.
+
+## Portable training and live monitoring (2026-10-23)
+
+Implementation and reproducible machine commands are in
+[TRAINING_MACHINE.md](TRAINING_MACHINE.md). No package/environment installation or
+model/data download was performed for this milestone. Metadata-only uv resolution
+added cu128 and the independent tracking extra to the shared manifest/lock:
+
+```bash
+third_party/uv/uv lock --python .venv/bin/python --no-python-downloads --no-build-isolation --cache-dir /tmp/tdyssey-training-lock-cache
+third_party/uv/uv lock --check --offline --python .venv/bin/python --no-python-downloads --no-build-isolation --cache-dir /tmp/tdyssey-training-lock-cache
+python3 -B scripts/check_repo.py
+python3 -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All 136 lock entries/source/link checks passed. Source discovery ran 123 tests:
+67 passed, 56 runtime checks skipped. All 20 policy configurations parsed.
+The task-owned 29 MiB metadata cache was removed after lock verification.
+
+```bash
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_OFFICIAL_CHECKPOINT=checkpoints/official-dp/ema_policy.pt TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy .venv/bin/python -B -m unittest discover -s tests -p 'test_*.py'
+```
+
+All **123 installed tests passed in 63.353 seconds**. The added fixed probe checks
+unchanged training RNG, original-policy drift zero before updates, nonzero drift
+after an update and repeatable measurements. Source tests check flushed local
+events, remote-service failure isolation, event byte caps, per-shape metrics,
+duplicate job refusal and preservation of evaluation settings across methods/seeds.
+
+The custom world-model fixture still corrupts model-test images to prove they are
+not decoded by training/validation. Its one-step checkpoint resumes inside the
+same partial epoch, reaching two steps/four windows. A separate uninterrupted
+two-step run matches loss/weights within strict tolerance and exact CPU RNG/cursor.
+The comparison temporarily enables deterministic GPU operations and restores the
+flag; ordinary training does not force these slower paths. CUDA bilinear resize
+backward can otherwise differ, as described by [PyTorch](https://docs.pytorch.org/docs/2.7/generated/torch.nn.functional.interpolate.html).
+The short-horizon metric uses explicit ordered sums so it also works in strict
+deterministic mode. This is a synthetic recovery check, not learned contact accuracy.
+
+### Physical forward tracking and recovery
+
+```bash
+.venv/bin/python -B scripts/check_training_setup.py --config configs/nft_smoke.json --backend cu124 --output-root artifacts --tracking
+.venv/bin/python -B scripts/train_forward_policy.py --config configs/tracking_smoke.json --output artifacts/portable-training-check-2026-10-23 --tracking offline --run-group portable-validation --log-every 1
+```
+
+The read-only preflight passed package pins, CUDA/torchvision/convolution
+gradients, every upstream source hash, the base checkpoint and available disk.
+It performed no policy training or installation.
+
+For recovery, copy `configs/tracking_smoke.json` to a new JSON file and set only
+`updates=2`, `max_train_controls=1024`, then run:
+
+```bash
+.venv/bin/python -B scripts/train_forward_policy.py --config PATH/portable-resume.json --resume artifacts/portable-training-check-2026-10-23/last.pt --output artifacts/portable-training-resume-2026-10-23 --tracking offline --run-group portable-validation --log-every 1
+```
+
+| Run | Training controls | Evaluation controls | Optimizer minibatches | Session time |
+| --- | --- | --- | --- | --- |
+| Initial tracking check | 160 = 32 candidate + 64 prefix replay + 64 warmup | 128 | 2 | 57.417 s |
+| New work during recovery | 192 = 32 candidate + 160 prefix replay | 64 | 2 | 32.186 s |
+| Cumulative lineage | 352 | 192 | 4 | Two sessions; parent audit also charges 0.095 s finalization |
+
+Peak allocated CUDA was **1,194,923,008 bytes (about 1.11 GiB)**. Actor factors
+changed; frozen-parameter and saved-checkpoint action checks passed. Every update
+ran fixed diagnostics and physical evaluation. With `report_detail_updates=0`,
+reports pruned candidate/minibatch detail while preserving scalar summaries,
+episode prefixes and recovery. Both runs' recorded training source hashes match
+the final source files. The fresh process retained fixed probe data and cumulative
+counts; the parent audit found no discarded controls/minibatches. Best checkpoint
+carry-forward and current-invocation selection completed.
+
+This is a **32-control development evaluation**, not evidence of useful learning:
+T and L both remained unsuccessful at that short cutoff. Final L coverage changed
+from 0.158075 to 0.158456 between the two trained evaluations. Do not interpret
+that tiny one-scene difference as an adaptation benefit.
+
+Offline W&B runs `d756f991` and `8a3c7a96` recorded per-shape, fixed-noise, training
+and resource events. The two tracking invocations have distinct IDs. No online
+authentication/upload was attempted. The local viewer's HTML and `/events` routes
+returned 200, arbitrary report paths returned 404, and its JavaScript parsed in
+V8. Browser appearance could not be inspected because no browser was connected.
+Port 8765 was already occupied; the local check used 8897 without altering that
+service. View the retained run with:
+
+```bash
+python3 -B scripts/view_training.py --run artifacts/portable-training-resume-2026-10-23 --port 8897
+```
+
+The six-job planner produced NFT/AdvantageFlow × seeds 42/43/44 with identical
+evaluation settings, without creating its proposed output directory or starting
+training. The full-network preset kept its intended dense scope. Extended jobs,
+Blackwell runtime, dense full-network training and shared cloud access remain
+unverified. No world-model-scored policy learning is added.
+
+| Local artifact | Bytes | SHA-256 |
+| --- | --- | --- |
+| `artifacts/portable-training-check-2026-10-23/last.pt` | 26,608,509 | `0a48439edbbec7c3bcb98d18e713753bd8a69bce5c7cb7142be96a8b45a4d0c7` |
+| `artifacts/portable-training-check-2026-10-23/report.json` | 177,703 | `750168d6cb1ea34ce8c155c6cb58d0612d848b79aaa22ddd0c354a073da2d120` |
+| `artifacts/portable-training-resume-2026-10-23/last.pt` | 26,623,677 | `a47ff7ccf550cfe565a954f55ded0bd26984f8fba35d8b727e32342170af2ca0` |
+| `artifacts/portable-training-resume-2026-10-23/report.json` | 224,989 | `5f3a48361fb4b54ae4b70238eab2c7d8a489e7bed2bb5fa4dac090204476ea04` |
+
+Raw outputs remain ignored/local. Monitoring outputs retained about **102.20 MiB**
+after removing two exclusively task-owned checkpoints from an earlier monitoring
+check, freeing 53,209,658 bytes. Original reports/scalars/offline logs remain; the
+hash-verified removals are recorded in ignored
+`artifacts/portable-training-lifecycle-2026-10-23.json`. The earlier check cost
+160 training / 128 evaluation controls and 57.273 seconds and is not part of the
+final resumed lineage. Existing base weights, environments and older assets
+were untouched. A Git hash alone does not transfer these local artifacts.

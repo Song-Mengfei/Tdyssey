@@ -20,18 +20,25 @@ def main() -> int:
     parser.add_argument("--require-cuda", action="store_true", help="Check the cu124 profile and GPU")
     parser.add_argument("--gpc", action="store_true", help="Also check optional GPC package versions")
     parser.add_argument("--dp", action="store_true", help="Also check official Diffusion Policy package versions")
+    parser.add_argument("--backend", choices=("cpu", "cu124", "cu128"),
+                        help="Locked torch profile; CUDA profiles require --runtime --require-cuda")
+    parser.add_argument("--tracking", action="store_true", help="Check optional W&B package version")
     args = parser.parse_args()
     if args.require_cuda and not args.runtime:
         parser.error("--require-cuda requires --runtime")
 
     project = tomllib.loads((ROOT / "pyproject.toml").read_text())["project"]
     requirements = list(project["dependencies"])
-    profile = "cu124" if args.require_cuda else "cpu"
+    profile = args.backend or ("cu124" if args.require_cuda else "cpu")
+    if (profile != "cpu") != args.require_cuda:
+        parser.error("CUDA backend requires --require-cuda; cpu cannot use --require-cuda")
     requirements.extend(project["optional-dependencies"][profile])
     if args.gpc:
         requirements.extend(project["optional-dependencies"]["gpc"])
     if args.dp:
         requirements.extend(project["optional-dependencies"]["dp"])
+    if args.tracking:
+        requirements.extend(project["optional-dependencies"]["tracking"])
     report: dict = {
         "python": platform.python_version(),
         "python_executable": sys.executable,
@@ -63,11 +70,16 @@ def main() -> int:
             report["torch_cuda_runtime"] = torch.version.cuda
             report["cuda_available"] = torch.cuda.is_available()
             if args.require_cuda:
-                if torch.version.cuda != "12.4":
-                    report["errors"].append("Expected the locked CUDA 12.4 torch build")
+                expected_cuda = {"cu124": "12.4", "cu128": "12.8"}[profile]
+                if torch.version.cuda != expected_cuda:
+                    report["errors"].append(f"Expected the locked CUDA {expected_cuda} torch build")
                 if not torch.cuda.is_available():
                     raise RuntimeError("CUDA is unavailable")
                 report["gpu"] = torch.cuda.get_device_name(0)
+                report["compute_capability"] = list(torch.cuda.get_device_capability(0))
+                report["torch_architectures"] = torch.cuda.get_arch_list()
+                if report["compute_capability"][0] >= 10 and profile == "cu124":
+                    report["errors"].append("Blackwell needs the cu128 profile and actual model smoke checks")
                 device = "cuda"
             else:
                 if torch.version.cuda is not None:
@@ -91,6 +103,9 @@ def main() -> int:
             scores = torch.tensor([1.0], device=device)
             if nms(boxes, scores, 0.5).tolist() != [0]:
                 raise RuntimeError("Unexpected torchvision operator result")
+            convolution = torch.nn.Conv1d(4, 8, 3, padding=1).to(device)
+            convolution(torch.ones(2, 4, 16, device=device)).square().mean().backward()
+            report["convolution_gradient_device"] = str(convolution.weight.grad.device)
         except Exception as exc:
             report["errors"].append(f"Torch/torchvision runtime: {type(exc).__name__}: {exc}")
 

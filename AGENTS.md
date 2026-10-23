@@ -27,7 +27,18 @@ briefly explain technical terms when they are needed.
 For substantial project work, read `docs/STATUS.md` and the relevant sections of
 `docs/PROJECT.md`. For learning work, also read `docs/LEARNING_PLAN.md` for data,
 interfaces, rewards, DPPO details and work packages; proposed settings are not
-implemented defaults. Use `docs/ENVIRONMENT.md` for dependency changes and setup;
+implemented defaults. Read `docs/POLICY_LEARNING.md` before modifying the implemented
+tail-transition PPO variant; it is not an upstream DPPO reproduction or evidence
+of successful adaptation. `docs/DIFFUSION_RL_RESEARCH.md` surveys newer image/flow
+RL. `docs/FORWARD_POLICY_LEARNING.md` describes the implemented DDPM-NFT and
+AdvantageFlow adaptations, matched branches, checkpoint/recovery and data support.
+The forward trainer currently uses physical scores only, not a learned world model. This
+course project can use established methods without reducing its agreed scope.
+Use `docs/ENVIRONMENT.md` for dependency changes and setup;
+use `docs/TRAINING_MACHINE.md` for machine transfer, live tracking, extended run
+profiles and recovery. Extended settings are unvalidated budgets. The cu128
+profile is locked but must pass target-hardware smoke checks; do not replace
+an existing validated environment without that machine's authorization.
 `docs/ONBOARDING.md` for collaboration. The original Chinese research schedule is
 background, not evidence that anything has been implemented or validated.
 

@@ -17,13 +17,27 @@ deliverables even if the ambitious adaptation/generalization goals fail.
 three original T development scenes. T/L data collection, alphabet evaluation and
 actual denoising/continuation inspection work. In one common alphabet scene, only
 T and Y succeeded. World-model pilots expose contact/reward failures; reliable
-imagined rollouts and policy training remain pending. GPC reference work stays
+imagined rollouts remain pending. A direct-simulator tail-PPO trainer now passes
+an initial GPU update/reload check. Forward-process NFT/AdvantageFlow training,
+matched physical branches and recovery checkpoints are also implemented;
+policy improvement is not established. GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
+The latest forward pilot changed distributed LoRA weights over six updates but
+did not improve L; most L candidate groups had no contact and tied scores.
+The next learning work is improving that feedback and checking longer evaluations.
+For another GPU machine, use the [training handoff](docs/TRAINING_MACHINE.md):
+locked CUDA 12.4/12.8 profiles, setup checks, repeated-seed jobs, recovery and
+live local or W&B charts. Larger presets are proposed budgets, not validated
+learning settings.
 
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
+- [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
+- [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
+- [Move to a training machine and view live training](docs/TRAINING_MACHINE.md)
+- [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
@@ -53,9 +67,9 @@ learning check; A-Z is a later expansion, not a prerequisite for getting started
 
 | Order | What we build | How we know it works |
 | --- | --- | --- |
-| Now, policy work | A bounded DPPO learning loop in the physical T/L simulator | Correct probabilities/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
+| Now, policy work | Compare implemented PPO, NFT and AdvantageFlow in the physical T/L simulator | Correct losses/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
 | Now, world-model work | Compare compatible pretrained prediction models; adapt one if necessary using automated data | Predict contact, rotation, pusher position and reward; correctly rank actions, including near the goal |
-| Join the two | Freeze validated dynamics and let DPPO practice in short predicted rollouts | Updated policy improves in the physical simulator, compared with direct-simulator training |
+| Join the two | Freeze validated dynamics and use the chosen update method with short predicted rollouts | Updated policy improves in the physical simulator, compared with the same method using simulator feedback |
 | Expand | Train shared dynamics/policy on a fixed diverse shape set, then A-Z if affordable | Per-shape results, costs, failures and retained T performance |
 
 **What does the reward teach?** The proposed training reward combines completion
@@ -73,20 +87,48 @@ training every letter cannot demonstrate unseen-letter generalization.
 
 **Why not just use the physical simulator?** We can, and it may be the better
 choice for cheap 2D PushT physics. The central comparison is frozen policy vs
-simulator-trained DPPO vs world-model-assisted DPPO. Count world-model data and
+simulator-trained RL vs the same update method with world-model feedback. Count world-model data and
 training costs too; lower physical interaction use, faster training or better
 physical performance must be measured rather than assumed. A useful negative
 result is that the learned model adds cost or errors without improving the policy.
 
 **Ready today:** official policy/environment, T/L collection and batches, alphabet
-evaluation, world-model pilots, and denoising/continuation inspection. **Still to
-build:** DPPO training, a reliable shared world model and imagined policy updates.
+evaluation, world-model pilots, denoising/continuation inspection and a bounded
+direct-simulator tail-PPO trainer. **Still to establish:** useful learned adaptation,
+a reliable shared world model and imagined policy updates.
 The world model is intended as a training aid; the updated policy can act on real
 observations without using it for test-time planning.
 
 Read the [detailed implementation and experiment plan](docs/LEARNING_PLAN.md) for
 data sizes/splits, model losses, reward equations, training steps, proposed starting
 settings and three developer work packages. Proposed settings are not tested defaults.
+
+The [extended RL survey](docs/DIFFUSION_RL_RESEARCH.md) recommends a DDPM-compatible
+DiffusionNFT experiment alongside PPO, then world-model-scored updates after
+prediction checks. The [forward trainer](docs/FORWARD_POLICY_LEARNING.md) now
+implements NFT and AdvantageFlow with physical feedback, shared shape support and
+recovery checkpoints. Learned-model scores remain pending. Using and comparing established
+methods fits this course project; an original algorithm is not required. The
+shared multi-shape goal remains unchanged.
+
+To check a small real GPU policy update using an existing authorized CUDA/DP setup:
+
+```bash
+.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_smoke.json --output artifacts/dppo-smoke-001
+```
+
+The [policy-learning guide](docs/POLICY_LEARNING.md) explains the DPPO-style variant,
+rewards, small/full-network configurations, mathematical limits and current evidence.
+The smoke run tests mechanics; it is not an L-learning result.
+For the main capacity comparison, use full action-network or distributed LoRA
+profiles in the [training guide](docs/POLICY_LEARNING.md), rather than assuming
+head-only updates suffice. LoRA changes which parameters learn; the PPO objective
+remains the same.
+
+Training runs without a window. To watch a saved trained policy, use
+[`scripts/evaluate_trained_policy.py`](scripts/evaluate_trained_policy.py) with
+`--adapter PATH/last.pt --display`; see the [preview command](docs/POLICY_LEARNING.md#run-and-inspect).
+The same evaluator accepts forward checkpoints and optional `--video PATH.mp4`.
 
 ## Work without installing anything
 
@@ -102,7 +144,7 @@ python3 -B -m tdyssey
 ## Install a development environment
 
 Reference platform: Linux x86_64, Python 3.12.3, uv 0.13.0. The manifest offers
-CPU simulator-development and CUDA 12.4 policy/training profiles. Choose one profile based on the
+CPU simulator-development and CUDA 12.4/12.8 policy/training profiles. Choose one profile based on the
 machine and task. See [environment notes](docs/ENVIRONMENT.md) for storage-saving
 setup, the small upstream checkout, and platform limitations.
 
@@ -120,6 +162,19 @@ For GPU work, choose CUDA instead:
 uv sync --locked --extra cu124 --extra dp --no-cache --link-mode copy
 .venv/bin/python -B scripts/doctor.py --runtime --require-cuda --dp
 ```
+
+For Blackwell use `--extra cu128` and doctor `--backend cu128`; target-machine
+model checks are still required. Add `--extra tracking` for W&B. Training commands
+accept `--tracking online --wandb-entity TEAM_OR_ACCOUNT`; local scalar logging
+is always enabled. No account is needed for the local live viewer:
+
+```bash
+python3 -B scripts/view_training.py --run PATH/TO/TRAINING/RUN
+```
+
+Open http://127.0.0.1:8765. Charts show loss, fixed noise diagnostics, contact and
+physical results per letter. See the [handoff](docs/TRAINING_MACHINE.md) for
+authentication, remote viewing and repeatable longer runs.
 
 An existing environment can be used directly through `.venv/bin/python`; activation
 is optional. If using `uv run`, pass the same extras to preserve the chosen profile.

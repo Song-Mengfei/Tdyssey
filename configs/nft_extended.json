@@ -1,0 +1,21 @@
+{
+  "objective": "nft",
+  "trainable": "lora",
+  "lora_target": "action_network",
+  "updates": 500,
+  "contexts_per_update": 4,
+  "group_size": 8,
+  "score_chunks": 4,
+  "warmup_controls": 64,
+  "epochs": 2,
+  "minibatch_size": 16,
+  "shapes": ["T", "L"],
+  "eval_shapes": ["T", "L"],
+  "eval_every": 25,
+  "eval_steps": 300,
+  "eval_seeds": [100000, 100001, 100002, 100003, 100004],
+  "report_detail_updates": 10,
+  "max_train_controls": 1000000,
+  "seconds": 172800,
+  "max_bytes": 2147483648
+}

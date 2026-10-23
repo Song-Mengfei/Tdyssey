@@ -470,3 +470,124 @@ with explicit success/time-limit handling. Keep raw upstream rewards and origina
 success in reports; sustained completion is a separate task. Freeze dynamics
 during policy phases, derive imagined rewards from predictions and test learned
 policies physically. Include all model-data collection in end-to-end costs.
+
+## D028 — Implement a checked direct-simulator tail-PPO pilot (2026-10-23)
+
+The method survey and derivations are in `docs/POLICY_LEARNING.md`. Start with a
+specified DPPO-style variant rather than claiming a new algorithm or reproducing
+all published DPPO settings. Keep the official 100-step DDPM and update Gaussian
+transitions t=K..1; freeze early steps and deterministic t=0. Use joint conditional
+densities over all 16x2 latent coordinates, no ELBO/marginal-likelihood proxy,
+coordinate averaging, extra noise or changed inference prefix. Denoising discount
+is 1. The evaluated/saved policy must follow this same parameter-use schedule.
+
+Support final-convolution-head or full action-network updates through one script;
+keep the image encoder/normalizers frozen. These modes differ in trainable capacity
+and memory and need separate evidence. Retain original expert pretraining and
+privileged coverage reward disclosure. Use physical-time potential shaping and
+GAE, success-only zero bootstrap and explicit timeout/reset boundaries. No new
+human demonstrations, learned dynamics, teacher term or stopping head is added.
+
+First verify probability calculations, unchanged initial actions/RNG, real CUDA
+weight updates, frozen-weight integrity and checkpoint action parity. A 64-control
+run verifies mechanics, not L learning. Run a bounded longer development pilot
+before considering bigger experiments. Keep checkpoints/reports ignored. Initial
+checkpoints contain actor deltas, critic and Adam states but have no automatic
+resume; original pinned weights and configuration remain required. Keep PR #4's
+inspection/plan milestone reviewable; training uses `feat/direct-dppo-pilot`.
+
+## D029 — Separate parameter scope, LoRA and visible evaluation (2026-10-23)
+
+The initial head-only runs check the learning system, not sufficient capacity
+for shape adaptation. Make full action-U-Net updates versus distributed Conv1d
+LoRA the main capacity comparison; retain head-only variants as limited controls.
+Image encoder updates need a separate gradient/data implementation. LoRA is an
+established weight parameterization, not a new RL algorithm; the current work
+does not establish algorithmic novelty. Keep the original CNN primary. The
+authors also released a Transformer PushT policy; it requires its own asset and
+baseline compatibility checks before a comparison, not a silent replacement.
+
+Add native-PyTorch Conv1d factors, zero-initialized B, configurable rank/scaling
+and head/action-network targets. Freeze base kernels/biases/normalization and
+disable factors on frozen denoising steps. Save only factors/critic/Adam state.
+Check dense-kernel equivalence, original-policy parity, distributed gradients,
+unchanged frozen parameters and compact reload. No extra dependency is needed.
+
+Keep training headless. Add a separate trained-delta desktop evaluator, with
+optional action/reward/overlap checks against the saved development rollout.
+Label previews as evaluation, not ongoing training. Count their physical work
+separately. A small LoRA check saves parameters/storage but did not make the
+100-step sampling/evaluation run faster; optimize measured stages and preserve
+matched baselines for sampler/precision changes.
+
+## D030 — Compare forward-process RL without requiring novelty (2026-10-23)
+
+The course project does not require an original algorithm. Keep the intended
+world-model/RL and shared multi-shape scope; assess established methods through
+substantial implementation and controlled experiments. Use
+`docs/DIFFUSION_RL_RESEARCH.md` for the extended primary-source survey and next
+handoff. Retain tail-PPO and build a separately identified DDPM-compatible
+DiffusionNFT comparison; AdvantageFlow is a later loss comparison on common data.
+This decision adds a specification, not an alternative trainer or learning result.
+
+Preserve the official checkpoint's representation/schedule initially and verify
+the epsilon-prediction adaptation. Disclose differences in parameter use across
+denoising steps versus tail-PPO. Generate candidate groups from the same context;
+replay the full physical prefix to reconstruct contacts and count all branch,
+replay and continuation controls. Use physical feedback first, then frozen-model
+feedback only after action/reward validation. Confidence-weighted feedback is an
+optional measured ablation, not a novelty or physical-improvement guarantee.
+Motus2, WISE and model-error-aware RL already establish related combinations.
+
+## D031 — Implement physical forward learning and multi-shape data (2026-10-23)
+
+Add a separate `official_forward_rl` actor/checkpoint and trainer for NFT and
+AdvantageFlow. Use the original 100-step epsilon DDPM, with actor weights at all
+steps; preserve tail-PPO as a distinct baseline. Train full action U-Net or
+distributed Conv1d LoRA with a frozen image encoder. Forward-noising tensors must
+not mutate the inference scheduler: diffusers' helper moves its alpha buffer and
+changes scalar rounding, breaking unchanged-policy/fresh-load parity.
+
+Group candidates by exact RGB/pusher context, rebuild contacts through initial
+state plus full action-prefix replay, and verify state/contact/history agreement.
+Score actual finite-horizon shaped returns with frozen-policy continuation and
+no critic bootstrap. Keep true-success versus horizon-cutoff handling explicit.
+Use fixed positive score scale, neutral ties and a positive AdvantageFlow anchor;
+T retention uses initial-policy-generated plans, never new human data. Contexts
+advance via the last IID trial, not a reward-selected oracle trajectory.
+
+Save complete optimizer-update boundaries atomically. Resume into a new output
+directory with matching source/config and restored optimizer/RNG/episode ledgers.
+Charge recorded discarded work from the parent report; flag unknown partial work
+after interruption. Keep physical, replay, evaluation and inference counts separate.
+
+Extend official collection to the existing alphabet/near-T registry without
+changing T/L physics or GPC data identity. Shared visual-model windows use each
+episode's geometry for labels/masks; actor/model inputs gain no letter ID.
+T/L remains the learning check; the explicit T/L/I/Y/near-T profile is a proposed
+development expansion. This does not supply a reliable predictor, pretrained GPC
+training or imagined RL. Keep all new raw reports/deltas/video ignored.
+
+## D032 — Portable training, live scalars and a Blackwell profile (2026-10-23)
+
+Always keep flushed local scalar logs; mirror to W&B only with an explicit
+offline/online tracking choice. Separate monitoring settings from learning
+settings. Use a new tracking run for each recovery invocation, preserving
+cumulative optimizer/control axes and checkpoint lineage. Do not upload raw
+weights/data/code/console through the tracking adapter. W&B failure falls back to
+local events and is recorded. A local standard-library viewer needs no account.
+
+Add fixed baseline-plan/noise denoising diagnostics without changing training RNG
+or using those examples for optimization/selection. Physical per-shape development
+success/final coverage selects `best.pt`; retain the original frozen comparison.
+Add regular forward evaluations, bounded detailed-update retention, sequential
+multi-seed/objective plans and a read-only GPU/asset/disk preflight. Custom visual
+dynamics gain step/cursor/optimizer recovery and explicit longer caps. Tail-PPO
+logging is supported, but its older recovery limits remain unchanged.
+
+Keep cu124 unchanged. Add mutually exclusive cu128 (torch 2.7.1 / torchvision
+0.22.1) for Blackwell candidates, plus an independent W&B 0.18.7 tracking extra;
+remove torch pins from `dp` so callers choose exactly one backend. Manifest and
+lock change together. Metadata resolution does not validate Blackwell, dense
+full-network training, or useful adaptation; perform machine-specific runtime
+checks. No new environment or package installation is part of this change.
