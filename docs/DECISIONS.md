@@ -591,3 +591,23 @@ remove torch pins from `dp` so callers choose exactly one backend. Manifest and
 lock change together. Metadata resolution does not validate Blackwell, dense
 full-network training, or useful adaptation; perform machine-specific runtime
 checks. No new environment or package installation is part of this change.
+
+## D033 — Opt-in batched lock-step forward rollouts (2026-10-24)
+
+Denoiser sampling, not physics, dominated forward training: every plan was a
+batch-1, 100-step DDPM call. Add `batched_rollouts` (default false). When true,
+every candidate in a group has its own environment, restored from the initial
+snapshot and replayed through the full prefix with the existing verification,
+and its own RNG stream derived from the plan RNG; each plan step is one batched
+denoiser call. Batched evaluation steps all seed/shape episodes in lock-step and
+seeds each episode's generator exactly as the sequential path does.
+
+Contexts, candidates, horizons, rewards, feedback and success are unchanged, but
+the random streams differ: batched and sequential runs are statistically, not
+bitwise, comparable, and a saved run cannot be resumed with the flag changed.
+Convolution roundoff depends on batch size (cuDNN TF32 default). Identical-seed
+evaluations agree to about 0.02 px for dozens of controls, then diverge
+chaotically, which can flip a near-threshold success. Keep existing presets
+sequential, compare methods within one mode, and use more evaluation scenes than
+three for claims. `torch.compile` of the U-Net was measured (about 1.3x) but not
+adopted because it adds a further numerical change for a small gain.
