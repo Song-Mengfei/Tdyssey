@@ -69,6 +69,9 @@ class BranchCollector:
         self.agent, self.config = agent, config
         self.counters, self.report, self.deadline = counters, report, deadline
         self.envs = {shape: cls(shape=shape, legacy=True) for shape in config.shapes}
+        # Batched groups: one more restored environment per extra candidate.
+        self.pools = {shape: [env]+[cls(shape=shape, legacy=True) for _ in range(config.group_size-1)]
+                      for shape, env in self.envs.items()} if config.batched_rollouts else {}
         self.active = dict(active or {})
         self.report.setdefault("training_episodes", [])
         self.report.setdefault("reset_attempts", [])
@@ -77,6 +80,9 @@ class BranchCollector:
     def close(self):
         for env in self.envs.values():
             env.close()
+        for pool in self.pools.values():
+            for env in pool[1:]:
+                env.close()
 
     def new_episode(self, shape):
         env = self.envs[shape]
@@ -112,6 +118,55 @@ class BranchCollector:
                 break
         return rows
 
+    def batched_candidates(self, shape, episode, history, prefix):
+        """Lock-step group: every candidate gets its own fully replayed environment and
+        its own derived RNG stream; each plan step is one batched denoiser call."""
+        config, counters, agent = self.config, self.counters, self.agent
+        envs = self.pools[shape]
+        histories = [history]+[replay_prefix(env, episode, counters, self.deadline) for env in envs[1:]]
+        observed_hash = observation_hash(history)
+        if any(observation_hash(h) != observed_hash for h in histories[1:]):
+            raise ValueError("Branch conditioning image/history mismatch")
+        condition, reference_plan = agent.encode(history), None
+        if shape == "T" and config.reference_weight:
+            rng = agent.generator.get_state()
+            _, reference_plan = agent.sample(condition, "reference")
+            agent.generator.set_state(rng)
+            counters["reference_plans"] += 1
+        generators = agent.child_generators(config.group_size)
+        plans, clean = agent.sample_batch(condition.expand(config.group_size, -1), generators, "old")
+        counters["training_plans"] += config.group_size
+        plans = list(plans)
+        rows, rewards = [[] for _ in envs], [[] for _ in envs]
+        before = [physical_metrics(env)["coverage"] for env in envs]
+        active = list(range(config.group_size))
+        for chunk in range(config.score_chunks):
+            active = [i for i in active if config.episode_steps-prefix-len(rows[i]) > 0]
+            if not active:
+                break
+            if chunk:
+                followup, _ = agent.sample_batch(agent.encode_batch([histories[i] for i in active]),
+                                                 [generators[i] for i in active], "old")
+                counters["training_plans"] += len(active)
+                for i, actions in zip(active, followup):
+                    plans[i] = actions
+            for i in active:
+                size = min(8, config.episode_steps-prefix-len(rows[i]))
+                part = self.run_actions(envs[i], histories[i], plans[i][:size], "branch_controls")
+                for row in part:
+                    reward = shaped_reward(before[i], row["coverage"], row["done"], config.gamma, config.shaping_beta)
+                    row["training_reward"] = reward
+                    rewards[i].append(reward)
+                    before[i] = row["coverage"]
+                rows[i].extend(part)
+            active = [i for i in active if not rows[i][-1]["done"]]
+        scores = [block_return(r, config.gamma) for r in rewards]
+        records = [{"condition": condition.detach(), "plan": clean[i:i+1].detach(),
+                    "reference_plan": reference_plan, "shape": shape} for i in range(config.group_size)]
+        candidates = [{"normalized_plan": clean[i].cpu().tolist(), "score": scores[i],
+                       "success": rows[i][-1]["done"], "steps": rows[i]} for i in range(config.group_size)]
+        return records, candidates, scores, rows[-1], observed_hash
+
     def collect(self, shape):
         """One complete group only; budget admission includes every prefix replay."""
         config, counters = self.config, self.counters
@@ -142,7 +197,10 @@ class BranchCollector:
         prefix_hash = hashlib.sha256(json.dumps(episode["steps"], sort_keys=True, allow_nan=False).encode()).hexdigest()
         condition, observed_hash, reference_plan = None, None, None
         records, candidates, scores, last_rows = [], [], [], None
-        for candidate in range(config.group_size):
+        if config.batched_rollouts:
+            records, candidates, scores, last_rows, observed_hash = self.batched_candidates(
+                shape, episode, history, prefix)
+        for candidate in range(0 if config.batched_rollouts else config.group_size):
             if candidate:
                 history = replay_prefix(env, episode, counters, self.deadline)
             digest = observation_hash(history)

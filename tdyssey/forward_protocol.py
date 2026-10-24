@@ -38,6 +38,9 @@ class ForwardConfig:
     seconds: int = 1200
     max_train_controls: int = 512
     max_bytes: int = 128 * 1024**2
+    # Sample each candidate group (and each evaluation sweep) in lock-step with one
+    # batched denoiser call per plan step; per-candidate/per-episode RNG streams.
+    batched_rollouts: bool = False
 
     def __post_init__(self):
         for name, low, high in (("updates", 1, 10000), ("contexts_per_update", 1, 128),
@@ -50,6 +53,8 @@ class ForwardConfig:
             value = getattr(self, name)
             if type(value) is not int or not low <= value <= high:
                 raise ValueError(f"Invalid {name}")
+        if type(self.batched_rollouts) is not bool:
+            raise ValueError("batched_rollouts must be true or false")
         if self.objective not in ("nft", "advantage_flow"):
             raise ValueError("objective must be nft or advantage_flow")
         if self.trainable not in ("head", "action_network", "lora"):
