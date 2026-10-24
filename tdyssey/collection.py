@@ -40,10 +40,11 @@ class CollectionConfig:
         integer(self.reset_attempts, "reset_attempts", 1, 20)
         integer(self.max_bytes, "max_bytes", 1024 * 1024, 64 * 1024 * 1024)
         delta = finite(self.max_target_delta, "max_target_delta")
-        if not 0 < delta <= 30:
-            raise ValueError("max_target_delta must be in (0, 30] pixels")
+        limit = 200 if self.mode == "angle-coverage" else 30
+        if not 0 < delta <= limit:
+            raise ValueError(f"max_target_delta must be in (0, {limit}] pixels")
         object.__setattr__(self, "max_target_delta", delta)
-        if self.mode not in ("random-waypoints", "object-directed"):
+        if self.mode not in ("random-waypoints", "object-directed", "angle-coverage"):
             raise ValueError("Unknown non-expert play mode")
         if self.episodes * self.steps > 1000:
             raise ValueError("A pilot run is limited to 1000 executed control steps")
@@ -89,7 +90,7 @@ def reset_issues(shape, state, pusher_radius=15.0):
 
 
 class WaypointPlay:
-    """No reward optimization. Object-directed mode uses privileged object position."""
+    """No reward optimization. Directed modes use privileged object position or pose."""
 
     def __init__(self, config, seed):
         self.config, self.rng = config, random.Random(seed)
@@ -97,7 +98,9 @@ class WaypointPlay:
 
     def action(self, observation, state, step):
         position = point(observation["agent_pos"])
-        if self.waypoint is None or step % self.config.waypoint_steps == 0:
+        if self.config.mode == "angle-coverage":
+            self.waypoint = self._angle_target(position, state, step)
+        elif self.waypoint is None or step % self.config.waypoint_steps == 0:
             if self.config.mode == "object-directed" and self.rng.random() < 0.75:
                 # Aim through the object, with noisy offsets. This deliberately
                 # disclosed exploration prior uses simulator position, not a policy.
@@ -112,6 +115,17 @@ class WaypointPlay:
         dx, dy = self.waypoint[0] - position[0], self.waypoint[1] - position[1]
         factor = min(1, self.config.max_target_delta / max(math.hypot(dx, dy), 1e-9))
         return (position[0] + factor * dx, position[1] + factor * dy)
+
+    def _angle_target(self, position, state, step):
+        """Sixteen object-relative directions and near/mid/far distances.
+
+        This uses the simulator object pose. It is a disclosed geometric prior,
+        not a reward search. Far targets match clicks away from the pusher.
+        """
+        angle = state.object_body.pose.angle + (step % 16) * (math.pi / 8)
+        distance = (20.0, 60.0, 150.0)[(step // 16) % 3]
+        raw = (position[0] + distance * math.cos(angle), position[1] + distance * math.sin(angle))
+        return tuple(min(486, max(25, value)) for value in raw)
 
 
 @dataclass

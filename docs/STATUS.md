@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
+Updated: 2026-10-23. Stage: official T collection and GPC denoiser updates can run as one command;
 reliable world-model rollouts and policy learning remain pending.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
@@ -112,6 +112,26 @@ documentation. See D027.
   defaults. A 500-control run matches the original successful 128-control prefix
   exactly, then loses success at 129 and ends at zero coverage/IoU. The policy
   and simulator were not reset or frozen at success; see `docs/VALIDATION.md`.
+- Added one official T world-model command: object-directed collection, then a
+  bounded GPC denoiser update from the pinned checkpoint. After each round it
+  logs validation error against a still frame and chooses more collection, more
+  training, or a stop, with caps of 2 collections, 20 updates and 3 rounds.
+  A 4-step smoke test changed weights, left `model_test` unread, saw no contacts,
+  and recorded a further collection that the one-round cap did not run. This is
+  a pipeline check, not calibrated dynamics. See `docs/VALIDATION.md`.
+- Ran a longer official-T denoiser training with a 3600-second budget. It stopped
+  after 633 seconds, 3 collections, 2400 controls, 1013 contact steps and 296
+  updates, because validation image error fell below a still frame. That does not
+  establish contact, rotation, or action-ranking accuracy. See `docs/VALIDATION.md`.
+- Continued those weights for 1779 seconds and 432 updates without the still-frame
+  stop. Final validation image error rose to 0.000716, above the still frame and
+  above the earlier 0.000457 checkpoint. A click viewer compares the live T with
+  this continued model's next-frame prediction. See `docs/VALIDATION.md`.
+- Collected 6400 official-T controls aimed along 16 object-relative directions
+  and near/mid/far distances. Retraining from the 633-second checkpoint for 1740
+  seconds raised the worst one-step object overlap on 48 direction tests from
+  0.928 to 0.981. None of those one-step cases was stably missing. See
+  `docs/VALIDATION.md`.
 
 ## Verification status
 
@@ -266,10 +286,16 @@ its first loss follows a new plan at 129, whereas D/near-T first decline within
 an existing chunk. Keep these different timings explicit.
 
 Calibrate the pretrained GPC world model on bounded official-RGB T training data
-with varied contact/rotation. This addresses appearance without requiring the
-diagnostic's auxiliary renderer. Compare original/adapted weights and persistence
-on disjoint validation scenes with fixed data/compute budgets. Keep the left-push
-failure and target/no-contact metrics explicit; image averages alone are insufficient.
+with varied contact/rotation. This calibration addresses appearance without
+requiring the diagnostic's auxiliary renderer.
+`scripts/train_official_world_model.py` can collect the episodes and apply a few
+denoiser updates, then repeat while logged error and contact counts stay inside
+the requested caps. A 3600-second run stopped after 633 seconds because
+validation image error beat a still frame. That image result is not this
+calibration. Compare original/adapted weights and
+persistence on disjoint validation scenes with fixed data/compute budgets. Keep
+the left-push failure and target/no-contact metrics explicit; image averages
+alone are insufficient.
 The palette result explains much of the gap but does not pass a full dynamics or
 planning gate. Preserve official policy inputs and the final model-test split.
 Freeze action-ranking/terminal scoring before comparisons, then proceed to L

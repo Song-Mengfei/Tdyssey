@@ -35,6 +35,19 @@ class CollectionProtocolChecks(unittest.TestCase):
             self.assertTrue(all(25 <= v <= 486 for v in action))
             observation["agent_pos"] = action
 
+    def test_angle_coverage_follows_object_pose_and_allows_far_targets(self):
+        config = CollectionConfig(mode="angle-coverage", max_target_delta=200)
+        record = state(pose=Pose((250, 250), math.pi / 2), pusher=(100, 100))
+        action = WaypointPlay(config, 1).action({"agent_pos": (100, 100)}, record, 0)
+        self.assertAlmostEqual(action[0], 100, places=6)
+        self.assertAlmostEqual(action[1], 120, places=6)
+        far = WaypointPlay(config, 1).action({"agent_pos": (200, 200)}, record, 32)
+        self.assertGreater(math.dist(far, (200, 200)), 100)
+        with self.assertRaisesRegex(ValueError, "30"):
+            CollectionConfig(max_target_delta=31)
+        with self.assertRaisesRegex(ValueError, "200"):
+            CollectionConfig(mode="angle-coverage", max_target_delta=201)
+
     def test_directed_mode_is_repeatable_and_uses_the_disclosed_state_prior(self):
         config = CollectionConfig(mode="object-directed")
         actions = [WaypointPlay(config, 1).action({"agent_pos": (100, 100)}, record, 0)
