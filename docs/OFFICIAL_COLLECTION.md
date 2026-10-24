@@ -48,6 +48,26 @@ actions using reward, goal alignment, a learned model or an expert policy.
 existing 12-pixel maximum target displacement and 12-control waypoint interval.
 Actions are absolute world-position targets in pixels.
 
+`contact-balanced` is a separate official-T prior. It reads the official T
+rectangles, mass center and orientation, chooses headings whose pusher disk would
+hit the T, falls back to a truncated normal around the pusher-to-CoG axis inside
+±150°, and keeps an adaptive fraction of miss actions. Maximum target motion is
+200 pixels, as with `angle-coverage`. This is privileged geometry, not reward
+search. Each dataset still obeys the 1000-control / 64 MiB cap; larger samples
+are many batch directories:
+
+```bash
+.venv/bin/python -B scripts/collect_official_contact.py \
+  --output artifacts/official-wm-T-contact-2026-10-24 \
+  --batches 40 --preserve-init
+```
+
+After collection, train and watch one GPC denoiser using
+[official world-model training](OFFICIAL_WORLD_MODEL.md). That page has the
+copy-ready train/visualize commands and every CLI argument. Do not pass every
+`batch-*` directory to `--train-datasets`, and do not train into the collection
+root.
+
 Use the [official geometry/physics](OFFICIAL_SHAPES.md): original T or mass-1
 capital L with height 120, foot width 90, stroke 30 and inertia 1875. The original
 T goal stays `(256,256,pi/4)`; L's goal origin is shifted to match T's target mass

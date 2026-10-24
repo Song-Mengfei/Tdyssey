@@ -1,7 +1,9 @@
 # Shared project status
 
-Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
-reliable world-model rollouts and policy learning remain pending.
+Updated: 2026-10-24. Stage: contact training now uses a case-split foreground
+EDM loss (D031). A resumable run continues that loss from the 2792-update
+k=8 weights, not from the angles init. Collect, train and view commands are
+in `docs/OFFICIAL_WORLD_MODEL.md`. Policy learning remains pending.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -112,6 +114,51 @@ documentation. See D027.
   defaults. A 500-control run matches the original successful 128-control prefix
   exactly, then loses success at 129 and ends at zero coverage/IoU. The policy
   and simulator were not reset or frozen at success; see `docs/VALIDATION.md`.
+- Added one official T world-model command: object-directed collection, then a
+  bounded GPC denoiser update from the pinned checkpoint. After each round it
+  logs validation error against a still frame and chooses more collection, more
+  training, or a stop, with caps of 2 collections, 20 updates and 3 rounds.
+  A 4-step smoke test changed weights, left `model_test` unread, saw no contacts,
+  and recorded a further collection that the one-round cap did not run. This is
+  a pipeline check, not calibrated dynamics. See `docs/VALIDATION.md`.
+- Ran a longer official-T denoiser training with a 3600-second budget. It stopped
+  after 633 seconds, 3 collections, 2400 controls, 1013 contact steps and 296
+  updates, because validation image error fell below a still frame. That does not
+  establish contact, rotation, or action-ranking accuracy. See `docs/VALIDATION.md`.
+- Continued those weights for 1779 seconds and 432 updates without the still-frame
+  stop. Final validation image error rose to 0.000716, above the still frame and
+  above the earlier 0.000457 checkpoint. A click viewer compares the live T with
+  this continued model's next-frame prediction. See `docs/VALIDATION.md`.
+- Collected 6400 official-T controls aimed along 16 object-relative directions
+  and near/mid/far distances. Retraining from the 633-second checkpoint for 1740
+  seconds raised the worst one-step object overlap on 48 direction tests from
+  0.928 to 0.981. None of those one-step cases was stably missing. See
+  `docs/VALIDATION.md`.
+- Added `contact-balanced` official T play: privileged hit headings from the T
+  rectangles and mass center, a ±150° CoG-axis fallback, and an adaptive miss
+  mix. Many batches stay inside the 1000-control dataset cap. Training oversamples
+  windows where T moved. The angles denoiser is the init checkpoint for later
+  updates, not a second model. See `docs/VALIDATION.md` and D028.
+- Compared those contact-train weights (2792 interrupted updates) with the
+  angles init and released GPC on the same 16-direction / three-distance probe.
+  Privileged labels showed 0 of 48 real steps made contact, and every prediction
+  was worse than a still frame. Contact-train miss overlap stayed near 0.987.
+  Released GPC mean overlap was 0.511 on official RGB. This is not contact
+  calibration. See `docs/VALIDATION.md` and D030.
+- Replaced k=8 occupancy EDM with a privileged case split: hit windows weight
+  motion pixels, the true next T, and the pusher; miss windows weight the still
+  T and the pusher; the table has weight 0. New contact-train runs start from
+  the angles init and score a frozen 32 useful / 32 miss validation subset.
+  A 400-update run from init took 1298 seconds. Useful motion stayed below a
+  still frame (0.035 vs 0.160) but did not improve after the first chunk;
+  miss windows still predicted about 1 pixel of motion. This is not contact
+  calibration. See `docs/VALIDATION.md` and D031.
+- Started a new case-split run from those 2792-update k=8 weights into
+  `artifacts/official-wm-T-case-loss-from-k8-2026-10-24/`. The new sidecar
+  begins at 0 updates and does not inherit the k=8 count. After 8 updates,
+  useful motion was 0.032 vs still-frame 0.160; miss ROI was 0.0067 vs
+  0.023, with about 0.85 px of predicted miss motion versus 0.008 actual.
+  This is not contact calibration. See `docs/VALIDATION.md` and D031.
 
 ## Verification status
 
@@ -266,10 +313,21 @@ its first loss follows a new plan at 129, whereas D/near-T first decline within
 an existing chunk. Keep these different timings explicit.
 
 Calibrate the pretrained GPC world model on bounded official-RGB T training data
-with varied contact/rotation. This addresses appearance without requiring the
-diagnostic's auxiliary renderer. Compare original/adapted weights and persistence
-on disjoint validation scenes with fixed data/compute budgets. Keep the left-push
-failure and target/no-contact metrics explicit; image averages alone are insufficient.
+with varied contact/rotation. This calibration addresses appearance without
+requiring the diagnostic's auxiliary renderer.
+`scripts/collect_official_contact.py` writes many contact-balanced T batches.
+`scripts/train_official_contact.py` continues one denoiser; copy-ready
+collect/train/view commands and argument tables live in
+`docs/OFFICIAL_WORLD_MODEL.md`. The earlier one-command loop and
+`--train-datasets` path remain for small runs; they must not load the full
+contact sample. A 3600-second object-directed run stopped after 633 seconds
+because validation image error beat a still frame. That image result is not this
+calibration. The default `probe_push_angles.py` scene (`seed=100003`) also does
+not test contact: all 48 headings from the initial pusher missed the T. Keep
+the 2792-update k=8 weights as a baseline only. Case-split training from those
+weights is the current run; judge useful versus miss slices, not full-image MSE
+or the all-miss angle probe. Do not update the pushing policy from these
+weights.
 The palette result explains much of the gap but does not pass a full dynamics or
 planning gate. Preserve official policy inputs and the final model-test split.
 Freeze action-ranking/terminal scoring before comparisons, then proceed to L

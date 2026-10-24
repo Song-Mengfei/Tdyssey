@@ -3,10 +3,13 @@
 Selected original figures and compact reports are [published with the source](RESULTS.md).
 Full raw reports, frames and weights remain local/ignored; the index states access limits.
 
-This page records experiments already run. The [shared learning plan](LEARNING_PLAN.md)
-explains the next model comparisons, automated data, prediction gate, policy rewards
-and how validated dynamics will support DPPO. Direct simulator learning can be
-implemented alongside model assessment; it does not wait for alphabet dynamics.
+This page records the custom L CNN and pretrained-GPC compatibility experiments
+already run. To collect official T play, continue the GPC image denoiser, and
+open the click viewer, use [official T world-model training](OFFICIAL_WORLD_MODEL.md).
+The [shared learning plan](LEARNING_PLAN.md) explains the next model comparisons,
+automated data, prediction gate, policy rewards and how validated dynamics will
+support DPPO. Direct simulator learning can be implemented alongside model
+assessment; it does not wait for alphabet dynamics.
 
 The first model predicts the next scene from **two RGB frames, two pusher
 positions, the fixed goal pose and future pixel-position actions**. It is a new,
