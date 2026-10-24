@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-10-23. Stage: direct-simulator tail-PPO and forward-process
+Updated: 2026-10-24. Stage: direct-simulator tail-PPO and forward-process
 NFT/AdvantageFlow trainers implemented; real GPU update/reload checks passed.
 Physical adaptation and imagined learning remain unestablished.
 
@@ -27,6 +27,27 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
+  `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
+  tiny smoke had tied scores, so no dense update). Eight completed sequential
+  20k-control T/L pilots: NFT/AdvantageFlow with LoRA seeds 42-44 and dense seed
+  42 (8 updates each; changed/frozen/reload-parity checks passed). L stayed 0/3 on
+  every run; T moved between 1/3 and 3/3, within evaluation noise. Feedback was
+  informative (L contact about 0.3-0.5, near-zero tied groups), unlike the earlier
+  pilot; 8 updates is too few to judge adaptation. Runs and the verified base asset
+  are kept in the author's private HF store; raw outputs remain outside Git.
+- Throughput: plans dominate time (a dense pilot sampled about 900 batch-1 plans
+  in 22 min; replay physics is minor). Eight concurrent smokes ran 1.4x faster in
+  aggregate than one, 2.4x with MPS. Added opt-in `batched_rollouts` (D033):
+  batch 32 cost 2.62 s versus 2.15 s for batch 1; the matched batched LoRA pilot
+  took 7.4 min versus 29.6 min sequential under similar 6-job load; group size 16
+  (8 updates, 77,603 controls) took 9.8 min. Prefix replays were 81% of that run's
+  counted controls, so large groups mostly spend interaction budget on replay.
+  Same-seed batched/sequential evaluations agree to about 0.02 px, then diverge
+  chaotically; one near-threshold T success flipped. Use many more scenes for claims.
+  Installed suite with official checks enabled: 126 ran, OK, 28 skipped (GPC not
+  installed); `scripts/check_repo.py` passed.
 
 - Added [training-machine handoff](TRAINING_MACHINE.md), optional W&B plus flushed
   local scalar logs and a no-account live viewer for all three trainers. Forward
@@ -334,6 +355,11 @@ See `docs/VALIDATION.md` for commands and limits.
   action/RNG parity, actor update, frozen-weight integrity and delta reload checks.
 
 ## Next task
+
+Run long forward comparisons with `batched_rollouts` on the batched branch, keep
+sequential and batched results apart, and evaluate on more than three scenes per
+shape before comparing methods. Decide whether prefix-replay controls should
+dominate the interaction budget at larger group sizes.
 
 Use the [machine handoff](TRAINING_MACHINE.md) to recreate the selected profile
 and pass the short preflight/smoke run on the training GPU. Then review live
