@@ -611,3 +611,15 @@ chaotically, which can flip a near-threshold success. Keep existing presets
 sequential, compare methods within one mode, and use more evaluation scenes than
 three for claims. `torch.compile` of the U-Net was measured (about 1.3x) but not
 adopted because it adds a further numerical change for a small gain.
+
+## D034 — Near-miss shapes as the first learning-loop check (2026-10-24)
+
+Every T/L pilot left L at 0/3 with peak coverage near 0.45, far below the 0.95
+success threshold. At the author's direction, also train shapes the frozen
+baseline nearly solves, so physical improvement can show up as new successes:
+`configs/nft_nearmiss_batched.json` trains T (retention), D, `T_narrow` and Y and
+evaluates those plus L. L is untrained there but is a fixed development shape,
+so it is a visibility check, not unseen-shape generalization. The near-miss
+choice came from the single-scene alphabet sweep (D best IoU 0.815, near-T 0.872,
+Y solved); the run's five-scene baseline must confirm it. T/L lineages continue
+as the original comparison.
