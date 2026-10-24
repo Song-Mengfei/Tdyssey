@@ -1075,3 +1075,121 @@ continued stepping, data/physics checks, pretrained prediction compatibility and
 the existing tiny supervised world-model update check. It does not implement or
 validate a DPPO update. The earlier measured diagnostic rollouts were not repeated
 for this documentation update. Repository source/link and whitespace checks passed.
+
+## Official T collection and GPC denoiser pipeline (2026-10-23)
+
+`scripts/train_official_world_model.py` finishes object-directed official T
+collection before it updates the pinned GPC image denoiser. The denoiser loss is
+the fetched phase-two objective, called for one next frame. The no-gradient
+sampler is used only to score validation images. `model_test` is not opened.
+The default command remains an 8-episode, 100-step collection and four updates.
+The check below uses the same script with a short horizon:
+
+```bash
+TDYSSEY_GPC_ROOT=third_party/gpc TDYSSEY_OFFICIAL_ROOT=third_party/diffusion_policy TDYSSEY_GPC_WORLD_CHECKPOINT=checkpoints/gpc-world-model/denoiser.pth .venv/bin/python -B -m unittest tests.test_official_world_model_runtime -v
+```
+
+The check passes `--max-rounds 1` and completed in **39.170 seconds**. It collected
+8 episodes of 4 controls with 2 worker processes, froze 6/1/1 splits, and applied
+1 AdamW update at learning rate 1e-4. The weights changed. Before that update,
+the test replaced the held-out image archive with an unread payload; training did
+not open it. Contact steps were **0**. On its one validation window, clipped image
+error was **0.007178106810897589** before the update and **0.007076120004057884**
+after it. Repeating the previous frame scored **0.00028847798239439726**. The
+logged choice was to collect again because there was no contact. The round cap
+stopped that collection, so no second dataset was gathered.
+
+This establishes that collection and a real CUDA weight update run. It does not
+calibrate contact, rotation, reward, or action ranking, and it does not improve
+the policy.
+
+Dependency-free discovery after these tests: **63 passed, 46 skipped** (109
+discovered) in **0.689 seconds**. `git diff --check` passed for the new Python
+files. On this Windows checkout, `scripts/check_repo.py` still fails the three
+published summary JSON hashes because those worktree files use CRLF; their git
+blobs match the snapshot manifest. That mismatch predates this pipeline.
+
+## One-hour budget for official T denoiser training (2026-10-23)
+
+The short pipeline check stops after one round. This run keeps the same error
+rule and raises the caps: up to 5 collections, 2000 updates, 200 rounds, two
+non-improving rounds of patience, and a 3600-second clock. A measured early
+attempt showed that 400 updates would finish in about 15 minutes, so the update
+and round caps were raised until the clock or the still-frame rule could stop
+the job. Each collection is 8 episodes of 100 controls with 2 workers.
+
+```bash
+.venv/bin/python -B scripts/train_official_world_model.py \
+  --output artifacts/official-wm-T-hour-2026-10-23 \
+  --episodes 8 --steps 100 --workers 2 --updates 8 \
+  --max-collections 5 --max-updates 2000 --max-rounds 200 --patience 2 \
+  --budget-seconds 3600 --seconds 300 --train-seconds 900
+```
+
+The run finished in **633.38 seconds**, inside the clock, because validation
+image error fell to or below a still frame while the collected episodes contained
+contact. It used **3 collections / 2400 controls / 1013 contact steps**, **37
+rounds / 296 AdamW updates**, and **291 validation windows** at the end.
+`model_test` was not read. Weights changed. The original checkpoint, scored on
+the first validation episode before any update, had image error
+**0.007549138288445694** against a still-frame error of
+**0.0005065998767284177**. The saved weights on the final three-episode
+validation set had image error **0.0004574045478844378** against a still-frame
+error of **0.0005358786448593094**.
+
+This is evidence that the training loop can stop itself on the logged image
+error. It is not a contact, rotation, left-push, reward, or action-ranking
+result, and it does not show that the updated denoiser improves a pushing policy.
+
+## Continued denoiser training for 30 minutes (2026-10-23)
+
+The same three official-T datasets and the weights from the run above were
+trained further. The still-frame stop was not used. The clock was 1800 seconds,
+including a 239-second fragment from an interrupted start. New weights are in
+`artifacts/official-wm-T-hour-2026-10-23/model-30m/`; the earlier checkpoint
+remains in `model/`.
+
+```bash
+.venv/bin/python -B scripts/train_official_world_model.py \
+  --continue-training --output artifacts/official-wm-T-hour-2026-10-23 \
+  --updates 8 --budget-seconds 1561 --train-seconds 900 \
+  --gpc-root third_party/gpc
+```
+
+The continuation completed after **1778.81 seconds** and **432** additional
+updates. `model_test` was not read. On the same 291 validation windows, image
+error ended at **0.000716432736813702**, above the still-frame error
+**0.0005358786448593094**. The weights saved when the earlier run stopped
+(image error 0.000457) remain the better image checkpoint. Extra updates did
+not improve that score.
+
+`scripts/visualize_world_model.py` shows the live official T on the left and
+this continued model's predicted next frame on the right. A left-image click
+chooses a 0–511 pusher target. Space executes it in the simulator. Escape closes
+the window.
+
+## Angle-coverage collection and retrain (2026-10-23)
+
+Object-directed play mostly aims at the object center and limits each target to
+about 12 pixels. `angle-coverage` instead uses the object pose: 16 directions
+at 22.5 degree steps, with 20, 60 and 150 pixel distances. Eight batches added
+**6400 controls and 867 contact steps** under
+`artifacts/official-wm-T-angles-2026-10-23/`. Old splits were kept. `model_test`
+was not read. Training started from the 633-second checkpoint, not `model-30m`.
+
+The same fixed scene, 16 directions and three distances were predicted before
+and after, with two sampler seeds. A case counted as stably missing only when
+both seeds had object-mask overlap below 0.3.
+
+| Weights | Minimum object overlap | Mean of the worse seed | Stably missing |
+| --- | --- | --- | --- |
+| Before, 633-second checkpoint | 0.9283154121863799 | 0.9529221409596408 | 0 of 48 |
+| After, angle retrain | 0.9808429118773946 | 0.9853828679819072 | 0 of 48 |
+
+On this one-step probe the object mask was already present in every direction
+before the new data. Retraining raised the worst overlap from 0.928 to 0.981.
+The two seeds agreed, so the remaining gap is not one unlucky sample. The
+retrain used **1740.29 seconds** and **120** updates. Final validation image
+error was **0.0006728526271924188**, below the still-frame error
+**0.001061290537393713** on the combined validation windows. That does not show
+the interactive multi-step view is sharp, or that contact and rotation are solved.
