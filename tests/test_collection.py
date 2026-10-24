@@ -47,6 +47,8 @@ class CollectionProtocolChecks(unittest.TestCase):
             CollectionConfig(max_target_delta=31)
         with self.assertRaisesRegex(ValueError, "200"):
             CollectionConfig(mode="angle-coverage", max_target_delta=201)
+        with self.assertRaisesRegex(ValueError, "200"):
+            CollectionConfig(mode="contact-balanced", max_target_delta=201)
 
     def test_directed_mode_is_repeatable_and_uses_the_disclosed_state_prior(self):
         config = CollectionConfig(mode="object-directed")

@@ -40,11 +40,11 @@ class CollectionConfig:
         integer(self.reset_attempts, "reset_attempts", 1, 20)
         integer(self.max_bytes, "max_bytes", 1024 * 1024, 64 * 1024 * 1024)
         delta = finite(self.max_target_delta, "max_target_delta")
-        limit = 200 if self.mode == "angle-coverage" else 30
+        limit = 200 if self.mode in ("angle-coverage", "contact-balanced") else 30
         if not 0 < delta <= limit:
             raise ValueError(f"max_target_delta must be in (0, {limit}] pixels")
         object.__setattr__(self, "max_target_delta", delta)
-        if self.mode not in ("random-waypoints", "object-directed", "angle-coverage"):
+        if self.mode not in ("random-waypoints", "object-directed", "angle-coverage", "contact-balanced"):
             raise ValueError("Unknown non-expert play mode")
         if self.episodes * self.steps > 1000:
             raise ValueError("A pilot run is limited to 1000 executed control steps")
@@ -97,6 +97,8 @@ class WaypointPlay:
         self.waypoint = None
 
     def action(self, observation, state, step):
+        if self.config.mode == "contact-balanced":
+            raise ValueError("contact-balanced play uses ContactBalancedPlay, not WaypointPlay")
         position = point(observation["agent_pos"])
         if self.config.mode == "angle-coverage":
             self.waypoint = self._angle_target(position, state, step)

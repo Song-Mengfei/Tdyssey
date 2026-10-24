@@ -25,6 +25,7 @@ from tdyssey.gpc_denoiser_training import GPCDenoiserTrainer, dataset_name, deci
 from tdyssey.official import official_spec
 from tdyssey.official_collection import DEVELOPMENT_SEEDS, ENVIRONMENT_FAMILY, VERSION, OfficialCollectionConfig, validate_official_dataset
 from tdyssey.official_collector import OfficialShapeCollector, _quiet_sdl
+from tdyssey.official_contact_sampler import preserve_init_checkpoint
 
 
 def provenance(config):
@@ -328,7 +329,15 @@ def main(argv=None):
                         help="Update the saved denoiser on existing datasets until --budget-seconds")
     parser.add_argument("--train-datasets", nargs="+", type=Path)
     parser.add_argument("--model-dir", type=Path)
+    parser.add_argument("--init-from-best", action="store_true",
+                        help="Copy the angles denoiser to artifacts/official-wm-T-init if needed and start from it")
     args = parser.parse_args(argv)
+    if args.init_from_best:
+        try:
+            preserved = preserve_init_checkpoint(root=ROOT)
+        except FileNotFoundError as exc:
+            parser.error(str(exc))
+        args.checkpoint = preserved["checkpoint"]
     if args.train_datasets:
         if args.model_dir is None:
             parser.error("--model-dir is required with --train-datasets")

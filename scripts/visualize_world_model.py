@@ -39,11 +39,16 @@ def panel_surface(pygame, image, size):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path,
-                        default=ROOT / "artifacts/official-wm-T-hour-2026-10-23/model-30m/denoiser.pt")
-    parser.add_argument("--source-root", type=Path, default=ROOT / "third_party/diffusion_policy")
-    parser.add_argument("--gpc-root", type=Path, default=ROOT / "third_party/gpc")
-    parser.add_argument("--seed", type=int, default=100003)
-    parser.add_argument("--panel", type=int, default=512)
+                        default=ROOT / "artifacts/official-wm-T-hour-2026-10-23/model-30m/denoiser.pt",
+                        help="Trained denoiser.pt to display")
+    parser.add_argument("--source-root", type=Path, default=ROOT / "third_party/diffusion_policy",
+                        help="Official PushT source (default: third_party/diffusion_policy)")
+    parser.add_argument("--gpc-root", type=Path, default=ROOT / "third_party/gpc",
+                        help="Pinned GPC source (default: third_party/gpc)")
+    parser.add_argument("--seed", type=int, default=100003,
+                        help="Official T start scene (default: 100003)")
+    parser.add_argument("--panel", type=int, default=512,
+                        help="Left/right panel size in pixels (default: 512)")
     args = parser.parse_args(argv)
     if not args.checkpoint.is_file():
         parser.error(f"Missing trained denoiser: {args.checkpoint}")
