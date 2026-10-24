@@ -121,6 +121,37 @@ class ForwardPolicy:
         return actions, x.detach()
 
     @torch.no_grad()
+    def encode_batch(self, histories):
+        """`encode` for several equal-length histories; GroupNorm keeps rows independent."""
+        observations = {k: torch.as_tensor(np.stack([np.stack([o[k] for o in h]) for h in histories]),
+                                           device=self.device) for k in ("image", "agent_pos")}
+        normalized = self.network.normalizer.normalize(observations)
+        flat = {k: v.reshape(-1, *v.shape[2:]) for k, v in normalized.items()}
+        return self.network.obs_encoder(flat).reshape(len(histories), -1)
+
+    @torch.no_grad()
+    def sample_batch(self, condition, generators, mode="actor"):
+        """One denoiser call per step for B plans. Row i draws its initial and step
+        noise from generators[i] exactly as `sample` draws from self.generator."""
+        generators = list(generators)
+        if len(generators) != condition.shape[0]:
+            raise ValueError("Use one generator per conditioning row")
+        x = torch.cat([torch.randn((1, 16, 2), device=self.device, generator=g) for g in generators])
+        scheduler = self.network.noise_scheduler
+        for t in scheduler.timesteps:
+            prediction = self.predict(x, t, condition, mode)
+            x = scheduler.step(prediction, t, x, generator=generators).prev_sample
+        actions = self.network.normalizer["action"].unnormalize(x)[:, 1:9].cpu().numpy()
+        if not np.isfinite(actions).all() or not torch.isfinite(x).all():
+            raise FloatingPointError("Nonfinite sampled plan")
+        return actions, x.detach()
+
+    def child_generators(self, count):
+        """Independent per-row streams derived from (and advancing) the plan RNG."""
+        seeds = torch.randint(0, 2**62, (count,), device=self.device, generator=self.generator).tolist()
+        return [torch.Generator(device=self.device).manual_seed(int(s)) for s in seeds]
+
+    @torch.no_grad()
     def refresh_old(self):
         decay = self.config.rollout_ema
         source_state = self.actor.state_dict()
