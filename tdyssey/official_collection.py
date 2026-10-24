@@ -41,6 +41,17 @@ class OfficialCollectionConfig(CollectionConfig):
         if len(set(seeds)) != len(seeds) or not set(DEVELOPMENT_SEEDS).issubset(seeds):
             raise ValueError("Excluded seeds must be unique and include all known development scenes")
         object.__setattr__(self, "excluded_reset_seeds", seeds)
+        if self.mode == "contact-balanced" and self.max_target_delta <= 30:
+            object.__setattr__(self, "max_target_delta", 200.0)
+
+
+def _play_controller(config, seed):
+    """Keep waypoint play as the default; contact-balanced has its own controller."""
+    if config.mode == "contact-balanced":
+        from .official_contact_sampler import ContactBalancedPlay
+
+        return ContactBalancedPlay(config, seed)
+    return WaypointPlay(config, seed)
 
 
 def freeze_splits(trajectories, seed):
@@ -92,7 +103,7 @@ def collect_official_episode(env, config, index, counters, deadline=None):
         raise ValueError("No accepted official reset within the candidate budget")
 
     action_seed = derived_seed(config.seed, VERSION, config.shape, index, config.mode, "actions")
-    controller = WaypointPlay(config, action_seed)
+    controller = _play_controller(config, action_seed)
     images, positions, goals, transitions, diagnostics = [], [], [], [], []
 
     def record(obs, state):
@@ -112,6 +123,8 @@ def collect_official_episode(env, config, index, counters, deadline=None):
         counters["control_steps"] += 1
         counters["control_physics_substeps"] += env.sim_hz // env.control_hz
         after = env.capture_state()
+        if hasattr(controller, "observe"):
+            controller.observe(before, after, info["n_contacts"])
         cutoff = step+1 == config.steps and not done
         transitions.append(Transition(before, action, after, float(reward), bool(done), cutoff))
         metrics = goal_metrics(shape, after.object_body.pose, after.goal)

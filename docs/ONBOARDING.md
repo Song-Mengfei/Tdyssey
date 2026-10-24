@@ -16,8 +16,10 @@
    succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
    sweep explores failures without changing the T-to-L learning milestone.
    Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
-   see `docs/OFFICIAL_COLLECTION.md`. A first GPU world-model pilot and its
-   failures are in `docs/WORLD_MODEL.md`; policy optimization remains pending.
+   see `docs/OFFICIAL_COLLECTION.md`. Official T denoiser collect/train/view
+   commands are in `docs/OFFICIAL_WORLD_MODEL.md`. A first GPU world-model
+   pilot and its failures are in `docs/WORLD_MODEL.md`; policy optimization
+   remains pending.
    A negative outcome is acceptable for the course if the work and analysis are substantial.
 4. Run `python3 -B scripts/check_repo.py` using an existing Python 3.11+ installation.
 5. Start Codex from the repository and have it summarize the active constraints,

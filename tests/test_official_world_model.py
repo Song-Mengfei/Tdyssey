@@ -48,6 +48,9 @@ class OfficialWorldModelChecks(unittest.TestCase):
         collector = OfficialShapeCollector(OfficialCollectionConfig(shape="T"), ROOT, workers=2)
         self.assertEqual(collector.config.shape, "T")
         self.assertEqual(collector.config.mode, "object-directed")
+        contact = OfficialShapeCollector(OfficialCollectionConfig(shape="T", mode="contact-balanced"), ROOT)
+        self.assertEqual(contact.config.mode, "contact-balanced")
+        self.assertEqual(contact.config.max_target_delta, 200)
         with self.assertRaisesRegex(ValueError, "object-directed"):
             OfficialShapeCollector(OfficialCollectionConfig(mode="random-waypoints"), ROOT)
         with self.assertRaisesRegex(ValueError, "seven"):

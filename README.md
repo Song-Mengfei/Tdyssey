@@ -28,6 +28,7 @@ separate from the official baseline. See [results](docs/RESULTS.md),
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
+- [Train and watch the official T world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
 - [Separate GPC reference collector](docs/COLLECTION.md)
 - [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
 - [Visual training and pretrained world-model checks](docs/WORLD_MODEL.md)

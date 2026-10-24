@@ -1193,3 +1193,134 @@ retrain used **1740.29 seconds** and **120** updates. Final validation image
 error was **0.0006728526271924188**, below the still-frame error
 **0.001061290537393713** on the combined validation windows. That does not show
 the interactive multi-step view is sharp, or that contact and rotation are solved.
+
+## Contact-balanced sampler and moved-T replay (2026-10-24)
+
+`tdyssey/official_contact_sampler.py` and `scripts/collect_official_contact.py`
+write many official T batches with `contact-balanced` play. Headings that would
+hit the official T are preferred; a ±150° CoG-axis fallback is used when no hit
+exists; miss actions stay in the mix. Each batch is still 8×100 controls.
+`model_test` is not opened. `scripts/train_official_contact.py` continues the
+angles denoiser from `artifacts/official-wm-T-init/` on finished `batch-*`
+directories: each chunk samples train windows from the full train-split index,
+weights the EDM loss on privileged T/pusher/changed pixels (D029), scores a
+frozen 64-window validation subset with full-image and region/motion errors,
+uses moved-T replay, and `--resume` after Ctrl+C. Weights stay in a separate
+train directory. This is the collection/training path, not a finished contact
+calibration.
+
+Source checks: `python3 -B -m unittest tests.test_region_weight tests.test_official_contact_sampler tests.test_official_contact_trainer tests.test_official_world_model tests.test_collection -v`.
+
+## Contact-train angle probe (2026-10-24)
+
+Contact training stopped at **2792** updates (`interrupted` after Ctrl+C;
+`artifacts/official-wm-T-contact-train-2026-10-24/`). The same official T scene
+(`seed=100003`) was predicted with three weights: the angles init, those
+contact-train weights, and the released GPC denoiser. Each case uses two
+sampler seeds. `n_contacts`, object translation, and world left/right of the
+object CoG are privileged simulator labels (D030). `model_test` was not read.
+
+On this start pose the 16 pusher headings at 20, 60 and 150 pixels never hit
+the T. All **48** real steps had `n_contacts=0`, object translation **0**, and
+still-frame object overlap **1.0**. The contact slice is empty. High object
+overlap here only means the predicted T still looks like the unmoved T.
+
+| Weights | Minimum worse-seed overlap | Mean of the worse seed | Stably missing | Worse than still |
+| --- | --- | --- | --- | --- |
+| Init, `artifacts/official-wm-T-init/` | 0.9808429118773946 | 0.9853828679819072 | 0 of 48 | 48 of 48 |
+| Contact-train, 2792 updates | 0.9809160305343512 | 0.987364838421441 | 0 of 48 | 48 of 48 |
+| Released GPC `checkpoints/gpc-world-model/denoiser.pth` | 0.3816793893129771 | 0.5107412798821771 | 0 of 48 | 48 of 48 |
+
+| Slice | Init worse-seed mean | Contact-train | Released GPC |
+| --- | --- | --- | --- |
+| World left (44 misses) | 0.985099322747388 | 0.987862699217661 | 0.5145412259576967 |
+| World right (4 misses) | 0.9885018655616181 | 0.9818883696630192 | 0.4689418730514621 |
+| Contact (`n_contacts>0`) | none | none | none |
+| No contact (48) | 0.9853828679819072 | 0.987364838421441 | 0.5107412798821771 |
+| Distance 20 | 0.9844348659003831 | 0.9884615384615385 | 0.4461739543726236 |
+| Distance 150 | 0.9865715335065822 | 0.9856448394611986 | 0.6011429959845997 |
+
+Init numbers match the 2026-10-23 angle-retrain table. Contact-train changed
+those miss overlaps by about 0.002 and did not beat a still frame. Released GPC
+is worse on official RGB, as already seen in the palette diagnostic; no case
+fell below the 0.3 stable-missing cutoff. Reports:
+`artifacts/official-wm-T-init-angles-probe-2026-10-24/`,
+`artifacts/official-wm-T-contact-angles-probe-2026-10-24/`, and
+`artifacts/official-wm-T-gpc-pretrained-angles-probe-2026-10-24/`. This is not
+contact calibration, rotation evidence, or a reason to update the pushing
+policy.
+
+Source checks: `python3 -B -m unittest tests.test_angle_probe -v`.
+
+## Case-split foreground loss (2026-10-24)
+
+Contact training no longer uses D029's k=8 occupancy weights as the default
+update. `window_case_region` and `foreground_weights` put weight 1 on the
+privileged case mask and 0 on the table (D031). Hit windows (`moved` or
+`n_contacts>0`) include motion pixels, the true next T, and both pusher disks.
+Miss windows include the still T and the pusher so empty pushes still supervise
+“T stays”. Replay remains about 60% moved windows. A new run starts from
+`artifacts/official-wm-T-init/` into
+`artifacts/official-wm-T-case-loss-2026-10-24/` with `--max-updates 400`. The
+2792-update directory is not resumed. Validation is a frozen 32 useful / 32
+miss subset. Full-image MSE is logged and is not a stop rule. `model_test` is
+not read.
+
+The 400-update run stopped after **1298.14 seconds**
+(`artifacts/official-wm-T-case-loss-2026-10-24/`). The frozen subset stayed
+**32 useful / 32 miss**. Persistence constants did not move: useful motion
+still-frame error **0.16011010201815376**, useful true centroid shift
+**4.9770502480856065** pixels, miss true centroid shift
+**0.008288713819925584** pixels. Init full-image error on those keys was
+**0.0007622882046050024**.
+
+| Step | Useful motion MSE | Useful centroid error (px) | Useful predicted / actual shift (px) | Miss ROI MSE | Miss predicted shift (px) |
+| --- | --- | --- | --- | --- | --- |
+| 8 updates | 0.028037989702056582 | 3.575344627491331 | 4.607 / 4.977 | 0.006163029136547865 | 1.0203668250722435 |
+| 400 updates | 0.035175933027936264 | 3.903139533415214 | 3.210 / 4.977 | 0.007207796654877674 | 0.9267747621336685 |
+
+Useful motion stays below the still-frame **0.160**, and miss ROI stays below
+still-frame **0.022629345251174958**. The slices did not improve from 8 to 400
+updates: useful motion and centroid error rose, predicted useful shift fell
+further below the true 4.98 pixels, and miss windows still show about **1**
+pixel of predicted motion. Full-image error at 400 updates was
+**0.0006751099944119851**. This is not contact calibration and is not a reason
+to update the pushing policy.
+
+Source checks: `python3 -B -m unittest tests.test_region_weight tests.test_official_contact_trainer tests.test_official_world_model tests.test_angle_probe -v`.
+
+## Case-split from k=8 weights (2026-10-24)
+
+A new directory continues D031 from the interrupted 2792-update k=8 weights,
+not from the angles init and not by resuming that k=8 report. New-run setup
+copies `denoiser.pt` only and writes `{updates: 0, init_sha256}`. The first
+chunk wrote sidecar updates **8**, not 2800. `source_checkpoint` is
+`artifacts/official-wm-T-contact-train-2026-10-24/denoiser.pt`. Frozen
+validation is the same 32 useful / 32 miss subset. `model_test` was not
+read. Same command with `--resume` continues after Ctrl+C. Do not use
+`--init-from-best`.
+
+```bash
+.venv/bin/python -B scripts/train_official_contact.py \
+  --datasets artifacts/official-wm-T-contact-2026-10-24 \
+  --output artifacts/official-wm-T-case-loss-from-k8-2026-10-24 \
+  --checkpoint artifacts/official-wm-T-contact-train-2026-10-24/denoiser.pt \
+  --resume
+```
+
+After 8 updates (`artifacts/official-wm-T-case-loss-from-k8-2026-10-24/`):
+
+| Slice | Model | Still frame |
+| --- | --- | --- |
+| Useful motion MSE | 0.032007691005795855 | 0.16011010201815376 |
+| Useful centroid error (px) | 3.53077683556016 | — |
+| Useful predicted / actual shift (px) | 5.176 / 4.977 | — |
+| Miss ROI MSE | 0.0066981777902546434 | 0.022629345251174958 |
+| Miss predicted / actual shift (px) | 0.850 / 0.008 | — |
+
+Useful motion stays below the still frame. Miss windows still predict about
+**0.85** pixels of motion versus **0.008** actual. Full-image error was
+**0.0008130510280716585** versus still-frame **0.0013740422306977814**. This
+is not contact calibration and is not a reason to update the pushing policy.
+
+Source checks: `python3 -B -m unittest tests.test_official_contact_trainer -v`.
