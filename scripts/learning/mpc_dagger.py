@@ -8,6 +8,8 @@ the policy's 16-step plans. Every EVERY controls the 2-frame observation is save
 from the image policy (frozen base, or --student) at that observation, which distill.py uses for its anchor.
 Records use the oracle_bon.py format: candidate_x = 8 policy samples + teacher label (index 8, choice = 8).
 Pass the same planner flags as mpc_teacher.py (its recommended set); the defaults are the older CEM-only planner.
+--execute 8 --every 8 makes the teacher plan once per 8 controls and labels each record with the plan it then
+executes, so labels are consistent 8-control chunks like the image policy's (round 2; round 1 used --every 4).
 With --beta < 1 the policy's own plan is executed for 8 controls at a decision with probability 1-beta, and the
 teacher label at those states is still the teacher's closed-loop continuation, computed in a branch environment
 restored from the captured state (DAgger). Scenes: seeds 800000 + 20*i (training only).
@@ -63,6 +65,15 @@ class Teacher:
         m, _ = mpc_teacher.plan(self.model, self.geo, s, sh, warm, self.args, self.gen, self.pushes)
         return m[:, 0].cpu().numpy(), torch.cat([m[:, 1:], m[:, -1:]], 1)
 
+    def plan_full(self, envs, warm_all, idx, fresh):
+        """Full plans (n, H, 2) for chunked execution; fresh rows start from the current pusher position."""
+        s, sh = cog_states(envs, self.k, self.geo, self.geo.goals.device)
+        warm = warm_all[torch.as_tensor(idx, device=s.device)].clone()
+        f = torch.as_tensor(fresh[idx], device=s.device)
+        warm[f] = s[f, None, 6:8].expand(-1, self.args.horizon, -1)
+        m, _ = mpc_teacher.plan(self.model, self.geo, s, sh, warm, self.args, self.gen, self.pushes)
+        return m
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -72,6 +83,9 @@ def main():
     parser.add_argument("--start", type=int, default=0)
     parser.add_argument("--every", type=int, default=4, help="Save a record every N controls")
     parser.add_argument("--beta", type=float, default=1.0, help="Probability that the teacher acts at a decision")
+    parser.add_argument("--execute", type=int, default=1,
+                        help="Teacher replans every N controls; N > 1 labels each record with the executed plan itself "
+                             "(chunk-consistent labels; use --every N, beta 1)")
     parser.add_argument("--student", type=Path, help="Distilled actor checkpoint for the policy samples / DAgger")
     parser.add_argument("--samples", type=int, default=256)
     parser.add_argument("--elites", type=int, default=24)
@@ -128,6 +142,9 @@ def main():
     cov, peak = np.zeros(E), np.zeros(E)
     student_left = np.zeros(E, int); student_plan = [None]*E
     warm = None; start = time.time(); t = 0
+    if args.execute > 1 and (args.beta < 1 or args.every != args.execute):
+        raise SystemExit("--execute N needs --every N and --beta 1")
+    warm_all = torch.zeros(E, args.horizon, 2, device=device); fresh = np.ones(E, bool); chunk = [None]*E
     while active.any() and t < 300:
         idx = np.nonzero(active)[0]
         if t % args.every == 0 or (args.beta < 1 and t % 8 == 0):
@@ -147,7 +164,20 @@ def main():
             for i in idx:
                 if student_left[i] == 8 and saved[i] and saved[i][-1][0] == t:
                     saved[i][-1][4] = branch_label(envs[i], branch, teacher, actions[i])
-        a_teacher, warm_next = teacher.act([envs[i] for i in idx], warm)
+        if args.execute > 1:
+            if t % args.execute == 0:
+                m = teacher.plan_full([envs[i] for i in idx], warm_all, idx, fresh)
+                ii = torch.as_tensor(idx, device=device)
+                warm_all[ii] = torch.cat([m[:, args.execute:], m[:, -1:].expand(-1, args.execute, -1)], 1)
+                fresh[idx] = False
+                for j, i in enumerate(idx):
+                    chunk[i] = m[j].cpu().numpy()
+                    if saved[i] and saved[i][-1][0] == t:          # label = the plan the teacher now executes
+                        prev = actions[i][-1] if actions[i] else chunk[i][0]
+                        saved[i][-1][4] = np.concatenate([np.asarray(prev, np.float32)[None], chunk[i][:15]]).astype(np.float32)
+            a_teacher = np.stack([chunk[i][t % args.execute] for i in idx])
+        else:
+            a_teacher, warm_next = teacher.act([envs[i] for i in idx], warm)
         for j, i in enumerate(idx):
             a = student_plan[i][8-student_left[i]] if student_left[i] > 0 else a_teacher[j]
             student_left[i] = max(0, student_left[i]-1)
@@ -156,8 +186,8 @@ def main():
             cov[i] = row["coverage"]; peak[i] = max(peak[i], cov[i])
             if row["done"]:
                 done[i] = True; active[i] = False
-        keep = active[idx]
-        warm = warm_next[torch.as_tensor(keep, device=device)]
+        if args.execute == 1:
+            warm = warm_next[torch.as_tensor(active[idx], device=device)]
         t += 1
         if t % 25 == 0 or not active.any():
             print(f"[mpc-data {args.shape} {time.time()-start:5.0f}s] control {t} success {int(done.sum())}/{E} "
