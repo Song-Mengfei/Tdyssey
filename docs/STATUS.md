@@ -1,8 +1,9 @@
 # Shared project status
 
-Updated: 2026-10-24. Stage: direct-simulator tail-PPO and forward-process
-NFT/AdvantageFlow trainers implemented; real GPU update/reload checks passed.
-Physical adaptation and imagined learning remain unestablished.
+Updated: 2026-10-26. Stage: forward-process RL stopped (noisy signal, D035); a
+privileged world-model planning teacher solves most D/Y/L scenes in the simulator
+(D039); distilling it into the image policy is in progress on
+`feat/wm-planning-teacher`. Image-policy adaptation remains unestablished.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -27,6 +28,19 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- Learning findings, 2026-10-24 to 2026-10-26 (H100 NVL, `feat/wm-planning-teacher`;
+  full tables in [learning findings](LEARNING_FINDINGS.md), code in
+  `scripts/learning/`). Base on the 1000-scene final test pool: T 44.4%, near-T
+  41.9%, Y 9.4%, D 0.3%, L 0.1%. Long NFT/AdvantageFlow runs did not learn and
+  degraded T with drift; only 16-36% of score variance comes from the candidate's
+  own plan (D035). Oracle best-of-N gave small gains (Y 3/20 -> 8/20), and
+  imitating it stayed within noise (D037). The structured state world model `wm2`
+  reaches 0.22-0.32 px median 8-control contact error (D038). BPTT teachers through
+  it failed; the sampling planner `mpc_teacher.py` solves D 50/50, Y 36/50, L 21/50
+  validation scenes but only T 5/50 and near-T 12/50 (D039). Round-1 teacher data
+  (350 scenes, 14.6k records with T retention) is collected; three distilled
+  students are training. New physics checks: `tests/test_learning_wm_runtime.py`.
 
 - H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
   `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
@@ -355,6 +369,15 @@ See `docs/VALIDATION.md` for commands and limits.
   action/RNG parity, actor update, frozen-weight integrity and delta reload checks.
 
 ## Next task
+
+Finish distilling the planning teacher (D039): evaluate the round-1 students on
+validation and the monitor test, then add DAgger rounds on student-visited states
+(`mpc_dagger.py --student ... --beta 0.5`) if the 8-control chunks lose the
+planner's gains. Re-evaluate the planner after the push-candidate fix, and reduce
+its leftover T rotation. Run the 1000-scene acceptance test (D036) only for a
+student that passes validation and the monitor test.
+
+The earlier next-task notes below predate these findings.
 
 Run long forward comparisons with `batched_rollouts` on the batched branch, keep
 sequential and batched results apart, and evaluate on more than three scenes per

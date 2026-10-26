@@ -623,3 +623,54 @@ so it is a visibility check, not unseen-shape generalization. The near-miss
 choice came from the single-scene alphabet sweep (D best IoU 0.815, near-T 0.872,
 Y solved); the run's five-scene baseline must confirm it. T/L lineages continue
 as the original comparison.
+
+## D035 — Stop long forward-process RL until the training signal is reliable (2026-10-25)
+
+Long NFT/AdvantageFlow runs either left the policy unchanged (small steps) or
+degraded T in proportion to drift (dense lr 3e-5: T 0.55 -> 0.05 by update 75).
+Only 16-36% of a candidate's 32-control score variance comes from its own plan
+(split-half reliability 0.14-0.29); the remaining follow-up plans dominate, and
+updates anchor only to the previous policy. A privileged value function did not
+rank candidates better. Longer runs of the same recipe were therefore stopped at
+about update 150. Revisit forward RL only with a measured reliable score and an
+explicit anchor to the start policy. See `docs/LEARNING_FINDINGS.md`.
+
+## D036 — Fixed scene pools and a pre-registered acceptance test (2026-10-25)
+
+Evaluation noise is large: rerunning the same policy flips 37-40% of T scene
+outcomes, and validation gains failed to replicate because of checkpoint
+selection. Scene pools are disjoint seed ranges (development 100000, validation
+400000, monitor test 300000, value 600000, oracle 700000, teacher data 800000,
+final test 900000). Select on validation, track on the 100-scene monitor test, and
+use the 1000-scene final test only once per candidate policy: ship a policy only
+if T and near-T are non-inferior and the new letters improve, with margins fixed
+before that test. Otherwise the base policy remains the result.
+
+## D037 — Simulator-oracle best-of-N is an upper bound, not a method (2026-10-25)
+
+Choosing among the frozen base's own plans with exact simulator replay raised Y
+from 3/20 to 8/20 and new-letter coverage, but imitating those choices stayed
+within evaluation noise. Base samples at one observation are nearly identical,
+so re-ranking cannot create new behavior. Keep `oracle_bon.py` as a diagnostic.
+Its decision records serve only as T/near-T retention data.
+
+## D038 — A structured privileged state world model (2026-10-25)
+
+A generic MLP state model was too coarse (8-control contact error 2.3 px) for a
+task that needs about 1.5 px. `wm2` copies the simulator's known parts, the
+kinematic pusher PD law and the letters' rectangle geometry, and learns only the
+object's motion in contact, in the object frame, behind a no-contact gate. It is
+trained on 1500 non-expert base-policy rollouts with action noise; median 8-control
+contact error is 0.22-0.32 px. This state-based mechanism study is privileged and
+is not the visual world model of PRs #6/#7; it does not replace that work.
+
+## D039 — Sampling planner teacher, distilled into the image policy (2026-10-26)
+
+SuperMimic-style BPTT through `wm2` did not learn to push (real coverage stayed
+below 0.12). A sampling planner inside `wm2` with structured push candidates
+succeeds in the real simulator on most D, Y and L scenes, but not on T/near-T.
+Use it as a privileged teacher: collect its closed-loop demonstrations, distill
+them into the image policy with the policy's denoising loss, and anchor only T and
+near-T records to the base. Push candidates, privileged state and geometric
+rewards are disclosed priors. Only the distilled image policy, tested under D036,
+can count as adaptation.
