@@ -130,6 +130,10 @@ def main() -> int:
                 continue
             data = (snapshot / name).read_bytes()
             total += len(data)
+            # Git may check out textual JSON with CRLF on Windows. Compare the
+            # publication's canonical LF bytes, retaining actual disk-byte cost.
+            if name.suffix == ".json":
+                data = data.replace(b"\r\n", b"\n")
             if len(data) != item["bytes"] or hashlib.sha256(data).hexdigest() != item["sha256"]:
                 errors.append(f"Published evidence size/hash mismatch: {name}")
             if item["kind"] == "original_figure" and item["sha256"] != item["source"]["sha256"]:
