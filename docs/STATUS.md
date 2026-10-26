@@ -2,7 +2,7 @@
 
 Updated: 2026-10-26. Stage: forward-process RL stopped (noisy signal, D035); a
 privileged world-model planning teacher solves most D/Y/L scenes in the simulator
-(D039); distilling it into the image policy is in progress on
+(D039); a first distillation into the image policy failed; work continues on
 `feat/wm-planning-teacher`. Image-policy adaptation remains unestablished.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
@@ -39,8 +39,9 @@ inspection/plan review milestone.
   reaches 0.22-0.32 px median 8-control contact error (D038). BPTT teachers through
   it failed; the sampling planner `mpc_teacher.py` solves D 50/50, Y 36/50, L 21/50
   validation scenes but only T 5/50 and near-T 12/50 (D039). Round-1 teacher data
-  (350 scenes, 14.6k records with T retention) is collected; three distilled
-  students are training. New physics checks: `tests/test_learning_wm_runtime.py`.
+  (350 scenes, 14.6k records with T retention) was distilled into three image
+  students; all were worse than the base on every shape (validation T 35 ->
+  15-25), so naive distillation of the closed-loop planner fails. New physics checks: `tests/test_learning_wm_runtime.py`.
 
 - H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
   `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
@@ -370,10 +371,10 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Finish distilling the planning teacher (D039): evaluate the round-1 students on
-validation and the monitor test, then add DAgger rounds on student-visited states
-(`mpc_dagger.py --student ... --beta 0.5`) if the 8-control chunks lose the
-planner's gains. Re-evaluate the planner after the push-candidate fix, and reduce
+Make the planning teacher learnable by the image policy (D039). Round-1
+distillation failed. Test whether the planner works when executing 8-control
+open-loop chunks (consistent labels), then add DAgger rounds on student-visited
+states (`mpc_dagger.py --student ... --beta 0.5`) and a stronger T anchor. Re-evaluate the planner after the push-candidate fix, and reduce
 its leftover T rotation. Run the 1000-scene acceptance test (D036) only for a
 student that passes validation and the monitor test.
 
