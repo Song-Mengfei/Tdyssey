@@ -220,9 +220,15 @@ Likely reasons, not yet separated: labels stitched from a planner that replans
 every control are inconsistent as 8-control open-loop chunks (its targets jump
 20-150 px between controls while going around the letter); the policy's states
 drift away from the teacher's (no DAgger yet); and the imitation gradient
-overwhelms the anchor on shared weights. Next test: whether the planner still
-succeeds when it executes 8-control open-loop chunks like the student, which
-would give consistent labels.
+overwhelms the anchor on shared weights.
+
+The final planner still succeeds when it executes 8-control open-loop chunks like
+the student (20 validation scenes: D 20, Y 14, L 7, against 19-20, 16-18 and 6-7
+when replanning every control). Round 2 therefore labels each record with the plan
+the teacher actually executes (`mpc_dagger.py --execute 8 --every 8`); in a smoke
+test the largest jump inside a label fell from a median of 56 px to 31 px. Round 2
+collects 450 new training scenes and trains three students with a stronger T
+anchor; results will be added here.
 
 ## Privileged signals and priors (disclosure)
 
