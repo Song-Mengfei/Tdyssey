@@ -397,7 +397,7 @@ pusher-gap penalty 0.5, contact margin 3 px, corner pose error, elite-mean execu
 
 ## 10. Running or pending when this was written
 
-- Round-3 distillation (data r2 + r2b, 26k planner records plus T retention): two
+- Round-3 distillation (data r2 + r2b: 20.6k planner records plus 3.0k T retention): two
   students that also train the image encoder (`distill.py --train-encoder`) and a
   frozen-encoder control with a stronger anchor. Hypothesis: the frozen encoder,
   trained only on T, cannot represent what the planner reacts to on other letters.

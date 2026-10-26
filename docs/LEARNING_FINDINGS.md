@@ -236,7 +236,8 @@ at 0.18-0.26 against 0.30 (all epochs in the experiment log). The imitation loss
 stayed high, which suggests the student cannot represent the teacher's behavior.
 One candidate cause: the image encoder stays frozen during distillation and was only
 ever trained on T. Round 3 (running) trains the encoder too
-(`distill.py --train-encoder`) on 26k records, with a frozen-encoder control.
+(`distill.py --train-encoder`) on 20.6k planner records plus 3.0k T retention
+records, with a frozen-encoder control.
 
 ## Privileged signals and priors (disclosure)
 
