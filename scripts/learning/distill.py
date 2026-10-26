@@ -7,6 +7,7 @@ the oracle's choice). Loss per minibatch:
              base samples at the same observations (keeps the policy near the base on every shape)
 Records from mpc_dagger.py (teacher label at index 8) use the same loss. --anchor-shapes T T_narrow
 applies the anchor only on those shapes' records, so Y/D/L can follow the teacher while T stays near the base.
+--train-encoder also trains the image encoder; the anchor still compares with the base's original features.
 The image encoder stays frozen (conditions are precomputed). Validation runs the batched evaluator on
 VALIDATION scenes (400000 + 20*i), never development (100000), test (300000), value (600000) or
 oracle (700000) scenes, with the base policy evaluated once on the same scenes for comparison.
@@ -89,6 +90,9 @@ def main():
     parser.add_argument("--anchor-shapes", nargs="*", default=None,
                         help="Apply --anchor only on these shapes' records (others get --anchor-other)")
     parser.add_argument("--anchor-other", type=float, default=0.0)
+    parser.add_argument("--train-encoder", action="store_true",
+                        help="Also train the image encoder (student copy); the anchor keeps the base's frozen features")
+    parser.add_argument("--encoder-lr", type=float, default=None, help="Encoder learning rate (default: --lr)")
     parser.add_argument("--weighting", choices=("chosen", "softmax"), default="chosen",
                         help="chosen: imitate the oracle's pick; softmax: all candidates weighted by softmax(score/tau)")
     parser.add_argument("--tau", type=float, default=0.05)
@@ -114,7 +118,17 @@ def main():
             hist = [[{"image": data["image"][j, k].astype(np.float32)/255, "agent_pos": data["agent_pos"][j, k]}
                      for k in range(2)] for j in range(i, min(n, i+256))]
             conds.append(agent.encode_batch(hist))
-        cond = torch.cat(conds)
+        cond = torch.cat(conds)                     # the ORIGINAL encoder's features (also the anchor reference)
+    if args.train_encoder:
+        images = torch.tensor(data["image"], device=agent.device)                  # (n, 2, 3, 96, 96) uint8
+        positions = torch.tensor(data["agent_pos"], device=agent.device, dtype=torch.float32)
+        encoder = agent.network.obs_encoder
+        encoder.requires_grad_(True)
+
+        def encode_grad(idx):
+            obs = agent.network.normalizer.normalize({"image": images[idx].float()/255, "agent_pos": positions[idx]})
+            flat = {k: v.reshape(-1, *v.shape[2:]) for k, v in obs.items()}
+            return encoder(flat).reshape(len(idx), -1)
     x = torch.tensor(data["x"], device=agent.device)                          # (n, N, 16, 2)
     chosen = torch.tensor(data["chosen"], device=agent.device)
     cand16 = torch.tensor(data["cand16"], device=agent.device)                  # (n, 16, 16, 2)
@@ -131,7 +145,11 @@ def main():
     log["base_eval"] = base_eval
     print(f"[distill {time.time()-start:5.0f}s] base on validation: " +
           "  ".join(f"{s} {v['success']}/{v['n']} {v['final_coverage']:.3f}" for s, v in base_eval.items()), flush=True)
-    optimizer = torch.optim.AdamW(agent.actor.parameters(), lr=args.lr, weight_decay=0.0)
+    groups = [{"params": list(agent.actor.parameters()), "lr": args.lr}]
+    if args.train_encoder:
+        groups.append({"params": list(agent.network.obs_encoder.parameters()), "lr": args.encoder_lr or args.lr})
+    trained = [q for g in groups for q in g["params"]]
+    optimizer = torch.optim.AdamW(groups, weight_decay=0.0)
     scheduler = agent.network.noise_scheduler
     g = torch.Generator(device=agent.device).manual_seed(args.seed)
     for epoch in range(1, args.epochs+1):
@@ -139,7 +157,7 @@ def main():
         totals = defaultdict(float)
         for b in range(0, n, args.batch):
             idx = order[b:b+args.batch]
-            c = cond[idx]
+            c = encode_grad(idx) if args.train_encoder else cond[idx]
             t = torch.randint(0, 100, (len(idx),), device=agent.device, generator=g)
             noise = torch.randn(chosen[idx].shape, device=agent.device, generator=g)
             if args.weighting == "chosen":
@@ -153,12 +171,12 @@ def main():
             other = torch.randint(0, x.shape[1], (len(idx),), device=agent.device, generator=g)
             xb = forward_noise(scheduler, x[idx, other], torch.randn(chosen[idx].shape, device=agent.device, generator=g), t)
             with torch.no_grad():
-                reference = agent.predict(xb, t, c, "reference")
+                reference = agent.predict(xb, t, cond[idx], "reference")
             anchor = ((agent.predict(xb, t, c) - reference).square().mean((1, 2))*anchor_w[idx]).mean()
             loss = imitation + anchor
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
-            torch.nn.utils.clip_grad_norm_(agent.actor.parameters(), 1.0)
+            torch.nn.utils.clip_grad_norm_(trained, 1.0)
             optimizer.step()
             totals["imitation"] += float(imitation)*len(idx); totals["anchor"] += float(anchor)*len(idx)
         msg = f"[distill {time.time()-start:5.0f}s] epoch {epoch}: imitation {totals['imitation']/n:.4f} anchor {totals['anchor']/n:.2e}"
@@ -166,8 +184,11 @@ def main():
             ev = evaluate(agent, cls, seeds, "actor")
             log["evals"].append({"epoch": epoch, **ev})
             msg += "  val: " + "  ".join(f"{s} {v['success']}/{v['n']} {v['final_coverage']:.3f}" for s, v in ev.items())
-            torch.save({"actor": {k: v.detach().cpu() for k, v in agent.actor.state_dict().items()},
-                        "trainable": args.trainable, "epoch": epoch}, args.out/f"actor-epoch{epoch}.pt")
+            payload = {"actor": {k: v.detach().cpu() for k, v in agent.actor.state_dict().items()},
+                       "trainable": args.trainable, "epoch": epoch}
+            if args.train_encoder:
+                payload["encoder"] = {k: v.detach().cpu() for k, v in agent.network.obs_encoder.state_dict().items()}
+            torch.save(payload, args.out/f"actor-epoch{epoch}.pt")
         print(msg, flush=True)
         (args.out/"log.json").write_text(json.dumps(log, indent=1))
     print(f"wrote {args.out}")

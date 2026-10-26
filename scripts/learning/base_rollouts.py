@@ -59,6 +59,8 @@ def build(student=None):
     agent = ForwardPolicy(OfficialDiffusionPolicy(source, ROOT/"checkpoints/official-dp/ema_policy.pt"), config)
     if payload:
         agent.actor.load_state_dict({k: v.to(agent.device) for k, v in payload["actor"].items()})
+        if "encoder" in payload:                      # students trained with distill.py --train-encoder
+            agent.network.obs_encoder.load_state_dict({k: v.to(agent.device) for k, v in payload["encoder"].items()})
     return agent, make_official_shape_env_class(load_official_source(source))
 
 
