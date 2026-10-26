@@ -1,7 +1,8 @@
 # Policy learning findings, 2026-10-24 to 2026-10-26
 
-Status: in progress. A learned-world-model planning teacher now solves all D, most Y
-and 42% of L validation scenes in the real simulator. A first attempt to distill it
+Status: in progress. Every individual run, including abandoned ones, is listed in the
+[experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher now solves all D, most Y
+and 42% of L validation scenes in the real simulator. Two rounds of distilling it
 into the deployable image policy failed (worse than the base on every shape); no
 image-policy improvement has been established. Negative results are kept below on
 purpose. Code is in `scripts/learning/` (see its
@@ -14,7 +15,8 @@ purpose. Code is in `scripts/learning/` (see its
    learn. Small steps left the policy unchanged; larger steps degraded T (dense
    3e-5: T 0.55 -> 0.05 by update 75). Training stopped at about 150 updates.
 2. Cause: the training score is mostly noise. Only 16-36% of a candidate plan's
-   score variance comes from the plan itself (split-half reliability 0.14-0.29);
+   score variance comes from the plan itself (6-29% after a bias correction;
+   split-half reliability 0.14-0.29);
    the random follow-up plans dominate. Updates had no anchor to the start policy.
 3. Re-ranking the base policy's own plans with the true simulator helps a little
    (Y 3/20 -> 8/20), and imitating those choices stays within evaluation noise.
@@ -26,10 +28,10 @@ purpose. Code is in `scripts/learning/` (see its
    A sampling planner inside the model succeeds in the real simulator on
    50 validation scenes per letter: D 50/50, Y 36/50, L 21/50, against base rates
    of 0.3%, 9.4% and 0.1%. It is worse than the base on T (5/50) and near-T (12/50).
-6. The first attempt to distill the planner into the image policy made it worse
-   on every shape (validation T 35 -> 15-25, D coverage 0.30 -> 0.08-0.20). The
-   planner's labels are likely too inconsistent for 8-control chunks; that is
-   being tested next. No image-policy improvement is established.
+6. Two rounds of distilling the planner into the image policy made it worse on
+   every shape (validation T 35 -> 15-31, D coverage 0.30 -> 0.08-0.26), including
+   with labels made consistent with 8-control chunks. Training the image encoder
+   as well is being tested. No image-policy improvement is established.
 
 ## Evaluation protocol
 
@@ -92,8 +94,9 @@ better than the noisy score. Literature review: the
 ## 3. Simulator-oracle best-of-N and imitation
 
 `oracle_bon.py` samples N base plans per decision, tries each in a replayed copy
-of the episode (8 own controls plus 24 base controls), and commits the best. This
-uses the true simulator at decision time, so it is an upper bound, not a policy.
+of the episode (8 own controls plus 16 base controls in round 1, 24 later), and
+commits the best. This uses the true simulator at decision time, so it is an upper
+bound, not a policy.
 
 | Shape (paired scenes) | Base success | Oracle success | Final coverage |
 | --- | --- | --- | --- |
@@ -227,8 +230,13 @@ the student (20 validation scenes: D 20, Y 14, L 7, against 19-20, 16-18 and 6-7
 when replanning every control). Round 2 therefore labels each record with the plan
 the teacher actually executes (`mpc_dagger.py --execute 8 --every 8`); in a smoke
 test the largest jump inside a label fell from a median of 56 px to 31 px. Round 2
-collects 450 new training scenes and trains three students with a stronger T
-anchor; results will be added here.
+(13.4k records from 450 new scenes, plus T retention) failed in the same way: every
+student stayed below the base, with validation T at 21-31 against 35 and D coverage
+at 0.18-0.26 against 0.30 (all epochs in the experiment log). The imitation loss
+stayed high, which suggests the student cannot represent the teacher's behavior.
+One candidate cause: the image encoder stays frozen during distillation and was only
+ever trained on T. Round 3 (running) trains the encoder too
+(`distill.py --train-encoder`) on 26k records, with a frozen-encoder control.
 
 ## Privileged signals and priors (disclosure)
 
