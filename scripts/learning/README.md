@@ -19,7 +19,7 @@ keep them outside Git.
 | `wm_state.py` | Generic MLP state world model | too coarse |
 | `wm2.py` | Structured state world model: exact pusher, exact contact geometry, learned object motion | used by the planner |
 | `teacher_bptt.py`, `teacher2.py` | SuperMimic-style BPTT teachers through the world models | negative |
-| `mpc_teacher.py` | Sampling planner inside `wm2`, evaluated in the real simulator | solves most Y/D/L scenes |
+| `mpc_teacher.py` | Sampling planner inside `wm2`, evaluated in the real simulator | D 50/50, Y 36/50, L 21/50 validation scenes |
 | `mpc_dagger.py` | Planner demonstrations in `distill.py` format, optional DAgger | round 1 collected |
 
 Scene pools are listed in the findings document. Teachers and the oracle read

@@ -10,7 +10,7 @@ Batched over all scenes of one shape.
 
 Recommended flags (each fixed a measured stall 2-4 px short of the goal; see docs/LEARNING_FINDINGS.md):
   --select best --gate-margin 0 --pushes 128 --horizon 48 --knots 8 --approach 0 --kp area --tight 2
-  20 validation scenes: D 20/20, Y 16/20, L 7/20, T_narrow 3/20, T about 10% (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
+  50 validation scenes: D 50/50, Y 36/50, L 21/50, T_narrow 12/50, T 5/50 (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
 
   .venv/bin/python -B mpc_teacher.py --wm $RUNS/wm2/v1/model.pt --shape T --scenes 20 --out $RUNS/mpc/T.json
 """
