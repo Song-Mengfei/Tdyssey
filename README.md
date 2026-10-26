@@ -121,9 +121,9 @@ separate from any unmerged contact-weighted or replay trainer.
 Historical experimental schedules/results are not bundled or automatically rerun.
 
 Actual training currently requires the Windows Job/resource guard and NVIDIA
-driver tools; Linux execution refuses rather than dropping those limits. CLI,
-data/array and fake checks are portable, but native Windows/CUDA and Linux GUI
-runs have not been validated by this code-packaging change. This is H1 only:
+driver tools; Linux execution refuses before training. Native Windows/CUDA
+training and Linux GUI runs have not been validated by this code-packaging
+change. This is H1 only:
 high-overlap grey-object/green-goal predictions can still lose object parts.
 Image loss improvements do not establish physical dynamics or policy quality.
 
