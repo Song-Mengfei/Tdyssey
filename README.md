@@ -90,6 +90,43 @@ settings and three developer work packages. Proposed settings are not tested def
 
 ## Work without installing anything
 
+### Raw T/L H1 model tools
+
+Use the existing locked DP/GPC environment and pinned upstream source checkouts
+from `manifests/upstream.json`. Supply their paths explicitly; no sibling folder,
+downloaded model, data or machine-specific experiment directory is assumed.
+The viewer accepts a user-provided **model-only** checkpoint, its SHA256 and raw
+JSON sidecar (`updates`, `init_sha256`, raw input contract). No weights/data are
+distributed here, and a missing asset is an error.
+
+```bash
+python scripts/visualize_world_model.py --gpc-root "$GPC_SOURCE" \
+  --source-root "$OFFICIAL_SOURCE" --checkpoint "$MODEL" \
+  --checkpoint-sha256 "$MODEL_SHA256" --sidecar "$SIDECAR" --check-assets
+# Remove --check-assets to open the viewer. Click once to predict and execute
+# one control; T/L select shape, R resets, S saves a complete case, V records.
+python scripts/train_raw_world_model.py --datasets "$T_DATA" "$L_DATA" \
+  --output runs/raw-tl --steps 2328 --seconds 1200 --gpc-root "$GPC_SOURCE" \
+  --checkpoint "$INITIAL_CHECKPOINT" --initial --export-steps 500
+# This prints a plan. Add --execute only for an authorized Windows training run.
+```
+
+The raw SFT entry indexes only whole-episode train splits, alternates unique T/L
+windows and keeps one episode cached. It uses five original RGB frames/four
+actions, native phase-two one-step residual loss, batch1, AdamW1e-4 and seed5478.
+Steps, datasets, output and optional export steps are explicit; the default is a
+read-only plan and `--execute` is required for training. Exports contain only
+model weights and a small sidecar, never optimizer/account restoration. This is
+separate from any unmerged contact-weighted or replay trainer.
+Historical experimental schedules/results are not bundled or automatically rerun.
+
+Actual training currently requires the Windows Job/resource guard and NVIDIA
+driver tools; Linux execution refuses rather than dropping those limits. CLI,
+data/array and fake checks are portable, but native Windows/CUDA and Linux GUI
+runs have not been validated by this code-packaging change. This is H1 only:
+high-overlap grey-object/green-goal predictions can still lose object parts.
+Image loss improvements do not establish physical dynamics or policy quality.
+
 Source and documentation work needs only an existing editor and Python 3.11+.
 These commands create no environment or package cache:
 
