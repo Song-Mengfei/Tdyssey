@@ -1,9 +1,10 @@
 # Policy learning findings, 2026-10-24 to 2026-10-26
 
 Status: in progress. A learned-world-model planning teacher now solves all D, most Y
-and 42% of L validation scenes in the real simulator. Distilling it into the deployable image policy has
-started; no image-policy improvement has been established yet. Negative results are
-kept below on purpose. Code is in `scripts/learning/` (see its
+and 42% of L validation scenes in the real simulator. A first attempt to distill it
+into the deployable image policy failed (worse than the base on every shape); no
+image-policy improvement has been established. Negative results are kept below on
+purpose. Code is in `scripts/learning/` (see its
 [README](../scripts/learning/README.md)); decisions are D035-D039 in
 [DECISIONS.md](DECISIONS.md).
 
@@ -25,8 +26,10 @@ kept below on purpose. Code is in `scripts/learning/` (see its
    A sampling planner inside the model succeeds in the real simulator on
    50 validation scenes per letter: D 50/50, Y 36/50, L 21/50, against base rates
    of 0.3%, 9.4% and 0.1%. It is worse than the base on T (5/50) and near-T (12/50).
-6. Next: distill the planner into the image policy, anchored to the base on T,
-   then a pre-registered acceptance test on 1000 fresh scenes.
+6. The first attempt to distill the planner into the image policy made it worse
+   on every shape (validation T 35 -> 15-25, D coverage 0.30 -> 0.08-0.20). The
+   planner's labels are likely too inconsistent for 8-control chunks; that is
+   being tested next. No image-policy improvement is established.
 
 ## Evaluation protocol
 
@@ -201,7 +204,25 @@ actually executed next 16 targets. Round 1: 11.5k records from Y, D and L, plus
 3.0k T/near-T retention records (earlier oracle records of base plans). `distill.py
 --anchor-shapes T T_narrow` anchors only those records to the base, so Y/D/L can
 follow the teacher. Three dense students (lr 3e-5, 1e-4, and 3e-5 with a 0.1
-anchor on all shapes) are training; results will be added here.
+anchor on all shapes), 100 validation scenes each:
+
+| Policy | T | near-T | Y | D coverage | L coverage |
+| --- | --- | --- | --- | --- | --- |
+| Base | 35 | 37 | 9 | 0.30 | 0.32 |
+| lr 3e-5, epoch 10 / 20 | 15 / 21 | 17 / 14 | 3 / 1 | 0.12 / 0.08 | 0.21 / 0.15 |
+| lr 1e-4, epoch 10 / 20 | 18 / 18 | 14 / 12 | 1 / 5 | 0.20 / 0.12 | 0.20 / 0.22 |
+| lr 3e-5 + 0.1 anchor, epoch 10 / 20 | 20 / 25 | 17 / 13 | 3 / 7 | 0.14 / 0.09 | 0.24 / 0.20 |
+
+Distillation failed: every student is worse than the base, including on the
+letters the teacher solves, and the T anchor did not protect T. The imitation
+loss stayed about ten times higher than on oracle data (0.08 against 0.007).
+Likely reasons, not yet separated: labels stitched from a planner that replans
+every control are inconsistent as 8-control open-loop chunks (its targets jump
+20-150 px between controls while going around the letter); the policy's states
+drift away from the teacher's (no DAgger yet); and the imitation gradient
+overwhelms the anchor on shared weights. Next test: whether the planner still
+succeeds when it executes 8-control open-loop chunks like the student, which
+would give consistent labels.
 
 ## Privileged signals and priors (disclosure)
 
@@ -237,12 +258,13 @@ parallel jobs.
 
 ## Open problems
 
-- Whether the image policy can absorb a closed-loop planner's behavior in 8-control
-  chunks. If not, collect DAgger labels on student-visited states (`--beta < 1`),
-  or execute fewer controls per plan.
+- Making the planner's behavior learnable by the 8-control image policy:
+  chunk-consistent labels, DAgger labels on student-visited states (`--beta < 1`),
+  a stronger anchor, or fewer executed controls per plan.
 - The planner's leftover T rotation.
 - A planner bug found by the new test: push candidates jumped onto the safe circle
-  when the pusher started outside it. All planner numbers above predate the fix;
-  the fixed version is being re-evaluated.
+  when the pusher started outside it. The numbers above predate the fix; on the
+  same 20 validation scenes the fixed planner gave Y 18, D 19, L 6, near-T 4 and
+  T 1/24 against 16, 20, 7, 3 and 3/24, a difference within noise.
 - Final claims need the 1000-scene acceptance test against the base, with T and
   near-T non-inferiority and new-letter superiority fixed in advance.
