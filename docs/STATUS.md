@@ -41,7 +41,9 @@ inspection/plan review milestone.
   validation scenes but only T 5/50 and near-T 12/50 (D039). Round-1 teacher data
   (350 scenes, 14.6k records with T retention) was distilled into three image
   students; all were worse than the base on every shape (validation T 35 ->
-  15-25), so naive distillation of the closed-loop planner fails. New physics checks: `tests/test_learning_wm_runtime.py`.
+  15-25), so naive distillation of the closed-loop planner fails. Round 2 with chunk-consistent
+  labels failed the same way; round 3 also trains the image encoder. Every run is
+  listed in the [experiment log](LEARNING_EXPERIMENT_LOG.md). New physics checks: `tests/test_learning_wm_runtime.py`.
 
 - H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
   `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
@@ -371,10 +373,11 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Make the planning teacher learnable by the image policy (D039). Round-1
-distillation failed. Test whether the planner works when executing 8-control
-open-loop chunks (consistent labels), then add DAgger rounds on student-visited
-states (`mpc_dagger.py --student ... --beta 0.5`) and a stronger T anchor. Re-evaluate the planner after the push-candidate fix, and reduce
+Make the planning teacher learnable by the image policy (D039). Rounds 1-2 of
+distillation failed, including with chunk-consistent labels. Check round 3 (image
+encoder trained too); if it also fails, test whether the student can fit its own
+training labels at all, then try DAgger on student-visited states
+(`mpc_dagger.py --student ... --beta 0.5`). Re-evaluate the planner after the push-candidate fix, and reduce
 its leftover T rotation. Run the 1000-scene acceptance test (D036) only for a
 student that passes validation and the monitor test.
 
