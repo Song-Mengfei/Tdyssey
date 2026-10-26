@@ -18,11 +18,12 @@ class LearningWorldModelRuntimeChecks(unittest.TestCase):
         sys.path.insert(0, str(ROOT/"scripts/learning"))
         import numpy as np
         import torch
+        import mpc_teacher
         import teacher2
         import wm2
         from tdyssey.envs.official import make_official_shape_env_class
         from tdyssey.official import load_official_source, physical_metrics, physical_state
-        cls.np, cls.torch, cls.wm2 = np, torch, wm2
+        cls.np, cls.torch, cls.wm2, cls.mpc = np, torch, wm2, mpc_teacher
         cls.metrics, cls.state = staticmethod(physical_metrics), staticmethod(physical_state)
         cls.env_class = make_official_shape_env_class(load_official_source(Path(os.environ["TDYSSEY_OFFICIAL_ROOT"])))
         cls.geo = teacher2.Geometry("cpu")
@@ -70,6 +71,23 @@ class LearningWorldModelRuntimeChecks(unittest.TestCase):
                 self.place(env, k, dx=3.0)                  # a 3 px offset already fails the 0.95 success rule
                 self.assertLess(self.metrics(env)["coverage"], 0.95)
 
+
+    def test_push_candidates_start_at_the_pusher_and_end_pushing_the_letter(self):
+        torch = self.torch
+        pushes = self.mpc.Pushes(self.geo, "cpu", pool=128)
+        gen = torch.Generator().manual_seed(0)
+        for k, name in enumerate(self.wm2.SHAPES):
+            with self.subTest(shape=name):
+                g = self.geo.goals[k]
+                s = torch.tensor([[g[0]+5, g[1]-4, g[2]+0.05, 0, 0, 0, 90.0, 90.0, 0, 0]])
+                sh = torch.tensor([k])
+                path = pushes.sample(s, sh, 64, 48, gen)[0]                       # (64, 48, 2)
+                self.assertLess(float((path[:, 0]-s[0, 6:8]).norm(dim=-1).max()), 20.0 + 1e-3)
+                rx, ry = self.wm2.rot(path[:, -1, 0]-s[0, 0], path[:, -1, 1]-s[0, 1], -s[0, 2])
+                sdf = self.wm2.box_sdf(torch.stack([rx, ry], -1)[None], self.geo.rects[sh])[0] - self.wm2.RADIUS
+                finished = path[:, -1].sub(path[:, -2]).norm(dim=-1) < 1e-4            # candidates that completed the push
+                self.assertTrue(bool(finished.any()))
+                self.assertTrue(bool((sdf[finished] < 0).all()))                    # the disk ends overlapping the letter
 
 if __name__ == "__main__":
     unittest.main()

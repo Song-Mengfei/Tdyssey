@@ -96,7 +96,7 @@ class Pushes:
         p0 = s[:, None, 6:8].expand(-1, M, -1)
         Rs = (self.radius[sh] + wm2.RADIUS + 8)[:, None]
         rel0 = p0-o; r0 = rel0.norm(dim=-1).clamp(min=1e-3)
-        w1 = torch.where((r0 < Rs)[..., None], o + rel0/r0[..., None]*Rs[..., None], p0)
+        w1 = o + rel0/r0[..., None]*Rs[..., None]                          # move radially onto the safe circle (in or out)
         relp = pre-o; rp = relp.norm(dim=-1).clamp(min=1e-3)
         w2 = o + relp/rp[..., None]*Rs[..., None]
         direct = rp >= Rs                                                     # pre-contact point outside the circle: go straight
