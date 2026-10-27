@@ -709,3 +709,13 @@ three monitor-tested encoder-heavy blends selected the large student (lr 1e-4) w
 base action network and a 70% student encoder. Final test: T -2.5 [-6.2, +1.2], near-T
 -2.0 [-5.8, +1.8], Y +8.7 [+5.7, +11.7], D +1.1 [+0.3, +1.9], L +0.0. Conditions 1 and
 2 failed (lower bounds below -5); reported as the second look at the final pool.
+
+## D041 — Confirmatory test of the secondary candidate on a fresh pool (2026-10-27)
+
+The secondary candidate from D040 (large student, lr 1e-4: base action network plus
+70% student encoder) is fixed. It is tested once more, against the base, on a pool
+never used for training, selection or evaluation: 2000 scenes per letter with seeds
+2000000 + 20*i (policy noise seed 42), base and candidate paired by scene. The same
+four conditions and 95% intervals as D040 apply. Because the candidate was chosen
+before any of this pool existed, the test is free of selection bias. It is reported
+together with both earlier looks at the 900000 pool, not instead of them.
