@@ -56,7 +56,9 @@ checkpoints and data stay outside Git in the author's private store.
 | 10-26/27 night | Idle guard: 70 clean rounds of planner data; 7 rounds quarantined (final-test seeds) | 31,500 clean episodes |
 | 10-27 | Weight blending of students with the base (WiSE-FT style) | T recovered on validation |
 | 10-27 | Pre-registered 1000-scene final test of one blend (D040) | Y +2.9, D +4.6 (significant), T -4.8: not passed |
-| 10-27 | Narrated 25-minute explainer video (outside Git) | done |
+| 10-27 | Part-swap diagnosis and encoder-heavy blends | T loss comes from the student's action network |
+| 10-27 | Secondary final test of an encoder blend | Y +8.7, D +1.1 (significant), T -2.5 [-6.2, +1.2]: not passed |
+| 10-27 | Narrated explainer video, updated to 29 minutes (outside Git) | done |
 
 Notes on specific rows below: the value-function D row averages the 3 of 6 contexts
 in which candidates differed (in the others every candidate failed). Planner run
@@ -295,10 +297,14 @@ Frozen base on the 100-scene monitor test (300000 pool): evaluation noise and DD
 |  |  |  |  | epoch 20 | T 37/100 (0.68) T_narrow 30/100 (0.68) Y 9/100 (0.54) D 5/100 (0.49) L 1/100 (0.34) |
 |  |  |  |  | epoch 30 | T 31/100 (0.62) T_narrow 30/100 (0.67) Y 7/100 (0.58) D 2/100 (0.46) L 1/100 (0.38) |
 |  |  |  |  | epoch 40 | T 37/100 (0.65) T_narrow 31/100 (0.68) Y 15/100 (0.60) D 2/100 (0.48) L 6/100 (0.46) |
-| mpc-big-lr1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, guard-10050, guard-10200, guard-10350, guard-1050, guard-10500, guard-10650, guard-10800, guard-10950, guard-11100, guard-11250, retain-T, retain-self | action_network, lr 0.0001, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 178498 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
-|  |  |  |  | epoch 8 | T 22/100 (0.59) T_narrow 18/100 (0.56) Y 2/100 (0.35) D 0/100 (0.39) L 1/100 (0.33) |
 | mpc-big-lr3e-5 | r2, r2b, r2c, dagger-it1, dagger-it2, guard-10050, guard-10200, guard-10350, guard-1050, guard-10500, guard-10650, guard-10800, guard-10950, guard-11100, guard-11250, retain-T, retain-self | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 178498 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
 |  |  |  |  | epoch 8 | T 32/100 (0.64) T_narrow 38/100 (0.67) Y 4/100 (0.46) D 2/100 (0.40) L 2/100 (0.31) |
+|  |  |  |  | epoch 16 | T 37/100 (0.68) T_narrow 31/100 (0.67) Y 15/100 (0.53) D 4/100 (0.43) L 2/100 (0.34) |
+| mpc-big-lr1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, guard-10050, guard-10200, guard-10350, guard-1050, guard-10500, guard-10650, guard-10800, guard-10950, guard-11100, guard-11250, retain-T, retain-self | action_network, lr 0.0001, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 178498 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 8 | T 22/100 (0.59) T_narrow 18/100 (0.56) Y 2/100 (0.35) D 0/100 (0.39) L 1/100 (0.33) |
+|  |  |  |  | epoch 16 | T 27/100 (0.61) T_narrow 22/100 (0.55) Y 14/100 (0.52) D 4/100 (0.43) L 5/100 (0.44) |
+| mpc-enconly-lr3e-5 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+| mpc-enconly-lr1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | action_network, lr 0.0001, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
 
 Students on the monitor test (300000 pool, 100 scenes per shape):
 
@@ -322,6 +328,11 @@ Students on the monitor test (300000 pool, 100 scenes per shape):
 | blend-r4e60-s0.7 | 47 (0.73) | 38 (0.71) | 13 (0.66) | 3 (0.56) | 0 (0.37) |
 | blend-r4e60-s0.5 | 36 (0.71) | 42 (0.72) | 14 (0.69) | 1 (0.51) | 0 (0.37) |
 | blend-dag2-s0.5 | 43 (0.73) | 31 (0.75) | 17 (0.71) | 2 (0.45) | 0 (0.37) |
+| mpc-big-lr3e-5-last | 35 (0.61) | 31 (0.65) | 8 (0.49) | 10 (0.49) | 1 (0.36) |
+| mpc-big-lr1e-4-last | 25 (0.56) | 26 (0.61) | 8 (0.48) | 1 (0.40) | 4 (0.41) |
+| blend-dag2-unet0.3-enc1.0 | 43 (0.74) | 39 (0.69) | 14 (0.65) | 0 (0.48) | 0 (0.35) |
+| blend-big4-unet0-enc0.7 | 39 (0.68) | 33 (0.64) | 16 (0.61) | 1 (0.43) | 0 (0.33) |
+| blend-r4e60-unet0.3-enc0.7 | 39 (0.72) | 35 (0.69) | 11 (0.67) | 2 (0.50) | 0 (0.35) |
 
 ## 6. 2026-10-25/26, privileged state world models and BPTT teachers
 
@@ -463,6 +474,22 @@ training; they are not counted above.
 | blend-r4e60-s0.7 | 39 (0.71) | 42 (0.73) | 12 (0.72) | 4 (0.58) | 0 (0.40) |
 | blend-dag2-s0.5 | 45 (0.76) | 40 (0.74) | 15 (0.69) | 0 (0.47) | 0 (0.35) |
 | blend-dag2-s0.7 | 39 (0.76) | 44 (0.75) | 15 (0.70) | 1 (0.52) | 0 (0.35) |
+| blend-r4e60-unet0-enc0.7 | 51 (0.72) | 45 (0.70) | 12 (0.59) | 2 (0.39) | 0 (0.34) |
+| blend-r4e60-unet0.7-enc0 | 33 (0.69) | 40 (0.77) | 7 (0.64) | 0 (0.43) | 0 (0.34) |
+| blend-r4e60-unet0.7-enc0.3 | 38 (0.71) | 32 (0.72) | 11 (0.63) | 0 (0.48) | 0 (0.34) |
+| blend-r4e60-unet1-enc0 | 30 (0.66) | 23 (0.64) | 2 (0.52) | 1 (0.41) | 0 (0.31) |
+| blend-mpc-big-lr3e-5-s0.5 | 46 (0.74) | 33 (0.68) | 16 (0.66) | 1 (0.41) | 0 (0.32) |
+| blend-mpc-big-lr3e-5-s0.7 | 41 (0.72) | 32 (0.68) | 12 (0.65) | 2 (0.49) | 1 (0.36) |
+| blend-mpc-big-lr1e-4-s0.5 | 41 (0.71) | 36 (0.69) | 6 (0.62) | 1 (0.49) | 0 (0.37) |
+| blend-mpc-big-lr1e-4-s0.7 | 40 (0.66) | 31 (0.65) | 10 (0.61) | 6 (0.52) | 0 (0.36) |
+| blend-r4e60-unet0-enc1.0 | 42 (0.68) | 46 (0.72) | 8 (0.54) | 0 (0.40) | 0 (0.33) |
+| blend-r4e60-unet0-enc0.5 | 47 (0.71) | 41 (0.72) | 9 (0.55) | 0 (0.36) | 0 (0.34) |
+| blend-r4e60-unet0.3-enc0.7 | 44 (0.75) | 46 (0.77) | 15 (0.68) | 1 (0.47) | 0 (0.33) |
+| blend-r4e60-unet0.3-enc1.0 | 46 (0.74) | 46 (0.74) | 10 (0.68) | 1 (0.48) | 1 (0.35) |
+| blend-dag2-unet0-enc0.7 | 50 (0.75) | 41 (0.73) | 7 (0.57) | 0 (0.41) | 0 (0.33) |
+| blend-dag2-unet0.3-enc1.0 | 48 (0.76) | 51 (0.76) | 18 (0.67) | 3 (0.49) | 0 (0.34) |
+| blend-big3-unet0-enc0.7 | 46 (0.70) | 46 (0.74) | 6 (0.60) | 1 (0.38) | 0 (0.32) |
+| blend-big4-unet0-enc0.7 | 42 (0.73) | 41 (0.68) | 20 (0.59) | 1 (0.43) | 0 (0.32) |
 
 ## 9. Frozen base on the 1000-scene final test pool (900000)
 
@@ -474,7 +501,7 @@ training; they are not counted above.
 | D | 1000 | 3 | 0.003 | 0.314 |
 | L | 1000 | 1 | 0.001 | 0.317 |
 
-Pre-registered final test (D040) of `blend-r4e60-s0.7`, paired by scene with the base:
+Primary pre-registered final test (D040) of `blend-r4e60-s0.7`, paired by scene with the base:
 
 | Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
 | --- | --- | --- | --- | --- | --- |
@@ -486,9 +513,20 @@ Pre-registered final test (D040) of `blend-r4e60-s0.7`, paired by scene with the
 
 Pass conditions: 1_T_noninferior no, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: not passed.
 
+Secondary final test (look 2 at the final pool) of `blend-big4-unet0-enc0.7`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 1000 | 44.4% | 41.9% | -2.5 [-6.2, +1.2] | 0.692 -> 0.701 |
+| T_narrow | 1000 | 41.9% | 39.9% | -2.0 [-5.8, +1.8] | 0.696 -> 0.709 |
+| Y | 1000 | 9.4% | 18.1% | +8.7 [+5.7, +11.7] | 0.578 -> 0.635 |
+| D | 1000 | 0.3% | 1.4% | +1.1 [+0.3, +1.9] | 0.314 -> 0.432 |
+| L | 1000 | 0.1% | 0.1% | +0.0 [-0.3, +0.3] | 0.317 -> 0.334 |
+
+Pass conditions: 1_T_noninferior no, 2_T_narrow_noninferior no, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: not passed.
+
 ## 10. Running or pending when this was written
 
-- Two large students (178k records: chunk data, DAgger 1-2, 10 clean guard rounds, T
-  retention including the base's own plans), and their blends on validation.
-- Blending the action network and the image encoder separately, to locate the T loss.
-- Any further final-test candidate is a secondary result under D040.
+- Students that train only the image encoder with the base action network frozen
+  (`distill.py --freeze-actor`).
+- Any further final-test candidate is another secondary look at the final pool.
