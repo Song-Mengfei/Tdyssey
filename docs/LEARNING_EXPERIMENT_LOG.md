@@ -58,7 +58,10 @@ checkpoints and data stay outside Git in the author's private store.
 | 10-27 | Pre-registered 1000-scene final test of one blend (D040) | Y +2.9, D +4.6 (significant), T -4.8: not passed |
 | 10-27 | Part-swap diagnosis and encoder-heavy blends | T loss comes from the student's action network |
 | 10-27 | Secondary final test of an encoder blend | Y +8.7, D +1.1 (significant), T -2.5 [-6.2, +1.2]: not passed |
-| 10-27 | Narrated explainer video, updated to 29 minutes (outside Git) | done |
+| 10-27 | D041 confirmatory test of the 70% encoder blend, 2000 fresh scenes | Y +8.0 confirmed; T -3.1 [-5.9, -0.4]: not passed |
+| 10-27 | Diffusion-policy samples as planner candidates; LoRA students; encoder-only students | no improvement over existing results |
+| 10-27 | D042 test of 30% and 50% encoder blends, 2000 fresh scenes, 97.5% intervals | both passed; 50%: Y 8.6% -> 14.8%, D 0.3% -> 1.1% |
+| 10-27 | Narrated explainer video (29 min) and a 3:41 milestone summary (outside Git) | done |
 
 Notes on specific rows below: the value-function D row averages the 3 of 6 contexts
 in which candidates differed (in the others every candidate failed). Planner run
@@ -304,7 +307,17 @@ Frozen base on the 100-scene monitor test (300000 pool): evaluation noise and DD
 |  |  |  |  | epoch 8 | T 22/100 (0.59) T_narrow 18/100 (0.56) Y 2/100 (0.35) D 0/100 (0.39) L 1/100 (0.33) |
 |  |  |  |  | epoch 16 | T 27/100 (0.61) T_narrow 22/100 (0.55) Y 14/100 (0.52) D 4/100 (0.43) L 5/100 (0.44) |
 | mpc-enconly-lr3e-5 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 37/100 (0.64) T_narrow 27/100 (0.65) Y 0/100 (0.02) D 0/100 (0.00) L 0/100 (0.01) |
+|  |  |  |  | epoch 20 | T 43/100 (0.69) T_narrow 38/100 (0.70) Y 0/100 (0.00) D 0/100 (0.01) L 0/100 (0.00) |
 | mpc-enconly-lr1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | action_network, lr 0.0001, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 50/100 (0.70) T_narrow 42/100 (0.67) Y 0/100 (0.01) D 1/100 (0.03) L 0/100 (0.02) |
+|  |  |  |  | epoch 20 | T 41/100 (0.71) T_narrow 35/100 (0.67) Y 0/100 (0.01) D 0/100 (0.05) L 0/100 (0.01) |
+| mpc-lora-enc1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | lora, lr 0.0003, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 31/100 (0.65) T_narrow 28/100 (0.62) Y 2/100 (0.31) D 1/100 (0.34) L 1/100 (0.18) |
+|  |  |  |  | epoch 20 | T 42/100 (0.67) T_narrow 35/100 (0.68) Y 2/100 (0.31) D 3/100 (0.36) L 1/100 (0.25) |
+| mpc-lora-enc3e-5 | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T, retain-self | lora, lr 0.0003, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 73892 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 43/100 (0.70) T_narrow 38/100 (0.68) Y 11/100 (0.47) D 2/100 (0.28) L 1/100 (0.17) |
+|  |  |  |  | epoch 20 | T 42/100 (0.67) T_narrow 34/100 (0.65) Y 2/100 (0.30) D 0/100 (0.36) L 0/100 (0.21) |
 
 Students on the monitor test (300000 pool, 100 scenes per shape):
 
@@ -333,6 +346,14 @@ Students on the monitor test (300000 pool, 100 scenes per shape):
 | blend-dag2-unet0.3-enc1.0 | 43 (0.74) | 39 (0.69) | 14 (0.65) | 0 (0.48) | 0 (0.35) |
 | blend-big4-unet0-enc0.7 | 39 (0.68) | 33 (0.64) | 16 (0.61) | 1 (0.43) | 0 (0.33) |
 | blend-r4e60-unet0.3-enc0.7 | 39 (0.72) | 35 (0.69) | 11 (0.67) | 2 (0.50) | 0 (0.35) |
+| mpc-enconly-lr1e-4-last | 44 (0.70) | 33 (0.66) | 0 (0.03) | 0 (0.05) | 0 (0.00) |
+| mpc-enconly-lr3e-5-last | 39 (0.66) | 30 (0.61) | 0 (0.01) | 1 (0.04) | 1 (0.01) |
+| blend-big4-unet0-enc0.3 | 41 (0.66) | 41 (0.67) | 13 (0.56) | 0 (0.41) | 0 (0.32) |
+| blend-big4-unet0-enc0.5 | 39 (0.66) | 43 (0.68) | 16 (0.61) | 1 (0.41) | 0 (0.34) |
+| blend-big4-unet0-enc1.0 | 40 (0.68) | 39 (0.65) | 10 (0.62) | 0 (0.42) | 0 (0.31) |
+| blend-r4e60-unet0-enc0.7 | 44 (0.72) | 29 (0.65) | 10 (0.55) | 1 (0.39) | 0 (0.33) |
+| mpc-lora-enc1e-4-last | 39 (0.65) | 32 (0.63) | 6 (0.34) | 2 (0.38) | 2 (0.25) |
+| mpc-lora-enc3e-5-last | 44 (0.69) | 32 (0.63) | 4 (0.31) | 2 (0.35) | 1 (0.25) |
 
 ## 6. 2026-10-25/26, privileged state world models and BPTT teachers
 
@@ -431,6 +452,31 @@ pusher-gap penalty 0.5, contact margin 3 px, corner pose error, elite-mean execu
 | v7-exec8-commit/L.json | L | 7/20 | 0.942 | 2.2 px / 1.0 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, pushes 128, select best, commit 0.02 |
 | v7-exec8/L.json | L | 7/20 | 0.945 | 1.9 px / 1.8 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, pushes 128, select best |
 | v7-exec8/Y.json | Y | 14/20 | 0.954 | 1.1 px / 0.8 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, pushes 128, select best |
+| smoke-dponly.json | Y | 0/2 | 0.008 | 87.3 px / 66.5 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| smoke-hybrid.json | Y | 2/2 | 0.963 | 0.6 px / 1.0 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-only/T_narrow.json | T_narrow | 0/20 | 0.312 | 68.0 px / 57.7 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-only/T.json | T | 0/20 | 0.346 | 68.0 px / 61.3 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-only/L.json | L | 0/20 | 0.252 | 62.4 px / 102.8 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-only/Y.json | Y | 0/20 | 0.259 | 76.1 px / 62.0 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-only/D.json | D | 0/20 | 0.361 | 33.1 px / 51.7 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-first/T.json | T | 10/20 | 0.731 | 6.0 px / 1.7 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-nowarm-h15/T.json | T | 11/20 | 0.804 | 2.1 px / 1.5 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-warm-h15/T.json | T | 0/20 | 0.192 | 95.4 px / 62.0 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-nowarm-h48/T.json | T | 8/20 | 0.821 | 5.4 px / 2.2 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-hybrid/T.json | T | 0/20 | 0.929 | 1.3 px / 3.0 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-hybrid/D.json | D | 18/20 | 0.939 | 0.9 px / 0.6 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-nowarm-h15/L.json | L | 0/20 | 0.379 | 18.2 px / 167.9 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-nowarm-h15/D.json | D | 1/20 | 0.530 | 14.7 px / 33.8 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-hybrid/T_narrow.json | T_narrow | 3/20 | 0.936 | 1.6 px / 2.4 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-hybrid/Y.json | Y | 15/20 | 0.957 | 1.0 px / 0.7 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-hybrid/L.json | L | 4/20 | 0.937 | 2.5 px / 0.4 deg | horizon 48, knots 8, approach 0.0, tight 2.0, kp area, gate_margin 0.0, pushes 128, select best |
+| dp-nowarm-h15/T_narrow.json | T_narrow | 9/20 | 0.812 | 2.6 px / 1.8 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-nowarm-h15/Y.json | Y | 7/20 | 0.799 | 1.7 px / 2.5 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-blend-nowarm-h15/T.json | T | 11/20 | 0.850 | 2.0 px / 1.5 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-blend-nowarm-h15/T_narrow.json | T_narrow | 8/20 | 0.765 | 4.7 px / 10.2 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-blend-nowarm-h15/Y.json | Y | 8/20 | 0.796 | 1.9 px / 0.7 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-blend-nowarm-h15/D.json | D | 5/20 | 0.703 | 4.0 px / 9.4 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
+| dp-blend-nowarm-h15/L.json | L | 0/20 | 0.404 | 19.1 px / 154.6 deg | horizon 15, knots 8, approach 0.0, tight 2.0, kp area, execute 8, gate_margin 0.0, select best |
 
 ## 8. Planner demonstrations for distillation (teacher-data pool 800000)
 
@@ -454,9 +500,9 @@ pusher-gap penalty 0.5, contact margin 3 px, corner pose error, elite-mean execu
 | dagger-it2 | D | 88/150 | 4255 | planner, 8-control chunks | beta 0.3 |
 | dagger-it2 | L | 47/150 | 5017 | planner, 8-control chunks | beta 0.3 |
 | dagger-it2 | Y | 80/150 | 4538 | planner, 8-control chunks | beta 0.3 |
-| guard (overnight idle-guard rounds) (70 rounds) | D | 9721/10500 | 139543 | planner, 8-control chunks | beta 1.0 |
-| guard (overnight idle-guard rounds) (70 rounds) | L | 2454/10500 | 344712 | planner, 8-control chunks | beta 1.0 |
-| guard (overnight idle-guard rounds) (70 rounds) | Y | 6460/10500 | 241006 | planner, 8-control chunks | beta 1.0 |
+| guard (overnight idle-guard rounds) (71 rounds) | D | 9857/10650 | 141544 | planner, 8-control chunks | beta 1.0 |
+| guard (overnight idle-guard rounds) (71 rounds) | L | 2499/10650 | 349426 | planner, 8-control chunks | beta 1.0 |
+| guard (overnight idle-guard rounds) (71 rounds) | Y | 6553/10650 | 244447 | planner, 8-control chunks | beta 1.0 |
 | retain-self | T | 71/180 | 5803 | policy's own plans | beta 0.0 |
 | retain-self | T_narrow | 83/180 | 5830 | policy's own plans | beta 0.0 |
 
@@ -525,8 +571,44 @@ Secondary final test (look 2 at the final pool) of `blend-big4-unet0-enc0.7`, pa
 
 Pass conditions: 1_T_noninferior no, 2_T_narrow_noninferior no, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: not passed.
 
+D041 confirmatory test on a fresh pool (2000 scenes per letter) of `blend-big4-unet0-enc0.7`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 2000 | 46.0% | 42.8% | -3.1 [-5.9, -0.4] | 0.714 -> 0.719 |
+| T_narrow | 2000 | 42.3% | 42.8% | +0.4 [-2.2, +3.1] | 0.698 -> 0.718 |
+| Y | 2000 | 8.8% | 16.8% | +8.0 [+6.0, +9.9] | 0.561 -> 0.640 |
+| D | 2000 | 0.1% | 0.9% | +0.8 [+0.3, +1.3] | 0.318 -> 0.439 |
+| L | 2000 | 0.0% | 0.0% | +0.0 [+0.0, +0.0] | 0.319 -> 0.330 |
+
+Pass conditions: 1_T_noninferior no, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: not passed.
+
+D042 test on a second fresh pool (2000 scenes per letter, 97.5% intervals, two candidates) of `blend-big4-unet0-enc0.3`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 2000 | 43.6% | 46.7% | +3.0 [+0.1, +6.0] | 0.700 -> 0.716 |
+| T_narrow | 2000 | 40.4% | 43.0% | +2.6 [-0.3, +5.6] | 0.691 -> 0.703 |
+| Y | 2000 | 8.6% | 11.8% | +3.2 [+1.1, +5.3] | 0.552 -> 0.590 |
+| D | 2000 | 0.3% | 0.3% | +0.0 [-0.4, +0.4] | 0.315 -> 0.377 |
+| L | 2000 | 0.0% | 0.0% | +0.0 [+0.0, +0.0] | 0.319 -> 0.334 |
+
+Pass conditions: 1_T_noninferior yes, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: PASS.
+
+D042 test on a second fresh pool (2000 scenes per letter, 97.5% intervals, two candidates) of `blend-big4-unet0-enc0.5`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 2000 | 43.6% | 45.4% | +1.8 [-1.3, +4.8] | 0.700 -> 0.714 |
+| T_narrow | 2000 | 40.4% | 41.8% | +1.4 [-1.6, +4.3] | 0.691 -> 0.706 |
+| Y | 2000 | 8.6% | 14.8% | +6.2 [+4.0, +8.4] | 0.552 -> 0.608 |
+| D | 2000 | 0.3% | 1.1% | +0.9 [+0.2, +1.5] | 0.315 -> 0.414 |
+| L | 2000 | 0.0% | 0.1% | +0.1 [-0.1, +0.3] | 0.319 -> 0.339 |
+
+Pass conditions: 1_T_noninferior yes, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: PASS.
+
 ## 10. Running or pending when this was written
 
-- Students that train only the image encoder with the base action network frozen
-  (`distill.py --freeze-actor`).
-- Any further final-test candidate is another secondary look at the final pool.
+- Nothing is required for the passing result. Possible follow-ups: confirm the 50% blend on the
+  900000 final pool or a third fresh pool, a DAgger round driven by the passing blend, and L,
+  which no image policy has improved yet.

@@ -735,3 +735,9 @@ seeds 3000000 + 20*i, policy noise seed 42, paired by scene. Because two candida
 tested, intervals are 97.5% (z = 2.24, Bonferroni); each candidate passes only if D040's
 four conditions hold at that width. Results are reported for both, with every earlier
 look.
+
+Outcome (2026-10-27): both candidates passed. 50% encoder: T +1.8 [-1.3, +4.8], near-T +1.4
+[-1.6, +4.3], Y +6.2 [+4.0, +8.4] (8.6% -> 14.8%), D +0.9 [+0.2, +1.5], L +0.1. 30% encoder:
+T +3.0 [+0.1, +6.0], near-T +2.6 [-0.3, +5.6], Y +3.2 [+1.1, +5.3], D 0, L 0 (all 97.5%
+intervals, 2000 scenes per letter). This is the first image policy that passes the
+no-regression rule; it is reported with the three earlier tests that did not pass.
