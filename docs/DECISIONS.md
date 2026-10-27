@@ -698,3 +698,8 @@ with every disclosure (privileged planner teacher, selection on validation and t
 monitor test). Otherwise the base remains the result. Other candidates may be tested
 later, but only this first one is the primary result; any later ones are reported
 as secondary, with the multiple comparisons stated.
+
+Outcome (2026-10-27): the rule selected the r4e60 student at s = 0.7. Final test: T
+39.6% vs 44.4% (difference -4.8, 95% interval -8.7 to -0.9), near-T -0.9 [-4.7, +2.9],
+Y +2.9 [+0.2, +5.6], D +4.6 [+3.2, +6.0], L +0.1 [-0.2, +0.4]. Condition 1 failed, so
+the base remains the result; see `LEARNING_FINDINGS.md`.
