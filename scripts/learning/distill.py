@@ -93,6 +93,8 @@ def main():
     parser.add_argument("--train-encoder", action="store_true",
                         help="Also train the image encoder (student copy); the anchor keeps the base's frozen features")
     parser.add_argument("--encoder-lr", type=float, default=None, help="Encoder learning rate (default: --lr)")
+    parser.add_argument("--freeze-actor", action="store_true",
+                        help="Keep the action network at the base (train only the encoder; needs --train-encoder)")
     parser.add_argument("--weighting", choices=("chosen", "softmax"), default="chosen",
                         help="chosen: imitate the oracle's pick; softmax: all candidates weighted by softmax(score/tau)")
     parser.add_argument("--tau", type=float, default=0.05)
@@ -145,7 +147,11 @@ def main():
     log["base_eval"] = base_eval
     print(f"[distill {time.time()-start:5.0f}s] base on validation: " +
           "  ".join(f"{s} {v['success']}/{v['n']} {v['final_coverage']:.3f}" for s, v in base_eval.items()), flush=True)
-    groups = [{"params": list(agent.actor.parameters()), "lr": args.lr}]
+    if args.freeze_actor and not args.train_encoder:
+        raise SystemExit("--freeze-actor needs --train-encoder")
+    if args.freeze_actor:
+        agent.actor.requires_grad_(False)
+    groups = [] if args.freeze_actor else [{"params": list(agent.actor.parameters()), "lr": args.lr}]
     if args.train_encoder:
         groups.append({"params": list(agent.network.obs_encoder.parameters()), "lr": args.encoder_lr or args.lr})
     trained = [q for g in groups for q in g["params"]]
