@@ -1,9 +1,11 @@
 # Shared project status
 
-Updated: 2026-10-26. Stage: forward-process RL stopped (noisy signal, D035); a
+Updated: 2026-10-27. Stage: forward-process RL stopped (noisy signal, D035); a
 privileged world-model planning teacher solves most D/Y/L scenes in the simulator
-(D039); a first distillation into the image policy failed; work continues on
-`feat/wm-planning-teacher`. Image-policy adaptation remains unestablished.
+(D039); a distilled image student blended with the base improves Y and D
+significantly on 1000 fresh scenes but loses 4.8 T points, so the pre-registered final
+test did not pass (D040) and the base remains the result. Work continues on
+`feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -42,8 +44,13 @@ inspection/plan review milestone.
   (350 scenes, 14.6k records with T retention) was distilled into three image
   students; all were worse than the base on every shape (validation T 35 ->
   15-25), so naive distillation of the closed-loop planner fails. Round 2 with chunk-consistent
-  labels failed the same way; round 3 also trains the image encoder. Every run is
-  listed in the [experiment log](LEARNING_EXPERIMENT_LOG.md). New physics checks: `tests/test_learning_wm_runtime.py`.
+  labels failed the same way. Training the encoder too, 60 epochs and DAgger gave the
+  first image students with D/L successes but 10-15 points lower T. Blending a
+  student with the base (`interpolate.py`) recovered most of T: the selected 70%
+  blend on the final-test pool had T 39.6% vs 44.4%, near-T 41.0% vs 41.9%, Y 12.3%
+  vs 9.4%, D 4.9% vs 0.3%, L 0.2% vs 0.1% (not passed: T lower bound -8.7 < -5).
+  Every run is listed in the [experiment log](LEARNING_EXPERIMENT_LOG.md). New
+  physics checks: `tests/test_learning_wm_runtime.py`.
 
 - H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
   `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
@@ -373,13 +380,11 @@ See `docs/VALIDATION.md` for commands and limits.
 
 ## Next task
 
-Make the planning teacher learnable by the image policy (D039). Rounds 1-2 of
-distillation failed, including with chunk-consistent labels. Check round 3 (image
-encoder trained too); if it also fails, test whether the student can fit its own
-training labels at all, then try DAgger on student-visited states
-(`mpc_dagger.py --student ... --beta 0.5`). Re-evaluate the planner after the push-candidate fix, and reduce
-its leftover T rotation. Run the 1000-scene acceptance test (D036) only for a
-student that passes validation and the monitor test.
+Keep T while learning the new letters (D040 failed on T alone). Candidates: more T
+retention data from the base's own plans (`mpc_dagger.py --label policy`), blending
+the action network and encoder separately, the large students now training, or a
+disclosed shape gate that routes T to the base. Any further final-test candidate is a
+secondary result under D040. Reduce the planner's leftover T rotation.
 
 The earlier next-task notes below predate these findings.
 

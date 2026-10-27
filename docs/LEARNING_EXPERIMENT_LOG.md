@@ -1,4 +1,4 @@
-# Policy learning experiment log, 2026-10-24 to 2026-10-26
+# Policy learning experiment log, 2026-10-24 to 2026-10-27
 
 This is the complete record of every policy-learning experiment run since the
 training setup began, including failed and abandoned ones. It is meant as source
@@ -26,8 +26,10 @@ checkpoints and data stay outside Git in the author's private store.
   rollouts gave about 4x per lineage (details in `STATUS.md`, D033).
 - **Idle GPU time.** The GPU sat idle twice because the queue ran out while no one was
   working: about 12 hours overnight (00:30-12:48 on 2026-10-26) and about 2.5 hours
-  (16:16-18:47 on 2026-10-26). An idle guard now starts more planner data collection
-  whenever the GPU has been empty for 10 minutes.
+  (16:16-18:47 on 2026-10-26), plus shorter gaps. An idle guard now starts more planner
+  data collection whenever the GPU has been empty for 3 minutes. Overnight on
+  2026-10-26/27 a chained job never started (its wait matched its own launcher), so
+  the guard's data collection ran for about 12 hours instead of DAgger iterations 3-4.
 - **Scene pools** (disjoint seed ranges, `base + 20*i`): development 100000,
   validation 400000, monitor test 300000, value/world-model data 600000, oracle data
   700000, teacher data 800000, final test 900000 (1000 scenes, reserved).
@@ -42,14 +44,19 @@ checkpoints and data stay outside Git in the author's private store.
 | 10-24 | 6 T/L and 2 near-miss lineages, about 1M controls each | policy barely moved (lr 1e-5) |
 | 10-25 | Step-size sweep, then long LoRA and dense runs | no learning; dense runs degraded T |
 | 10-25 | Score reliability, value function, A/A noise, DDIM checks | signal mostly noise (D035, D036) |
-| 10-25 | Literature review (`research/`) | recommended exact-simulator best-of-N, then distillation with a fixed base anchor; critics and steering as reserves |
+| 10-25 | Literature review (`research/`) | recommended an oracle and distillation, then critics/steering |
 | 10-25 | Oracle best-of-N rounds and DAgger rounds | small gains; imitation within noise (D037) |
 | 10-25 | 1000-scene final-test base evaluation | T 44.4%, near-T 41.9%, Y 9.4%, D 0.3%, L 0.1% |
 | 10-25/26 | Generic and structured state world models | structured model about 0.2 px over 8 controls (D038) |
 | 10-26 | BPTT teachers (SuperMimic-style) | failed to push |
 | 10-26 | Sampling planner, step-by-step fixes | D 50/50, Y 36/50, L 21/50 validation scenes (D039) |
 | 10-26 | Planner distillation rounds 1-2 | students worse than the base |
-| 10-26 | Round 3: train the image encoder too | running when this was written |
+| 10-26 | Round 3-4: train the image encoder too, 60 epochs | first D/L successes from images; T 10-15 points low |
+| 10-26/27 | DAgger iterations 1-2 (iterations 3-4 lost to a chaining bug) | Y up to 16/100, L up to 6/100; T still low |
+| 10-26/27 night | Idle guard: 70 clean rounds of planner data; 7 rounds quarantined (final-test seeds) | 31,500 clean episodes |
+| 10-27 | Weight blending of students with the base (WiSE-FT style) | T recovered on validation |
+| 10-27 | Pre-registered 1000-scene final test of one blend (D040) | Y +2.9, D +4.6 (significant), T -4.8: not passed |
+| 10-27 | Narrated 25-minute explainer video (outside Git) | done |
 
 Notes on specific rows below: the value-function D row averages the 3 of 6 contexts
 in which candidates differed (in the others every candidate failed). Planner run
@@ -59,9 +66,7 @@ iterations are too few. Runs with only 2-12 scenes were diagnostics, not estimat
 `extended-s1` was the sequential version of the 1M-control T/L runs; it recorded no
 update before the batched group replaced it, and its failure cause was not kept.
 The value function's R^2 of 0.64 on held-out scenes comes from its training output,
-which is not kept on the current node. The research report quotes the plan share as 6-29% after correcting for
-the finite number of follow-up draws; section 3 shows the raw 16-36%. The report's proposed scene-pool layout
-(validation at 300000) predates D036; the pools listed above are the ones actually used.
+which is not kept on the current node.
 
 ## 1. 2026-10-24, H200 sessions: forward-process RL pilots and 1M-control runs
 
@@ -258,6 +263,42 @@ Frozen base on the 100-scene monitor test (300000 pool): evaluation noise and DD
 |  |  |  |  | epoch 10 | T 29/100 (0.54) T_narrow 16/100 (0.49) Y 1/100 (0.44) D 0/100 (0.19) L 0/100 (0.25) |
 |  |  |  |  | epoch 20 | T 22/100 (0.46) T_narrow 21/100 (0.51) Y 0/100 (0.34) D 1/100 (0.17) L 0/100 (0.20) |
 |  |  |  |  | epoch 30 | T 21/100 (0.56) T_narrow 15/100 (0.54) Y 3/100 (0.40) D 0/100 (0.26) L 0/100 (0.24) |
+| mpc-r3-frozen-lr3e-5-a3 | r2, r2b, retain-T | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3 | 23608 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 22/100 (0.54) T_narrow 21/100 (0.51) Y 4/100 (0.41) D 0/100 (0.29) L 0/100 (0.27) |
+|  |  |  |  | epoch 20 | T 9/100 (0.40) T_narrow 10/100 (0.39) Y 4/100 (0.36) D 0/100 (0.22) L 0/100 (0.18) |
+|  |  |  |  | epoch 30 | T 24/100 (0.59) T_narrow 26/100 (0.53) Y 4/100 (0.49) D 0/100 (0.28) L 0/100 (0.25) |
+| mpc-r3-enc-lr1e-5-a3 | r2, r2b, retain-T | action_network, lr 1e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 23608 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 18/100 (0.48) T_narrow 22/100 (0.58) Y 3/100 (0.43) D 0/100 (0.22) L 0/100 (0.24) |
+|  |  |  |  | epoch 20 | T 20/100 (0.42) T_narrow 21/100 (0.52) Y 5/100 (0.35) D 0/100 (0.17) L 0/100 (0.19) |
+|  |  |  |  | epoch 30 | T 37/100 (0.62) T_narrow 28/100 (0.63) Y 4/100 (0.46) D 0/100 (0.26) L 0/100 (0.24) |
+| mpc-r3-enc-lr3e-5 | r2, r2b, retain-T | action_network, lr 3e-05, anchor 1.0 on ['T', 'T_narrow'] / other 0.1, encoder trained | 23608 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 17/100 (0.54) T_narrow 13/100 (0.54) Y 2/100 (0.47) D 1/100 (0.25) L 0/100 (0.24) |
+|  |  |  |  | epoch 20 | T 34/100 (0.63) T_narrow 19/100 (0.57) Y 2/100 (0.46) D 0/100 (0.25) L 0/100 (0.21) |
+|  |  |  |  | epoch 30 | T 29/100 (0.62) T_narrow 22/100 (0.59) Y 8/100 (0.51) D 0/100 (0.38) L 1/100 (0.24) |
+| mpc-r4-enc-lr3e-5-e60 | r2, r2b, r2c, retain-T | action_network, lr 3e-05, anchor 1.0 on ['T', 'T_narrow'] / other 0.1, encoder trained | 33849 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 15 | T 30/100 (0.65) T_narrow 24/100 (0.57) Y 4/100 (0.49) D 2/100 (0.36) L 1/100 (0.28) |
+|  |  |  |  | epoch 30 | T 31/100 (0.67) T_narrow 35/100 (0.67) Y 5/100 (0.51) D 2/100 (0.47) L 2/100 (0.33) |
+|  |  |  |  | epoch 45 | T 39/100 (0.68) T_narrow 25/100 (0.66) Y 9/100 (0.57) D 6/100 (0.50) L 4/100 (0.37) |
+|  |  |  |  | epoch 60 | T 36/100 (0.69) T_narrow 32/100 (0.73) Y 14/100 (0.60) D 6/100 (0.55) L 5/100 (0.50) |
+| mpc-dagger-it1-enc | r2, r2b, r2c, dagger-it1, retain-T | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 48449 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 23/100 (0.50) T_narrow 18/100 (0.53) Y 4/100 (0.41) D 1/100 (0.32) L 0/100 (0.19) |
+|  |  |  |  | epoch 20 | T 24/100 (0.54) T_narrow 30/100 (0.63) Y 6/100 (0.48) D 0/100 (0.40) L 2/100 (0.32) |
+|  |  |  |  | epoch 30 | T 27/100 (0.60) T_narrow 26/100 (0.65) Y 8/100 (0.48) D 4/100 (0.45) L 4/100 (0.36) |
+|  |  |  |  | epoch 40 | T 29/100 (0.65) T_narrow 29/100 (0.66) Y 10/100 (0.50) D 6/100 (0.55) L 3/100 (0.35) |
+| mpc-r4-enc-lr3e-5-a3-e60 | r2, r2b, r2c, retain-T | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 33849 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 15 | T 26/100 (0.60) T_narrow 23/100 (0.62) Y 7/100 (0.53) D 0/100 (0.31) L 0/100 (0.24) |
+|  |  |  |  | epoch 30 | T 34/100 (0.66) T_narrow 27/100 (0.64) Y 2/100 (0.51) D 1/100 (0.39) L 0/100 (0.22) |
+|  |  |  |  | epoch 45 | T 38/100 (0.71) T_narrow 34/100 (0.68) Y 11/100 (0.57) D 1/100 (0.45) L 3/100 (0.37) |
+|  |  |  |  | epoch 60 | T 30/100 (0.68) T_narrow 32/100 (0.71) Y 11/100 (0.55) D 0/100 (0.50) L 6/100 (0.41) |
+| mpc-dagger-it2-enc | r2, r2b, r2c, dagger-it1, dagger-it2, retain-T | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 62259 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 10 | T 14/100 (0.50) T_narrow 25/100 (0.56) Y 7/100 (0.45) D 1/100 (0.39) L 0/100 (0.23) |
+|  |  |  |  | epoch 20 | T 37/100 (0.68) T_narrow 30/100 (0.68) Y 9/100 (0.54) D 5/100 (0.49) L 1/100 (0.34) |
+|  |  |  |  | epoch 30 | T 31/100 (0.62) T_narrow 30/100 (0.67) Y 7/100 (0.58) D 2/100 (0.46) L 1/100 (0.38) |
+|  |  |  |  | epoch 40 | T 37/100 (0.65) T_narrow 31/100 (0.68) Y 15/100 (0.60) D 2/100 (0.48) L 6/100 (0.46) |
+| mpc-big-lr1e-4 | r2, r2b, r2c, dagger-it1, dagger-it2, guard-10050, guard-10200, guard-10350, guard-1050, guard-10500, guard-10650, guard-10800, guard-10950, guard-11100, guard-11250, retain-T, retain-self | action_network, lr 0.0001, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 178498 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 8 | T 22/100 (0.59) T_narrow 18/100 (0.56) Y 2/100 (0.35) D 0/100 (0.39) L 1/100 (0.33) |
+| mpc-big-lr3e-5 | r2, r2b, r2c, dagger-it1, dagger-it2, guard-10050, guard-10200, guard-10350, guard-1050, guard-10500, guard-10650, guard-10800, guard-10950, guard-11100, guard-11250, retain-T, retain-self | action_network, lr 3e-05, anchor 3.0 on ['T', 'T_narrow'] / other 0.3, encoder trained | 178498 | base | T 35/100 (0.71) T_narrow 37/100 (0.69) Y 9/100 (0.56) D 0/100 (0.30) L 0/100 (0.32) |
+|  |  |  |  | epoch 8 | T 32/100 (0.64) T_narrow 38/100 (0.67) Y 4/100 (0.46) D 2/100 (0.40) L 2/100 (0.31) |
 
 Students on the monitor test (300000 pool, 100 scenes per shape):
 
@@ -269,6 +310,18 @@ Students on the monitor test (300000 pool, 100 scenes per shape):
 | dense-soft-r3-e40 | 42 (0.68) | 39 (0.66) | 10 (0.59) | 0 (0.33) | 0 (0.30) |
 | dense-chosen-r3-e40 | 49 (0.74) | 31 (0.62) | 10 (0.58) | 0 (0.32) | 0 (0.31) |
 | dense-soft-r4-e40 | 40 (0.67) | 34 (0.62) | 9 (0.57) | 0 (0.32) | 0 (0.30) |
+| mpc-r1-lr1e-4-last | 13 (0.41) | 15 (0.45) | 5 (0.41) | 0 (0.19) | 1 (0.21) |
+| mpc-r1-lr3e-5-last | 22 (0.46) | 17 (0.45) | 1 (0.40) | 0 (0.12) | 0 (0.18) |
+| mpc-r3-enc-lr1e-5-a3-last | 26 (0.53) | 23 (0.55) | 5 (0.44) | 1 (0.25) | 0 (0.23) |
+| mpc-r3-enc-lr3e-5-last | 24 (0.56) | 24 (0.62) | 6 (0.46) | 1 (0.36) | 0 (0.25) |
+| mpc-r3-frozen-lr3e-5-a3-last | 25 (0.53) | 27 (0.53) | 2 (0.50) | 0 (0.28) | 0 (0.24) |
+| mpc-r4-enc-lr3e-5-e60-last | 24 (0.64) | 39 (0.71) | 10 (0.62) | 5 (0.54) | 5 (0.51) |
+| mpc-dagger-it1-enc-last | 27 (0.56) | 21 (0.59) | 10 (0.52) | 2 (0.51) | 4 (0.35) |
+| mpc-r4-enc-lr3e-5-a3-e60-last | 31 (0.66) | 29 (0.65) | 6 (0.47) | 1 (0.47) | 2 (0.37) |
+| mpc-dagger-it2-enc-last | 29 (0.65) | 27 (0.64) | 16 (0.60) | 0 (0.44) | 6 (0.45) |
+| blend-r4e60-s0.7 | 47 (0.73) | 38 (0.71) | 13 (0.66) | 3 (0.56) | 0 (0.37) |
+| blend-r4e60-s0.5 | 36 (0.71) | 42 (0.72) | 14 (0.69) | 1 (0.51) | 0 (0.37) |
+| blend-dag2-s0.5 | 43 (0.73) | 31 (0.75) | 17 (0.71) | 2 (0.45) | 0 (0.37) |
 
 ## 6. 2026-10-25/26, privileged state world models and BPTT teachers
 
@@ -370,20 +423,46 @@ pusher-gap penalty 0.5, contact margin 3 px, corner pose error, elite-mean execu
 
 ## 8. Planner demonstrations for distillation (teacher-data pool 800000)
 
-| Round | Shape | Teacher success | Records | Labels from |
-| --- | --- | --- | --- | --- |
-| r1 | D | 144/150 | 2239 | every control |
-| r1 | L | 40/100 | 5834 | every control |
-| r1 | Y | 74/100 | 3448 | every control |
-| r2 | D | 135/150 | 2097 | 8-control chunks |
-| r2 | L | 44/150 | 4810 | 8-control chunks |
-| r2 | Y | 96/150 | 3403 | 8-control chunks |
-| r2b | D | 138/150 | 2039 | 8-control chunks |
-| r2b | L | 36/150 | 4874 | 8-control chunks |
-| r2b | Y | 97/150 | 3340 | 8-control chunks |
-| r2c | D | 133/150 | 2149 | 8-control chunks |
-| r2c | L | 33/150 | 4930 | 8-control chunks |
-| r2c | Y | 104/150 | 3162 | 8-control chunks |
+| Round | Shape | Episode success | Records | Labels | Teacher share (beta) |
+| --- | --- | --- | --- | --- | --- |
+| r1 | D | 144/150 | 2239 | planner, every control | beta 1.0 |
+| r1 | L | 40/100 | 5834 | planner, every control | beta 1.0 |
+| r1 | Y | 74/100 | 3448 | planner, every control | beta 1.0 |
+| r2 | D | 135/150 | 2097 | planner, 8-control chunks | beta 1.0 |
+| r2 | L | 44/150 | 4810 | planner, 8-control chunks | beta 1.0 |
+| r2 | Y | 96/150 | 3403 | planner, 8-control chunks | beta 1.0 |
+| r2b | D | 138/150 | 2039 | planner, 8-control chunks | beta 1.0 |
+| r2b | L | 36/150 | 4874 | planner, 8-control chunks | beta 1.0 |
+| r2b | Y | 97/150 | 3340 | planner, 8-control chunks | beta 1.0 |
+| r2c | D | 133/150 | 2149 | planner, 8-control chunks | beta 1.0 |
+| r2c | L | 33/150 | 4930 | planner, 8-control chunks | beta 1.0 |
+| r2c | Y | 104/150 | 3162 | planner, 8-control chunks | beta 1.0 |
+| dagger-it1 | D | 74/150 | 4552 | planner, 8-control chunks | beta 0.3 |
+| dagger-it1 | L | 26/150 | 5359 | planner, 8-control chunks | beta 0.3 |
+| dagger-it1 | Y | 66/150 | 4689 | planner, 8-control chunks | beta 0.3 |
+| dagger-it2 | D | 88/150 | 4255 | planner, 8-control chunks | beta 0.3 |
+| dagger-it2 | L | 47/150 | 5017 | planner, 8-control chunks | beta 0.3 |
+| dagger-it2 | Y | 80/150 | 4538 | planner, 8-control chunks | beta 0.3 |
+| guard (overnight idle-guard rounds) (70 rounds) | D | 9721/10500 | 139543 | planner, 8-control chunks | beta 1.0 |
+| guard (overnight idle-guard rounds) (70 rounds) | L | 2454/10500 | 344712 | planner, 8-control chunks | beta 1.0 |
+| guard (overnight idle-guard rounds) (70 rounds) | Y | 6460/10500 | 241006 | planner, 8-control chunks | beta 1.0 |
+| retain-self | T | 71/180 | 5803 | policy's own plans | beta 0.0 |
+| retain-self | T_narrow | 83/180 | 5830 | policy's own plans | beta 0.0 |
+
+Beta is the share of decisions the planner executes; below 1 the image student drives the rest (DAgger). Seven
+overnight guard rounds that used final-test scenes were quarantined (moved out of the data folder) before any
+training; they are not counted above.
+
+## 8b. Weight blends of students with the base (validation pool 400000, 100 scenes per shape)
+
+| Blend (student, share s) | T | T_narrow | Y | D | L |
+| --- | --- | --- | --- | --- | --- |
+| blend-r4e60-s0.3 | 45 (0.73) | 41 (0.75) | 15 (0.62) | 1 (0.39) | 0 (0.33) |
+| blend-r4e60-s0.5 | 42 (0.74) | 41 (0.76) | 17 (0.65) | 0 (0.50) | 0 (0.36) |
+| blend-dag2-s0.3 | 42 (0.73) | 35 (0.74) | 10 (0.62) | 1 (0.39) | 0 (0.35) |
+| blend-r4e60-s0.7 | 39 (0.71) | 42 (0.73) | 12 (0.72) | 4 (0.58) | 0 (0.40) |
+| blend-dag2-s0.5 | 45 (0.76) | 40 (0.74) | 15 (0.69) | 0 (0.47) | 0 (0.35) |
+| blend-dag2-s0.7 | 39 (0.76) | 44 (0.75) | 15 (0.70) | 1 (0.52) | 0 (0.35) |
 
 ## 9. Frozen base on the 1000-scene final test pool (900000)
 
@@ -395,12 +474,21 @@ pusher-gap penalty 0.5, contact margin 3 px, corner pose error, elite-mean execu
 | D | 1000 | 3 | 0.003 | 0.314 |
 | L | 1000 | 1 | 0.001 | 0.317 |
 
+Pre-registered final test (D040) of `blend-r4e60-s0.7`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 1000 | 44.4% | 39.6% | -4.8 [-8.7, -0.9] | 0.692 -> 0.730 |
+| T_narrow | 1000 | 41.9% | 41.0% | -0.9 [-4.7, +2.9] | 0.696 -> 0.761 |
+| Y | 1000 | 9.4% | 12.3% | +2.9 [+0.2, +5.6] | 0.578 -> 0.688 |
+| D | 1000 | 0.3% | 4.9% | +4.6 [+3.2, +6.0] | 0.314 -> 0.581 |
+| L | 1000 | 0.1% | 0.2% | +0.1 [-0.2, +0.4] | 0.317 -> 0.398 |
+
+Pass conditions: 1_T_noninferior no, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: not passed.
+
 ## 10. Running or pending when this was written
 
-- Round-3 distillation (data r2 + r2b: 20.6k planner records plus 3.0k T retention): two
-  students that also train the image encoder (`distill.py --train-encoder`) and a
-  frozen-encoder control with a stronger anchor. Hypothesis: the frozen encoder,
-  trained only on T, cannot represent what the planner reacts to on other letters.
-- Planner data round r2c (shown in section 8) and idle-guard rounds (`guard-*`).
-- Not yet run: DAgger on student-visited states with planner labels, the planner's
-  leftover T rotation, and the 1000-scene acceptance test of any student.
+- Two large students (178k records: chunk data, DAgger 1-2, 10 clean guard rounds, T
+  retention including the base's own plans), and their blends on validation.
+- Blending the action network and the image encoder separately, to locate the T loss.
+- Any further final-test candidate is a secondary result under D040.

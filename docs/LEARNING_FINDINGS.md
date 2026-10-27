@@ -1,13 +1,15 @@
-# Policy learning findings, 2026-10-24 to 2026-10-26
+# Policy learning findings, 2026-10-24 to 2026-10-27
 
 Status: in progress. Every individual run, including abandoned ones, is listed in the
-[experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher now solves all D, most Y
-and 42% of L validation scenes in the real simulator. Two rounds of distilling it
-into the deployable image policy failed (worse than the base on every shape); no
-image-policy improvement has been established. Negative results are kept below on
-purpose. Code is in `scripts/learning/` (see its
-[README](../scripts/learning/README.md)); decisions are D035-D039 in
-[DECISIONS.md](DECISIONS.md).
+[experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher solves all D, most Y and
+about 40% of L validation scenes in the real simulator. Distilled into the image
+policy and blended with the base, it significantly improves Y (9.4% -> 12.3%) and D
+(0.3% -> 4.9%) on 1000 fresh scenes, but T drops by 4.8 points, so the pre-registered
+final test did not pass and the base remains the result (D040). Negative results are
+kept below on purpose. Code is in `scripts/learning/` (see its
+[README](../scripts/learning/README.md)); decisions are D035-D040 in
+[DECISIONS.md](DECISIONS.md). A 25-minute narrated explainer video was made from
+these documents (kept outside Git).
 
 ## Summary
 
@@ -28,10 +30,16 @@ purpose. Code is in `scripts/learning/` (see its
    A sampling planner inside the model succeeds in the real simulator on
    50 validation scenes per letter: D 50/50, Y 36/50, L 21/50, against base rates
    of 0.3%, 9.4% and 0.1%. It is worse than the base on T (5/50) and near-T (12/50).
-6. Two rounds of distilling the planner into the image policy made it worse on
-   every shape (validation T 35 -> 15-31, D coverage 0.30 -> 0.08-0.26), including
-   with labels made consistent with 8-control chunks. Training the image encoder
-   as well is being tested. No image-policy improvement is established.
+6. Distilling the planner into the image policy first made it worse on every
+   shape. Training the image encoder too, longer training and DAgger produced the
+   first students with real D and L successes (100-scene test: D up to 5, L up to 6,
+   base 0) but 10-15 points lower T.
+7. Blending a student's weights with the base's recovered most of T. The selected
+   70% blend, on 1000 fresh scenes paired with the base: T 39.6% vs 44.4% (-4.8,
+   95% interval -8.7 to -0.9), near-T 41.0% vs 41.9%, Y 12.3% vs 9.4% (+2.9, +0.2 to
+   +5.6), D 4.9% vs 0.3% (+4.6, +3.2 to +6.0), L 0.2% vs 0.1%. T failed the
+   pre-registered non-inferiority bound of -5 points, so the result is a measured
+   trade-off, not a pass.
 
 ## Evaluation protocol
 
@@ -199,7 +207,7 @@ two well-placed pushes, which the planner rarely finds. Plans only work
 closed-loop: executing 8 controls per plan, as the image policy does, cut T
 coverage from 0.70 to 0.32 in the first version.
 
-## 6. Distilling the planner into the image policy (in progress)
+## 6. Distilling the planner into the image policy
 
 `mpc_dagger.py` runs the planner with rendering and saves, every 4 controls, the
 2-frame observation, 8 samples from the image policy and a label: the planner's
@@ -235,9 +243,58 @@ student stayed below the base, with validation T at 21-31 against 35 and D cover
 at 0.18-0.26 against 0.30 (all epochs in the experiment log). The imitation loss
 stayed high, which suggests the student cannot represent the teacher's behavior.
 One candidate cause: the image encoder stays frozen during distillation and was only
-ever trained on T. Round 3 (running) trains the encoder too
-(`distill.py --train-encoder`) on 20.6k planner records plus 3.0k T retention
-records, with a frozen-encoder control.
+ever trained on T. Round 3 trains the encoder too (`distill.py --train-encoder`) on
+20.6k planner records plus 3.0k T retention records, with a frozen-encoder control.
+
+Rounds 3-4 and DAgger, 100-scene monitor test (base T 38-40, near-T 33-38, Y 7-11,
+D 0 with coverage 0.31, L 0 with 0.27-0.30):
+
+| Student | T | near-T | Y | D (coverage) | L (coverage) |
+| --- | --- | --- | --- | --- | --- |
+| Round 3, encoder trained, 30 epochs | 24-26 | 23-24 | 5-6 | 1 (0.25-0.36) | 0 |
+| Round 3, frozen encoder, stronger anchor | 25 | 27 | 2 | 0 (0.28) | 0 |
+| Round 4, encoder trained, 60 epochs (r4e60) | 24 | 39 | 10 | 5 (0.54) | 5 (0.51) |
+| DAgger iteration 1 | 27 | 21 | 10 | 2 (0.51) | 4 (0.35) |
+| DAgger iteration 2 | 29 | 27 | 16 | 0 (0.44) | 6 (0.45) |
+
+Training the encoder, more epochs and DAgger (the student drives 70% of decisions;
+the planner labels the states it reaches, `mpc_dagger.py --beta 0.3`) each helped the
+new letters, giving the first image policies with more than a stray D or L success.
+T stayed 10-15 points low. A chaining bug (a process-list wait that matched its own
+launcher) stopped DAgger iterations 3-4 overnight.
+
+### Weight blending and the pre-registered final test
+
+`interpolate.py` blends a student with the base, theta = (1-s) base + s student,
+for both the action network and the encoder (WiSE-FT style; s = 0 is the base).
+On validation (100 scenes; base T 35, near-T 37, Y 9, D 0 with coverage 0.30):
+
+| Blend | T | near-T | Y | D (coverage) | L (coverage) |
+| --- | --- | --- | --- | --- | --- |
+| r4e60, s = 0.3 | 45 | 41 | 15 | 1 (0.39) | 0 (0.33) |
+| r4e60, s = 0.5 | 42 | 41 | 17 | 0 (0.50) | 0 (0.36) |
+| r4e60, s = 0.7 | 39 | 42 | 12 | 4 (0.58) | 0 (0.40) |
+| DAgger 2, s = 0.3 / 0.5 / 0.7 | 42 / 45 / 39 | 35 / 40 / 44 | 10 / 15 / 15 | 1 / 0 / 1 | 0 |
+
+The top three went to the monitor test, and the rule fixed in D040 before any final
+test (T at least 38 and near-T at least 33 there, then the most Y + D + L successes)
+selected r4e60 at s = 0.7 (monitor test: T 47, near-T 38, Y 13, D 3, L 0; the
+r4e60 s = 0.5 blend had T 36 and the DAgger 2 s = 0.5 blend near-T 31). Final test,
+1000 scenes per letter (900000 pool), paired by scene with the base:
+
+| Letter | Base | Blend | Difference [95% interval] | Final coverage |
+| --- | --- | --- | --- | --- |
+| T | 44.4% | 39.6% | -4.8 [-8.7, -0.9] | 0.692 -> 0.730 |
+| near-T | 41.9% | 41.0% | -0.9 [-4.7, +2.9] | 0.696 -> 0.761 |
+| Y | 9.4% | 12.3% | +2.9 [+0.2, +5.6] | 0.578 -> 0.688 |
+| D | 0.3% | 4.9% | +4.6 [+3.2, +6.0] | 0.314 -> 0.581 |
+| L | 0.1% | 0.2% | +0.1 [-0.2, +0.4] | 0.317 -> 0.398 |
+
+Conditions: T non-inferior (lower bound at least -5) no; near-T yes; a new letter
+better yes (Y and D); no new letter worse yes. Not passed, so the base remains the
+result. The blend's T of 47 on the monitor test was selection luck; on 1000 scenes
+T is about 5 points below the base, while coverage rises on every letter. Further
+candidates may be tested but will be reported as secondary results.
 
 ## Privileged signals and priors (disclosure)
 
@@ -273,13 +330,22 @@ parallel jobs.
 
 ## Open problems
 
-- Making the planner's behavior learnable by the 8-control image policy:
-  chunk-consistent labels, DAgger labels on student-visited states (`--beta < 1`),
-  a stronger anchor, or fewer executed controls per plan.
+- Keeping T while learning the new letters: the blend costs about 5 T points.
+  Options: more T retention data (`mpc_dagger.py --label policy` records the base's
+  own plans), blending the action network and encoder separately, or a disclosed
+  shape gate that routes T to the base.
+- The student copies only part of the teacher (planner D 93-100%, students up to
+  6%): 96x96 images and 8-control chunks make the final 1-2 px pushes hard.
 - The planner's leftover T rotation.
 - A planner bug found by the new test: push candidates jumped onto the safe circle
   when the pusher started outside it. The numbers above predate the fix; on the
   same 20 validation scenes the fixed planner gave Y 18, D 19, L 6, near-T 4 and
   T 1/24 against 16, 20, 7, 3 and 3/24, a difference within noise.
-- Final claims need the 1000-scene acceptance test against the base, with T and
-  near-T non-inferiority and new-letter superiority fixed in advance.
+- The planner's L successes are marginal: re-running 20 L validation scenes that
+  had succeeded gave 6/20 (coverage 95.0-96.3% in the earlier successes).
+- The world model's rare large errors: over 500 16-control windows with real motion,
+  the median error is 0.26 px but 1 in 20 is off by 14 px or more (worst 84 px),
+  mostly when the letter touches the arena wall, which the model has no input for.
+- Data hygiene: overnight, an idle-guard collector used scene seeds of the reserved
+  final-test pool for seven rounds; they were quarantined before any training, and
+  the collector now refuses reserved seeds.
