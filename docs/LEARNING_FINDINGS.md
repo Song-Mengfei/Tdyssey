@@ -44,7 +44,9 @@ these documents (kept outside Git).
    of an encoder-only blend (base action network + 70% student encoder): Y 18.1% vs
    9.4% (+8.7, +5.7 to +11.7), D 1.4% vs 0.3%, T -2.5 [-6.2, +1.2], near-T -2.0
    [-5.8, +1.8]. Not significantly worse on T, but the margin was narrowly missed, so
-   it did not pass either.
+   it did not pass either. A confirmatory test on 2000 fresh scenes per letter (D041)
+   confirmed Y +8.0 [+6.0, +9.9] and D +0.8, near-T +0.4, but also a real T loss of
+   -3.1 [-5.9, -0.4].
 
 ## Evaluation protocol
 
@@ -330,8 +332,26 @@ two looks at the same pool make a lucky pass more likely):
 
 Not passed: neither T nor near-T is significantly worse, but 1000 scenes cannot rule
 out drops of up to 6.2 and 5.8 points, beyond the 5-point margin. Y nearly doubles and
-D improves significantly. Students that train only the encoder (the base action
-network frozen, `distill.py --freeze-actor`) are the next test.
+D improves significantly.
+
+Confirmatory test (D041): the same fixed candidate against the base on 2000 fresh
+scenes per letter (seeds 2000000 + 20*i, never used before), paired by scene:
+
+| Letter | Base | Blend | Difference [95% interval] | Final coverage |
+| --- | --- | --- | --- | --- |
+| T | 46.0% | 42.8% | -3.1 [-5.9, -0.4] | 0.714 -> 0.719 |
+| near-T | 42.3% | 42.8% | +0.4 [-2.2, +3.1] | 0.698 -> 0.718 |
+| Y | 8.8% | 16.8% | +8.0 [+6.0, +9.9] | 0.561 -> 0.640 |
+| D | 0.1% | 0.9% | +0.8 [+0.3, +1.3] | 0.318 -> 0.439 |
+| L | 0.0% | 0.0% | +0.0 | 0.319 -> 0.330 |
+
+Free of selection bias, this confirms the Y gain (success nearly doubles) and a small D
+gain, with near-T unchanged, but also a real T loss of about 3 points. Not passed.
+
+Students that train only the encoder with the base action network frozen
+(`distill.py --freeze-actor`) kept T (monitor test 39-44) but collapsed on the new
+letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
+together with the action network and then blended.
 
 ## Privileged signals and priors (disclosure)
 
