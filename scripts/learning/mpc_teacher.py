@@ -8,6 +8,10 @@ teacher2 reward (privileged geometry, disclosed) and executes the first target o
 state is used to score imagined transitions; the simulator only supplies the current state and the outcome.
 Batched over all scenes of one shape.
 
+--dp-candidates N adds N plans sampled from the image diffusion policy (rendered observations) to the candidates;
+--dp-only scores only those plans (model-based best-of-N; use --dp-nowarm, since keeping the previous plan as a
+candidate lets 'hold still' win and the policy freezes); --dp-first executes the first sample (sanity check).
+
 Recommended flags (each fixed a measured stall 2-4 px short of the goal; see docs/LEARNING_FINDINGS.md):
   --select best --gate-margin 0 --pushes 128 --horizon 48 --knots 8 --approach 0 --kp area --tight 2
   50 validation scenes: D 50/50, Y 36/50, L 21/50, T_narrow 12/50, T 5/50 (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
@@ -127,8 +131,32 @@ class Pushes:
 
 
 @torch.no_grad()
-def plan(model, geo, s, sh, mean, args, gen, pushes=None):
-    """s (E, 10) COG states, mean (E, H, 2) warm-start targets -> refined mean, best return per env."""
+def score(model, geo, s, sh, acts, args):
+    """Discounted imagined return of candidate target sequences acts (E, K, H, 2) from states s (E, 10)."""
+    E, K, H = acts.shape[:3]
+    disc = args.gamma**torch.arange(H, device=s.device)
+    x = s[:, None].expand(-1, K, -1).reshape(E*K, 10)
+    shk = sh[:, None].expand(-1, K).reshape(E*K)
+    a = acts.reshape(E*K, H, 2)
+    R = torch.zeros(E*K, device=s.device); c = torch.ones(E*K, device=s.device)
+    for t in range(H):
+        x = model(x, a[:, t], shk, hard=True, margin=args.gate_margin)
+        r, succ, _ = geo.reward(x, shk, args.bonus, args.approach, args.dist, args.tight, args.tight_scale)
+        R = R + disc[t]*c*r; c = c*(1-succ)
+    return R.view(E, K)
+
+
+def plan(model, geo, s, sh, mean, args, gen, pushes=None, extra=None):
+    """s (E, 10) COG states, mean (E, H, 2) warm-start targets -> refined mean, best return per env.
+    extra (E, N, H, 2): additional candidates (diffusion-policy plans), added in the first iteration; with
+    args.dp_only the candidates are just the warm start and these plans (model-based best-of-N)."""
+    if getattr(args, "dp_first", False):                                    # sanity check: the policy's own first sample
+        return extra[:, 0], torch.zeros(len(s), device=s.device)
+    if getattr(args, "dp_only", False):
+        acts = extra if getattr(args, "dp_nowarm", False) else torch.cat([mean[:, None], extra], 1)
+        R = score(model, geo, s, sh, acts, args)
+        b = R.argmax(1)
+        return acts[torch.arange(len(s)), b], R[torch.arange(len(s)), b]
     E, H, K = len(s), args.horizon, args.samples
     std = torch.full_like(mean, args.sigma)
     if args.near > 0:                                                        # distance-adaptive noise (fine pushes near the goal)
@@ -145,6 +173,8 @@ def plan(model, geo, s, sh, mean, args, gen, pushes=None):
         acts = (mean[:, None] + std[:, None]*eps).clamp(0, 512)             # (E, K, H, 2)
         if pushes is not None and it == 0 and args.pushes > 0:               # structured push candidates
             acts[:, -args.pushes:] = pushes.sample(s, sh, args.pushes, H, gen, transit=args.transit, lmin=args.push_min)
+        if extra is not None and it == 0:                                     # diffusion-policy plans as candidates
+            acts[:, 2:2+extra.shape[1]] = extra
         if best_a is not None:
             acts[:, 1] = best_a                                               # keep the best sample found so far
         x = s[:, None].expand(-1, K, -1).reshape(E*K, 10)
@@ -210,6 +240,13 @@ def main():
     parser.add_argument("--pushes", type=int, default=0, help="Structured push candidates per plan (first iteration)")
     parser.add_argument("--select", choices=("mean", "best"), default="mean", help="Execute the elite mean or the best sample")
     parser.add_argument("--commit", type=float, default=0.0, help="Relative return margin needed to abandon the previous plan")
+    parser.add_argument("--dp-candidates", type=int, default=0, help="Add N diffusion-policy plans (sampled from rendered "
+                        "observations) to the candidates")
+    parser.add_argument("--dp-policy", type=Path, default=None, help="Student/blend checkpoint for the proposals (default: base)")
+    parser.add_argument("--dp-every", type=int, default=8, help="Resample the diffusion plans every N controls (shifted between)")
+    parser.add_argument("--dp-only", action="store_true", help="Candidates = diffusion plans + warm start only (no CEM, no pushes)")
+    parser.add_argument("--dp-first", action="store_true", help="Sanity check: execute the first diffusion sample, no selection")
+    parser.add_argument("--dp-nowarm", action="store_true", help="dp-only without the previous plan as a candidate")
     parser.add_argument("--trace", action="store_true", help="Print the plan near the goal every control")
     parser.add_argument("--log-pred", action="store_true", help="Compare the model's 1-step prediction with reality")
     parser.add_argument("--out", type=Path, required=True)
@@ -221,6 +258,13 @@ def main():
     model.load_state_dict(blob["state_dict"]); model.eval()
     cls = make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))
     pushes = Pushes(geo, device) if args.pushes > 0 else None
+    agent = None
+    if args.dp_candidates > 0:
+        import base_rollouts
+        from collections import deque
+        agent, _ = base_rollouts.build(args.dp_policy)
+        norm = agent.network.normalizer["action"]
+        pgen = torch.Generator(device=device).manual_seed(1234)
     k = SHAPES.index(args.shape)
     seeds = [args.seed_base+20*(args.start+i) for i in range(args.scenes)]
     envs, keep = [], []
@@ -228,8 +272,13 @@ def main():
         partner = "L" if args.shape == "T" else args.shape
         pair = {"T": cls(shape="T", legacy=True), partner: cls(shape=partner, legacy=True)}
         matched_reset(pair, seed, defaultdict(int))
-        env = pair[args.shape]; env._get_obs = lambda: None
+        env = pair[args.shape]
+        if agent is None:
+            env._get_obs = lambda: None                                      # no rendering needed without proposals
         envs.append(env); keep.append(pair)
+    if agent is not None:
+        hists = [deque([e._get_obs()]*2, maxlen=2) for e in envs]
+        dp_seq, dp_age = [None]*len(envs), np.zeros(len(envs), int)
     E = len(envs)
     sh_all = torch.full((E,), k, device=device)
     active = np.ones(E, bool); done = np.zeros(E, bool); steps = np.zeros(E, int)
@@ -249,7 +298,25 @@ def main():
             mean = s[:, None, 6:8].expand(-1, args.horizon, -1).clone()
         m = mean[torch.as_tensor(np.searchsorted(np.nonzero(prev_active)[0], idx), device=device)] if step else mean
         if step % args.execute == 0:
-            m, best = plan(model, geo, s, sh, m, args, gen, pushes)
+            extra = None
+            if agent is not None:
+                if step % args.dp_every == 0 or any(dp_seq[i] is None for i in idx):
+                    with torch.no_grad():
+                        cond = agent.encode_batch([list(hists[i]) for i in idx])
+                        N = args.dp_candidates
+                        gens = [torch.Generator(device=device).manual_seed(int(x)) for x in
+                                torch.randint(0, 2**62, (len(idx)*N,), device=device, generator=pgen).tolist()]
+                        _, xs = agent.sample_batch(cond.repeat_interleave(N, 0), gens)
+                        tgt = norm.unnormalize(xs)[:, 1:].reshape(len(idx), N, 15, 2).float()   # targets for t..t+14
+                    for j, i in enumerate(idx):
+                        dp_seq[i], dp_age[i] = tgt[j], 0
+                H = args.horizon
+                rows = []
+                for i in idx:
+                    q = dp_seq[i][:, dp_age[i]:]
+                    rows.append(torch.cat([q, q[:, -1:].expand(-1, H-q.shape[1], -1)], 1) if q.shape[1] < H else q[:, :H])
+                extra = torch.stack(rows).clamp(0, 512)
+            m, best = plan(model, geo, s, sh, m, args, gen, pushes, extra)
         acts = m[:, 0].cpu().numpy()
         if args.trace and step % args.execute == 0:
             with torch.no_grad():
@@ -269,7 +336,9 @@ def main():
                 corner_before = torch.sqrt(geo.keypoint_d2(s, sh)).cpu().numpy()
                 corner_pred = torch.sqrt(geo.keypoint_d2(pred, sh)).cpu().numpy()
         for j, i in enumerate(idx):
-            _, _, d, _ = envs[i].step(np.clip(acts[j], 0, 512))
+            obs, _, d, _ = envs[i].step(np.clip(acts[j], 0, 512))
+            if agent is not None:
+                hists[i].append(obs); dp_age[i] += 1
             cov[i] = physical_metrics(envs[i])["coverage"]; peak[i] = max(peak[i], cov[i]); steps[i] += 1
             if d:
                 done[i] = True; active[i] = False

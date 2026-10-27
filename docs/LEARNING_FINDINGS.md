@@ -353,6 +353,32 @@ Students that train only the encoder with the base action network frozen
 letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
 together with the action network and then blended.
 
+### Diffusion-policy samples as planner candidates
+
+The planner can also score plans sampled from the image diffusion policy
+(`mpc_teacher.py --dp-candidates`), 20 validation scenes per letter:
+
+| Planner variant | T | near-T | Y | D | L |
+| --- | --- | --- | --- | --- | --- |
+| Final planner (push candidates + CEM) | 1/24 | 4 | 18 | 19 | 6 |
+| Final planner + 32 diffusion samples (hybrid) | 0 | 3 | 15 | 18 | 4 |
+| Diffusion policy alone, inside the same loop (no selection) | 10 | - | - | - | - |
+| World-model best of 32 diffusion samples, previous plan kept | 0 | 0 | 0 | 0 | 0 |
+| World-model best of 32 diffusion samples, without it (15-step scoring) | 11 | 9 | 7 | 1 | 0 |
+
+Adding the policy's samples does not fix the planner's T weakness: it still prefers its own
+moves. Selecting among the policy's samples with the world model first froze the policy:
+keeping the previous plan (which ends by holding still) as a candidate let "do nothing" win
+every time, because holding is always predicted safe; final coverage fell to 0.19-0.36. Without
+that candidate, model-based best-of-32 keeps T at the policy's level and raises Y (7/20,
+coverage 0.80, against about 9% for the base on validation): about the same gain the
+true-simulator oracle gave (Y 3/20 -> 8/20), now with a learned model. It still needs the true
+state to run the model, so it is a privileged test-time method.
+
+Two students with low-rank (LoRA) action-network updates plus a retrained encoder
+(`--trainable lora --train-encoder`) reached validation T 31-43, near-T 28-38, Y 2-11 with
+new-letter coverage below the base: no better than the blends.
+
 ## Privileged signals and priors (disclosure)
 
 - Teachers read the simulator's exact object and pusher state. The deployed policy
