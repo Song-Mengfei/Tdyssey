@@ -8,8 +8,10 @@ the policy's 16-step plans. Every EVERY controls the 2-frame observation is save
 from the image policy (frozen base, or --student) at that observation, which distill.py uses for its anchor.
 Records use the oracle_bon.py format: candidate_x = 8 policy samples + teacher label (index 8, choice = 8).
 Pass the same planner flags as mpc_teacher.py (its recommended set); the defaults are the older CEM-only planner.
---execute 8 --every 8 makes the teacher plan once per 8 controls and labels each record with the plan it then
-executes, so labels are consistent 8-control chunks like the image policy's (round 2; round 1 used --every 4).
+--execute 8 --every 8 makes the teacher plan once per 8 controls and labels each record with its plan from that state,
+so labels are consistent 8-control chunks like the image policy's; with --beta < 1 the student drives that share of
+decisions (DAgger). --label policy --beta 0 records the policy's own plans (retention data). Seeds inside the
+monitor-test, validation or final-test pools are refused.
 With --beta < 1 the policy's own plan is executed for 8 controls at a decision with probability 1-beta, and the
 teacher label at those states is still the teacher's closed-loop continuation, computed in a branch environment
 restored from the captured state (DAgger). Scenes: seeds 800000 + 20*i (training only).
@@ -84,8 +86,12 @@ def main():
     parser.add_argument("--every", type=int, default=4, help="Save a record every N controls")
     parser.add_argument("--beta", type=float, default=1.0, help="Probability that the teacher acts at a decision")
     parser.add_argument("--execute", type=int, default=1,
-                        help="Teacher replans every N controls; N > 1 labels each record with the executed plan itself "
-                             "(chunk-consistent labels; use --every N, beta 1)")
+                        help="Teacher plans every N controls; N > 1 labels each record with the teacher's plan from that "
+                             "state (chunk-consistent; use --every N). With --beta < 1 the student's own plan is executed "
+                             "at a fraction 1-beta of decisions (DAgger), still labelled with the teacher's plan")
+    parser.add_argument("--label", choices=("teacher", "policy"), default="teacher",
+                        help="policy: the image policy drives every decision (use --beta 0) and each record is labelled "
+                             "with its own executed plan (self-distillation retention data, e.g. for T); no planning")
     parser.add_argument("--student", type=Path, help="Distilled actor checkpoint for the policy samples / DAgger")
     parser.add_argument("--samples", type=int, default=256)
     parser.add_argument("--elites", type=int, default=24)
@@ -123,6 +129,10 @@ def main():
     pgen = torch.Generator(device=device).manual_seed(derived_seed(42, "mpc-policy", args.shape, args.start))
     rng = np.random.default_rng(derived_seed(42, "mpc-beta", args.shape, args.start))
     seeds = [800000+20*(args.start+i) for i in range(args.scenes)]
+    reserved = {"monitor test": (300000, 320000), "validation": (400000, 420000), "final test": (900000, 920000)}
+    for name, (lo, hi) in reserved.items():               # never collect training data on held-out scenes
+        if any(lo <= s < hi for s in seeds):
+            raise SystemExit(f"seeds {seeds[0]}-{seeds[-1]} overlap the {name} pool [{lo}, {hi})")
     envs, hists = [], []
     for seed in seeds:
         partner = "L" if args.shape == "T" else args.shape
@@ -135,15 +145,15 @@ def main():
         obs = env._get_obs()
         envs.append(env); hists.append(deque([obs, obs], maxlen=2))
     E = len(envs)
-    branch = cls(shape=args.shape, legacy=True) if args.beta < 1 else None
+    branch = cls(shape=args.shape, legacy=True) if args.beta < 1 and args.execute == 1 else None
     actions = [[] for _ in range(E)]                  # executed targets per env
     saved = [[] for _ in range(E)]                    # (control, image, agent_pos, policy x (8,16,2), label or None)
     active, done = np.ones(E, bool), np.zeros(E, bool)
     cov, peak = np.zeros(E), np.zeros(E)
     student_left = np.zeros(E, int); student_plan = [None]*E
     warm = None; start = time.time(); t = 0
-    if args.execute > 1 and (args.beta < 1 or args.every != args.execute):
-        raise SystemExit("--execute N needs --every N and --beta 1")
+    if args.execute > 1 and args.every != args.execute:
+        raise SystemExit("--execute N needs --every N")
     warm_all = torch.zeros(E, args.horizon, 2, device=device); fresh = np.ones(E, bool); chunk = [None]*E
     while active.any() and t < 300:
         idx = np.nonzero(active)[0]
@@ -160,11 +170,13 @@ def main():
                                      np.stack([np.asarray(o["agent_pos"]) for o in hists[i]]).astype(np.float32), xs[j], None])
                 if args.beta < 1 and t % 8 == 0 and student_left[i] == 0 and rng.random() >= args.beta:
                     student_left[i], student_plan[i] = 8, plans[8*j]
-        if args.beta < 1:                              # teacher labels for states the policy is about to drive
+        if args.beta < 1 and args.execute == 1:        # teacher labels for states the policy is about to drive
             for i in idx:
                 if student_left[i] == 8 and saved[i] and saved[i][-1][0] == t:
                     saved[i][-1][4] = branch_label(envs[i], branch, teacher, actions[i])
-        if args.execute > 1:
+        if args.label == "policy":
+            a_teacher = np.zeros((len(idx), 2), np.float32)       # unused: the policy drives every decision
+        elif args.execute > 1:
             if t % args.execute == 0:
                 m = teacher.plan_full([envs[i] for i in idx], warm_all, idx, fresh)
                 ii = torch.as_tensor(idx, device=device)
@@ -198,10 +210,13 @@ def main():
         acts = np.array(actions[i], np.float32)
         rec = defaultdict(list)
         for c, image, agent_pos, x, label in saved[i]:
-            if label is None:                          # the teacher acted from here: its executed continuation
+            if label is None and args.label == "teacher":   # the teacher acted from here: its executed continuation
                 seq = [acts[max(c-1, 0)]] + [acts[min(c+u, len(acts)-1)] for u in range(15)]
                 label = np.array(seq, np.float32)
-            lab = norm.normalize(torch.as_tensor(label, device=device)).cpu().numpy().astype(np.float16)
+            if args.label == "policy":                 # the policy's own executed sample (already normalized)
+                lab = x[0].astype(np.float16)
+            else:
+                lab = norm.normalize(torch.as_tensor(label, device=device)).cpu().numpy().astype(np.float16)
             rec["image"].append(image); rec["agent_pos"].append(agent_pos)
             rec["candidate_x"].append(np.concatenate([x, lab[None]])); rec["score"].append(np.array([0.0]*8+[1.0], np.float32))
             rec["choice"].append(8); rec["control"].append(c)

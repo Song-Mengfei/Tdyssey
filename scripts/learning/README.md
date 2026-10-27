@@ -20,7 +20,8 @@ keep them outside Git.
 | `wm2.py` | Structured state world model: exact pusher, exact contact geometry, learned object motion | used by the planner |
 | `teacher_bptt.py`, `teacher2.py` | SuperMimic-style BPTT teachers through the world models | negative |
 | `mpc_teacher.py` | Sampling planner inside `wm2`, evaluated in the real simulator | D 50/50, Y 36/50, L 21/50 validation scenes |
-| `mpc_dagger.py` | Planner demonstrations in `distill.py` format, optional DAgger | round 1 collected |
+| `mpc_dagger.py` | Planner demonstrations in `distill.py` format, chunk labels, DAgger, self-label retention data | used for rounds 1-3 and DAgger |
+| `interpolate.py` | Blend a student's weights with the base (WiSE-FT style) | recovers T on validation |
 
 Scene pools are listed in the findings document. Teachers and the oracle read
 privileged simulator state; only distilled image policies are deployable results.
