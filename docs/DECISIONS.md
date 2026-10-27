@@ -674,3 +674,27 @@ them into the image policy with the policy's denoising loss, and anchor only T a
 near-T records to the base. Push candidates, privileged state and geometric
 rewards are disclosed priors. Only the distilled image policy, tested under D036,
 can count as adaptation.
+
+## D040 — Blend selection and the pre-registered final test (2026-10-27)
+
+Distilled students gained on the new letters but lost 10-15 points on T. Blending
+their weights with the base, theta = (1-s) base + s student for the action network
+and image encoder (`interpolate.py`, s = 0 is exactly the base), recovered T on
+validation while keeping part of the gain. Six blends (two students x s = 0.3, 0.5,
+0.7) were compared on validation; the top three go to the 100-scene monitor test.
+
+Selection, fixed before the final test: among the monitor-tested blends whose T and
+near-T successes are at least the base's lower monitor-test values (38 and 33),
+choose the largest Y + D + L success total; ties go to the smaller s. If none
+qualifies, no blend goes to the final test.
+
+Final test: the chosen blend on the 1000-scene final-test pool (900000 + 20*i, policy
+noise seed 42), paired by scene with the existing base run. Per shape, the 95%
+interval of the success-rate difference uses the paired per-scene differences
+(normal approximation). Pass only if (1) T and (2) near-T each have a lower bound of
+at least -5 points, (3) at least one of Y, D, L has a lower bound above 0, and (4) no
+new letter has an upper bound below 0. A pass is reported as image-policy adaptation
+with every disclosure (privileged planner teacher, selection on validation and the
+monitor test). Otherwise the base remains the result. Other candidates may be tested
+later, but only this first one is the primary result; any later ones are reported
+as secondary, with the multiple comparisons stated.
