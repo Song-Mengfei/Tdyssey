@@ -146,6 +146,7 @@ def score(model, geo, s, sh, acts, args):
     return R.view(E, K)
 
 
+@torch.no_grad()
 def plan(model, geo, s, sh, mean, args, gen, pushes=None, extra=None):
     """s (E, 10) COG states, mean (E, H, 2) warm-start targets -> refined mean, best return per env.
     extra (E, N, H, 2): additional candidates (diffusion-policy plans), added in the first iteration; with

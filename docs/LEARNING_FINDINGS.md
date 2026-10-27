@@ -399,6 +399,16 @@ Replication (D043): the 50% blend, fixed before the pool existed, on a third fre
 All four conditions hold again. Two independent fresh pools agree: the 50% encoder blend
 improves Y and D significantly without losing T or near-T. L is not improved.
 
+All 26 letters (descriptive, not pre-registered): the base and the 50% blend on 100 fresh
+scenes per letter (seeds 5100000 + 20*i, paired by scene; `runs/all-letters/summary.txt`).
+On the 22 letters never used in adaptation (2200 episodes), success is rare for both
+(0.23% vs 0.59%, +0.36 points [+0.03, +0.70]) but final coverage rises from 0.306 to 0.330
+(+0.024 [+0.015, +0.032]) and is higher on 18 of the 22 letters (for example B 0.39 ->
+0.46, Q 0.37 -> 0.46, O 0.42 -> 0.48). So the new encoder helps the policy push unseen
+letters closer to their goals, but rarely to the 95% success bar. With 100 scenes per
+letter, single-letter differences are within noise (Y here 13% vs 10%, against +4 to +6
+points on 2000 scenes; T 43% vs 52%).
+
 Students that train only the encoder with the base action network frozen
 (`distill.py --freeze-actor`) kept T (monitor test 39-44) but collapsed on the new
 letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
