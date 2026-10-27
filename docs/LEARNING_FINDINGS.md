@@ -40,6 +40,11 @@ these documents (kept outside Git).
    +5.6), D 4.9% vs 0.3% (+4.6, +3.2 to +6.0), L 0.2% vs 0.1%. T failed the
    pre-registered non-inferiority bound of -5 points, so the result is a measured
    trade-off, not a pass.
+8. The T loss comes mostly from the student's action network. A secondary final test
+   of an encoder-only blend (base action network + 70% student encoder): Y 18.1% vs
+   9.4% (+8.7, +5.7 to +11.7), D 1.4% vs 0.3%, T -2.5 [-6.2, +1.2], near-T -2.0
+   [-5.8, +1.8]. Not significantly worse on T, but the margin was narrowly missed, so
+   it did not pass either.
 
 ## Evaluation protocol
 
@@ -293,8 +298,40 @@ r4e60 s = 0.5 blend had T 36 and the DAgger 2 s = 0.5 blend near-T 31). Final te
 Conditions: T non-inferior (lower bound at least -5) no; near-T yes; a new letter
 better yes (Y and D); no new letter worse yes. Not passed, so the base remains the
 result. The blend's T of 47 on the monitor test was selection luck; on 1000 scenes
-T is about 5 points below the base, while coverage rises on every letter. Further
-candidates may be tested but will be reported as secondary results.
+T is about 5 points below the base, while coverage rises on every letter.
+
+### Where the T loss comes from, and a secondary final test
+
+Swapping parts between the base and the r4e60 student on validation: base action
+network + 70% student encoder gave T 51, near-T 45, Y 12, D 2; student action network
++ base encoder gave T 30, near-T 23, Y 2, D 1; 70% student action network + base
+encoder gave T 33, near-T 40, Y 7, D 0. The T loss comes mostly from the student's
+action network, while its retrained image encoder helps every letter. Eight
+encoder-heavy blends across four students followed (all in the experiment log); the
+three best on validation went to the monitor test:
+
+| Blend (monitor test) | T | near-T | Y | D | L |
+| --- | --- | --- | --- | --- | --- |
+| large student (lr 1e-4): base action network + 70% encoder | 39 | 33 | 16 | 1 | 0 |
+| DAgger 2: 30% action network + full encoder | 43 | 39 | 14 | 0 | 0 |
+| r4e60: 30% action network + 70% encoder | 39 | 35 | 11 | 2 | 0 |
+
+The unchanged D040 rule selected the first. Its final test is a **secondary result**
+(the second candidate evaluated on the final pool, after the primary one failed;
+two looks at the same pool make a lucky pass more likely):
+
+| Letter | Base | Blend | Difference [95% interval] | Final coverage |
+| --- | --- | --- | --- | --- |
+| T | 44.4% | 41.9% | -2.5 [-6.2, +1.2] | 0.692 -> 0.701 |
+| near-T | 41.9% | 39.9% | -2.0 [-5.8, +1.8] | 0.696 -> 0.709 |
+| Y | 9.4% | 18.1% | +8.7 [+5.7, +11.7] | 0.578 -> 0.635 |
+| D | 0.3% | 1.4% | +1.1 [+0.3, +1.9] | 0.314 -> 0.432 |
+| L | 0.1% | 0.1% | +0.0 [-0.3, +0.3] | 0.317 -> 0.334 |
+
+Not passed: neither T nor near-T is significantly worse, but 1000 scenes cannot rule
+out drops of up to 6.2 and 5.8 points, beyond the 5-point margin. Y nearly doubles and
+D improves significantly. Students that train only the encoder (the base action
+network frozen, `distill.py --freeze-actor`) are the next test.
 
 ## Privileged signals and priors (disclosure)
 

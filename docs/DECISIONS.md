@@ -703,3 +703,9 @@ Outcome (2026-10-27): the rule selected the r4e60 student at s = 0.7. Final test
 39.6% vs 44.4% (difference -4.8, 95% interval -8.7 to -0.9), near-T -0.9 [-4.7, +2.9],
 Y +2.9 [+0.2, +5.6], D +4.6 [+3.2, +6.0], L +0.1 [-0.2, +0.4]. Condition 1 failed, so
 the base remains the result; see `LEARNING_FINDINGS.md`.
+
+Secondary result (2026-10-27): after the part-swap diagnosis, the same rule applied to
+three monitor-tested encoder-heavy blends selected the large student (lr 1e-4) with the
+base action network and a 70% student encoder. Final test: T -2.5 [-6.2, +1.2], near-T
+-2.0 [-5.8, +1.8], Y +8.7 [+5.7, +11.7], D +1.1 [+0.3, +1.9], L +0.0. Conditions 1 and
+2 failed (lower bounds below -5); reported as the second look at the final pool.
