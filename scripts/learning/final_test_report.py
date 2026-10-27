@@ -30,6 +30,7 @@ def main():
     p.add_argument("--runs", type=Path, required=True, help="Folder with base-part*.json and <candidate>-part*.json")
     p.add_argument("--out", type=Path)
     p.add_argument("--scenes", type=int, default=1000, help="Expected scenes per letter")
+    p.add_argument("--z", type=float, default=1.96, help="Interval width in standard errors (2.24 = 97.5%%, two candidates)")
     args = p.parse_args()
     base, cand = load(args.runs, "base"), load(args.runs, args.candidate)
     rows, result = [], {"candidate": args.candidate, "shapes": {}}
@@ -41,7 +42,7 @@ def main():
         b = [float(bool(base[k]["success"])) for k in keys]; c = [float(bool(cand[k]["success"])) for k in keys]
         d = [ci - bi for ci, bi in zip(c, b)]
         mean = sum(d)/n; sd = math.sqrt(sum((x-mean)**2 for x in d)/(n-1)) if n > 1 else 0.0
-        lo, hi = mean - 1.96*sd/math.sqrt(n), mean + 1.96*sd/math.sqrt(n)
+        lo, hi = mean - args.z*sd/math.sqrt(n), mean + args.z*sd/math.sqrt(n)
         cov_b = sum(base[k]["final_coverage"] for k in keys)/n; cov_c = sum(cand[k]["final_coverage"] for k in keys)/n
         result["shapes"][shape] = {"n": n, "base": sum(b)/n, "candidate": sum(c)/n, "diff": mean, "lo": lo, "hi": hi,
                                    "base_coverage": cov_b, "candidate_coverage": cov_c,
