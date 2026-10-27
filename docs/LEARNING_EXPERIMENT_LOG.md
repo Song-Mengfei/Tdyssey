@@ -62,6 +62,7 @@ checkpoints and data stay outside Git in the author's private store.
 | 10-27 | Diffusion-policy samples as planner candidates; LoRA students; encoder-only students | no improvement over existing results |
 | 10-27 | D042 test of 30% and 50% encoder blends, 2000 fresh scenes, 97.5% intervals | both passed; 50%: Y 8.6% -> 14.8%, D 0.3% -> 1.1% |
 | 10-27 | Narrated explainer video (29 min) and a 3:41 milestone summary (outside Git) | done |
+| 10-28 | D043 replication of the 50% encoder blend on a third fresh pool | passed again: Y 9.8% -> 14.1%, D 0.1% -> 0.9% |
 
 Notes on specific rows below: the value-function D row averages the 3 of 6 contexts
 in which candidates differed (in the others every candidate failed). Planner run
@@ -607,8 +608,21 @@ D042 test on a second fresh pool (2000 scenes per letter, 97.5% intervals, two c
 
 Pass conditions: 1_T_noninferior yes, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: PASS.
 
+D043 replication on a third fresh pool (2000 scenes per letter, 95% intervals) of `blend-big4-unet0-enc0.5`, paired by scene with the base:
+
+| Shape | Scenes | Base | Candidate | Difference [95% interval] | Coverage base -> candidate |
+| --- | --- | --- | --- | --- | --- |
+| T | 2000 | 43.4% | 45.1% | +1.8 [-0.9, +4.4] | 0.699 -> 0.710 |
+| T_narrow | 2000 | 40.0% | 40.9% | +0.9 [-1.7, +3.6] | 0.690 -> 0.705 |
+| Y | 2000 | 9.8% | 14.1% | +4.3 [+2.4, +6.3] | 0.572 -> 0.608 |
+| D | 2000 | 0.1% | 0.9% | +0.9 [+0.4, +1.3] | 0.306 -> 0.416 |
+| L | 2000 | 0.1% | 0.0% | -0.1 [-0.1, +0.0] | 0.318 -> 0.331 |
+
+Pass conditions: 1_T_noninferior yes, 2_T_narrow_noninferior yes, 3_new_letter_better yes, 4_no_new_letter_worse yes, complete yes. Overall: PASS.
+
 ## 10. Running or pending when this was written
 
-- Nothing is required for the passing result. Possible follow-ups: confirm the 50% blend on the
-  900000 final pool or a third fresh pool, a DAgger round driven by the passing blend, and L,
-  which no image policy has improved yet.
+- All 26 letters plus near-T, base vs the 50% encoder blend (100 fresh scenes each, seeds
+  5100000 + 20*i): a descriptive check of letters never used in adaptation.
+- Possible follow-ups: a DAgger round driven by the passing blend, and L, which no image
+  policy has improved yet.

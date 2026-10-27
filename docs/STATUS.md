@@ -4,7 +4,8 @@ Updated: 2026-10-27. Stage: forward-process RL stopped (noisy signal, D035); a
 privileged world-model planning teacher solves most D/Y/L scenes in the simulator
 (D039); distilling it into the image policy and blending the student's image encoder
 into the base passed the pre-registered no-regression test on 2000 fresh scenes per
-letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin. Three
+letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin, and
+passed again on a third fresh pool (D043: Y 9.8% -> 14.1%, D 0.1% -> 0.9%). Three
 earlier blend tests failed on T (D040, D041). Work continues on `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and

@@ -749,3 +749,6 @@ a third pool never used before: 2000 scenes per letter, seeds 4000000 + 20*i, po
 seed 42, paired by scene. With one candidate, intervals are 95%; D040's four conditions
 apply. This is an independent replication: candidate and rule are fixed before the pool
 exists. The result is reported whether or not it passes.
+
+Outcome (2026-10-28): passed. T 43.4% -> 45.1% (+1.8 [-0.9, +4.4]), near-T +0.9 [-1.7, +3.6],
+Y 9.8% -> 14.1% (+4.3 [+2.4, +6.3]), D 0.1% -> 0.9% (+0.9 [+0.4, +1.3]), L -0.1 [-0.1, +0.0].

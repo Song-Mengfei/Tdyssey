@@ -6,8 +6,9 @@ about 40% of L validation scenes in the real simulator. Distilled into the image
 policy and blended into the base, it gives the first image policy that passes the
 pre-registered no-regression test: on 2000 fresh scenes per letter, Y success rises from
 8.6% to 14.8% and D from 0.3% to 1.1%, while T and near-T stay within the margin (D042,
-97.5% intervals). Three earlier tests of other blends did not pass because of T; all
-four are reported. Negative results are
+97.5% intervals), and an independent replication on a third fresh pool passed again
+(D043: Y 9.8% -> 14.1%, D 0.1% -> 0.9%, T +1.8, near-T +0.9). Three earlier tests of other
+blends did not pass because of T; all are reported. Negative results are
 kept below on purpose. Code is in `scripts/learning/` (see its
 [README](../scripts/learning/README.md)); decisions are D035-D040 in
 [DECISIONS.md](DECISIONS.md). A 25-minute narrated explainer video was made from
@@ -54,6 +55,9 @@ these documents (kept outside Git).
    97.5% interval +4.0 to +8.4), D 0.3% -> 1.1% (+0.9, +0.2 to +1.5), T +1.8 [-1.3,
    +4.8], near-T +1.4 [-1.6, +4.3], L unchanged. A 30% share also passed (Y +3.2, T
    +3.0). This was the fourth round of testing; the earlier three are listed above.
+   Replicated on a third fresh pool (D043, 95% intervals): Y 9.8% -> 14.1% (+4.3, +2.4
+   to +6.3), D 0.1% -> 0.9% (+0.9, +0.4 to +1.3), T +1.8 [-0.9, +4.4], near-T +0.9
+   [-1.7, +3.6], L -0.1 [-0.1, +0.0]: passed again.
 
 ## Evaluation protocol
 
@@ -71,6 +75,7 @@ official RSS 2023 CNN diffusion policy (DDPM-100, 8 of 16 actions executed).
 | Final test | 900000+ | 1000 scenes; reserved for the acceptance test |
 | Fresh pool 1 | 2000000+ | 2000 scenes; D041 confirmatory test |
 | Fresh pool 2 | 3000000+ | 2000 scenes; D042 test (passed) |
+| Fresh pool 3 | 4000000+ | 2000 scenes; D043 replication (passed) |
 
 Base policy on the 1000-scene final test pool (Wilson 95% interval in brackets):
 T 44.4% [41.3, 47.5], near-T (`T_narrow`) 41.9% [38.9, 45.0], Y 9.4% [7.7, 11.4],
@@ -379,6 +384,20 @@ for interpretation: this was the fourth round of testing (D040 primary and secon
 D041, D042); the share was chosen after the earlier rounds, but the pool itself was never
 used before, so the D042 comparison is unbiased. On the other pools the 70% share lost
 about 3 T points, so the encoder share is the knob that trades T for the new letters.
+
+Replication (D043): the 50% blend, fixed before the pool existed, on a third fresh pool
+(2000 scenes per letter, seeds 4000000 + 20*i, 95% intervals):
+
+| Letter | Base | 50% encoder | Difference [95% interval] | Final coverage |
+| --- | --- | --- | --- | --- |
+| T | 43.4% | 45.1% | +1.8 [-0.9, +4.4] | 0.699 -> 0.710 |
+| near-T | 40.0% | 41.0% | +0.9 [-1.7, +3.6] | 0.690 -> 0.705 |
+| Y | 9.8% | 14.1% | +4.3 [+2.4, +6.3] | 0.572 -> 0.608 |
+| D | 0.1% | 0.9% | +0.9 [+0.4, +1.3] | 0.306 -> 0.416 |
+| L | 0.1% | 0.0% | -0.1 [-0.1, +0.0] | 0.318 -> 0.331 |
+
+All four conditions hold again. Two independent fresh pools agree: the 50% encoder blend
+improves Y and D significantly without losing T or near-T. L is not improved.
 
 Students that train only the encoder with the base action network frozen
 (`distill.py --freeze-actor`) kept T (monitor test 39-44) but collapsed on the new
