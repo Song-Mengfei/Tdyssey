@@ -719,3 +719,7 @@ never used for training, selection or evaluation: 2000 scenes per letter with se
 four conditions and 95% intervals as D040 apply. Because the candidate was chosen
 before any of this pool existed, the test is free of selection bias. It is reported
 together with both earlier looks at the 900000 pool, not instead of them.
+
+Outcome (2026-10-27): T 46.0% vs 42.8% (-3.1 [-5.9, -0.4]), near-T +0.4 [-2.2, +3.1],
+Y 8.8% vs 16.8% (+8.0 [+6.0, +9.9]), D +0.8 [+0.3, +1.3], L 0. Condition 1 failed: the
+Y gain is confirmed without selection bias, and so is a T loss of about 3 points.

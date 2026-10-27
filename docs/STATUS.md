@@ -6,7 +6,8 @@ privileged world-model planning teacher solves most D/Y/L scenes in the simulato
 significantly on 1000 fresh scenes but loses 4.8 T points, so the pre-registered final
 test did not pass (D040) and the base remains the result. A secondary test of an
 encoder-only blend nearly doubled Y (18.1% vs 9.4%) with T -2.5 [-6.2, +1.2] and
-near-T -2.0 [-5.8, +1.8], narrowly missing the margin. Work continues on
+near-T -2.0 [-5.8, +1.8], narrowly missing the margin; a confirmatory test on 2000
+fresh scenes (D041) confirmed Y +8.0 and a T loss of -3.1 [-5.9, -0.4]. Work continues on
 `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and

@@ -29,6 +29,7 @@ def main():
     p.add_argument("--candidate", required=True)
     p.add_argument("--runs", type=Path, required=True, help="Folder with base-part*.json and <candidate>-part*.json")
     p.add_argument("--out", type=Path)
+    p.add_argument("--scenes", type=int, default=1000, help="Expected scenes per letter")
     args = p.parse_args()
     base, cand = load(args.runs, "base"), load(args.runs, args.candidate)
     rows, result = [], {"candidate": args.candidate, "shapes": {}}
@@ -54,7 +55,7 @@ def main():
              "2_T_narrow_noninferior": "T_narrow" in s and s["T_narrow"]["lo"] >= -0.05,
              "3_new_letter_better": any(s[x]["lo"] > 0 for x in new),
              "4_no_new_letter_worse": all(s[x]["hi"] >= 0 for x in new),
-             "complete": all(s.get(x, {}).get("n") == 1000 for x in ("T", "T_narrow", "Y", "D", "L"))}
+             "complete": all(s.get(x, {}).get("n") == args.scenes for x in ("T", "T_narrow", "Y", "D", "L"))}
     result["conditions"] = conds
     result["pass"] = all(conds.values())
     print("\n".join(rows)); print(json.dumps(conds)); print("PASS" if result["pass"] else "NOT PASSED")
