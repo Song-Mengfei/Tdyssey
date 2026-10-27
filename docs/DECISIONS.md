@@ -723,3 +723,15 @@ together with both earlier looks at the 900000 pool, not instead of them.
 Outcome (2026-10-27): T 46.0% vs 42.8% (-3.1 [-5.9, -0.4]), near-T +0.4 [-2.2, +3.1],
 Y 8.8% vs 16.8% (+8.0 [+6.0, +9.9]), D +0.8 [+0.3, +1.3], L 0. Condition 1 failed: the
 Y gain is confirmed without selection bias, and so is a T loss of about 3 points.
+
+## D042 — Two encoder-share candidates on a second fresh pool (2026-10-27)
+
+On the 100-scene monitor test, blends that keep the base action network and take 30% or
+50% of the large student's encoder (`big4-unet0-enc0.3`, `big4-unet0-enc0.5`) scored T
+41/39, near-T 41/43, Y 13/16 against base 38-40, 33-38, 7-11. The 70% share lost about 3 T
+points on 1000 and 2000 scenes, so smaller shares may keep T. Both candidates are fixed
+now and tested once against the base on a pool never used before: 2000 scenes per letter,
+seeds 3000000 + 20*i, policy noise seed 42, paired by scene. Because two candidates are
+tested, intervals are 97.5% (z = 2.24, Bonferroni); each candidate passes only if D040's
+four conditions hold at that width. Results are reported for both, with every earlier
+look.
