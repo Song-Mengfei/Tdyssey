@@ -3,9 +3,11 @@
 Status: in progress. Every individual run, including abandoned ones, is listed in the
 [experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher solves all D, most Y and
 about 40% of L validation scenes in the real simulator. Distilled into the image
-policy and blended with the base, it significantly improves Y (9.4% -> 12.3%) and D
-(0.3% -> 4.9%) on 1000 fresh scenes, but T drops by 4.8 points, so the pre-registered
-final test did not pass and the base remains the result (D040). Negative results are
+policy and blended into the base, it gives the first image policy that passes the
+pre-registered no-regression test: on 2000 fresh scenes per letter, Y success rises from
+8.6% to 14.8% and D from 0.3% to 1.1%, while T and near-T stay within the margin (D042,
+97.5% intervals). Three earlier tests of other blends did not pass because of T; all
+four are reported. Negative results are
 kept below on purpose. Code is in `scripts/learning/` (see its
 [README](../scripts/learning/README.md)); decisions are D035-D040 in
 [DECISIONS.md](DECISIONS.md). A 25-minute narrated explainer video was made from
@@ -47,6 +49,11 @@ these documents (kept outside Git).
    it did not pass either. A confirmatory test on 2000 fresh scenes per letter (D041)
    confirmed Y +8.0 [+6.0, +9.9] and D +0.8, near-T +0.4, but also a real T loss of
    -3.1 [-5.9, -0.4].
+9. Passed (D042): keeping the base's action network and blending in 50% of the large
+   student's image encoder, on 2000 fresh scenes per letter: Y 8.6% -> 14.8% (+6.2,
+   97.5% interval +4.0 to +8.4), D 0.3% -> 1.1% (+0.9, +0.2 to +1.5), T +1.8 [-1.3,
+   +4.8], near-T +1.4 [-1.6, +4.3], L unchanged. A 30% share also passed (Y +3.2, T
+   +3.0). This was the fourth round of testing; the earlier three are listed above.
 
 ## Evaluation protocol
 
@@ -62,6 +69,8 @@ official RSS 2023 CNN diffusion policy (DDPM-100, 8 of 16 actions executed).
 | Oracle data | 700000+ | best-of-N decision records |
 | Teacher data | 800000+ | planning-teacher demonstrations |
 | Final test | 900000+ | 1000 scenes; reserved for the acceptance test |
+| Fresh pool 1 | 2000000+ | 2000 scenes; D041 confirmatory test |
+| Fresh pool 2 | 3000000+ | 2000 scenes; D042 test (passed) |
 
 Base policy on the 1000-scene final test pool (Wilson 95% interval in brackets):
 T 44.4% [41.3, 47.5], near-T (`T_narrow`) 41.9% [38.9, 45.0], Y 9.4% [7.7, 11.4],
@@ -347,6 +356,29 @@ scenes per letter (seeds 2000000 + 20*i, never used before), paired by scene:
 
 Free of selection bias, this confirms the Y gain (success nearly doubles) and a small D
 gain, with near-T unchanged, but also a real T loss of about 3 points. Not passed.
+
+### The passing result: smaller encoder shares on a second fresh pool (D042)
+
+Monitor-test results suggested that smaller encoder shares keep T (base action network
+plus 30%, 50%, 70%, 100% of the large student's encoder: T 41, 39, 39, 40; near-T 41, 43,
+33, 39; Y 13, 16, 16, 10). Two candidates were fixed in D042 before any data from a second
+fresh pool existed (2000 scenes per letter, seeds 3000000 + 20*i), with 97.5% intervals
+for the two comparisons:
+
+| Letter | Base | 30% encoder | Difference | 50% encoder | Difference |
+| --- | --- | --- | --- | --- | --- |
+| T | 43.6% | 46.7% | +3.0 [+0.1, +6.0] | 45.4% | +1.8 [-1.3, +4.8] |
+| near-T | 40.4% | 43.0% | +2.6 [-0.3, +5.6] | 41.8% | +1.4 [-1.6, +4.3] |
+| Y | 8.6% | 11.8% | +3.2 [+1.1, +5.3] | 14.8% | +6.2 [+4.0, +8.4] |
+| D | 0.3% | 0.3% | +0.0 [-0.4, +0.4] | 1.1% | +0.9 [+0.2, +1.5] |
+| L | 0.0% | 0.0% | +0.0 | 0.1% | +0.1 [-0.1, +0.3] |
+
+Both pass all four conditions. The 50% blend is the stronger result: Y success rises by
+about 70% relative and D improves, with T and near-T unchanged within the margin. Context
+for interpretation: this was the fourth round of testing (D040 primary and secondary,
+D041, D042); the share was chosen after the earlier rounds, but the pool itself was never
+used before, so the D042 comparison is unbiased. On the other pools the 70% share lost
+about 3 T points, so the encoder share is the knob that trades T for the new letters.
 
 Students that train only the encoder with the base action network frozen
 (`distill.py --freeze-actor`) kept T (monitor test 39-44) but collapsed on the new

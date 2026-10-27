@@ -2,13 +2,10 @@
 
 Updated: 2026-10-27. Stage: forward-process RL stopped (noisy signal, D035); a
 privileged world-model planning teacher solves most D/Y/L scenes in the simulator
-(D039); a distilled image student blended with the base improves Y and D
-significantly on 1000 fresh scenes but loses 4.8 T points, so the pre-registered final
-test did not pass (D040) and the base remains the result. A secondary test of an
-encoder-only blend nearly doubled Y (18.1% vs 9.4%) with T -2.5 [-6.2, +1.2] and
-near-T -2.0 [-5.8, +1.8], narrowly missing the margin; a confirmatory test on 2000
-fresh scenes (D041) confirmed Y +8.0 and a T loss of -3.1 [-5.9, -0.4]. Work continues on
-`feat/wm-planning-teacher`.
+(D039); distilling it into the image policy and blending the student's image encoder
+into the base passed the pre-registered no-regression test on 2000 fresh scenes per
+letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin. Three
+earlier blend tests failed on T (D040, D041). Work continues on `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
