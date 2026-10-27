@@ -741,3 +741,11 @@ Outcome (2026-10-27): both candidates passed. 50% encoder: T +1.8 [-1.3, +4.8], 
 T +3.0 [+0.1, +6.0], near-T +2.6 [-0.3, +5.6], Y +3.2 [+1.1, +5.3], D 0, L 0 (all 97.5%
 intervals, 2000 scenes per letter). This is the first image policy that passes the
 no-regression rule; it is reported with the three earlier tests that did not pass.
+
+## D043 — Replicate the passing blend on a third fresh pool (2026-10-28)
+
+The 50% encoder blend from D042 (`big4-unet0-enc0.5`) is tested once more against the base on
+a third pool never used before: 2000 scenes per letter, seeds 4000000 + 20*i, policy noise
+seed 42, paired by scene. With one candidate, intervals are 95%; D040's four conditions
+apply. This is an independent replication: candidate and rule are fixed before the pool
+exists. The result is reported whether or not it passes.
