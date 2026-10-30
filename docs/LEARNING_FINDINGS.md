@@ -454,6 +454,18 @@ and D 20/20 in the 20-scene sweep). Likely cause: the exact-state planner repeat
 nearly-right push near the goal, and the noise varies it. This makes the noisy planner the
 better teacher for training a new policy. It still reads privileged simulator state.
 
+### Data package for image world models
+
+`scripts/learning/image_wm_data/` packages continuous pushing episodes for training an image
+world model (image + action -> next image): the base-policy dynamics data (2000 episodes,
+581,845 transitions, seeds 604000-611980) plus 500 planner episodes recorded with
+`mpc_teacher.py --save-traj` (seeds 6000000-6001980), with the exact 96x96 camera frame of
+every step. Frames are made by replaying the recorded actions in the official simulator
+(`replay_frames.py`), because the camera image also draws contact markers that only exist
+during physics steps; every replayed pose matched the record. The packed archive (150 MB,
+`archives/tdyssey_pushing_data.tar.gz` in the private run store) includes
+`PACKAGE_README.md` and a numpy-only loader (`load_example.py`).
+
 ### Diffusion-policy samples as planner candidates
 
 The planner can also score plans sampled from the image diffusion policy
