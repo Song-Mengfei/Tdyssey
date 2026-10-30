@@ -67,13 +67,14 @@ def build(student=None):
 def run_eval(args):
     agent, cls = build(args.student)
     seeds = [args.seed_base+20*(args.start+i) for i in range(args.scenes)]
-    cfg = SimpleNamespace(eval_shapes=SHAPES, eval_seeds=seeds, eval_steps=300, seed=args.noise_seed)
+    shapes = tuple(args.shapes) if args.shapes else SHAPES
+    cfg = SimpleNamespace(eval_shapes=shapes, eval_seeds=seeds, eval_steps=300, seed=args.noise_seed, execute=args.execute)
     counts, start = defaultdict(int), time.time()
     episodes = evaluate_batched(agent, cls, cfg, counts, lambda: None)
     rows = [{k: e[k] for k in ("shape", "requested_seed", "initial_scene_seed", "success", "controls",
                                 "peak_coverage", "final_coverage")} for e in episodes]
     summary = {}
-    for shape in SHAPES:
+    for shape in shapes:
         r = [x for x in rows if x["shape"] == shape]
         k = sum(x["success"] for x in r)
         summary[shape] = {"success": k, "n": len(r), "rate": k/len(r), "wilson95": wilson(k, len(r)),
@@ -151,6 +152,8 @@ def main():
     e.add_argument("--student", type=Path, help="Evaluate a distilled actor checkpoint instead of the base")
     e.add_argument("--seed-base", type=int, default=300000, help="300000 monitor-test pool; 900000 final-test pool")
     e.add_argument("--start", type=int, default=0, help="First scene index (to split a large evaluation)")
+    e.add_argument("--execute", type=int, default=8, help="Controls executed per plan before replanning (official: 8)")
+    e.add_argument("--shapes", nargs="*", default=None, help="Shapes to evaluate (default T T_narrow Y D L; any of the 26 capitals)")
     e.add_argument("--out", type=Path, required=True)
     c = sub.add_parser("collect")
     c.add_argument("--start", type=int, default=0)
