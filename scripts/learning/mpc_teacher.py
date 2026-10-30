@@ -16,6 +16,9 @@ candidate lets 'hold still' win and the policy freezes); --dp-first executes the
 on object x/y/angle and pusher x/y; velocities from consecutive noisy readings), to measure how accurate an
 image-based state estimator must be.
 
+--save-traj PATH.npz also records every episode continuously in the dyn-data format of base_rollouts.py collect
+(state, pusher_velocity, action, contacts, coverage, mask, shape, seed), e.g. as image world-model training data.
+
 Recommended flags (each fixed a measured stall 2-4 px short of the goal; see docs/LEARNING_FINDINGS.md):
   --select best --gate-margin 0 --pushes 128 --horizon 48 --knots 8 --approach 0 --kp area --tight 2
   50 validation scenes: D 50/50, Y 36/50, L 21/50, T_narrow 12/50, T 5/50 (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
@@ -246,6 +249,8 @@ def main():
     parser.add_argument("--pushes", type=int, default=0, help="Structured push candidates per plan (first iteration)")
     parser.add_argument("--select", choices=("mean", "best"), default="mean", help="Execute the elite mean or the best sample")
     parser.add_argument("--commit", type=float, default=0.0, help="Relative return margin needed to abandon the previous plan")
+    parser.add_argument("--save-traj", type=Path, default=None, help="Also save continuous trajectories (.npz, the "
+                        "dyn-data format of base_rollouts.py collect: state, pusher_velocity, action, contacts, coverage, mask)")
     parser.add_argument("--state-noise", type=float, default=None, help="Gaussian noise (px) on the object and pusher "
                         "positions the planner reads; velocities then come from consecutive noisy readings")
     parser.add_argument("--angle-noise", type=float, default=0.0, help="Gaussian noise (deg) on the object angle")
@@ -295,6 +300,21 @@ def main():
     cov, peak = np.zeros(E), np.zeros(E)
     mean = None; start = time.time(); pred_log = []
     nrng = np.random.default_rng(args.noise_seed); prev_pose = [None]*E
+    if args.save_traj:                                                      # continuous trajectories, dyn-data format
+        TT = args.steps + 1
+        tr = {"state": np.zeros((E, TT, 9), np.float32), "pusher_velocity": np.zeros((E, TT, 2), np.float32),
+              "action": np.zeros((E, TT-1, 2), np.float32), "coverage": np.zeros((E, TT), np.float32),
+              "contacts": np.zeros((E, TT), np.int16), "mask": np.zeros((E, TT), bool)}
+
+        def record(i, t_, n_contacts):
+            st = physical_state(envs[i]); o, p_ = st["object"], st["pusher"]
+            tr["state"][i, t_] = (*o["position"], o["angle"], *o["velocity"], o["angular_velocity"], *p_["position"], st["goal"][2])
+            tr["pusher_velocity"][i, t_] = p_["velocity"]
+            tr["coverage"][i, t_] = physical_metrics(envs[i])["coverage"]
+            tr["contacts"][i, t_] = n_contacts; tr["mask"][i, t_] = True
+
+        for i in range(E):
+            record(i, 0, 0)
     for step in range(args.steps):
         idx = np.nonzero(active)[0]
         if len(idx) == 0:
@@ -361,7 +381,9 @@ def main():
                 corner_before = torch.sqrt(geo.keypoint_d2(s, sh)).cpu().numpy()
                 corner_pred = torch.sqrt(geo.keypoint_d2(pred, sh)).cpu().numpy()
         for j, i in enumerate(idx):
-            obs, _, d, _ = envs[i].step(np.clip(acts[j], 0, 512))
+            obs, _, d, info = envs[i].step(np.clip(acts[j], 0, 512))
+            if args.save_traj:
+                tr["action"][i, step] = np.clip(acts[j], 0, 512); record(i, step+1, int(info["n_contacts"]))
             if agent is not None:
                 hists[i].append(obs); dp_age[i] += 1
             cov[i] = physical_metrics(envs[i])["coverage"]; peak[i] = max(peak[i], cov[i]); steps[i] += 1
@@ -398,6 +420,12 @@ def main():
     pos_err = (s[:, :2]-g[:2]).norm(dim=1).cpu().numpy()
     ang_err = np.degrees(np.abs(np.angle(np.exp(1j*(s[:, 2]-g[2]).cpu().numpy()))))
     cov_hat = geo.coverage(s, sh_all).cpu().numpy()
+    if args.save_traj:
+        args.save_traj.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(args.save_traj, **tr, action_noise=0.0, success=done.copy(), shape=np.array([args.shape]*E),
+                            seed=np.array(seeds), goal=np.array([physical_state(envs[0])["goal"]], dtype=np.float64),
+                            source="world-model planner (privileged simulator state), final settings")
+        print(f"wrote trajectories {args.save_traj}: {int(tr['mask'].sum()) - E} controls", flush=True)
     for pair in keep:
         for e in pair.values():
             e.close()

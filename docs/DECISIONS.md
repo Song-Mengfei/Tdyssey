@@ -752,3 +752,14 @@ exists. The result is reported whether or not it passes.
 
 Outcome (2026-10-28): passed. T 43.4% -> 45.1% (+1.8 [-0.9, +4.4]), near-T +0.9 [-1.7, +3.6],
 Y 9.8% -> 14.1% (+4.3 [+2.4, +6.3]), D 0.1% -> 0.9% (+0.9 [+0.4, +1.3]), L -0.1 [-0.1, +0.0].
+
+## D044 — Target a full new policy, accept a reported T trade-off (2026-10-30)
+
+The encoder blends that passed D042/D043 keep the base's action network, so they cannot carry
+most of the teacher's skill (camera policy D 1% vs teacher D 100%). Decided with the project
+lead: the remaining work trains one full new camera policy for all letters instead of
+encoder-only changes. A small-to-medium drop on T is acceptable; the final report must state
+the T loss against the new-letter gains, and T should be recovered at the end if possible.
+First step: find out why copying the teacher fails (a student that reads exact state, like the
+teacher, separates perception from imitation), then train with the improved noisy-state
+teacher and more student-driven correction data.

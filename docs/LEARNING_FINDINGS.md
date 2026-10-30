@@ -440,6 +440,20 @@ stalls (a hint worth testing, not a settled result). Caveats: 20 scenes per lett
 the noise is independent per step, while a real estimator's errors are often systematic
 and cannot average out, so the real estimator must be tested in the planner directly.
 
+Follow-up on 50 validation scenes per letter (same scenes in each row): small noise is a
+large improvement where the planner used to stall just short of the goal.
+
+| State the planner reads | T | near-T | L | Final coverage T / near-T / L |
+| --- | --- | --- | --- | --- |
+| Exact simulator state | 5/50 | 13/50 | 11/50 | 0.933 / 0.941 / 0.940 |
+| 1 px, 1 deg noise | 34/50 | 22/50 | 39/50 | 0.941 / 0.919 / 0.946 |
+| 2 px, 2 deg noise | 35/50 | 22/50 | 31/50 | 0.939 / 0.896 / 0.928 |
+
+With 1 px noise the teacher is strong on every letter (T 68%, near-T 44%, L 78% here; Y 19/20
+and D 20/20 in the 20-scene sweep). Likely cause: the exact-state planner repeats the same
+nearly-right push near the goal, and the noise varies it. This makes the noisy planner the
+better teacher for training a new policy. It still reads privileged simulator state.
+
 ### Diffusion-policy samples as planner candidates
 
 The planner can also score plans sampled from the image diffusion policy
