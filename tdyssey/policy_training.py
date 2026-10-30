@@ -94,7 +94,8 @@ def evaluate_batched(agent, cls, config, counters, deadline, on_plan=None):
                               "done": False, "history": deque([observations[shape]]*2, maxlen=2),
                               "generator": torch.Generator(device=agent.device).manual_seed(
                                   derived_seed(config.seed, "rl-eval", seed))})
-        for start in range(0, config.eval_steps, 8):
+        execute = getattr(config, "execute", 8)           # controls executed per plan (official: 8)
+        for start in range(0, config.eval_steps, execute):
             active = [lane for lane in lanes if not lane["done"]]
             if not active:
                 break
@@ -105,7 +106,7 @@ def evaluate_batched(agent, cls, config, counters, deadline, on_plan=None):
             for index, lane in enumerate(active):
                 if on_plan is not None:
                     on_plan(lane["shape"], lane["seed"], condition[index:index+1], samples[index:index+1])
-                for action in actions[index][:min(8, config.eval_steps-start)]:
+                for action in actions[index][:min(execute, config.eval_steps-start)]:
                     deadline()
                     obs, raw, done, info = lane["env"].step(action)
                     counters["evaluation_controls"] += 1

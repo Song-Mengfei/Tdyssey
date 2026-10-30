@@ -45,11 +45,24 @@ from tdyssey.policy_branches import step_record
 SHAPES = wm2.SHAPES
 
 
+NOISE = {"pos": None, "ang": 0.0, "rng": None, "prev": {}}                 # set from --state-noise in main()
+
+
 def cog_states(envs, shape_k, geo, device):
     raw = []
     for env in envs:
         st = physical_state(env); o, p = st["object"], st["pusher"]
-        raw.append([*o["position"], o["angle"], *o["velocity"], o["angular_velocity"], *p["position"], *p["velocity"]])
+        row = [*o["position"], o["angle"], *o["velocity"], o["angular_velocity"], *p["position"], *p["velocity"]]
+        if NOISE["pos"] is not None:   # the improved teacher reads noisy poses; velocities from consecutive readings
+            pose = np.array(row)[[0, 1, 2, 6, 7]] + NOISE["rng"].normal(size=5)*np.array(
+                [NOISE["pos"], NOISE["pos"], np.radians(NOISE["ang"]), NOISE["pos"], NOISE["pos"]])
+            prev = NOISE["prev"].get(id(env))
+            vel = np.zeros(5)
+            if prev is not None:
+                vel = pose - prev; vel[2] = (vel[2] + np.pi) % (2*np.pi) - np.pi; vel /= 0.1   # 10 Hz control
+            NOISE["prev"][id(env)] = pose
+            row = [pose[0], pose[1], pose[2], vel[0], vel[1], vel[2], pose[3], pose[4], vel[3], vel[4]]
+        raw.append(row)
     sh = torch.full((len(envs),), shape_k, device=device)
     return wm2.to_cog(torch.tensor(raw, device=device, dtype=torch.float32), sh, geo.cogs), sh
 
@@ -115,8 +128,13 @@ def main():
     parser.add_argument("--pushes", type=int, default=0)
     parser.add_argument("--select", choices=("mean", "best"), default="mean")
     parser.add_argument("--commit", type=float, default=0.0)
+    parser.add_argument("--state-noise", type=float, default=None, help="Teacher reads poses with this Gaussian noise (px); "
+                        "velocities from consecutive readings (the improved teacher uses 1)")
+    parser.add_argument("--angle-noise", type=float, default=0.0, help="Angle noise (deg) for --state-noise")
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
+    if args.state_noise is not None:
+        NOISE.update(pos=args.state_noise, ang=args.angle_noise, rng=np.random.default_rng(derived_seed(7, "state-noise", args.shape, args.start)))
     agent, cls = base_rollouts.build(args.student)
     device = agent.device
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp
