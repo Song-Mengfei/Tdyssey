@@ -6,7 +6,9 @@ privileged world-model planning teacher solves most D/Y/L scenes in the simulato
 into the base passed the pre-registered no-regression test on 2000 fresh scenes per
 letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin, and
 passed again on a third fresh pool (D043: Y 9.8% -> 14.1%, D 0.1% -> 0.9%). Three
-earlier blend tests failed on T (D040, D041). Work continues on `feat/wm-planning-teacher`.
+earlier blend tests failed on T (D040, D041). Next (D044): a full new
+policy for all letters, with a better teacher (state noise lifts the planner to T 68%,
+L 78%) and a reported T trade-off. Work continues on `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
