@@ -425,7 +425,7 @@ Same 50 validation scenes per letter (seeds 400000 + 20*i), successes out of 50:
 | Original camera policy, 2 controls per plan | 16 | 11 | 1 | 0 | 0 |
 | Diffusion student reading exact state, 8 controls per plan | 18 | 13 | 5 | 17 | 4 |
 | Diffusion student reading exact state, 1 control per plan | 14 | 11 | 16 | 26 | 11 |
-| Camera student, official recipe, 10k / 15k / 20k steps | 16 / 16 / 15 | 9 / 12 / 13 | 6 / 6 / 5 | 9 / 8 / 6 | 0 / 1 / 3 |
+| Camera student, official recipe, 10k / 20k / 30k steps | 16 / 15 / 21 | 9 / 13 / 11 | 6 / 5 / 5 | 9 / 6 / 8 | 0 / 3 / 3 |
 
 - The state-input student (`state_student.py`; same 16-step interface, trained from scratch on 79k steps of
   500 teacher episodes, privileged input, a diagnostic only) recovers only a third to a half of the teacher's
@@ -435,7 +435,10 @@ Same 50 validation scenes per letter (seeds 400000 + 20*i), successes out of 50:
 - The camera student trained with the official Diffusion Policy recipe (`bc_train.py`: every step of 500 teacher
   episodes plus the 206 original human T episodes, letters balanced, random-crop augmentation, EMA, cosine
   learning rate, from the official checkpoint) levels off far below the teacher after about 5M samples, while
-  its training loss still falls. The official policy saw about 78M samples.
+  its training loss still falls (30k steps, about 7.7M samples); with 2 controls per plan at 30k: T 11, near-T 9,
+  Y 5, D 4, L 10. The official policy saw about 78M samples. The no-anchor older-recipe run reached T 23,
+  near-T 23, Y 7, D 3, L 0 of 100 after 10 epochs. A first DAgger round (student drives with probability 0.7,
+  teacher labels; 250 training scenes) was collected for the next session (`runs/mpc-data/dagger-bc1`).
 - The older recipe (`distill.py`, records every 8 controls, anchor to the original policy) after 5 epochs, 100
   validation scenes: with anchor T 14, near-T 17, Y 7, D 8, L 1; without anchor T 22, near-T 23, Y 6, D 3, L 0
   (original: T 35, near-T 37, Y 9, D 0, L 0).
