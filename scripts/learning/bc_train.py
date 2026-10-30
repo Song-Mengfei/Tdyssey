@@ -5,7 +5,7 @@ The teacher's episodes are treated like human demonstrations: every step is a tr
 loss (DiffusionUnetHybridImagePolicy.compute_loss, which includes the official random-crop augmentation in train
 mode), AdamW (lr 1e-4, betas 0.95/0.999, wd 1e-6) with 500 warm-up steps and cosine decay, and the official EMA
 schedule (power 0.75, max 0.9999). Starts from the official checkpoint and keeps its normalizer. Data:
-  --demos DIR      teacher trajectories (mpc_teacher.py --save-traj *.npz) with replayed frames in DIR/frames/
+  --demos DIR...   teacher trajectories (mpc_teacher.py --save-traj *.npz) with replayed frames in DIR/frames/
   --human-t ZARR   the official human T demonstrations (pusht_cchi_v7_replay.zarr), so T is learned from the
                    data the original policy was trained on (not new demonstrations)
 Letters are sampled in equal shares (T split evenly between human and teacher episodes).
@@ -35,9 +35,9 @@ LETTERS = ("T", "T_narrow", "Y", "D", "L")
 
 def load_episodes(args):
     eps = []   # (frames uint8 (m,96,96,3), agent_pos (m,2), actions (m,2), group)
-    for f in sorted(Path(args.demos).glob("*.npz")):
+    for f in sorted(f for d in args.demos for f in Path(d).glob("*.npz")):
         z = {k: v for k, v in np.load(f).items()}
-        fr = np.load(Path(args.demos)/"frames"/f"{f.stem}_frames.npz")["frames"]
+        fr = np.load(f.parent/"frames"/f"{f.stem}_frames.npz")["frames"]
         for i in range(len(z["seed"])):
             n = int(z["mask"][i].sum()); m = n - 1                         # m (frame, action) pairs
             if m < 2:
@@ -70,7 +70,7 @@ def build_index(eps):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--demos", type=Path, required=True)
+    p.add_argument("--demos", type=Path, nargs="+", required=True, help="One or more demonstration folders")
     p.add_argument("--human-t", type=Path, default=None)
     p.add_argument("--steps", type=int, default=15000)
     p.add_argument("--batch", type=int, default=256)

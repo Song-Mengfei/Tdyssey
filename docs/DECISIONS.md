@@ -763,3 +763,13 @@ the T loss against the new-letter gains, and T should be recovered at the end if
 First step: find out why copying the teacher fails (a student that reads exact state, like the
 teacher, separates perception from imitation), then train with the improved noisy-state
 teacher and more student-driven correction data.
+
+## D045 — Copy the teacher like a demonstrator, then correct the student's own states (2026-10-30)
+
+Decided with the project lead. Students are trained with the official Diffusion Policy recipe on every step of the
+improved teacher's episodes (plus the original human T demonstrations, which are not new demonstrations), not with
+an anchor to the original policy. A state-input student showed that most of the gap is in copying, and a literature
+check (DAgger, Ross et al. 2011; Learning by Cheating, Chen et al. 2019; PLATO, Kahn et al. 2017; Diffusion Policy,
+Chi et al. 2023) points to teacher relabelling of the student's own states, longer training, and closed-loop
+execution. Next: 3-4 DAgger rounds (student drives on training scenes, teacher labels), long training on the 3-day
+machine, and tests with 1-8 controls per plan, always on the same 50 validation scenes as the teacher.

@@ -414,6 +414,37 @@ Students that train only the encoder with the base action network frozen
 letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
 together with the action network and then blended.
 
+### Can the student copy the teacher? (2026-10-30, D044)
+
+Same 50 validation scenes per letter (seeds 400000 + 20*i), successes out of 50:
+
+| Policy | T | near-T | Y | D | L |
+| --- | --- | --- | --- | --- | --- |
+| Teacher: planner reading exact state with 1 px / 1 deg noise | 34 | 22 | 46 | 50 | 39 |
+| Original camera policy, 8 controls per plan | 20 | 17 | 4 | 0 | 0 |
+| Original camera policy, 2 controls per plan | 16 | 11 | 1 | 0 | 0 |
+| Diffusion student reading exact state, 8 controls per plan | 18 | 13 | 5 | 17 | 4 |
+| Diffusion student reading exact state, 1 control per plan | 14 | 11 | 16 | 26 | 11 |
+| Camera student, official recipe, 10k / 15k / 20k steps | 16 / 16 / 15 | 9 / 12 / 13 | 6 / 6 / 5 | 9 / 8 / 6 | 0 / 1 / 3 |
+
+- The state-input student (`state_student.py`; same 16-step interface, trained from scratch on 79k steps of
+  500 teacher episodes, privileged input, a diagnostic only) recovers only a third to a half of the teacher's
+  successes, so most of the skill is lost in copying, not in perception. Replanning every control instead of
+  executing 8 helps it on Y, D and L (5 -> 16, 17 -> 26, 4 -> 11), consistent with a teacher that replans
+  every control.
+- The camera student trained with the official Diffusion Policy recipe (`bc_train.py`: every step of 500 teacher
+  episodes plus the 206 original human T episodes, letters balanced, random-crop augmentation, EMA, cosine
+  learning rate, from the official checkpoint) levels off far below the teacher after about 5M samples, while
+  its training loss still falls. The official policy saw about 78M samples.
+- The older recipe (`distill.py`, records every 8 controls, anchor to the original policy) after 5 epochs, 100
+  validation scenes: with anchor T 14, near-T 17, Y 7, D 8, L 1; without anchor T 22, near-T 23, Y 6, D 3, L 0
+  (original: T 35, near-T 37, Y 9, D 0, L 0).
+- Teacher variants on T / near-T / L (50 scenes): 0.5 px 35 / 28 / 38; position-only 1 px 28 / 21 / 39;
+  angle-only 1 deg 36 / 34 / 34; a repeat of 1 px with another noise seed 33 / 26 / 39 (run-to-run spread about
+  4). One 50-scene rate has a 95% interval of about +-14 points.
+- Next (literature summary in the decision log): teacher-relabelled DAgger (the student drives, the teacher
+  labels the visited states), much longer training, and fewer controls per plan.
+
 ### How accurate must an image-based state estimator be?
 
 The planner reads exact simulator state, which an image-to-state model (the teammates'
