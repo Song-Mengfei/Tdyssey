@@ -12,6 +12,10 @@ Batched over all scenes of one shape.
 --dp-only scores only those plans (model-based best-of-N; use --dp-nowarm, since keeping the previous plan as a
 candidate lets 'hold still' win and the policy freezes); --dp-first executes the first sample (sanity check).
 
+--state-noise PX / --angle-noise DEG replace the exact state the planner reads by noisy estimates (Gaussian noise
+on object x/y/angle and pusher x/y; velocities from consecutive noisy readings), to measure how accurate an
+image-based state estimator must be.
+
 Recommended flags (each fixed a measured stall 2-4 px short of the goal; see docs/LEARNING_FINDINGS.md):
   --select best --gate-margin 0 --pushes 128 --horizon 48 --knots 8 --approach 0 --kp area --tight 2
   50 validation scenes: D 50/50, Y 36/50, L 21/50, T_narrow 12/50, T 5/50 (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
@@ -40,6 +44,7 @@ from tdyssey.envs.official import make_official_shape_env_class, matched_reset
 from tdyssey.official import load_official_source, physical_metrics, physical_state
 
 SHAPES = wm2.SHAPES
+CONTROL_DT = 0.1                                                          # 10 Hz control (sim 100 Hz, 10 substeps)
 
 
 def smooth_noise(E, K, H, knots, device, gen):
@@ -241,6 +246,10 @@ def main():
     parser.add_argument("--pushes", type=int, default=0, help="Structured push candidates per plan (first iteration)")
     parser.add_argument("--select", choices=("mean", "best"), default="mean", help="Execute the elite mean or the best sample")
     parser.add_argument("--commit", type=float, default=0.0, help="Relative return margin needed to abandon the previous plan")
+    parser.add_argument("--state-noise", type=float, default=None, help="Gaussian noise (px) on the object and pusher "
+                        "positions the planner reads; velocities then come from consecutive noisy readings")
+    parser.add_argument("--angle-noise", type=float, default=0.0, help="Gaussian noise (deg) on the object angle")
+    parser.add_argument("--noise-seed", type=int, default=0)
     parser.add_argument("--dp-candidates", type=int, default=0, help="Add N diffusion-policy plans (sampled from rendered "
                         "observations) to the candidates")
     parser.add_argument("--dp-policy", type=Path, default=None, help="Student/blend checkpoint for the proposals (default: base)")
@@ -285,6 +294,7 @@ def main():
     active = np.ones(E, bool); done = np.zeros(E, bool); steps = np.zeros(E, int)
     cov, peak = np.zeros(E), np.zeros(E)
     mean = None; start = time.time(); pred_log = []
+    nrng = np.random.default_rng(args.noise_seed); prev_pose = [None]*E
     for step in range(args.steps):
         idx = np.nonzero(active)[0]
         if len(idx) == 0:
@@ -294,6 +304,20 @@ def main():
             st = physical_state(envs[i]); o, p = st["object"], st["pusher"]
             raw.append([*o["position"], o["angle"], *o["velocity"], o["angular_velocity"], *p["position"], *p["velocity"]])
         sh = sh_all[idx]
+        if args.state_noise is not None:                                      # imitate an image-based state estimator
+            rawn = np.array(raw, dtype=np.float64)
+            pose = rawn[:, [0, 1, 2, 6, 7]].copy()                               # object x, y, angle; pusher x, y
+            pose += nrng.normal(size=pose.shape)*np.array([args.state_noise, args.state_noise, np.radians(args.angle_noise),
+                                                            args.state_noise, args.state_noise])
+            for j, i in enumerate(idx):                                         # velocities from consecutive estimates
+                if prev_pose[i] is not None:
+                    d = pose[j] - prev_pose[i]; d[2] = (d[2] + np.pi) % (2*np.pi) - np.pi
+                    rawn[j, [3, 4, 5, 8, 9]] = d / CONTROL_DT
+                else:
+                    rawn[j, [3, 4, 5, 8, 9]] = 0.0
+                prev_pose[i] = pose[j]
+            rawn[:, [0, 1, 2, 6, 7]] = pose
+            raw = rawn.tolist()
         s = wm2.to_cog(torch.tensor(raw, device=device, dtype=torch.float32), sh, geo.cogs)
         if mean is None:
             mean = s[:, None, 6:8].expand(-1, args.horizon, -1).clone()
