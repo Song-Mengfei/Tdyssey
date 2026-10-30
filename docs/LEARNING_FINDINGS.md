@@ -414,6 +414,32 @@ Students that train only the encoder with the base action network frozen
 letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
 together with the action network and then blended.
 
+### How accurate must an image-based state estimator be?
+
+The planner reads exact simulator state, which an image-to-state model (the teammates'
+direction) would replace. To set an accuracy target, the planner (final settings, 20
+validation scenes per letter, same scenes in every row) read noisy estimates instead:
+independent Gaussian noise each control on object x/y, pusher x/y (simulator pixels,
+512-px frame) and object angle, with velocities from consecutive noisy readings
+(`mpc_teacher.py --state-noise PX --angle-noise DEG`).
+
+| State the planner reads | Y | D | L | Final coverage Y / D / L |
+| --- | --- | --- | --- | --- |
+| Exact simulator state | 18/20 | 19/20 | 6/20 | 0.955 / 0.965 / 0.941 |
+| Velocities from consecutive readings, no noise | 16 | 20 | 6 | 0.957 / 0.967 / 0.939 |
+| 0.5 px, 0.5 deg | 18 | 20 | 14 | 0.954 / 0.967 / 0.946 |
+| 1 px, 1 deg | 19 | 20 | 15 | 0.957 / 0.965 / 0.944 |
+| 2 px, 2 deg | 16 | 18 | 16 | 0.951 / 0.963 / 0.943 |
+| 4 px, 4 deg | 6 | 4 | 10 | 0.890 / 0.880 / 0.910 |
+
+Up to about 2 px and 2 degrees per reading the planner loses nothing on Y and D; at 4 px
+it breaks down. At the policy's 96x96 image resolution, 2 simulator pixels are about 0.4
+of an image pixel, so an estimator needs sub-pixel precision there or higher-resolution
+input. Small noise raised L from 6 to 14-16 of 20, probably by knocking the planner out of
+stalls (a hint worth testing, not a settled result). Caveats: 20 scenes per letter, and
+the noise is independent per step, while a real estimator's errors are often systematic
+and cannot average out, so the real estimator must be tested in the planner directly.
+
 ### Diffusion-policy samples as planner candidates
 
 The planner can also score plans sampled from the image diffusion policy
