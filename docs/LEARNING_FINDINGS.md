@@ -449,8 +449,8 @@ large improvement where the planner used to stall just short of the goal.
 | 1 px, 1 deg noise | 34/50 | 22/50 | 39/50 | 0.941 / 0.919 / 0.946 |
 | 2 px, 2 deg noise | 35/50 | 22/50 | 31/50 | 0.939 / 0.896 / 0.928 |
 
-With 1 px noise the teacher is strong on every letter (T 68%, near-T 44%, L 78% here; Y 19/20
-and D 20/20 in the 20-scene sweep). Likely cause: the exact-state planner repeats the same
+With 1 px noise the teacher is strong on every letter: on the same 50 validation scenes,
+T 34/50, near-T 22/50, Y 46/50, D 50/50, L 39/50 (68%, 44%, 92%, 100%, 78%). Likely cause: the exact-state planner repeats the same
 nearly-right push near the goal, and the noise varies it. This makes the noisy planner the
 better teacher for training a new policy. It still reads privileged simulator state.
 
