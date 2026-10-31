@@ -54,7 +54,7 @@ class Student(nn.Module):
 
 def load_data(data_dir):
     F, A = [], []
-    for f in sorted(Path(data_dir).glob("*.npz")):
+    for f in sorted(f for d in (data_dir if isinstance(data_dir, (list, tuple)) else [data_dir]) for f in Path(d).glob("*.npz")):
         z = {k: v for k, v in np.load(f).items()}
         for i in range(len(z["seed"])):
             n = int(z["mask"][i].sum())
@@ -151,7 +151,7 @@ def evaluate(args):
 
 def main():
     p = argparse.ArgumentParser(); sub = p.add_subparsers(dest="mode", required=True)
-    t = sub.add_parser("train"); t.add_argument("--data", type=Path, required=True); t.add_argument("--out", type=Path, required=True)
+    t = sub.add_parser("train"); t.add_argument("--data", type=Path, nargs="+", required=True); t.add_argument("--out", type=Path, required=True)
     t.add_argument("--steps", type=int, default=20000); t.add_argument("--batch", type=int, default=1024); t.add_argument("--lr", type=float, default=3e-4)
     e = sub.add_parser("eval"); e.add_argument("--ckpt", type=Path, required=True); e.add_argument("--shape", choices=SHAPES, required=True)
     e.add_argument("--scenes", type=int, default=50); e.add_argument("--start", type=int, default=0)

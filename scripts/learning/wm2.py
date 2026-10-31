@@ -38,6 +38,13 @@ SHAPES = wm_state.SHAPES
 RADIUS, MARGIN = 15.0, 3.0
 
 
+def check_shapes(blob):
+    """A model trained on one letter set must run with the same TDYSSEY_SHAPES (old checkpoints: the original five)."""
+    trained = tuple(blob.get("shapes", ("T", "T_narrow", "Y", "D", "L")))
+    if trained != SHAPES:
+        raise SystemExit(f"world model trained on {trained}, but TDYSSEY_SHAPES gives {SHAPES}")
+
+
 def geometry():
     """Per shape: rectangles in the COG frame (xmin, ymin, xmax, ymax), COG offset, goal pose (COG frame)."""
     cls = make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))
@@ -206,7 +213,7 @@ def train(args):
             nc = [v["pos_med"] for k, v in ev.items() if k.startswith("H8_") and "no_contact" in k]
             print(f"[wm2 {time.time()-start:5.0f}s] step {step} loss {float(loss):.3f}  H8 contact med/p90: {brief}  | H8 no-contact pos med max {max(nc) if nc else float('nan'):.3f}px", flush=True)
             args.out.mkdir(parents=True, exist_ok=True)
-            torch.save({"state_dict": model.state_dict(), "width": args.width, "depth": args.depth}, args.out/"model.pt")
+            torch.save({"state_dict": model.state_dict(), "width": args.width, "depth": args.depth, "shapes": list(SHAPES)}, args.out/"model.pt")
             (args.out/"log.json").write_text(json.dumps(log, indent=1))
     print(f"wrote {args.out}")
 

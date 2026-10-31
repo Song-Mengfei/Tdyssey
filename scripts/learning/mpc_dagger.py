@@ -139,6 +139,7 @@ def main():
     device = agent.device
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp
     blob = torch.load(args.wm, map_location=device, weights_only=True)
+    wm2.check_shapes(blob)
     model = wm2.WM2(geo.rects, blob["width"], blob["depth"]).to(device)
     model.load_state_dict(blob["state_dict"]); model.eval()
     norm = agent.network.normalizer["action"]

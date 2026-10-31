@@ -10,6 +10,7 @@ SCENES (by seed): open-loop errors at horizons 1/8/32, split by contact, against
 """
 
 import argparse
+import os
 import json
 from pathlib import Path
 import time
@@ -18,7 +19,9 @@ import numpy as np
 import torch
 from torch import nn
 
-SHAPES = ("T", "T_narrow", "Y", "D", "L")
+# Letters the state world models know; TDYSSEY_SHAPES="T,T_narrow,Y,D,L,E,F,J,P,U" extends the set (a model trained
+# with one set must be used with the same set; wm2 checkpoints record it).
+SHAPES = tuple(os.environ.get("TDYSSEY_SHAPES", "T,T_narrow,Y,D,L").split(","))
 STATE = ("ox", "oy", "angle", "vx", "vy", "omega", "px", "py", "pvx", "pvy")
 
 

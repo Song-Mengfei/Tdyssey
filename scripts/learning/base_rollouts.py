@@ -96,7 +96,7 @@ def run_collect(args):
     counts, lanes, start = defaultdict(int), [], time.time()
     noise_rng = np.random.default_rng(args.start*7919+int(args.action_noise*10))
     for seed in seeds:
-        envs = {shape: cls(shape=shape, legacy=True) for shape in SHAPES}
+        envs = {shape: cls(shape=shape, legacy=True) for shape in (tuple(args.shapes) if args.shapes else SHAPES)}
         observations, resets = matched_reset(envs, seed, counts)
         for shape, env in envs.items():
             lanes.append({"shape": shape, "seed": resets[-1]["seed"], "env": env, "done": False,
@@ -159,6 +159,7 @@ def main():
     c.add_argument("--start", type=int, default=0)
     c.add_argument("--scenes", type=int, default=50)
     c.add_argument("--action-noise", type=float, default=0.0, help="Gaussian action noise (pixels) for diverse dynamics data")
+    c.add_argument("--shapes", nargs="*", default=None, help="Letters to collect (must include T; default the five)")
     c.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
     run_eval(args) if args.mode == "eval" else run_collect(args)

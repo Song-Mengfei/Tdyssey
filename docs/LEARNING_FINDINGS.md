@@ -414,6 +414,29 @@ Students that train only the encoder with the base action network frozen
 letters (Y, D, L final coverage 0.00-0.05): the useful encoder is the one trained
 together with the action network and then blended.
 
+### Teacher-relabelled DAgger works (2026-10-31, D045, D046)
+
+The official-recipe camera student was improved by rounds of correction (DAgger): the student drives on new
+training scenes with probability 0.7 per 8-control decision, the improved teacher labels every visited state, and
+the student is fine-tuned on all teacher demonstrations, the original human T demonstrations and every correction
+round so far (`chain_dagger_loop.sh`, 20k steps per round). On the teacher's 50 validation scenes per letter
+(successes; teacher 34, 22, 46, 50, 39):
+
+| Student | T | near-T | Y | D | L | mean final coverage |
+| --- | --- | --- | --- | --- | --- | --- |
+| Original | 20 | 17 | 4 | 0 | 0 | 0.52 |
+| Official recipe, no corrections, best of 30k-150k steps | 23 | 20 | 8 | 15 | 8 | 0.84 |
+| Correction round 2 | 18 | 11 | 18 | 17 | 13 | 0.84 |
+| Correction round 4 | 19 | 16 | 17 | 21 | 15 | 0.86 |
+| Correction round 5 / 6 | 19 / 18 | 19 / 14 | 17 / 19 | 21 / 20 | 17 / 12 | 0.83 / 0.84 |
+
+Longer training without corrections levels off (and the exact-state copy trained 10x longer does not improve);
+corrections lift Y, D and L clearly, with a plateau after round 4. Fair test of round 4 (D046, 1000 fresh scenes
+per letter): T 42.6% -> 36.3% (-6.3 [-10.5, -2.1]), near-T 40.2% -> 29.3% (-10.9 [-15.1, -6.7]), Y 9.9% -> 33.6%
+(+23.7 [+20.3, +27.1]), D 0.0% -> 33.1% (+33.1), L 0.0% -> 28.8% (+28.8); coverage rises on every letter. On all
+26 letters (100 scenes each, descriptive): the 22 letters never used in training go from 5 to 57 successes of 2200
+and coverage 0.306 -> 0.454 (+0.148 [+0.137, +0.159]), mostly on rounded letters (O 15, Q 12, B 11).
+
 ### Can the student copy the teacher? (2026-10-30, D044)
 
 Same 50 validation scenes per letter (seeds 400000 + 20*i), successes out of 50:

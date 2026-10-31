@@ -269,6 +269,7 @@ def main():
     device = "cuda"; gen = torch.Generator(device=device); gen.manual_seed(0)
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp
     blob = torch.load(args.wm, map_location=device, weights_only=True)
+    wm2.check_shapes(blob)
     model = wm2.WM2(geo.rects, blob["width"], blob["depth"]).to(device)
     model.load_state_dict(blob["state_dict"]); model.eval()
     cls = make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))

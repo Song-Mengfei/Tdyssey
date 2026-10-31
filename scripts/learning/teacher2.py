@@ -198,6 +198,7 @@ def main():
     device = "cuda"; torch.manual_seed(0)
     geo = Geometry(device)
     blob = torch.load(args.wm, map_location=device, weights_only=True)
+    wm2.check_shapes(blob)
     model = wm2.WM2(geo.rects, blob["width"], blob["depth"]).to(device)
     model.load_state_dict(blob["state_dict"]); model.eval().requires_grad_(False)
     d = wm_state.load(args.data)
