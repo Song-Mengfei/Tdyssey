@@ -801,3 +801,10 @@ project lead because rounds after round 4 appeared to recover T and near-T. Test
 candidate and original policy, 1000 scenes per letter, seeds 8000000 + 20*i, 8 controls per plan, policy noise seed
 42, paired by scene, success differences with 95% normal-approximation intervals and mean final coverage per letter,
 reported as a trade-off (D044). Round 7 is compared with round 4's D046 result only descriptively (different pools).
+
+Outcome (2026-10-31, 1000 fresh scenes per letter, seeds 8000000 + 20*i): T 43.4% -> 37.2% (-6.2 [-10.5, -1.9]),
+near-T 40.3% -> 28.2% (-12.1 [-16.2, -8.0]), Y 9.1% -> 33.7% (+24.6 [+21.2, +28.0]), D 0.2% -> 38.9% (+38.7
+[+35.7, +41.7]), L 0.0% -> 33.1% (+33.1 [+30.2, +36.0]); mean final coverage up on every letter. Average over the
+five letters 18.6% -> 34.2%. Compared descriptively with round 4 (D046), round 7 is better on D and L and has the
+same T/near-T loss; the apparent T recovery on the 26-letter pool did not hold on fresh scenes.
+

@@ -443,6 +443,16 @@ chance alone, so the trend (about +5 per round) is slow. On the 26-letter pool (
 round 6 and round 7 recover T and near-T: T + near-T vs the original -2.5 (-11.7 to +6.7) and -3.0 (-12.3 to +6.3)
 points, with Y + D + L +28.7 (D047 tests round 7 on fresh scenes).
 
+Fair test of round 7 (D047, fresh pool): T -6.2 [-10.5, -1.9], near-T -12.1 [-16.2, -8.0], Y +24.6, D +38.7,
+L +33.1 points; the T/near-T trade-off is the same as round 4's. Rounds 9 and 10 (validation, of 250): 86 and 89.
+
+Ten letters (E, F, J, P, U added; teacher on 50 validation scenes 49, 30, 47, 49, 44 with world model wm2 v2,
+which keeps D 50/50 and L 35/50): one student trained from round 7 on all teacher demonstrations (the new letters'
+from training seeds i = 46000-46099, frames by replay), then correction rounds over all ten letters
+(`chain_dagger_loop10.sh`). Successes of 50 per letter, T / near-T / Y / D / L / E / F / J / P / U (total of 500):
+first training 15/16/17/17/8/3/3/5/4/6 (94); after ten-letter round 1 7/12/18/16/13/11/3/7/9/8 (104); after
+round 2 17/14/17/20/12/4/6/9/7/8 (114). The original policy scores 0 on all five new letters.
+
 Negative results from a parallel 3-hour H200 session (2026-10-31, `runs/lastmile/`, logs `logs/lastmile/`):
 - "Last-mile" variant from round 4: teacher steps with coverage >= 0.9 sampled 3x more often and twice as many
   corrected scenes per round. Paired with matched plain rounds on 100 validation scenes per letter: -3.8, -4.8, +0.0
