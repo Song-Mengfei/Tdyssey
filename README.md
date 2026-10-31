@@ -38,6 +38,7 @@ learning settings.
 - [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
 - [Move to a training machine and view live training](docs/TRAINING_MACHINE.md)
 - [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
+- [Policy learning findings: RL diagnosis, oracle and world-model planning teacher](docs/LEARNING_FINDINGS.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)

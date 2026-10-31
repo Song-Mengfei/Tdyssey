@@ -591,3 +591,213 @@ remove torch pins from `dp` so callers choose exactly one backend. Manifest and
 lock change together. Metadata resolution does not validate Blackwell, dense
 full-network training, or useful adaptation; perform machine-specific runtime
 checks. No new environment or package installation is part of this change.
+
+## D033 — Opt-in batched lock-step forward rollouts (2026-10-24)
+
+Denoiser sampling, not physics, dominated forward training: every plan was a
+batch-1, 100-step DDPM call. Add `batched_rollouts` (default false). When true,
+every candidate in a group has its own environment, restored from the initial
+snapshot and replayed through the full prefix with the existing verification,
+and its own RNG stream derived from the plan RNG; each plan step is one batched
+denoiser call. Batched evaluation steps all seed/shape episodes in lock-step and
+seeds each episode's generator exactly as the sequential path does.
+
+Contexts, candidates, horizons, rewards, feedback and success are unchanged, but
+the random streams differ: batched and sequential runs are statistically, not
+bitwise, comparable, and a saved run cannot be resumed with the flag changed.
+Convolution roundoff depends on batch size (cuDNN TF32 default). Identical-seed
+evaluations agree to about 0.02 px for dozens of controls, then diverge
+chaotically, which can flip a near-threshold success. Keep existing presets
+sequential, compare methods within one mode, and use more evaluation scenes than
+three for claims. `torch.compile` of the U-Net was measured (about 1.3x) but not
+adopted because it adds a further numerical change for a small gain.
+
+## D034 — Near-miss shapes as the first learning-loop check (2026-10-24)
+
+Every T/L pilot left L at 0/3 with peak coverage near 0.45, far below the 0.95
+success threshold. At the author's direction, also train shapes the frozen
+baseline nearly solves, so physical improvement can show up as new successes:
+`configs/nft_nearmiss_batched.json` trains T (retention), D, `T_narrow` and Y and
+evaluates those plus L. L is untrained there but is a fixed development shape,
+so it is a visibility check, not unseen-shape generalization. The near-miss
+choice came from the single-scene alphabet sweep (D best IoU 0.815, near-T 0.872,
+Y solved); the run's five-scene baseline must confirm it. T/L lineages continue
+as the original comparison.
+
+## D035 — Stop long forward-process RL until the training signal is reliable (2026-10-25)
+
+Long NFT/AdvantageFlow runs either left the policy unchanged (small steps) or
+degraded T in proportion to drift (dense lr 3e-5: T 0.55 -> 0.05 by update 75).
+Only 16-36% of a candidate's 32-control score variance comes from its own plan
+(split-half reliability 0.14-0.29); the remaining follow-up plans dominate, and
+updates anchor only to the previous policy. A privileged value function did not
+rank candidates better. Longer runs of the same recipe were therefore stopped at
+about update 150. Revisit forward RL only with a measured reliable score and an
+explicit anchor to the start policy. See `docs/LEARNING_FINDINGS.md`.
+
+## D036 — Fixed scene pools and a pre-registered acceptance test (2026-10-25)
+
+Evaluation noise is large: rerunning the same policy flips 37-40% of T scene
+outcomes, and validation gains failed to replicate because of checkpoint
+selection. Scene pools are disjoint seed ranges (development 100000, validation
+400000, monitor test 300000, value 600000, oracle 700000, teacher data 800000,
+final test 900000). Select on validation, track on the 100-scene monitor test, and
+use the 1000-scene final test only once per candidate policy: ship a policy only
+if T and near-T are non-inferior and the new letters improve, with margins fixed
+before that test. Otherwise the base policy remains the result.
+
+## D037 — Simulator-oracle best-of-N is an upper bound, not a method (2026-10-25)
+
+Choosing among the frozen base's own plans with exact simulator replay raised Y
+from 3/20 to 8/20 and new-letter coverage, but imitating those choices stayed
+within evaluation noise. Base samples at one observation are nearly identical,
+so re-ranking cannot create new behavior. Keep `oracle_bon.py` as a diagnostic.
+Its decision records serve only as T/near-T retention data.
+
+## D038 — A structured privileged state world model (2026-10-25)
+
+A generic MLP state model was too coarse (8-control contact error 2.3 px) for a
+task that needs about 1.5 px. `wm2` copies the simulator's known parts, the
+kinematic pusher PD law and the letters' rectangle geometry, and learns only the
+object's motion in contact, in the object frame, behind a no-contact gate. It is
+trained on 1500 non-expert base-policy rollouts with action noise; median 8-control
+contact error is 0.22-0.32 px. This state-based mechanism study is privileged and
+is not the visual world model of PRs #6/#7; it does not replace that work.
+
+## D039 — Sampling planner teacher, distilled into the image policy (2026-10-26)
+
+SuperMimic-style BPTT through `wm2` did not learn to push (real coverage stayed
+below 0.12). A sampling planner inside `wm2` with structured push candidates
+succeeds in the real simulator on most D, Y and L scenes, but not on T/near-T.
+Use it as a privileged teacher: collect its closed-loop demonstrations, distill
+them into the image policy with the policy's denoising loss, and anchor only T and
+near-T records to the base. Push candidates, privileged state and geometric
+rewards are disclosed priors. Only the distilled image policy, tested under D036,
+can count as adaptation.
+
+## D040 — Blend selection and the pre-registered final test (2026-10-27)
+
+Distilled students gained on the new letters but lost 10-15 points on T. Blending
+their weights with the base, theta = (1-s) base + s student for the action network
+and image encoder (`interpolate.py`, s = 0 is exactly the base), recovered T on
+validation while keeping part of the gain. Six blends (two students x s = 0.3, 0.5,
+0.7) were compared on validation; the top three go to the 100-scene monitor test.
+
+Selection, fixed before the final test: among the monitor-tested blends whose T and
+near-T successes are at least the base's lower monitor-test values (38 and 33),
+choose the largest Y + D + L success total; ties go to the smaller s. If none
+qualifies, no blend goes to the final test.
+
+Final test: the chosen blend on the 1000-scene final-test pool (900000 + 20*i, policy
+noise seed 42), paired by scene with the existing base run. Per shape, the 95%
+interval of the success-rate difference uses the paired per-scene differences
+(normal approximation). Pass only if (1) T and (2) near-T each have a lower bound of
+at least -5 points, (3) at least one of Y, D, L has a lower bound above 0, and (4) no
+new letter has an upper bound below 0. A pass is reported as image-policy adaptation
+with every disclosure (privileged planner teacher, selection on validation and the
+monitor test). Otherwise the base remains the result. Other candidates may be tested
+later, but only this first one is the primary result; any later ones are reported
+as secondary, with the multiple comparisons stated.
+
+Outcome (2026-10-27): the rule selected the r4e60 student at s = 0.7. Final test: T
+39.6% vs 44.4% (difference -4.8, 95% interval -8.7 to -0.9), near-T -0.9 [-4.7, +2.9],
+Y +2.9 [+0.2, +5.6], D +4.6 [+3.2, +6.0], L +0.1 [-0.2, +0.4]. Condition 1 failed, so
+the base remains the result; see `LEARNING_FINDINGS.md`.
+
+Secondary result (2026-10-27): after the part-swap diagnosis, the same rule applied to
+three monitor-tested encoder-heavy blends selected the large student (lr 1e-4) with the
+base action network and a 70% student encoder. Final test: T -2.5 [-6.2, +1.2], near-T
+-2.0 [-5.8, +1.8], Y +8.7 [+5.7, +11.7], D +1.1 [+0.3, +1.9], L +0.0. Conditions 1 and
+2 failed (lower bounds below -5); reported as the second look at the final pool.
+
+## D041 — Confirmatory test of the secondary candidate on a fresh pool (2026-10-27)
+
+The secondary candidate from D040 (large student, lr 1e-4: base action network plus
+70% student encoder) is fixed. It is tested once more, against the base, on a pool
+never used for training, selection or evaluation: 2000 scenes per letter with seeds
+2000000 + 20*i (policy noise seed 42), base and candidate paired by scene. The same
+four conditions and 95% intervals as D040 apply. Because the candidate was chosen
+before any of this pool existed, the test is free of selection bias. It is reported
+together with both earlier looks at the 900000 pool, not instead of them.
+
+Outcome (2026-10-27): T 46.0% vs 42.8% (-3.1 [-5.9, -0.4]), near-T +0.4 [-2.2, +3.1],
+Y 8.8% vs 16.8% (+8.0 [+6.0, +9.9]), D +0.8 [+0.3, +1.3], L 0. Condition 1 failed: the
+Y gain is confirmed without selection bias, and so is a T loss of about 3 points.
+
+## D042 — Two encoder-share candidates on a second fresh pool (2026-10-27)
+
+On the 100-scene monitor test, blends that keep the base action network and take 30% or
+50% of the large student's encoder (`big4-unet0-enc0.3`, `big4-unet0-enc0.5`) scored T
+41/39, near-T 41/43, Y 13/16 against base 38-40, 33-38, 7-11. The 70% share lost about 3 T
+points on 1000 and 2000 scenes, so smaller shares may keep T. Both candidates are fixed
+now and tested once against the base on a pool never used before: 2000 scenes per letter,
+seeds 3000000 + 20*i, policy noise seed 42, paired by scene. Because two candidates are
+tested, intervals are 97.5% (z = 2.24, Bonferroni); each candidate passes only if D040's
+four conditions hold at that width. Results are reported for both, with every earlier
+look.
+
+Outcome (2026-10-27): both candidates passed. 50% encoder: T +1.8 [-1.3, +4.8], near-T +1.4
+[-1.6, +4.3], Y +6.2 [+4.0, +8.4] (8.6% -> 14.8%), D +0.9 [+0.2, +1.5], L +0.1. 30% encoder:
+T +3.0 [+0.1, +6.0], near-T +2.6 [-0.3, +5.6], Y +3.2 [+1.1, +5.3], D 0, L 0 (all 97.5%
+intervals, 2000 scenes per letter). This is the first image policy that passes the
+no-regression rule; it is reported with the three earlier tests that did not pass.
+
+## D043 — Replicate the passing blend on a third fresh pool (2026-10-28)
+
+The 50% encoder blend from D042 (`big4-unet0-enc0.5`) is tested once more against the base on
+a third pool never used before: 2000 scenes per letter, seeds 4000000 + 20*i, policy noise
+seed 42, paired by scene. With one candidate, intervals are 95%; D040's four conditions
+apply. This is an independent replication: candidate and rule are fixed before the pool
+exists. The result is reported whether or not it passes.
+
+Outcome (2026-10-28): passed. T 43.4% -> 45.1% (+1.8 [-0.9, +4.4]), near-T +0.9 [-1.7, +3.6],
+Y 9.8% -> 14.1% (+4.3 [+2.4, +6.3]), D 0.1% -> 0.9% (+0.9 [+0.4, +1.3]), L -0.1 [-0.1, +0.0].
+
+## D044 — Target a full new policy, accept a reported T trade-off (2026-10-30)
+
+The encoder blends that passed D042/D043 keep the base's action network, so they cannot carry
+most of the teacher's skill (camera policy D 1% vs teacher D 100%). Decided with the project
+lead: the remaining work trains one full new camera policy for all letters instead of
+encoder-only changes. A small-to-medium drop on T is acceptable; the final report must state
+the T loss against the new-letter gains, and T should be recovered at the end if possible.
+First step: find out why copying the teacher fails (a student that reads exact state, like the
+teacher, separates perception from imitation), then train with the improved noisy-state
+teacher and more student-driven correction data.
+
+## D045 — Copy the teacher like a demonstrator, then correct the student's own states (2026-10-30)
+
+Decided with the project lead. Students are trained with the official Diffusion Policy recipe on every step of the
+improved teacher's episodes (plus the original human T demonstrations, which are not new demonstrations), not with
+an anchor to the original policy. A state-input student showed that most of the gap is in copying, and a literature
+check (DAgger, Ross et al. 2011; Learning by Cheating, Chen et al. 2019; PLATO, Kahn et al. 2017; Diffusion Policy,
+Chi et al. 2023) points to teacher relabelling of the student's own states, longer training, and closed-loop
+execution. Next: 3-4 DAgger rounds (student drives on training scenes, teacher labels), long training on the 3-day
+machine, and tests with 1-8 controls per plan, always on the same 50 validation scenes as the teacher.
+
+## D046 — Fair test of the correction-round-4 student (2026-10-31)
+
+Candidate fixed now: `runs/dagger-loop/round4/ema-step20000.pt` (official recipe on teacher demonstrations and the
+original human T demonstrations, then four teacher-relabelled DAgger rounds). On the teacher's 50 validation scenes it
+scored T 19, near-T 16, Y 17, D 21, L 15 (original: 20, 17, 4, 0, 0). Test: candidate and original policy on a pool never
+used before, 1000 scenes per letter (seeds 7000000 + 20*i), 8 controls per plan, policy noise seed 42, paired by scene.
+Reported per letter: success rates, the paired difference with a 95% normal-approximation interval, and mean final
+coverage. Following D044 this is a trade-off report, not a pass/fail gate: the T and near-T changes are stated next to
+the Y, D and L gains, whatever they are.
+
+Outcome (2026-10-31, 1000 fresh scenes per letter, seeds 7000000 + 20*i): T 42.6% -> 36.3% (-6.3 [-10.5, -2.1]),
+near-T 40.2% -> 29.3% (-10.9 [-15.1, -6.7]), Y 9.9% -> 33.6% (+23.7 [+20.3, +27.1]), D 0.0% -> 33.1% (+33.1
+[+30.2, +36.0]), L 0.0% -> 28.8% (+28.8 [+26.0, +31.6]); mean final coverage rises on every letter (T 0.70 -> 0.86,
+near-T 0.68 -> 0.86, Y 0.56 -> 0.85, D 0.32 -> 0.79, L 0.32 -> 0.85). Average success over the five letters 18.5% ->
+32.2%. The student brings T and near-T closer to the goal but finishes them less often: a medium T/near-T loss traded
+for large gains on Y, D and L (the old D040 no-regression conditions are not met; under D044/D046 this is reported as
+the trade-off).
+
+
+## D047 — Fair test of the correction-round-7 student (2026-10-31)
+
+Candidate fixed now: `runs/dagger-loop/round7/ema-step20000.pt` (plain teacher-relabelled DAgger, seven rounds; best
+so far on the teacher's 50 validation scenes: T 28, near-T 14, Y 16, D 28, L 14, total 100 of 250). Chosen with the
+project lead because rounds after round 4 appeared to recover T and near-T. Test exactly as D046 but on a new pool:
+candidate and original policy, 1000 scenes per letter, seeds 8000000 + 20*i, 8 controls per plan, policy noise seed
+42, paired by scene, success differences with 95% normal-approximation intervals and mean final coverage per letter,
+reported as a trade-off (D044). Round 7 is compared with round 4's D046 result only descriptively (different pools).

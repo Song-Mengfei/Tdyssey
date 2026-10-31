@@ -35,6 +35,8 @@ def frozen_digest(network):
 
 def evaluate(agent, cls, config, counters, deadline, on_plan=None):
     """Paired development scenes, original strict success, no policy updates."""
+    if getattr(config, "batched_rollouts", False):
+        return evaluate_batched(agent, cls, config, counters, deadline, on_plan)
     saved_rng = agent.generator.get_state()
     envs = {shape: cls(shape=shape, legacy=True) for shape in getattr(config, "eval_shapes", ("T", "L"))}
     episodes = []
@@ -74,6 +76,56 @@ def evaluate(agent, cls, config, counters, deadline, on_plan=None):
         for env in envs.values():
             env.close()
     return episodes
+
+
+def evaluate_batched(agent, cls, config, counters, deadline, on_plan=None):
+    """`evaluate` in lock-step: each seed/shape episode has its own environment and
+    a generator seeded exactly as the sequential path seeds the shared one."""
+    saved_rng = agent.generator.get_state()
+    shapes = getattr(config, "eval_shapes", ("T", "L"))
+    envs = {seed: {shape: cls(shape=shape, legacy=True) for shape in shapes} for seed in config.eval_seeds}
+    lanes = []
+    try:
+        for seed in config.eval_seeds:
+            deadline()
+            observations, resets = matched_reset(envs[seed], seed, counters)
+            for shape, env in envs[seed].items():
+                lanes.append({"shape": shape, "seed": seed, "env": env, "resets": resets, "rows": [],
+                              "done": False, "history": deque([observations[shape]]*2, maxlen=2),
+                              "generator": torch.Generator(device=agent.device).manual_seed(
+                                  derived_seed(config.seed, "rl-eval", seed))})
+        execute = getattr(config, "execute", 8)           # controls executed per plan (official: 8)
+        for start in range(0, config.eval_steps, execute):
+            active = [lane for lane in lanes if not lane["done"]]
+            if not active:
+                break
+            deadline()
+            condition = agent.encode_batch([lane["history"] for lane in active])
+            actions, samples = agent.sample_batch(condition, [lane["generator"] for lane in active])
+            counters["evaluation_plans"] += len(active)
+            for index, lane in enumerate(active):
+                if on_plan is not None:
+                    on_plan(lane["shape"], lane["seed"], condition[index:index+1], samples[index:index+1])
+                for action in actions[index][:min(execute, config.eval_steps-start)]:
+                    deadline()
+                    obs, raw, done, info = lane["env"].step(action)
+                    counters["evaluation_controls"] += 1
+                    lane["history"].append(obs)
+                    lane["rows"].append({"action": action.tolist(), "raw_reward": float(raw),
+                                         "done": bool(done), "contacts": int(info["n_contacts"]),
+                                         **physical_metrics(lane["env"])})
+                    if done:
+                        lane["done"] = True
+                        break
+    finally:
+        agent.generator.set_state(saved_rng)
+        for group in envs.values():
+            for env in group.values():
+                env.close()
+    return [{"shape": lane["shape"], "requested_seed": lane["seed"], "reset_attempts": lane["resets"],
+             "initial_scene_seed": lane["resets"][-1]["seed"], "success": lane["done"],
+             "controls": len(lane["rows"]), "peak_coverage": max(r["coverage"] for r in lane["rows"]),
+             "final_coverage": lane["rows"][-1]["coverage"], "steps": lane["rows"]} for lane in lanes]
 
 
 def train(source_root, checkpoint, output, config, tracking=None):

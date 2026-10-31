@@ -1,8 +1,15 @@
 # Shared project status
 
-Updated: 2026-10-23. Stage: direct-simulator tail-PPO and forward-process
-NFT/AdvantageFlow trainers implemented; real GPU update/reload checks passed.
-Physical adaptation and imagined learning remain unestablished.
+Updated: 2026-10-27. Stage: forward-process RL stopped (noisy signal, D035); a
+privileged world-model planning teacher solves most D/Y/L scenes in the simulator
+(D039); distilling it into the image policy and blending the student's image encoder
+into the base passed the pre-registered no-regression test on 2000 fresh scenes per
+letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin, and
+passed again on a third fresh pool (D043: Y 9.8% -> 14.1%, D 0.1% -> 0.9%). Three
+earlier blend tests failed on T (D040, D041). Next (D044, D045): a full new
+policy for all letters. The improved teacher solves T 68%, near-T 44%, Y 92%, D 100%,
+L 78%, but students copy only a fraction of it, even with exact state; next are
+teacher-relabelled DAgger rounds and long official-recipe training. Work continues on `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -27,6 +34,48 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- Learning findings, 2026-10-24 to 2026-10-26 (H100 NVL, `feat/wm-planning-teacher`;
+  full tables in [learning findings](LEARNING_FINDINGS.md), code in
+  `scripts/learning/`). Base on the 1000-scene final test pool: T 44.4%, near-T
+  41.9%, Y 9.4%, D 0.3%, L 0.1%. Long NFT/AdvantageFlow runs did not learn and
+  degraded T with drift; only 16-36% of score variance comes from the candidate's
+  own plan (D035). Oracle best-of-N gave small gains (Y 3/20 -> 8/20), and
+  imitating it stayed within noise (D037). The structured state world model `wm2`
+  reaches 0.22-0.32 px median 8-control contact error (D038). BPTT teachers through
+  it failed; the sampling planner `mpc_teacher.py` solves D 50/50, Y 36/50, L 21/50
+  validation scenes but only T 5/50 and near-T 12/50 (D039). Round-1 teacher data
+  (350 scenes, 14.6k records with T retention) was distilled into three image
+  students; all were worse than the base on every shape (validation T 35 ->
+  15-25), so naive distillation of the closed-loop planner fails. Round 2 with chunk-consistent
+  labels failed the same way. Training the encoder too, 60 epochs and DAgger gave the
+  first image students with D/L successes but 10-15 points lower T. Blending a
+  student with the base (`interpolate.py`) recovered most of T: the selected 70%
+  blend on the final-test pool had T 39.6% vs 44.4%, near-T 41.0% vs 41.9%, Y 12.3%
+  vs 9.4%, D 4.9% vs 0.3%, L 0.2% vs 0.1% (not passed: T lower bound -8.7 < -5).
+  Every run is listed in the [experiment log](LEARNING_EXPERIMENT_LOG.md). New
+  physics checks: `tests/test_learning_wm_runtime.py`.
+
+- H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
+  `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
+  tiny smoke had tied scores, so no dense update). Eight completed sequential
+  20k-control T/L pilots: NFT/AdvantageFlow with LoRA seeds 42-44 and dense seed
+  42 (8 updates each; changed/frozen/reload-parity checks passed). L stayed 0/3 on
+  every run; T moved between 1/3 and 3/3, within evaluation noise. Feedback was
+  informative (L contact about 0.3-0.5, near-zero tied groups), unlike the earlier
+  pilot; 8 updates is too few to judge adaptation. Runs and the verified base asset
+  are kept in the author's private HF store; raw outputs remain outside Git.
+- Throughput: plans dominate time (a dense pilot sampled about 900 batch-1 plans
+  in 22 min; replay physics is minor). Eight concurrent smokes ran 1.4x faster in
+  aggregate than one, 2.4x with MPS. Added opt-in `batched_rollouts` (D033):
+  batch 32 cost 2.62 s versus 2.15 s for batch 1; the matched batched LoRA pilot
+  took 7.4 min versus 29.6 min sequential under similar 6-job load; group size 16
+  (8 updates, 77,603 controls) took 9.8 min. Prefix replays were 81% of that run's
+  counted controls, so large groups mostly spend interaction budget on replay.
+  Same-seed batched/sequential evaluations agree to about 0.02 px, then diverge
+  chaotically; one near-threshold T success flipped. Use many more scenes for claims.
+  Installed suite with official checks enabled: 126 ran, OK, 28 skipped (GPC not
+  installed); `scripts/check_repo.py` passed.
 
 - Added [training-machine handoff](TRAINING_MACHINE.md), optional W&B plus flushed
   local scalar logs and a no-account live viewer for all three trainers. Forward
@@ -334,6 +383,19 @@ See `docs/VALIDATION.md` for commands and limits.
   action/RNG parity, actor update, frozen-weight integrity and delta reload checks.
 
 ## Next task
+
+Keep T while learning the new letters (D040 failed on T alone). Candidates: more T
+retention data from the base's own plans (`mpc_dagger.py --label policy`), blending
+the action network and encoder separately, the large students now training, or a
+disclosed shape gate that routes T to the base. Any further final-test candidate is a
+secondary result under D040. Reduce the planner's leftover T rotation.
+
+The earlier next-task notes below predate these findings.
+
+Run long forward comparisons with `batched_rollouts` on the batched branch, keep
+sequential and batched results apart, and evaluate on more than three scenes per
+shape before comparing methods. Decide whether prefix-replay controls should
+dominate the interaction budget at larger group sizes.
 
 Use the [machine handoff](TRAINING_MACHINE.md) to recreate the selected profile
 and pass the short preflight/smoke run on the training GPU. Then review live
