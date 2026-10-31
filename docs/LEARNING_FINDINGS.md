@@ -437,6 +437,22 @@ per letter): T 42.6% -> 36.3% (-6.3 [-10.5, -2.1]), near-T 40.2% -> 29.3% (-10.9
 26 letters (100 scenes each, descriptive): the 22 letters never used in training go from 5 to 57 successes of 2200
 and coverage 0.306 -> 0.454 (+0.148 [+0.137, +0.159]), mostly on rounded letters (O 15, Q 12, B 11).
 
+Correction rounds continued (50 validation scenes, successes T / near-T / Y / D / L, total of 250): round 5
+19/19/17/21/17 (93), round 6 18/14/19/20/12 (83), round 7 28/14/16/28/14 (100); rounds differ by about +-11 from
+chance alone, so the trend (about +5 per round) is slow. On the 26-letter pool (100 scenes per letter), plain
+round 6 and round 7 recover T and near-T: T + near-T vs the original -2.5 (-11.7 to +6.7) and -3.0 (-12.3 to +6.3)
+points, with Y + D + L +28.7 (D047 tests round 7 on fresh scenes).
+
+Negative results from a parallel 3-hour H200 session (2026-10-31, `runs/lastmile/`, logs `logs/lastmile/`):
+- "Last-mile" variant from round 4: teacher steps with coverage >= 0.9 sampled 3x more often and twice as many
+  corrected scenes per round. Paired with matched plain rounds on 100 validation scenes per letter: -3.8, -4.8, +0.0
+  points (all intervals include zero); on the 26-letter pool, +2.0 (-4.0 to +8.0) and +1.8 (-3.9 to +7.5) on the
+  training letters. No detectable gain.
+- Replanning more often hurts these students: 4 controls per plan instead of 8, -13.6 points (-21.3 to -5.9) for
+  round 7; 2 controls per plan was also worse throughout. The remaining gap is final alignment (mean final coverage
+  0.8-0.9 vs the teacher's 0.95); candidates are image resolution (one 96x96 pixel is about 5 simulator pixels) and
+  the teacher's state noise making near-goal labels partly random.
+
 ### Can the student copy the teacher? (2026-10-30, D044)
 
 Same 50 validation scenes per letter (seeds 400000 + 20*i), successes out of 50:
