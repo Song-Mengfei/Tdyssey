@@ -792,3 +792,12 @@ near-T 0.68 -> 0.86, Y 0.56 -> 0.85, D 0.32 -> 0.79, L 0.32 -> 0.85). Average su
 for large gains on Y, D and L (the old D040 no-regression conditions are not met; under D044/D046 this is reported as
 the trade-off).
 
+
+## D047 — Fair test of the correction-round-7 student (2026-10-31)
+
+Candidate fixed now: `runs/dagger-loop/round7/ema-step20000.pt` (plain teacher-relabelled DAgger, seven rounds; best
+so far on the teacher's 50 validation scenes: T 28, near-T 14, Y 16, D 28, L 14, total 100 of 250). Chosen with the
+project lead because rounds after round 4 appeared to recover T and near-T. Test exactly as D046 but on a new pool:
+candidate and original policy, 1000 scenes per letter, seeds 8000000 + 20*i, 8 controls per plan, policy noise seed
+42, paired by scene, success differences with 95% normal-approximation intervals and mean final coverage per letter,
+reported as a trade-off (D044). Round 7 is compared with round 4's D046 result only descriptively (different pools).
