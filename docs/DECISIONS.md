@@ -773,3 +773,13 @@ check (DAgger, Ross et al. 2011; Learning by Cheating, Chen et al. 2019; PLATO, 
 Chi et al. 2023) points to teacher relabelling of the student's own states, longer training, and closed-loop
 execution. Next: 3-4 DAgger rounds (student drives on training scenes, teacher labels), long training on the 3-day
 machine, and tests with 1-8 controls per plan, always on the same 50 validation scenes as the teacher.
+
+## D046 — Fair test of the correction-round-4 student (2026-10-31)
+
+Candidate fixed now: `runs/dagger-loop/round4/ema-step20000.pt` (official recipe on teacher demonstrations and the
+original human T demonstrations, then four teacher-relabelled DAgger rounds). On the teacher's 50 validation scenes it
+scored T 19, near-T 16, Y 17, D 21, L 15 (original: 20, 17, 4, 0, 0). Test: candidate and original policy on a pool never
+used before, 1000 scenes per letter (seeds 7000000 + 20*i), 8 controls per plan, policy noise seed 42, paired by scene.
+Reported per letter: success rates, the paired difference with a 95% normal-approximation interval, and mean final
+coverage. Following D044 this is a trade-off report, not a pass/fail gate: the T and near-T changes are stated next to
+the Y, D and L gains, whatever they are.
