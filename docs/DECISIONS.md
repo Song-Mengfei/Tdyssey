@@ -783,3 +783,12 @@ used before, 1000 scenes per letter (seeds 7000000 + 20*i), 8 controls per plan,
 Reported per letter: success rates, the paired difference with a 95% normal-approximation interval, and mean final
 coverage. Following D044 this is a trade-off report, not a pass/fail gate: the T and near-T changes are stated next to
 the Y, D and L gains, whatever they are.
+
+Outcome (2026-10-31, 1000 fresh scenes per letter, seeds 7000000 + 20*i): T 42.6% -> 36.3% (-6.3 [-10.5, -2.1]),
+near-T 40.2% -> 29.3% (-10.9 [-15.1, -6.7]), Y 9.9% -> 33.6% (+23.7 [+20.3, +27.1]), D 0.0% -> 33.1% (+33.1
+[+30.2, +36.0]), L 0.0% -> 28.8% (+28.8 [+26.0, +31.6]); mean final coverage rises on every letter (T 0.70 -> 0.86,
+near-T 0.68 -> 0.86, Y 0.56 -> 0.85, D 0.32 -> 0.79, L 0.32 -> 0.85). Average success over the five letters 18.5% ->
+32.2%. The student brings T and near-T closer to the goal but finishes them less often: a medium T/near-T loss traded
+for large gains on Y, D and L (the old D040 no-regression conditions are not met; under D044/D046 this is reported as
+the trade-off).
+
