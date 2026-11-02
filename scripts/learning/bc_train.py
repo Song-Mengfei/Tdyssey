@@ -91,7 +91,14 @@ def build_index(eps, recs=(), near_cov=0.8):
     pos, acts, obs_idx, act_idx, group, near = [], [], [], [], [], []
     total = sum(len(e[0]) for e in eps) + 2*len(recs)
     shape = eps[0][0].shape[1:] if eps else recs[0][0].shape[1:]
-    frames = np.empty((total, *shape), np.uint8)                          # one copy of every frame (host memory)
+    mm = os.environ.get("TDYSSEY_FRAMES_MMAP")                           # a directory on local disk: frames live in a file
+    if mm:                                                                # (page cache), not in the job's resident memory
+        path = Path(mm)/f"frames-{os.getpid()}.npy"; path.parent.mkdir(parents=True, exist_ok=True)
+        frames = np.lib.format.open_memmap(path, mode="w+", dtype=np.uint8, shape=(total, *shape))
+        import atexit; atexit.register(lambda: path.unlink(missing_ok=True))
+        print(f"frames memory-mapped to {path} ({frames.nbytes/2**30:.0f} GB)", flush=True)
+    else:
+        frames = np.empty((total, *shape), np.uint8)                      # one copy of every frame (host memory)
     off = aoff = 0
     for n_ep in range(len(eps)):
         fr, ap, ac, g, cov, plan = eps[n_ep]; eps[n_ep] = None              # release the source as we go
@@ -172,7 +179,9 @@ def main():
     (args.out/"info.json").write_text(json.dumps(info, indent=1))
     on_cpu = True                    # frames in pinned host memory (96 px: ~31 GB; GPU memory is shared with other jobs)
     del eps, recs
-    if frames.nbytes > 40e9:                                                  # 192 px: no pinned copy (512 GB job limit)
+    if isinstance(frames, np.memmap):
+        frames.flush(); frames = torch.from_numpy(frames)
+    elif frames.nbytes > 40e9:                                                  # 192 px: no pinned copy (512 GB job limit)
         frames = torch.from_numpy(frames)
     else:
         frames = torch.from_numpy(frames).pin_memory()

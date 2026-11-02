@@ -1,4 +1,4 @@
-# Policy learning findings, 2026-10-24 to 2026-10-27
+# Policy learning findings, 2026-10-24 to 2026-11-02
 
 Status: in progress. Every individual run, including abandoned ones, is listed in the
 [experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher solves all D, most Y and
@@ -58,6 +58,15 @@ these documents (kept outside Git).
    Replicated on a third fresh pool (D043, 95% intervals): Y 9.8% -> 14.1% (+4.3, +2.4
    to +6.3), D 0.1% -> 0.9% (+0.9, +0.4 to +1.3), T +1.8 [-0.9, +4.4], near-T +0.9
    [-1.7, +3.6], L -0.1 [-0.1, +0.0]: passed again.
+10. One policy for ten shapes (section 7). Students copy the teacher's intended 16-step plans (+68% over copying its
+   executed pushes) and learn from correction rounds. On 1000 fresh scenes per letter (D049): average success 9.1% ->
+   34.3%, T 42.2% -> 42.9%, near-T 39.8% -> 32.0%, the eight other letters from 0-8% to 24-47%. A 192 px camera
+   (D050, a sensor change) reaches 38.2% (+3.9 points [+2.6, +5.2] over 96 px on 10,000 paired scenes).
+11. Why the student stays below the teacher (78% on validation): success allows only 1.3-2.7 px of error (0.24-0.51 of
+   a 96 px camera pixel); committing to 8 pushes costs even the exact-state teacher 22% of its successes; after about
+   two plan-label rounds more corrections no longer change behaviour beyond test-to-test chance.
+12. The ten-letter students also transfer to the 17 untrained capitals (D052): pooled success 0.2% -> 6.6% (96 px)
+   and 10.6% (192 px), final coverage 0.33 -> 0.51 / 0.57.
 
 ## Evaluation protocol
 
@@ -575,6 +584,63 @@ Two students with low-rank (LoRA) action-network updates plus a retrained encode
 (`--trainable lora --train-encoder`) reached validation T 31-43, near-T 28-38, Y 2-11 with
 new-letter coverage below the base: no better than the blends.
 
+## 7. Ten letters: plan labels, correction rounds and fair tests (2026-10-31 to 2026-11-02)
+
+Shapes: T, near-T, Y, D, L and the added letters E, F, J, P, U. World model wm2 v2 learned all ten from the original
+policy's noisy rollouts; the teacher (1 px / 1 degree state wiggle) solves 390 of 500 validation scenes. Evaluations are
+50 validation scenes per shape unless marked fresh.
+
+**What helps (matched A/B tests, official recipe, 30k steps from the official checkpoint, 100 validation scenes per
+shape, successes of 1000; tools `bc_train.py`, `policy_builder.py`):**
+
+| Change | Without | With |
+| --- | --- | --- |
+| Labels: the teacher's intended plan instead of its executed pushes | 77 | **129** |
+| Camera 192 px instead of 96 px | 111 | 129 |
+| All teacher demonstrations instead of half | 104 | 111 |
+| Action network 990M instead of 251M parameters (both from scratch, 50k steps) | 138 | 146 |
+
+Only the label change is far beyond test noise. A teacher that commits to 8 pushes like the student keeps 303 of 500
+(commits to 4: 317; re-plans every push: 390), so the student's 8-push rhythm itself costs precision.
+
+**Correction rounds.** Ten-letter rounds with executed labels climbed from 94 to about 160 of 500 over 16 rounds;
+switching to intended-plan labels reached about 180-190 after two rounds and then stayed flat: 21 later tests average
+179 with a spread of 9.6, which is what chance alone gives (10.7). The same student tested twice on the same scenes
+flips 211 of 500 outcomes, and every validation scene was solved in some tests and failed in others: success at the
+finish is largely luck. Training loss keeps falling each round while the student's plans on new states stay about 39 px
+from the teacher's (`scripts/learning/diagnose_plateau.py`). Success requires 1.3-2.7 px of position error, 0.24-0.51 of
+a 96 px camera pixel.
+
+**Fair tests (D049, D050; 1000 fresh scenes per shape, seeds 9000000 + 20*i, paired by scene; success %):**
+
+| Shape | Original | 96 px student | 192 px student |
+| --- | --- | --- | --- |
+| T | 42.2 | 42.9 (+0.7 [-3.6, +5.0]) | 44.5 (+2.3 [-2.1, +6.7]) |
+| near-T | 39.8 | 32.0 (-7.8 [-12.0, -3.6]) | 36.0 (-3.8 [-8.0, +0.4]) |
+| Y | 8.4 | 39.4 | 39.0 |
+| D | 0.1 | 42.5 | 45.7 |
+| L | 0.0 | 34.7 | 37.8 |
+| E | 0.0 | 26.7 | 30.4 |
+| F | 0.5 | 26.1 | 33.1 |
+| J | 0.0 | 23.8 | 24.5 |
+| P | 0.4 | 47.3 | 58.1 |
+| U | 0.0 | 27.4 | 32.5 |
+| **Average** | **9.1** | **34.3** | **38.2** |
+
+The 192 px camera adds +3.9 points [+2.6, +5.2] over 96 px across all 10,000 paired scenes. Mean final coverage rises on
+every shape (T 0.69 -> 0.87). Chart: `fairtest_results.png` (made with `scripts/learning/` tools; not in Git).
+
+**Unseen letters (D052, 200 fresh scenes per letter, seeds 11000000 + 20*i, paired by scene).** On the 17 capitals that
+none of these policies trained on, pooled success rises from 0.2% (original) to 6.6% (96 px, +6.3 [+5.5, +7.2]) and
+10.6% (192 px, +10.4 [+9.3, +11.4]); mean final coverage from 0.33 to 0.51 and 0.57. Letters that share strokes with the
+trained ones transfer best: B 20.0% / 39.5%, O 18.5% / 22.5%, W 13.5% / 19.5%, R 11.5% / 15.0%; A, M and X stay
+below 4%. Chart: `unseen_letters_results.png` (not in Git).
+
+**26-letter preparation (D051).** Dynamics data for the 17 other capitals; world model wm2 v3 for 27 shapes; teacher
+on 50 validation scenes: A 47, B 49, C 42, G 44, H 49, I 47, K 49, M 49, N 46, O 49, Q 49, R 36, S 49, V 44, W 47,
+X 48, Z 48 (T 30, D 49, L 34 re-checked). Six held-out shapes (`digit3 digit4 digit7 plus hash arrow`) are reserved for
+the 26-letter final test.
+
 ## Privileged signals and priors (disclosure)
 
 - Teachers read the simulator's exact object and pusher state. The deployed policy
@@ -584,7 +650,9 @@ new-letter coverage below the base: no better than the blends.
 - The world model's pusher dynamics and contact geometry are copied from the
   simulator. Only the object's motion in contact is learned.
 - The oracle uses exact simulator replay at decision time; it is an upper bound only.
-- No human demonstrations beyond the released T checkpoint's expert training data.
+- No human demonstrations beyond the released T checkpoint's expert training data; the students reuse that same
+  dataset (206 human T episodes) beside the machine-generated data.
+- The 192 px students use a sharper camera than the official policy (a sensor change), reported separately.
 
 ## Reproduce
 
