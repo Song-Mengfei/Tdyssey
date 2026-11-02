@@ -78,4 +78,4 @@ def main(argv=None):
 if __name__=='__main__':
     try:raise SystemExit(main())
     except (OSError,ValueError,RuntimeError) as exc:
-        print('启动失败：'+str(exc),file=sys.stderr);raise SystemExit(1)
+        print('Startup failed: '+str(exc),file=sys.stderr);raise SystemExit(1)

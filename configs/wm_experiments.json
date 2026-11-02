@@ -13,15 +13,15 @@
   "historical_attempts": [
     {
       "id": "RIGID",
-      "parent": "旧结构化起点",
+      "parent": "Earlier structured initialization",
       "data_ids": [
         "D00"
       ],
-      "controlled_change": "结构化路线，已撤销",
+      "controlled_change": "Structured approach, retired",
       "successful_updates": 261,
       "supervised_exposures": null,
       "wall_or_model_seconds": null,
-      "result": "未通过，数字仅历史消息",
+      "result": "Failed; numbers are supported only by historical messages",
       "evidence": [
         "E05"
       ],
@@ -33,11 +33,11 @@
       "data_ids": [
         "D01"
       ],
-      "controlled_change": "全参数native RGB/残差MSE",
+      "controlled_change": "Full-parameter native RGB / residual MSE",
       "successful_updates": 1668,
       "supervised_exposures": null,
       "wall_or_model_seconds": 5352.516,
-      "result": "未胜copy-last；best1500/last1668已删除",
+      "result": "Did not beat copy-last; best1500/last1668 were deleted",
       "evidence": [
         "E06"
       ],
@@ -49,11 +49,11 @@
       "data_ids": [
         "D04"
       ],
-      "controlled_change": "微拟合入口",
+      "controlled_change": "Micro-fit entrypoint",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": 28.344,
-      "result": "首baseline负值守卫中断，不能说200步拟合失败",
+      "result": "Stopped by the initial baseline's negative-value guard; not evidence of a failed 200-update fit",
       "evidence": [
         "E08"
       ]
@@ -64,11 +64,11 @@
       "data_ids": [
         "D04"
       ],
-      "controlled_change": "18窗微拟合",
+      "controlled_change": "Micro-fit on 18 windows",
       "successful_updates": 129,
       "supervised_exposures": 2064,
       "wall_or_model_seconds": 416.281,
-      "result": "未通过18窗拟合门槛",
+      "result": "Did not pass the 18-window fit gate",
       "evidence": [
         "E08"
       ]
@@ -79,11 +79,11 @@
       "data_ids": [
         "D04"
       ],
-      "controlled_change": "同18窗继续121更新",
+      "controlled_change": "Continue the same 18 windows for 121 updates",
       "successful_updates": 121,
       "supervised_exposures": 1936,
       "wall_or_model_seconds": 423.859,
-      "result": "train18旧门槛通过，DEV/刚性失败；独立于6000线",
+      "result": "Passed the earlier train18 gate; DEV/rigidity failed. Separate from the 6000-update lineage",
       "evidence": [
         "E09"
       ]
@@ -94,11 +94,11 @@
       "data_ids": [
         "D07"
       ],
-      "controlled_change": "新入口日志参数冲突",
+      "controlled_change": "Logging argument conflict in the new entrypoint",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": 27.359,
-      "result": "保存t0后停；无训练/推理",
+      "result": "Stopped after saving t0; no training/inference",
       "evidence": [
         "E15"
       ]
@@ -109,11 +109,11 @@
       "data_ids": [
         "D07"
       ],
-      "controlled_change": "80%明显运动曝光",
+      "controlled_change": "80% exposure to clear motion",
       "successful_updates": 300,
       "supervised_exposures": 4800,
       "wall_or_model_seconds": 486.375,
-      "result": "motionH4 IoU .531987，近静止漂移/形状失败",
+      "result": "motionH4 IoU .531987; near-static drift and shape failures",
       "evidence": [
         "E16"
       ],
@@ -140,11 +140,11 @@
       "data_ids": [
         "D07"
       ],
-      "controlled_change": "延长训练至6000",
+      "controlled_change": "Extend training to 6000 updates",
       "successful_updates": 5700,
       "supervised_exposures": 91200,
       "wall_or_model_seconds": 6876.985,
-      "result": "motionH4 .531987→.635105；棱角仍未恢复",
+      "result": "motionH4 .531987→.635105; corners still not recovered",
       "evidence": [
         "E18"
       ],
@@ -153,15 +153,15 @@
     },
     {
       "id": "R3A",
-      "parent": "无模型",
+      "parent": "No model",
       "data_ids": [
         "D08"
       ],
-      "controlled_change": "独立采集；50/50 clean-weak接口准备",
+      "controlled_change": "Independent collection; prepare the 50/50 clean-weak interface",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": null,
-      "result": "912成功；选23984目标",
+      "result": "912 successful trajectories; 23984 selected targets",
       "evidence": [
         "E19"
       ]
@@ -172,11 +172,11 @@
       "data_ids": [
         "D08"
       ],
-      "controlled_change": "后台加载器启动失败",
+      "controlled_change": "Background loader failed to start",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": 33.047,
-      "result": "正式cursor0，未训练；后经授权修复",
+      "result": "Formal cursor remained 0; no training. Later repaired with authorization",
       "evidence": [
         "E21"
       ]
@@ -187,11 +187,11 @@
       "data_ids": [
         "D08"
       ],
-      "controlled_change": "新数据+cleanweak；一遍23984目标",
+      "controlled_change": "New data + clean-weak conditioning; one pass over 23984 targets",
       "successful_updates": 1499,
       "supervised_exposures": 23984,
       "wall_or_model_seconds": 1469.752,
-      "result": "H4均值改善，运动保形未通过",
+      "result": "Mean H4 improved; motion/shape-preservation gates failed",
       "evidence": [
         "E20"
       ],
@@ -205,11 +205,11 @@
       "data_ids": [
         "D14"
       ],
-      "controlled_change": "跨物理域新数据一遍，LR1e-5",
+      "controlled_change": "One pass over new data from a different physics domain, LR 1e-5",
       "successful_updates": 1934,
       "supervised_exposures": 30935,
       "wall_or_model_seconds": 6452.18,
-      "result": "全48 H16 IoU .497→.597；强OC失败",
+      "result": "All 48 windows: H16 IoU .497→.597; strong O/C failed",
       "evidence": [
         "E28",
         "E30"
@@ -225,11 +225,11 @@
       "data_ids": [
         "D14"
       ],
-      "controlled_change": "同数据再完整一遍",
+      "controlled_change": "Another complete pass over the same data",
       "successful_updates": 1934,
       "supervised_exposures": 30935,
       "wall_or_model_seconds": 15146,
-      "result": "全48 H16 IoU .6306；强OC .4039",
+      "result": "All 48 windows: H16 IoU .6306; strong O/C .4039",
       "evidence": [
         "E31"
       ],
@@ -242,11 +242,11 @@
       "data_ids": [
         "D14"
       ],
-      "controlled_change": "同数据再完整一遍",
+      "controlled_change": "Another complete pass over the same data",
       "successful_updates": 1934,
       "supervised_exposures": 30935,
       "wall_or_model_seconds": 13859.9,
-      "result": "全48 H16 IoU .6226；强OC .3316，退步",
+      "result": "All 48 windows: H16 IoU .6226; strong O/C .3316, a regression",
       "evidence": [
         "E31"
       ],
@@ -259,11 +259,11 @@
       "data_ids": [
         "D14"
       ],
-      "controlled_change": "仅强OC8例denoise3→16",
+      "controlled_change": "Denoising 3→16 on only 8 strong O/C cases",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": null,
-      "result": "H16 .3472→.2839；有限配对限制",
+      "result": "H16 .3472→.2839; limited paired comparison",
       "evidence": [
         "E31"
       ]
@@ -274,11 +274,11 @@
       "data_ids": [
         "D15"
       ],
-      "controlled_change": "4步分组但全部真实历史，原残差MSE",
+      "controlled_change": "Four-step grouping with entirely actual history, original residual MSE",
       "successful_updates": 1892,
       "supervised_exposures": 30272,
       "wall_or_model_seconds": 1291.207,
-      "result": "正式48 H16 .641489；O不转/短暂反向，B丢孔",
+      "result": "Formal 48 windows: H16 .641489; O fails to rotate or briefly reverses, B loses holes",
       "evidence": [
         "E32"
       ],
@@ -292,11 +292,11 @@
       "data_ids": [
         "D15"
       ],
-      "controlled_change": "h2起自身生成history/detach，原残差MSE",
+      "controlled_change": "Detached self-generated history from h2, original residual MSE",
       "successful_updates": 1892,
       "supervised_exposures": 30272,
       "wall_or_model_seconds": 1593.091,
-      "result": "正式48 H16 .686780，但运动H1/落点变差",
+      "result": "Formal 48 windows: H16 .686780, but motion H1/endpoint accuracy worsens",
       "evidence": [
         "E32"
       ],
@@ -310,11 +310,11 @@
       "data_ids": [
         "D15"
       ],
-      "controlled_change": "全部真实历史；.50全图+.25区域+.25边缘残差",
+      "controlled_change": "Entirely actual history; .50 full-image + .25 region + .25 edge residual",
       "successful_updates": 1892,
       "supervised_exposures": 30272,
       "wall_or_model_seconds": 1178.23,
-      "result": "运动门槛三项过，O方向/B孔未过；总体.640077",
+      "result": "Passed three motion conditions; O direction/B holes failed. Overall .640077",
       "evidence": [
         "E34"
       ],
@@ -328,11 +328,11 @@
       "data_ids": [
         "D15"
       ],
-      "controlled_change": "同C loss，每batch2真2生成，62.5%目标全真上下文",
+      "controlled_change": "Same loss as C; 2 actual and 2 generated cases per batch, 62.5% of targets with entirely actual context",
       "successful_updates": 1892,
       "supervised_exposures": 30272,
       "wall_or_model_seconds": 1895.643,
-      "result": "运动门槛三项失败，O/B失败；总体.671314",
+      "result": "Failed three motion conditions and O/B checks; overall .671314",
       "evidence": [
         "E34"
       ],
@@ -346,11 +346,11 @@
       "data_ids": [
         "D14"
       ],
-      "controlled_change": "同16个O/B案例真实历史单步768帧",
+      "controlled_change": "Same 16 O/B cases, actual-history single-step predictions, 768 frames",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": 240.078,
-      "result": "未发现核查范围内接口错位；B RH保两孔、AR丢孔；O单步方向多unknown",
+      "result": "No interface misalignment found within the audit scope. B retains two holes with actual history but loses them autoregressively; O single-step direction is often unknown",
       "evidence": [
         "E37"
       ],
@@ -362,11 +362,11 @@
       "data_ids": [
         "D15"
       ],
-      "controlled_change": "CPU保存结果与checkpoint身份核验",
+      "controlled_change": "CPU audit of saved results and checkpoint identities",
       "successful_updates": 0,
       "supervised_exposures": 0,
       "wall_or_model_seconds": null,
-      "result": "确实更新/新输出，不能证明改善",
+      "result": "Confirmed parameter updates and new outputs; improvement not established",
       "evidence": [
         "E39"
       ]
@@ -377,11 +377,11 @@
       "data_ids": [
         "D16"
       ],
-      "controlled_change": "单分支高运动曝光，沿用A配方；样本范围/曝光比例/训练量同时改变",
+      "controlled_change": "Single-branch high-motion exposure using A's recipe; sample scope, exposure ratio and training amount change together",
       "successful_updates": 3000,
       "supervised_exposures": 48000,
       "wall_or_model_seconds": 2273.4838530998677,
-      "result": "单步与训练AR明显改善，完整联合拟合未通过；验证C及旧3例退步",
+      "result": "Single-step and training autoregression improved substantially, but complete joint fitting failed; validation C and 3 earlier cases regressed",
       "evidence": [
         "E40",
         "E72",
@@ -435,19 +435,19 @@
   "data_sources": [
     {
       "id": "D00",
-      "name": "已取消结构化刚体实验",
-      "letters": "原26字母范围；实际细分未能复核",
-      "physics_domain": "旧结构化/非当前RGB路线",
+      "name": "Retired structured rigid-body experiment",
+      "letters": "Original 26-letter scope; actual breakdown could not be verified",
+      "physics_domain": "Earlier structured approach, separate from the current RGB approach",
       "counts": {
         "early_stops_recorded_in_chat": 200
       },
-      "actual_model_use": "已删除；只剩历史聊天信息",
-      "note": "261更新/保留250等仅历史消息，原REPORT路径已缺失，不冒充本次独立复核。",
+      "actual_model_use": "Deleted; only historical chat records remain",
+      "note": "Claims such as 261 updates/retaining 250 are historical messages only. The original REPORT path is missing; not independently verified in this review.",
       "model_interface": "Retired structured path, not the current RGB-only interface."
     },
     {
       "id": "D01",
-      "name": "native RGB首轮",
+      "name": "Initial native RGB run",
       "letters": "ABCEFHIJLMOPSTUVXY",
       "physics_domain": "finite-force dynamic pusher; damping0",
       "counts": {
@@ -457,13 +457,13 @@
         "seenval_controls": 6912,
         "probe_controls_separate": 1416
       },
-      "actual_model_use": "native1668/best1500；不属于后续6000谱系",
+      "actual_model_use": "native1668/best1500; separate from the later 6000-update lineage",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D02",
-      "name": "supervised阶段1",
+      "name": "Supervised stage 1",
       "letters": "TLOCXB",
       "physics_domain": "finite-force dynamic/damping0",
       "counts": {
@@ -471,15 +471,15 @@
         "controls": 3456,
         "H1": 3294
       },
-      "actual_model_use": "采样探针，未混入正式TRAIN396",
+      "actual_model_use": "Sampling probe; not mixed into formal TRAIN396",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D03",
-      "name": "阶段1B重接触配对",
-      "letters": "TLOCXB代表；X重点",
-      "physics_domain": "同D02",
+      "name": "Stage 1B recontact pairs",
+      "letters": "T/L/O/C/X/B representatives, with emphasis on X",
+      "physics_domain": "Same as D02",
       "counts": {
         "runs": 8,
         "new_families": 2,
@@ -487,15 +487,15 @@
         "controls": 512,
         "H1": 488
       },
-      "actual_model_use": "采样对照；未混入正式TRAIN396",
-      "note": "六配对重放不是六个新家族。",
+      "actual_model_use": "Sampling comparison; not mixed into formal TRAIN396",
+      "note": "Six paired replays are not six new scene families.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D04",
-      "name": "阶段2A+2B正式训练",
+      "name": "Stage 2A+2B formal training",
       "letters": "ABCEFHIJLMOPSTUVXY",
-      "physics_domain": "同D02",
+      "physics_domain": "Same as D02",
       "counts": {
         "train_families": 396,
         "controls": 25344,
@@ -504,15 +504,15 @@
         "stage2a_runs": 162,
         "stage2b_runs": 234
       },
-      "actual_model_use": "250微拟合仅取18窗；stage4a只准备未正式训练",
+      "actual_model_use": "The 250-update micro-fit uses only 18 windows; stage4a was prepared but not formally trained",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D05",
-      "name": "阶段2C seen-val",
+      "name": "Stage 2C seen-val",
       "letters": "ABCEFHIJLMOPSTUVXY",
-      "physics_domain": "同D02",
+      "physics_domain": "Same as D02",
       "counts": {
         "families": 162,
         "controls": 10368,
@@ -522,14 +522,14 @@
         "DEV_windows": 36,
         "DEV_families": 32
       },
-      "actual_model_use": "DEV36评过；319未作为全部已评测计数",
+      "actual_model_use": "DEV36 was evaluated; 319 is not a count of fully evaluated cases",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D06",
-      "name": "R2A/R2A2阻尼配对",
-      "letters": "TLOCXB代表",
+      "name": "R2A/R2A2 damping pairs",
+      "letters": "T/L/O/C/X/B representatives",
       "physics_domain": "dynamic pusher D0/D1/0.1s/0.3s half-life",
       "counts": {
         "independent_initial_families": 16,
@@ -539,13 +539,13 @@
         "H1": 640,
         "H4": 256
       },
-      "actual_model_use": "只做物理/采样诊断，无训练",
-      "note": "R2A2引用旧两臂，不将旧视频再计成新物理。",
+      "actual_model_use": "Physics/sampling diagnostics only; no training",
+      "note": "R2A2 references the two earlier arms; old videos are not recounted as new physics runs.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D07",
-      "name": "R2B小库",
+      "name": "Small R2B dataset",
       "letters": "TLOCXB",
       "physics_domain": "dynamic pusher/0.1s half-life",
       "counts": {
@@ -557,13 +557,13 @@
         "train_unique_H1": 861,
         "seenval_H1": 252
       },
-      "actual_model_use": "R2C1R1的300及R2C3至6000；反复曝光96000次",
+      "actual_model_use": "R2C1R1's 300 updates and R2C3 through 6000; 96000 repeated sample exposures",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D08",
-      "name": "R3A独立新库",
+      "name": "Independent new R3A dataset",
       "letters": "TLOCXB",
       "physics_domain": "dynamic pusher/0.1s half-life",
       "counts": {
@@ -579,7 +579,7 @@
         "legal_train_H1": 34560,
         "selected_unique_H1": 23984
       },
-      "actual_model_use": "R3B从6000继续1499更新到7499；不是AR1的新物理数据",
+      "actual_model_use": "R3B continues from 6000 for 1499 updates to 7499; not AR1's new-physics data",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
@@ -587,7 +587,7 @@
       "id": "D09",
       "name": "CONTACT-PILOT1/2",
       "letters": "TLOCXB",
-      "physics_domain": "旧dynamic/half-life，安全/采样改动各自独立",
+      "physics_domain": "Earlier dynamic/half-life physics, with separate safety/sampling changes",
       "counts": {
         "CP1_runs": 48,
         "CP1_complete": 47,
@@ -597,15 +597,15 @@
         "CP2_new_families": 12,
         "CP2_controls": 2880
       },
-      "actual_model_use": "未并入R3B/AR1",
-      "note": "CP2含48个旧场景重放；不当60新家族。",
+      "actual_model_use": "Not included in R3B/AR1",
+      "note": "CP2 includes 48 earlier-scene replays; not 60 new scene families.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D10",
-      "name": "v1-v6物理原型与回归",
+      "name": "v1-v6 physics prototypes and regressions",
       "letters": "TLOCXB",
-      "physics_domain": "改积分/求解/速度约束；非严格原协议",
+      "physics_domain": "Modified integration/solver/velocity constraints; not the strict original protocol",
       "counts": {
         "regression_v1_to4_runs_each": 96,
         "regression_completed_controls": [
@@ -617,13 +617,13 @@
         "calibration_v2_controls": 1152,
         "calibration_v2_substeps": 230400
       },
-      "actual_model_use": "全部诊断隔离，未进当前训练",
-      "note": "回归有共享场景与版本差异，不相加声称独立新数据。",
+      "actual_model_use": "All diagnostics kept separate; not included in current training",
+      "note": "Regression runs share scenes and differ in version; their counts do not establish independent new data.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D11",
-      "name": "严格原物理cal1/cal2",
+      "name": "Strict original-physics cal1/cal2",
       "letters": "TLOCXB",
       "physics_domain": "100Hz/10/KINEMATIC/damping0",
       "counts": {
@@ -632,15 +632,15 @@
         "substeps": 23040,
         "per_phase_attempts": 18
       },
-      "actual_model_use": "采样质量未通过；未训练",
+      "actual_model_use": "Sampling-quality gate failed; no training",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D12",
-      "name": "直接目标120验收",
+      "name": "Direct-target 120-case acceptance",
       "letters": "TLOCXB",
-      "physics_domain": "原物理/绝对0..512；旧>1worldpx早停观察器",
+      "physics_domain": "Original physics / absolute 0..512; earlier observer stops at >1 world px",
       "counts": {
         "attempts": 120,
         "families": 96,
@@ -655,15 +655,15 @@
         "H16": 2117,
         "H16_families": 45
       },
-      "actual_model_use": "诊断/未并入AR1训练",
+      "actual_model_use": "Diagnostic only; not included in AR1 training",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D13",
-      "name": "四案例超过1后的延续",
-      "letters": "O/T/L/C预选",
-      "physics_domain": "原物理；仅诊断观察器改变",
+      "name": "Continuation of four cases beyond 1",
+      "letters": "Preselected O/T/L/C cases",
+      "physics_domain": "Original physics; only the diagnostic observer changes",
       "counts": {
         "cases": 4,
         "actual_controls": 33,
@@ -671,14 +671,14 @@
         "substeps": 321
       },
       "actual_model_use": "training_eligible=false",
-      "note": "证明存在不同恢复过程，不能据4例估计74例误拦率。",
+      "note": "Shows different recovery processes exist; four cases cannot estimate the false-stop rate across 74 cases.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D14",
-      "name": "AR1原物理六字母新库",
+      "name": "New six-letter AR1 dataset under original physics",
       "letters": "TLOCXB",
-      "physics_domain": "100Hz/10/KINEMATIC/damping0/原PD，RGB10Hz",
+      "physics_domain": "100Hz/10/KINEMATIC/damping0/original PD, RGB10Hz",
       "counts": {
         "attempts": 1536,
         "controls": 45969,
@@ -694,15 +694,15 @@
         "H8_allclean": 26663,
         "H16_allclean": 16187
       },
-      "actual_model_use": "AR1/E1、OC E2/E3；后续ABCD和HMF均取其子集",
+      "actual_model_use": "AR1/E1 and OC E2/E3; later ABCD and HMF use subsets",
       "note": "",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D15",
-      "name": "ABCD四步段训练视图",
+      "name": "ABCD four-step-segment training view",
       "letters": "TLOCXB",
-      "physics_domain": "完全引用D14",
+      "physics_domain": "Entirely references D14",
       "counts": {
         "segments": 7568,
         "families": 1313,
@@ -710,15 +710,15 @@
         "excluded_short_tail_H1": 663,
         "new_physical_controls": 0
       },
-      "actual_model_use": "A/B/C/D各独立一遍30272目标",
-      "note": "这是同一批数据的四次独立实验，不是四套新数据。",
+      "actual_model_use": "A/B/C/D each independently process one pass over 30272 targets",
+      "note": "Four independent experiments on the same data, not four new datasets.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D16",
-      "name": "HMF高运动集中拟合视图",
+      "name": "HMF concentrated high-motion fitting view",
       "letters": "OCB",
-      "physics_domain": "完全引用D14",
+      "physics_domain": "Entirely references D14",
       "counts": {
         "train_families": 48,
         "seenval_families": 24,
@@ -733,14 +733,14 @@
         "successful_updates": 3000
       },
       "actual_model_use": "HMF completed3000successfulupdates/48000exposures/AMP0; fulljointfit notpassed. Closed2026-11-01 23:53:45SG, waiting_user_review.",
-      "note": "训练集拟合诊断；强曝光计划89.15%，非泛化实验。",
+      "note": "Training-set fit diagnostic; planned strong-motion exposure is 89.15%, not a generalization experiment.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     },
     {
       "id": "D17",
-      "name": "队友原包",
-      "letters": "T/T_narrow/Y/D/L；候选仅T/L/Y",
-      "physics_domain": "原official KINEMATIC/damping0；接触标签原含非AO",
+      "name": "Teammate's original package",
+      "letters": "T/T_narrow/Y/D/L; candidates limited to T/L/Y",
+      "physics_domain": "Original official KINEMATIC/damping0; original contact labels include non-AO contacts",
       "counts": {
         "episodes_all": 2500,
         "transitions_all": 681260,
@@ -753,8 +753,8 @@
         "candidate_trajectories": 1379,
         "candidate_scene_families": 498
       },
-      "actual_model_use": "本次查到的谱系未并入；仅接入审查",
-      "note": "scene seed跨字母共享，按scene而非frame拆分；历史审查发生过CPU回放，本复盘没有回放。",
+      "actual_model_use": "Not included in the lineage found in this review; integration audit only",
+      "note": "Scene seeds are shared across letters; split by scene rather than frame. A historical audit performed CPU replay; this retrospective did not.",
       "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
     }
   ]
