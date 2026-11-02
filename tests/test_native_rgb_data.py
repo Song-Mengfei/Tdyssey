@@ -1,6 +1,7 @@
 """Focused CPU checks for split integrity, bounded data and physical gates."""
 
 import json
+from importlib.util import find_spec
 from pathlib import Path
 import tempfile
 import unittest
@@ -9,6 +10,8 @@ from unittest.mock import patch
 from tdyssey.native_rgb_data import (BudgetLedger, NativeRGBDataset, TRAIN_LETTERS,
     UNSEEN_LETTERS, collection_caps, file_sha256, verify_dataset, write_json,scene_seed)
 
+HAS_NUMPY = find_spec('numpy') is not None
+HAS_GEOMETRY = HAS_NUMPY and find_spec('shapely') is not None
 
 def temporary_directory():
     parent=Path(__file__).resolve().parents[1]/"artifacts/native-rgb-test-tmp"
@@ -40,6 +43,7 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(ValueError):collection_caps(config)
 
 
+@unittest.skipUnless(HAS_NUMPY, 'NumPy is required for array data checks')
 class DatasetTests(unittest.TestCase):
     def _fixture(self,directory,invalid=False):
         import numpy as np
@@ -94,6 +98,7 @@ class GeometryTests(unittest.TestCase):
         self.assertEqual(len({scene_seed(1,split,repeat,letter) for split in
             ("train","seen_val","seen_test","unseen_test") for repeat in range(20) for letter in range(18)}),1440)
 
+    @unittest.skipUnless(HAS_NUMPY, 'NumPy is required for the RNG fixture')
     def test_environment_default_seed_does_not_touch_global_numpy(self):
         import numpy as np
         from tdyssey.native_rgb_env import make_env
@@ -109,6 +114,7 @@ class GeometryTests(unittest.TestCase):
             env.seed(19)
             self.assertEqual(env.observed_seed,19)
 
+    @unittest.skipUnless(HAS_GEOMETRY, 'NumPy/Shapely are required for geometry checks')
     def test_closed_holes_and_normal_path_blocked_by_a_thin_wall(self):
         from types import SimpleNamespace
         from shapely.geometry import box
@@ -123,11 +129,13 @@ class GeometryTests(unittest.TestCase):
         segment["ring"]=1
         self.assertEqual(_reachable_segments(FakeEnv(),[segment])[0]["status"],"proven_closed_hole_from_exterior")
 
+    @unittest.skipUnless(HAS_GEOMETRY, 'NumPy/Shapely are required for geometry checks')
     def test_current_split_has_no_exact_rotated_duplicate(self):
         from tdyssey.native_rgb_env import rotational_split_audit
         self.assertTrue(rotational_split_audit(TRAIN_LETTERS,UNSEEN_LETTERS)["passed"])
         self.assertFalse(rotational_split_audit(("L",),("L",))["passed"])
 
+    @unittest.skipUnless(HAS_GEOMETRY, 'NumPy/Shapely are required for geometry checks')
     def test_arclength_bins_include_all_hole_perimeters_without_overlap(self):
         from tdyssey.native_rgb_data import contour_segments
         from tdyssey.native_rgb_env import shape_geometry
