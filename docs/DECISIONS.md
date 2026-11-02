@@ -912,3 +912,19 @@ One image policy now covers ten shapes at 3.8x the original's average success, w
 Y-U is far outside its interval (smallest: J +23.8 [+21.2, +26.4]). Near-T is the only shape below the original
 (96 px). The 192 px camera adds +3.9 points [+2.6, +5.2] over the 96 px student across all 10,000 paired scenes,
 most on P (+10.8), F (+7.0) and U (+5.1); it is a sensor change and is reported as a side result.
+
+## D052 — Ten-letter students on the 17 letters none of them trained on (fixed 2026-11-02 17:30, before it runs)
+
+Agreed with the project lead. Policies: the original, the 96 px student (D049 candidate) and the 192 px student (D050
+candidate). Shapes: the 17 capitals outside the ten training shapes (A B C G H I K M N O Q R S V W X Z) plus T, which
+the evaluation needs as its reference shape and is reported separately. 200 fresh scenes per shape, seeds 11000000 +
+20*i (i < 200, never used before), 8 controls per plan, paired by scene; parts of 50 scenes run in lockstep across the
+three policies. Primary measures: pooled success and mean final coverage over the 17 letters, with paired differences
+against the original. These letters become training letters in the 26-letter run (D051); the six held-out shapes stay
+untouched.
+
+D052 outcome (2026-11-02, 200 fresh scenes per letter, seeds 11000000 + 20*i, paired by scene;
+`runs/unseen17-d052/report.txt`): on the 17 untrained capitals pooled (3400 scenes per policy) success rises from 0.2%
+(original) to 6.6% (96 px, +6.3 [+5.5, +7.2]) and 10.6% (192 px, +10.4 [+9.3, +11.4]); mean final coverage from 0.33 to
+0.51 and 0.57. Best transfers: B 20.0% / 39.5%, O 18.5% / 22.5%, W 13.5% / 19.5%, R 11.5% / 15.0%. T on these 200 scenes:
+48.5%, 44.5%, 41.0% (within this test's +-7 points; the 1000-scene D049 test is the T result).

@@ -1,15 +1,15 @@
 # Shared project status
 
-Updated: 2026-10-27. Stage: forward-process RL stopped (noisy signal, D035); a
-privileged world-model planning teacher solves most D/Y/L scenes in the simulator
-(D039); distilling it into the image policy and blending the student's image encoder
-into the base passed the pre-registered no-regression test on 2000 fresh scenes per
-letter (D042): Y 8.6% -> 14.8%, D 0.3% -> 1.1%, T and near-T within the margin, and
-passed again on a third fresh pool (D043: Y 9.8% -> 14.1%, D 0.1% -> 0.9%). Three
-earlier blend tests failed on T (D040, D041). Next (D044, D045): a full new
-policy for all letters. The improved teacher solves T 68%, near-T 44%, Y 92%, D 100%,
-L 78%, but students copy only a fraction of it, even with exact state; next are
-teacher-relabelled DAgger rounds and long official-recipe training. Work continues on `feat/wm-planning-teacher`.
+Updated: 2026-11-02. Stage: one image policy for ten letter shapes. A planner teacher that reads the exact
+simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
+copies the teacher's intended plans and then learns from correction rounds (DAgger). On 1000 fresh scenes per letter,
+paired with the original policy (D049, D050), average success over T, near-T, Y, D, L, E, F, J, P and U rises from
+9.1% to 34.3% (96 px camera, same as the original) and 38.2% (192 px camera, a disclosed sensor change). T is not worse
+(42.2% -> 42.9%); near-T is the only shape below the original (39.8% -> 32.0%; 36.0% at 192 px). Every new letter
+gains 24-58 points. On the 17 untrained capitals (D052) pooled success rises from 0.2% to 6.6% (96 px) and
+10.6% (192 px). Next (D051): the 26-letter run with six held-out shapes. Its preparation is done (world model v3
+for 27 shapes; teacher 36-49 of 50 on the 17 new letters; teacher demonstrations); the 96 px line continues on an A100
+job and the 192 px line on the next H100 job. Work continues on `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -34,6 +34,11 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- Ten-letter policy, 2026-10-31 to 2026-11-02 (H100 NVL; [learning findings](LEARNING_FINDINGS.md) section 7,
+  D046-D052): world model v2 for ten shapes; students trained on the teacher's intended plans (+68% over executed
+  pushes in a matched test); correction rounds to a plateau; fair tests on 1000 fresh scenes per letter as above;
+  26-letter preparation and six held-out test shapes in `tdyssey/letters.py`.
 
 - Learning findings, 2026-10-24 to 2026-10-26 (H100 NVL, `feat/wm-planning-teacher`;
   full tables in [learning findings](LEARNING_FINDINGS.md), code in
