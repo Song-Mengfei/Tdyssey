@@ -118,7 +118,7 @@ class Playground:
         self.latest_prediction=None;self.last_frames=[];self.target=list(pusher);self.info=None
         self.metrics=dict(translation_px=0.,rotation_deg=0.,contact_substeps=0,physics_substeps=0,contact_seconds=0.,intervention_ratio=0.,latency_ms=0.,horizon=0,raw_out_of_range=False)
         self.set_preview(self.session,pusher,None);self.event('reset',letter=letter,scene=scene)
-        self.message=MODEL_PROFILE['label']+' 已就绪。'+MODEL_PROFILE['limitation']
+        self.message=MODEL_PROFILE['label']+' is ready. '+MODEL_PROFILE['limitation']
         return self.snapshot()
     def event(self,kind,**value):
         item=dict(kind=kind,at_utc=utc(),session=self.session,ui_step=getattr(self,'steps',0),recording_id=self.recording_id,**safe(value))
@@ -159,7 +159,7 @@ class Playground:
         self.history=deque((v.copy()for v in history),maxlen=4);self.past=deque((v.copy()for v in past),maxlen=3)
         self.steps=int(metadata['ui_steps']);self.total_controls=int(metadata['total_controls']);self.terminal=bool(metadata['terminal'])
         self.target=metadata['target'];self.metrics=metadata['metrics'];self.latest_prediction=None if not prediction.size else prediction.copy()
-        self.last_frames=[];self.message='已恢复公开身体、控制器和模型历史；隐藏位置偏置速度与碰撞缓存未序列化，不承诺后续接触物理精确重放。'
+        self.last_frames=[];self.message='Restored public body state, controller state and model history. Hidden position-bias velocities and collision caches are not serialized; exact subsequent contact replay is not guaranteed.'
         self.event('session_restored',source_session=metadata['session']);return self.snapshot()
     def save_clip(self,recording_id=None):
         first=None
@@ -207,13 +207,13 @@ class Playground:
         return state[2:4]+[c*x-s*y,s*x+c*y]
     def step(self,session,revision,target,horizon,preview_target=None,client_time_ms=None):
         from tdyssey.native_rgb_r2a_env import R2AStepAborted
-        if session!=self.session or revision!=self.revision:raise ValueError('界面状态已更新，请刷新后重试')
-        if self.terminal:raise ValueError('本场景已暂停，请重置场景')
+        if session!=self.session or revision!=self.revision:raise ValueError('The interface state has changed. Refresh and try again.')
+        if self.terminal:raise ValueError('This scene is paused. Reset the scene.')
         a=np.asarray(target,dtype=float)
-        if a.shape!=(2,) or not np.isfinite(a).all() or (a<0).any() or (a>511).any():raise ValueError('目标必须位于画布内')
+        if a.shape!=(2,) or not np.isfinite(a).all() or (a<0).any() or (a>511).any():raise ValueError('The target must be inside the canvas.')
         if type(horizon) is not int or horizon not in (1,4):raise ValueError('Horizon must be 1 or 4')
         if self.recording_id is not None and not self.recording_writers[self.recording_id].can_accept(horizon):
-            self.recording_stop_reason='原始录像记录达到资源额度，已在下一批执行前停止，保存已录内容。';self.message=self.recording_stop_reason
+            self.recording_stop_reason='Raw recording reached its resource budget. Stopped before the next batch; save the captured content.';self.message=self.recording_stop_reason
             return self.snapshot()
         self.set_preview(session,a if preview_target is None else preview_target,client_time_ms)
         batch_id=uuid.uuid4().hex;ui_start=self.steps;before_snapshot=physics_snapshot(self.env);preview_at_request=self.preview_snapshot()
@@ -230,7 +230,7 @@ class Playground:
             try:im,info=self.env.step(a)
             except R2AStepAborted as exc:
                 abort=dict(type=type(exc).__name__,reason=str(exc),info=safe(exc.info),partial_physical_state=physics_snapshot(self.env))
-                self.terminal=True;self.message='原始物理环境未完成当前控制，已保留原始失败状态；请重置场景。'
+                self.terminal=True;self.message='The original physics environment did not complete this control step. The failure state is preserved; reset the scene.'
                 break
             truth=im.astype(np.float32)/255;self.history.append(truth);self.past.append(a.copy())
             truth_raw.append(im.copy());physical_states.append(physics_snapshot(self.env));preview_each.append(self.preview_snapshot());infos.append(safe(info))
@@ -257,15 +257,15 @@ class Playground:
         if self.recording_id is not None:
             try:self.recording_writers[self.recording_id].append(self.capture.records[-1])
             except Exception as exc:
-                self.recording_stop_reason='原始记录写入失败，当前视频/内存片段会保留，但完整性不可声明：'+str(exc)
+                self.recording_stop_reason='Raw record write failed. The current video and in-memory clip are retained, but completeness cannot be claimed: '+str(exc)
                 self.message=self.recording_stop_reason
-        if not self.terminal:self.message='下一步使用真实历史帧对比。' if horizon==1 else '这 4 步使用模型自己的预测连续递推，没有喂入未来真实图像。'
+        if not self.terminal:self.message='The next step uses actual history frames for comparison.' if horizon==1 else "These four steps feed back the model's own predictions, without future ground-truth images."
         return self.snapshot()
     def snapshot(self):
         return dict(session=self.session,revision=self.revision,letter=self.letter,scene=self.scene,steps=self.steps,time_seconds=round(self.steps*.1,1),terminal=self.terminal,
             truth=png(self.history[-1]),prediction=None if self.latest_prediction is None else png(self.latest_prediction),
             history=[png(v) for v in self.history],frames=self.last_frames,target=self.target,metrics=self.metrics,message=self.message,
-            model=MODEL_PROFILE['label'],model_id=CONFIG['model_id'],model_limitation=MODEL_PROFILE['limitation'],physics='环境与本轮训练：原始100Hz / solver10 / 原PD / 运动学推杆 / 阻尼0',letters=list(LETTERS),checkpoint_sha256=CHECKPOINT_SHA,physics_sha256=self.physics_sha,model_training_physics_sha256=MODEL_TRAINING_PHYSICS_SHA,
+            model=MODEL_PROFILE['label'],model_id=CONFIG['model_id'],model_limitation=MODEL_PROFILE['limitation'],physics='Environment and this training run: original 100 Hz / solver 10 / original PD / kinematic pusher / damping 0',letters=list(LETTERS),checkpoint_sha256=CHECKPOINT_SHA,physics_sha256=self.physics_sha,model_training_physics_sha256=MODEL_TRAINING_PHYSICS_SHA,
             capture=self.capture.stats(),recording_id=self.recording_id,recording_stop_reason=self.recording_stop_reason,preview_target=self.preview_snapshot(),actual_batch_target=self.target,command_target=self.target,action_contract='requested target through unchanged original100Hz controller; no contact velocity projection',report_available=(REPORT_ROOT/'index.html').is_file())
 
 def serve(port):
@@ -303,7 +303,7 @@ def serve(port):
             path=urlparse(self.path).path;content_type=self.headers.get('Content-Type','').split(';')[0]
             if path=='/api/video/save':
                 if content_type!='video/webm':self.respond({'error':'WebM required'},415);return
-                if not lock.acquire(blocking=False):self.respond({'error':'正在计算，请稍后保存；本地视频仍保留'},409);return
+                if not lock.acquire(blocking=False):self.respond({'error':'Computing. Save again shortly; the local video is retained.'},409);return
                 try:
                     size=int(self.headers.get('Content-Length','0'))
                     if not 512<=size<=MAX_VIDEO_BYTES:raise ValueError('Video exceeds recording resource limit')
@@ -323,7 +323,7 @@ def serve(port):
                 if path=='/api/event':
                     app.event(data['kind'],client_time_ms=data.get('client_time_ms'),detail=data.get('detail'));self.respond({'received':True});return
             except (KeyError,TypeError,ValueError)as exc:self.respond({'error':str(exc)},400);return
-            if not lock.acquire(blocking=False):self.respond({'error':'正在计算，请稍后再试'},409);return
+            if not lock.acquire(blocking=False):self.respond({'error':'Computing. Please try again shortly.'},409);return
             try:
                 if path=='/api/reset':result=app.reset(data['letter'],data['scene'])
                 elif path=='/api/step':result=app.step(data['session'],data['revision'],data['target'],data.get('horizon',1),data.get('preview_target'),data.get('client_time_ms'))

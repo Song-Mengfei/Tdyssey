@@ -3,7 +3,7 @@
   "selection": "Owner chose HMF500 for current H1/AR4 app use on 2026-11-03. Saved, same 24 O/C/B validation cases; exploratory selection, no new model evaluations.",
   "models": {
     "hmf500": {
-      "label": "HMF500 · 4步验证最佳",
+      "label": "HMF500 · best four-step validation",
       "checkpoint_relative": "artifacts/high-motion-fit-20261101/training/weights/500.pt",
       "checkpoint_sha256": "3336af2b43e6d6b0652a16d090a70f46aca501ee42620d22252cda1c59e1d1e0",
       "checkpoint_bytes": 35014256,
@@ -13,10 +13,10 @@
       "training_physics_sha256": "d83b4c544b1e5193c92e2b882d0904995b1d49e174adaf0e8c5b284031835e9b",
       "validation_AR4_IoU": 0.7981702403853169,
       "validation_AR16_IoU": 0.40959650552173216,
-      "limitation": "仅O/C/B验证；C和长时预测仍有失败，T/L/X本轮未重新验证。"
+      "limitation": "Validated on O/C/B only. C and long-horizon predictions still fail; T/L/X were not revalidated in this screen."
     },
     "hmf3000": {
-      "label": "HMF3000 · 16步验证最佳",
+      "label": "HMF3000 · best 16-step validation",
       "checkpoint_relative": "artifacts/high-motion-fit-20261101/training/weights/3000.pt",
       "checkpoint_sha256": "ee2eb43bd12d141b7c3e357fb799d1b0e7213995467579624fdd8c4f71f2dc20",
       "checkpoint_bytes": 35020446,
@@ -26,7 +26,7 @@
       "training_physics_sha256": "d83b4c544b1e5193c92e2b882d0904995b1d49e174adaf0e8c5b284031835e9b",
       "validation_AR4_IoU": 0.780246729689259,
       "validation_AR16_IoU": 0.4592692516929667,
-      "limitation": "O/B长时有改善，C验证退步；T/L/X本轮未重新验证。"
+      "limitation": "Long-horizon O/B improved, but C validation regressed. T/L/X were not revalidated in this screen."
     }
   }
 }
