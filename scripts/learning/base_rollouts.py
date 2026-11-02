@@ -1,15 +1,13 @@
 """Frozen-base-policy rollouts on fresh scenes (no training).
 
-  eval:    held-out evaluation, per-episode outcomes and Wilson 95% intervals per shape. Pools:
-           --seed-base 300000 monitor test (100 scenes; repeated checks), 900000 final test (1000 scenes;
-           reserved for the pre-registered acceptance test). --student evaluates a distilled checkpoint.
-  collect: full-episode rollouts (seeds 600000 + 20*i) recording privileged simulator state, actions,
-           pusher velocity, contacts and coverage at every control -> value-function data, and with
-           --action-noise (pixels) diverse non-expert dynamics data for the world models.
+  eval:    held-out TEST evaluation (seeds 300000 + 20*i): per-episode outcomes and Wilson 95%
+           intervals per shape -> the reference every "better than the base" claim is tested against.
+  collect: full-episode rollouts on value-data scenes (seeds 600000 + 20*i) recording privileged
+           simulator state, coverage and termination at every control -> data for a value function.
 
-Usage (from the repository root):
-  .venv/bin/python -B scripts/learning/base_rollouts.py eval --scenes 100 --out $RUNS/test-eval/base.json
-  .venv/bin/python -B scripts/learning/base_rollouts.py collect --start 0 --scenes 50 --out $RUNS/value-data/part0.npz
+Usage (env.sh sourced, run from $REPO):
+  .venv/bin/python -B $W/tools/base_rollouts.py eval --scenes 100 --out $W/runs/test-eval/base.json
+  .venv/bin/python -B $W/tools/base_rollouts.py collect --start 0 --scenes 50 --out $W/runs/value-data/part0.npz
 Scenes are spaced 20 seeds apart because matched_reset may advance up to 19 seeds per scene.
 Evaluation and collection use derived per-scene policy noise exactly like the trainer's batched evaluation.
 """
@@ -48,6 +46,28 @@ def wilson(k, n, z=1.96):
     return (centre-half, centre+half)
 
 
+def less_random(agent, init_scale=1.0):
+    """Opt-in sampler for the randomness test (2026-11-02): DDIM with eta = 0 (no fresh noise during refinement; same
+    trained network and 100 steps), starting noise scaled by init_scale. The default evaluation path is unchanged."""
+    import types
+    import numpy as np
+    from diffusers.schedulers.scheduling_ddim import DDIMScheduler
+    ddpm = agent.network.noise_scheduler
+    ddim = DDIMScheduler.from_config(ddpm.config); ddim.set_timesteps(len(ddpm.timesteps))
+
+    @torch.no_grad()
+    def sample_batch(self, condition, generators, mode="actor"):
+        generators = list(generators)
+        x = torch.cat([torch.randn((1, 16, 2), device=self.device, generator=g) for g in generators]) * init_scale
+        for t in ddim.timesteps:
+            x = ddim.step(self.predict(x, t, condition, mode), t, x, eta=0.0).prev_sample
+        actions = self.network.normalizer["action"].unnormalize(x)[:, 1:9].cpu().numpy()
+        if not np.isfinite(actions).all():
+            raise FloatingPointError("Nonfinite sampled plan")
+        return actions, x.detach()
+    agent.sample_batch = types.MethodType(sample_batch, agent)
+
+
 def build(student=None):
     """Frozen base policy, or a distilled student (distill.py actor checkpoint) when `student` is given."""
     from dataclasses import replace
@@ -56,7 +76,15 @@ def build(student=None):
     if payload:
         config = replace(config, trainable=payload["trainable"])
     source = ROOT/"third_party/diffusion_policy"
-    agent = ForwardPolicy(OfficialDiffusionPolicy(source, ROOT/"checkpoints/official-dp/ema_policy.pt"), config)
+    arch = payload.get("arch") if payload else None                    # bc_train.py variants (image size, U-Net width)
+    if arch and (arch["image_size"] != 96 or arch["down_dims"] or arch["scratch_model"]):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import policy_builder
+        base = policy_builder.build(arch["image_size"], arch["down_dims"], arch["scratch_model"])
+    else:
+        base = OfficialDiffusionPolicy(source, ROOT/"checkpoints/official-dp/ema_policy.pt")
+    agent = ForwardPolicy(base, config)
+    agent.render_size = arch["image_size"] if arch else 96
     if payload:
         agent.actor.load_state_dict({k: v.to(agent.device) for k, v in payload["actor"].items()})
         if "encoder" in payload:                      # students trained with distill.py --train-encoder
@@ -66,9 +94,12 @@ def build(student=None):
 
 def run_eval(args):
     agent, cls = build(args.student)
+    if getattr(args, "sampler", "ddpm") == "ddim":
+        less_random(agent, args.init_scale)
     seeds = [args.seed_base+20*(args.start+i) for i in range(args.scenes)]
     shapes = tuple(args.shapes) if args.shapes else SHAPES
-    cfg = SimpleNamespace(eval_shapes=shapes, eval_seeds=seeds, eval_steps=300, seed=args.noise_seed, execute=args.execute)
+    cfg = SimpleNamespace(eval_shapes=shapes, eval_seeds=seeds, eval_steps=300, seed=args.noise_seed, execute=args.execute,
+                          render_size=getattr(agent, "render_size", 96))
     counts, start = defaultdict(int), time.time()
     episodes = evaluate_batched(agent, cls, cfg, counts, lambda: None)
     rows = [{k: e[k] for k in ("shape", "requested_seed", "initial_scene_seed", "success", "controls",
@@ -153,6 +184,8 @@ def main():
     e.add_argument("--seed-base", type=int, default=300000, help="300000 monitor-test pool; 900000 final-test pool")
     e.add_argument("--start", type=int, default=0, help="First scene index (to split a large evaluation)")
     e.add_argument("--execute", type=int, default=8, help="Controls executed per plan before replanning (official: 8)")
+    e.add_argument("--sampler", choices=("ddpm", "ddim"), default="ddpm", help="ddpm = official; ddim = no noise during refinement")
+    e.add_argument("--init-scale", type=float, default=1.0, help="Scale of the starting noise (with --sampler ddim)")
     e.add_argument("--shapes", nargs="*", default=None, help="Shapes to evaluate (default T T_narrow Y D L; any of the 26 capitals)")
     e.add_argument("--out", type=Path, required=True)
     c = sub.add_parser("collect")

@@ -1,29 +1,13 @@
 """Sampling-based model-predictive teacher on the structured world model (wm2), evaluated in the real simulator.
 
 At every control step the real simulator's privileged state (object pose/velocity, pusher) is read, a
-cross-entropy-method planner samples smooth pusher-target sequences plus structured push candidates (--pushes:
-leave the object radially to a safe circle, travel around it, then push one boundary point along a direction
-near its inward normal for 1-40 px), rolls them out INSIDE wm2 (hard contact gate), scores them with the
-teacher2 reward (privileged geometry, disclosed) and executes the first target of the best plan. No simulator
-state is used to score imagined transitions; the simulator only supplies the current state and the outcome.
-Batched over all scenes of one shape.
+cross-entropy-method planner samples smooth pusher-target sequences, rolls them out INSIDE wm2 (hard contact
+gate), scores them with the teacher2 reward (coverage, keypoint kernels, success bonus, dense goal distance,
+pusher-gap shaping; privileged geometry, disclosed), refits to the elites, and the first planned target is
+executed in the real simulator. No simulator state is used to score imagined transitions; the simulator only
+supplies the current state and the evaluation outcome. Batched over all scenes of one shape.
 
---dp-candidates N adds N plans sampled from the image diffusion policy (rendered observations) to the candidates;
---dp-only scores only those plans (model-based best-of-N; use --dp-nowarm, since keeping the previous plan as a
-candidate lets 'hold still' win and the policy freezes); --dp-first executes the first sample (sanity check).
-
---state-noise PX / --angle-noise DEG replace the exact state the planner reads by noisy estimates (Gaussian noise
-on object x/y/angle and pusher x/y; velocities from consecutive noisy readings), to measure how accurate an
-image-based state estimator must be.
-
---save-traj PATH.npz also records every episode continuously in the dyn-data format of base_rollouts.py collect
-(state, pusher_velocity, action, contacts, coverage, mask, shape, seed), e.g. as image world-model training data.
-
-Recommended flags (each fixed a measured stall 2-4 px short of the goal; see docs/LEARNING_FINDINGS.md):
-  --select best --gate-margin 0 --pushes 128 --horizon 48 --knots 8 --approach 0 --kp area --tight 2
-  50 validation scenes: D 50/50, Y 36/50, L 21/50, T_narrow 12/50, T 5/50 (base: 0.3%, 9.4%, 0.1%, 42%, 44%).
-
-  .venv/bin/python -B mpc_teacher.py --wm $RUNS/wm2/v1/model.pt --shape T --scenes 20 --out $RUNS/mpc/T.json
+  .venv/bin/python -B mpc_teacher.py --wm $W/runs/wm2/v1/model.pt --shape T --scenes 20 --out $W/runs/mpc/T.json
 """
 
 import argparse
@@ -305,6 +289,7 @@ def main():
         TT = args.steps + 1
         tr = {"state": np.zeros((E, TT, 9), np.float32), "pusher_velocity": np.zeros((E, TT, 2), np.float32),
               "action": np.zeros((E, TT-1, 2), np.float32), "coverage": np.zeros((E, TT), np.float32),
+              "plan": np.zeros((E, TT-1, 16, 2), np.float32),   # the teacher's intended next 16 targets at each step
               "contacts": np.zeros((E, TT), np.int16), "mask": np.zeros((E, TT), bool)}
 
         def record(i, t_, n_contacts):
@@ -364,6 +349,7 @@ def main():
                 extra = torch.stack(rows).clamp(0, 512)
             m, best = plan(model, geo, s, sh, m, args, gen, pushes, extra)
         acts = m[:, 0].cpu().numpy()
+        plan16 = m[:, :16].clamp(0, 512).cpu().numpy() if args.save_traj else None
         if args.trace and step % args.execute == 0:
             with torch.no_grad():
                 xr = s.clone()
@@ -384,7 +370,8 @@ def main():
         for j, i in enumerate(idx):
             obs, _, d, info = envs[i].step(np.clip(acts[j], 0, 512))
             if args.save_traj:
-                tr["action"][i, step] = np.clip(acts[j], 0, 512); record(i, step+1, int(info["n_contacts"]))
+                tr["action"][i, step] = np.clip(acts[j], 0, 512); tr["plan"][i, step] = plan16[j]
+                record(i, step+1, int(info["n_contacts"]))
             if agent is not None:
                 hists[i].append(obs); dp_age[i] += 1
             cov[i] = physical_metrics(envs[i])["coverage"]; peak[i] = max(peak[i], cov[i]); steps[i] += 1

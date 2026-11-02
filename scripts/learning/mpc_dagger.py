@@ -7,15 +7,10 @@ teacher's ACTUALLY EXECUTED targets [a_{t-1}, a_t, ..., a_{t+14}] (padded with t
 the policy's 16-step plans. Every EVERY controls the 2-frame observation is saved together with 8 plans sampled
 from the image policy (frozen base, or --student) at that observation, which distill.py uses for its anchor.
 Records use the oracle_bon.py format: candidate_x = 8 policy samples + teacher label (index 8, choice = 8).
-Pass the same planner flags as mpc_teacher.py (its recommended set); the defaults are the older CEM-only planner.
---execute 8 --every 8 makes the teacher plan once per 8 controls and labels each record with its plan from that state,
-so labels are consistent 8-control chunks like the image policy's; with --beta < 1 the student drives that share of
-decisions (DAgger). --label policy --beta 0 records the policy's own plans (retention data). Seeds inside the
-monitor-test, validation or final-test pools are refused.
 With --beta < 1 the policy's own plan is executed for 8 controls at a decision with probability 1-beta, and the
 teacher label at those states is still the teacher's closed-loop continuation, computed in a branch environment
 restored from the captured state (DAgger). Scenes: seeds 800000 + 20*i (training only).
-  .venv/bin/python -B mpc_dagger.py --wm $RUNS/wm2/v1/model.pt --shape Y --scenes 20 --out $RUNS/mpc-data/r1
+  .venv/bin/python -B mpc_dagger.py --wm $W/runs/wm2/v1/model.pt --shape Y --scenes 20 --out $W/runs/mpc-data/r1
 """
 
 import argparse
@@ -136,6 +131,7 @@ def main():
     if args.state_noise is not None:
         NOISE.update(pos=args.state_noise, ang=args.angle_noise, rng=np.random.default_rng(derived_seed(7, "state-noise", args.shape, args.start)))
     agent, cls = base_rollouts.build(args.student)
+    RS = getattr(agent, "render_size", 96)                # the student's camera size (192 for 192 px students)
     device = agent.device
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp
     blob = torch.load(args.wm, map_location=device, weights_only=True)
@@ -155,7 +151,7 @@ def main():
     envs, hists = [], []
     for seed in seeds:
         partner = "L" if args.shape == "T" else args.shape
-        pair = {"T": cls(shape="T", legacy=True), partner: cls(shape=partner, legacy=True)}
+        pair = {"T": cls(shape="T", legacy=True, render_size=RS), partner: cls(shape=partner, legacy=True, render_size=RS)}
         matched_reset(pair, seed, defaultdict(int))
         env = pair[args.shape]
         for other in pair.values():
@@ -164,7 +160,7 @@ def main():
         obs = env._get_obs()
         envs.append(env); hists.append(deque([obs, obs], maxlen=2))
     E = len(envs)
-    branch = cls(shape=args.shape, legacy=True) if args.beta < 1 and args.execute == 1 else None
+    branch = cls(shape=args.shape, legacy=True, render_size=RS) if args.beta < 1 and args.execute == 1 else None
     actions = [[] for _ in range(E)]                  # executed targets per env
     saved = [[] for _ in range(E)]                    # (control, image, agent_pos, policy x (8,16,2), label or None)
     active, done = np.ones(E, bool), np.zeros(E, bool)

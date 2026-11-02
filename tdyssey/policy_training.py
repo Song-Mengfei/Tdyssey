@@ -83,7 +83,8 @@ def evaluate_batched(agent, cls, config, counters, deadline, on_plan=None):
     a generator seeded exactly as the sequential path seeds the shared one."""
     saved_rng = agent.generator.get_state()
     shapes = getattr(config, "eval_shapes", ("T", "L"))
-    envs = {seed: {shape: cls(shape=shape, legacy=True) for shape in shapes} for seed in config.eval_seeds}
+    size = getattr(config, "render_size", 96)                       # camera resolution (official: 96)
+    envs = {seed: {shape: cls(shape=shape, legacy=True, render_size=size) for shape in shapes} for seed in config.eval_seeds}
     lanes = []
     try:
         for seed in config.eval_seeds:
