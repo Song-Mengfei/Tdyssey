@@ -21,6 +21,16 @@ imagined rollouts and policy training remain pending. GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
 
+## Letter-pushing world model
+
+The native RGB world-model implementation predicts a letter object's response
+to continuous pusher actions from four 96×96 history frames. It includes explicit
+data/training/evaluation stages, reusable loss-study components and the
+[HMF500 interactive comparison app](apps/r3b-playground/README.md). See
+[experiment results](docs/WM_EXPERIMENTS.md), [loss definitions](docs/WM_LOSSES.md)
+and [primary literature](docs/WM_LITERATURE.md). Reliable long-horizon contact,
+rotation and shape preservation remain unresolved.
+
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)

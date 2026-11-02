@@ -1,0 +1,761 @@
+{
+  "scope": "Recorded methods/settings/results, not fresh execution or one-command reproduction.",
+  "native_interface": {
+    "history": 4,
+    "image": [
+      3,
+      96,
+      96
+    ],
+    "action": "absolute XY /255.5-1",
+    "sampler_denoising_steps": 3
+  },
+  "historical_attempts": [
+    {
+      "id": "RIGID",
+      "parent": "旧结构化起点",
+      "data_ids": [
+        "D00"
+      ],
+      "controlled_change": "结构化路线，已撤销",
+      "successful_updates": 261,
+      "supervised_exposures": null,
+      "wall_or_model_seconds": null,
+      "result": "未通过，数字仅历史消息",
+      "evidence": [
+        "E05"
+      ],
+      "verification": "historical_chat_only"
+    },
+    {
+      "id": "NATIVE1668",
+      "parent": "published GPC",
+      "data_ids": [
+        "D01"
+      ],
+      "controlled_change": "全参数native RGB/残差MSE",
+      "successful_updates": 1668,
+      "supervised_exposures": null,
+      "wall_or_model_seconds": 5352.516,
+      "result": "未胜copy-last；best1500/last1668已删除",
+      "evidence": [
+        "E06"
+      ],
+      "optimizer_attempts_including_replay": 1899
+    },
+    {
+      "id": "STAGE3",
+      "parent": "published GPC",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "微拟合入口",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 28.344,
+      "result": "首baseline负值守卫中断，不能说200步拟合失败",
+      "evidence": [
+        "E08"
+      ]
+    },
+    {
+      "id": "MICRO129",
+      "parent": "published GPC",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "18窗微拟合",
+      "successful_updates": 129,
+      "supervised_exposures": 2064,
+      "wall_or_model_seconds": 416.281,
+      "result": "未通过18窗拟合门槛",
+      "evidence": [
+        "E08"
+      ]
+    },
+    {
+      "id": "MICRO250",
+      "parent": "MICRO129 complete state",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "同18窗继续121更新",
+      "successful_updates": 121,
+      "supervised_exposures": 1936,
+      "wall_or_model_seconds": 423.859,
+      "result": "train18旧门槛通过，DEV/刚性失败；独立于6000线",
+      "evidence": [
+        "E09"
+      ]
+    },
+    {
+      "id": "R2C1_FAIL",
+      "parent": "published GPC",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "新入口日志参数冲突",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 27.359,
+      "result": "保存t0后停；无训练/推理",
+      "evidence": [
+        "E15"
+      ]
+    },
+    {
+      "id": "R2C300",
+      "parent": "published GPC fresh optimizer",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "80%明显运动曝光",
+      "successful_updates": 300,
+      "supervised_exposures": 4800,
+      "wall_or_model_seconds": 486.375,
+      "result": "motionH4 IoU .531987，近静止漂移/形状失败",
+      "evidence": [
+        "E16"
+      ],
+      "AMP_skips": 0
+    },
+    {
+      "id": "R2C_SAMPLE",
+      "parent": "fixed R2C300",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "denoise3/8/16",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 86.907,
+      "result": "motionH4 IoU .531987/.504268/.489620",
+      "evidence": [
+        "E17"
+      ]
+    },
+    {
+      "id": "R2C6000",
+      "parent": "R2C300 complete state",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "延长训练至6000",
+      "successful_updates": 5700,
+      "supervised_exposures": 91200,
+      "wall_or_model_seconds": 6876.985,
+      "result": "motionH4 .531987→.635105；棱角仍未恢复",
+      "evidence": [
+        "E18"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 6000
+    },
+    {
+      "id": "R3A",
+      "parent": "无模型",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "独立采集；50/50 clean-weak接口准备",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "912成功；选23984目标",
+      "evidence": [
+        "E19"
+      ]
+    },
+    {
+      "id": "R3B_FAIL",
+      "parent": "6000 complete state",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "后台加载器启动失败",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 33.047,
+      "result": "正式cursor0，未训练；后经授权修复",
+      "evidence": [
+        "E21"
+      ]
+    },
+    {
+      "id": "R3B7499",
+      "parent": "6000 complete state",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "新数据+cleanweak；一遍23984目标",
+      "successful_updates": 1499,
+      "supervised_exposures": 23984,
+      "wall_or_model_seconds": 1469.752,
+      "result": "H4均值改善，运动保形未通过",
+      "evidence": [
+        "E20"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 7499,
+      "formal_training_loop_seconds": 1205.891
+    },
+    {
+      "id": "AR1_E1",
+      "parent": "7499 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "跨物理域新数据一遍，LR1e-5",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 6452.18,
+      "result": "全48 H16 IoU .497→.597；强OC失败",
+      "evidence": [
+        "E28",
+        "E30"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 9433,
+      "collection_wall_seconds": 1625.66,
+      "training_side_seconds_including_baseline": 4326.94
+    },
+    {
+      "id": "OC_E2",
+      "parent": "AR1_E1 full state",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同数据再完整一遍",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 15146,
+      "result": "全48 H16 IoU .6306；强OC .4039",
+      "evidence": [
+        "E31"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 11367
+    },
+    {
+      "id": "OC_E3",
+      "parent": "OC_E2 full state",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同数据再完整一遍",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 13859.9,
+      "result": "全48 H16 IoU .6226；强OC .3316，退步",
+      "evidence": [
+        "E31"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13301
+    },
+    {
+      "id": "OC_DENOISE16",
+      "parent": "fixed AR1_E1",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "仅强OC8例denoise3→16",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "H16 .3472→.2839；有限配对限制",
+      "evidence": [
+        "E31"
+      ]
+    },
+    {
+      "id": "A",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "4步分组但全部真实历史，原残差MSE",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1291.207,
+      "result": "正式48 H16 .641489；O不转/短暂反向，B丢孔",
+      "evidence": [
+        "E32"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "B",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "h2起自身生成history/detach，原残差MSE",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1593.091,
+      "result": "正式48 H16 .686780，但运动H1/落点变差",
+      "evidence": [
+        "E32"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "C",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "全部真实历史；.50全图+.25区域+.25边缘残差",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1178.23,
+      "result": "运动门槛三项过，O方向/B孔未过；总体.640077",
+      "evidence": [
+        "E34"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "D",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "同C loss，每batch2真2生成，62.5%目标全真上下文",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1895.643,
+      "result": "运动门槛三项失败，O/B失败；总体.671314",
+      "evidence": [
+        "E34"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "CD_DIAGNOSIS",
+      "parent": "E2/A/B fixed",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同16个O/B案例真实历史单步768帧",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 240.078,
+      "result": "未发现核查范围内接口错位；B RH保两孔、AR丢孔；O单步方向多unknown",
+      "evidence": [
+        "E37"
+      ],
+      "predicted_frames": 768
+    },
+    {
+      "id": "SAVED_IDENTITY_AUDIT",
+      "parent": "A/B/C/D",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "CPU保存结果与checkpoint身份核验",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "确实更新/新输出，不能证明改善",
+      "evidence": [
+        "E39"
+      ]
+    },
+    {
+      "id": "HMF3000_COMPLETE",
+      "parent": "OC_E2 full state",
+      "data_ids": [
+        "D16"
+      ],
+      "controlled_change": "单分支高运动曝光，沿用A配方；样本范围/曝光比例/训练量同时改变",
+      "successful_updates": 3000,
+      "supervised_exposures": 48000,
+      "wall_or_model_seconds": 2273.4838530998677,
+      "result": "单步与训练AR明显改善，完整联合拟合未通过；验证C及旧3例退步",
+      "evidence": [
+        "E40",
+        "E72",
+        "E73",
+        "E74",
+        "E75"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 14367,
+      "time_scope": "training loop; worker total4123.711s",
+      "completed_singapore": "2026-11-01 23:53:45",
+      "automatic_next_experiment": false
+    }
+  ],
+  "loss_screens": [
+    {
+      "id": "LOSS-AR4-R1",
+      "arms": [
+        "native",
+        "native+4stepRGB_STE"
+      ],
+      "updates_per_arm": 256,
+      "result": "No complete support; original failed preflight/report retained in method summary."
+    },
+    {
+      "id": "LOSS-LIT",
+      "arms": [
+        "BASE",
+        "SNR",
+        "GDL",
+        "FFL"
+      ],
+      "updates_per_arm": 128,
+      "result": "Mixed effects; no complete O/C/B gate pass."
+    },
+    {
+      "id": "LOSS-DEFINITION",
+      "arms": [
+        "G_ONLY",
+        "NATIVE_G",
+        "NATIVE_T"
+      ],
+      "updates_per_arm": 128,
+      "coefficients": {
+        "cG": 0.023378236655937423,
+        "cT": 3.850309057337518e-05
+      },
+      "result": "Only NATIVE_G/C short-time subcondition passed; no complete O/C/B winner."
+    }
+  ],
+  "data_sources": [
+    {
+      "id": "D00",
+      "name": "已取消结构化刚体实验",
+      "letters": "原26字母范围；实际细分未能复核",
+      "physics_domain": "旧结构化/非当前RGB路线",
+      "counts": {
+        "early_stops_recorded_in_chat": 200
+      },
+      "actual_model_use": "已删除；只剩历史聊天信息",
+      "note": "261更新/保留250等仅历史消息，原REPORT路径已缺失，不冒充本次独立复核。",
+      "model_interface": "Retired structured path, not the current RGB-only interface."
+    },
+    {
+      "id": "D01",
+      "name": "native RGB首轮",
+      "letters": "ABCEFHIJLMOPSTUVXY",
+      "physics_domain": "finite-force dynamic pusher; damping0",
+      "counts": {
+        "trajectories": 518,
+        "controls": 33144,
+        "train_controls": 26232,
+        "seenval_controls": 6912,
+        "probe_controls_separate": 1416
+      },
+      "actual_model_use": "native1668/best1500；不属于后续6000谱系",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D02",
+      "name": "supervised阶段1",
+      "letters": "TLOCXB",
+      "physics_domain": "finite-force dynamic/damping0",
+      "counts": {
+        "trajectories": 54,
+        "controls": 3456,
+        "H1": 3294
+      },
+      "actual_model_use": "采样探针，未混入正式TRAIN396",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D03",
+      "name": "阶段1B重接触配对",
+      "letters": "TLOCXB代表；X重点",
+      "physics_domain": "同D02",
+      "counts": {
+        "runs": 8,
+        "new_families": 2,
+        "paired_old_families": 6,
+        "controls": 512,
+        "H1": 488
+      },
+      "actual_model_use": "采样对照；未混入正式TRAIN396",
+      "note": "六配对重放不是六个新家族。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D04",
+      "name": "阶段2A+2B正式训练",
+      "letters": "ABCEFHIJLMOPSTUVXY",
+      "physics_domain": "同D02",
+      "counts": {
+        "train_families": 396,
+        "controls": 25344,
+        "unique_H1": 24156,
+        "H4": 22968,
+        "stage2a_runs": 162,
+        "stage2b_runs": 234
+      },
+      "actual_model_use": "250微拟合仅取18窗；stage4a只准备未正式训练",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D05",
+      "name": "阶段2C seen-val",
+      "letters": "ABCEFHIJLMOPSTUVXY",
+      "physics_domain": "同D02",
+      "counts": {
+        "families": 162,
+        "controls": 10368,
+        "H1": 9882,
+        "H4": 9396,
+        "selected_diagnostic_windows": 319,
+        "DEV_windows": 36,
+        "DEV_families": 32
+      },
+      "actual_model_use": "DEV36评过；319未作为全部已评测计数",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D06",
+      "name": "R2A/R2A2阻尼配对",
+      "letters": "TLOCXB代表",
+      "physics_domain": "dynamic pusher D0/D1/0.1s/0.3s half-life",
+      "counts": {
+        "independent_initial_families": 16,
+        "arms": 4,
+        "actual_runs": 128,
+        "controls": 1024,
+        "H1": 640,
+        "H4": 256
+      },
+      "actual_model_use": "只做物理/采样诊断，无训练",
+      "note": "R2A2引用旧两臂，不将旧视频再计成新物理。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D07",
+      "name": "R2B小库",
+      "letters": "TLOCXB",
+      "physics_domain": "dynamic pusher/0.1s half-life",
+      "counts": {
+        "planned": 54,
+        "actual_trajectories": 53,
+        "controls": 1272,
+        "train_families": 41,
+        "seenval_families": 12,
+        "train_unique_H1": 861,
+        "seenval_H1": 252
+      },
+      "actual_model_use": "R2C1R1的300及R2C3至6000；反复曝光96000次",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D08",
+      "name": "R3A独立新库",
+      "letters": "TLOCXB",
+      "physics_domain": "dynamic pusher/0.1s half-life",
+      "counts": {
+        "attempts": 918,
+        "success": 912,
+        "failures_retained": 6,
+        "train_families": 768,
+        "seenval_families": 144,
+        "successful_controls": 43776,
+        "completed_controls_including_partials": 43886,
+        "charged_controls": 43891,
+        "known_substeps": 438889,
+        "legal_train_H1": 34560,
+        "selected_unique_H1": 23984
+      },
+      "actual_model_use": "R3B从6000继续1499更新到7499；不是AR1的新物理数据",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D09",
+      "name": "CONTACT-PILOT1/2",
+      "letters": "TLOCXB",
+      "physics_domain": "旧dynamic/half-life，安全/采样改动各自独立",
+      "counts": {
+        "CP1_runs": 48,
+        "CP1_complete": 47,
+        "CP1_completed_controls": 2261,
+        "CP1_charged": 2262,
+        "CP2_runs": 60,
+        "CP2_new_families": 12,
+        "CP2_controls": 2880
+      },
+      "actual_model_use": "未并入R3B/AR1",
+      "note": "CP2含48个旧场景重放；不当60新家族。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D10",
+      "name": "v1-v6物理原型与回归",
+      "letters": "TLOCXB",
+      "physics_domain": "改积分/求解/速度约束；非严格原协议",
+      "counts": {
+        "regression_v1_to4_runs_each": 96,
+        "regression_completed_controls": [
+          2277,
+          2859,
+          2686,
+          2880
+        ],
+        "calibration_v2_controls": 1152,
+        "calibration_v2_substeps": 230400
+      },
+      "actual_model_use": "全部诊断隔离，未进当前训练",
+      "note": "回归有共享场景与版本差异，不相加声称独立新数据。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D11",
+      "name": "严格原物理cal1/cal2",
+      "letters": "TLOCXB",
+      "physics_domain": "100Hz/10/KINEMATIC/damping0",
+      "counts": {
+        "attempts": 36,
+        "controls": 2304,
+        "substeps": 23040,
+        "per_phase_attempts": 18
+      },
+      "actual_model_use": "采样质量未通过；未训练",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D12",
+      "name": "直接目标120验收",
+      "letters": "TLOCXB",
+      "physics_domain": "原物理/绝对0..512；旧>1worldpx早停观察器",
+      "counts": {
+        "attempts": 120,
+        "families": 96,
+        "complete": 46,
+        "early_stop": 74,
+        "actual_controls": 3446,
+        "legal_controls": 3372,
+        "substeps": 33992,
+        "H1": 3012,
+        "H4": 2808,
+        "H8": 2566,
+        "H16": 2117,
+        "H16_families": 45
+      },
+      "actual_model_use": "诊断/未并入AR1训练",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D13",
+      "name": "四案例超过1后的延续",
+      "letters": "O/T/L/C预选",
+      "physics_domain": "原物理；仅诊断观察器改变",
+      "counts": {
+        "cases": 4,
+        "actual_controls": 33,
+        "max_controls": 35,
+        "substeps": 321
+      },
+      "actual_model_use": "training_eligible=false",
+      "note": "证明存在不同恢复过程，不能据4例估计74例误拦率。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D14",
+      "name": "AR1原物理六字母新库",
+      "letters": "TLOCXB",
+      "physics_domain": "100Hz/10/KINEMATIC/damping0/原PD，RGB10Hz",
+      "counts": {
+        "attempts": 1536,
+        "controls": 45969,
+        "substeps": 459213,
+        "clean_prefix_controls": 41882,
+        "selected_train_families": 1339,
+        "unique_train_H1": 30935,
+        "candidate_val_H16_windows": 285,
+        "candidate_val_families": 163,
+        "formal_val_families": 48,
+        "H1_allclean": 37274,
+        "H4_allclean": 32682,
+        "H8_allclean": 26663,
+        "H16_allclean": 16187
+      },
+      "actual_model_use": "AR1/E1、OC E2/E3；后续ABCD和HMF均取其子集",
+      "note": "",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D15",
+      "name": "ABCD四步段训练视图",
+      "letters": "TLOCXB",
+      "physics_domain": "完全引用D14",
+      "counts": {
+        "segments": 7568,
+        "families": 1313,
+        "unique_targets": 30272,
+        "excluded_short_tail_H1": 663,
+        "new_physical_controls": 0
+      },
+      "actual_model_use": "A/B/C/D各独立一遍30272目标",
+      "note": "这是同一批数据的四次独立实验，不是四套新数据。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D16",
+      "name": "HMF高运动集中拟合视图",
+      "letters": "OCB",
+      "physics_domain": "完全引用D14",
+      "counts": {
+        "train_families": 48,
+        "seenval_families": 24,
+        "old_failure_families": 3,
+        "distinct_all_families": 75,
+        "unique_train_targets": 768,
+        "strong_unique_targets": 444,
+        "max_planned_exposures": 48000,
+        "actual_exposures": 48000,
+        "actual_strong_exposures": 42790,
+        "repeated_exposures": 47232,
+        "successful_updates": 3000
+      },
+      "actual_model_use": "HMF completed3000successfulupdates/48000exposures/AMP0; fulljointfit notpassed. Closed2026-11-01 23:53:45SG, waiting_user_review.",
+      "note": "训练集拟合诊断；强曝光计划89.15%，非泛化实验。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    },
+    {
+      "id": "D17",
+      "name": "队友原包",
+      "letters": "T/T_narrow/Y/D/L；候选仅T/L/Y",
+      "physics_domain": "原official KINEMATIC/damping0；接触标签原含非AO",
+      "counts": {
+        "episodes_all": 2500,
+        "transitions_all": 681260,
+        "TLY_episodes": 1500,
+        "TLY_transitions": 416000,
+        "TLY_actual_AO_controls": 116951,
+        "provided_positive_without_AO": 13993,
+        "screened_H1_candidates": 18610,
+        "H4_context_pass": 16782,
+        "candidate_trajectories": 1379,
+        "candidate_scene_families": 498
+      },
+      "actual_model_use": "本次查到的谱系未并入；仅接入审查",
+      "note": "scene seed跨字母共享，按scene而非frame拆分；历史审查发生过CPU回放，本复盘没有回放。",
+      "model_interface": "When admitted to native GPC: four history RGB CHW96 float32/255 plus four aligned absolute XY actions float32/255.5-1, next RGB target. State/contact/letter labels used only for selection/audit, not network inputs. Diagnostic-only data rows are not admitted by this statement."
+    }
+  ]
+}
