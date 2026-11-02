@@ -1,5 +1,17 @@
 # Shared project status
 
+## Letter world-model implementation — 2026-11-03
+
+Native RGB data/training/evaluation stages and the HMF500 inspection app are
+provided with one implementation per component. Recorded native, history,
+region/detail, rollout, noise/frequency and geometry/transport studies are
+summarized in WM_EXPERIMENTS.md and implemented in `tdyssey/wm_objectives/`.
+No complete O/C/B loss winner or reliable imagined-policy improvement is claimed.
+No new training or collection accompanies this source contribution. Local assets
+and full historical runs remain external; no backups or run dumps are included.
+
+The earlier shared-project status below is retained as historical context.
+
 Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
 reliable world-model rollouts and policy learning remain pending.
 

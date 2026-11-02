@@ -470,3 +470,12 @@ with explicit success/time-limit handling. Keep raw upstream rewards and origina
 success in reports; sustained completion is a separate task. Freeze dynamics
 during policy phases, derive imagined rewards from predictions and test learned
 policies physically. Include all model-data collection in end-to-end costs.
+
+## D028 — Keep maintained WM code and compact experiment records (2026-11-03)
+
+Integrate current native world-model components into the existing package.
+Retain each loss definition once with compact method/result documentation.
+Do not publish repeated workspace snapshots, old app backups, raw run outputs,
+local execution/resource receipts, environments or private checkpoints/data.
+The existing official baseline and later original-physics studies remain
+distinct. HMF500 is the selected H1/AR4 app default, not a scientific gate pass.

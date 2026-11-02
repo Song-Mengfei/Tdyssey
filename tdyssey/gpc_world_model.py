@@ -8,6 +8,7 @@ import sys
 from types import SimpleNamespace
 
 from .policy import hash_file
+from .source_export import verify_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,12 +25,7 @@ def load_world_model_source(source_root, spec=None):
     """
     spec = spec or world_model_spec()
     root = Path(source_root).resolve()
-    revision = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"], text=True).strip()
-    if revision != spec["source_commit"]:
-        raise ValueError("GPC world-model source revision differs from the manifest")
-    for name, expected in spec["source_sha256"].items():
-        if hash_file(root / name) != expected:
-            raise ValueError(f"Missing/modified world-model source: {name}")
+    verify_source(root, spec, "GPC world-model")
     prefixes = ("diffusion", "data", "utils")
     def owned(name):
         return any(name == prefix or name.startswith(prefix + ".") for prefix in prefixes)
