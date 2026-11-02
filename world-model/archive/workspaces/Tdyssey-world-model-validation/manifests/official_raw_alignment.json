@@ -1,0 +1,21 @@
+{
+  "kind": "official_raw_gpc_alignment.v1",
+  "reference_repository": "https://github.com/Song-Mengfei/Tdyssey.git",
+  "reference_revision": "df99f804cb999f851b0f77d6981e3dcdb6733df2",
+  "gpc_source_revision": "a96146e568826ef46134f73c22fdf59a675e7264",
+  "input_contract": "official_raw_rgb_h1.v1",
+  "official_entry": "scripts/visualize_world_model.py",
+  "training_entry": "scripts/train_official_contact.py",
+  "shared_helpers": "tdyssey/official_world_model.py",
+  "legacy_entry": "scripts/manual_world_model.py",
+  "exact_copies": {
+    "tdyssey/region_weight.py": "7265db9dcf157b8082f1030d873b38ecb6f7e7568659d894f0ca49a886dca466",
+    "tdyssey/motion_replay.py": "64075e768f173d24138c63149fb519be184f2bd9fd59531adbad6d800020f9cc"
+  },
+  "preserved_algorithms": ["weighted_denoiser_loss", "case_split_foreground", "moved_replay_0.6", "global_train_pool_chunk_and_frozen_validation"],
+  "explicit_differences": ["T/contact admission", "default_read_only_training_and_execute_gate", "declared_checkpoint_SHA_and_sidecar", "recorded_three_hold_history_instead_of_start_padding", "manual_click_executes_once", "raw_H1_and_legacy_T1_profiles_separate"],
+  "output_convention": "remote helper clips native H1 image to [0,1]; no T1",
+  "trained_checkpoint": null,
+  "trained_checkpoint_policy": "explicit current SHA and sidecar; never infer from viewer default or substitute legacy/initial weights",
+  "linux_validation": "not performed"
+}

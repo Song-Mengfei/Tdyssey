@@ -1,0 +1,415 @@
+实测结论
+已筛选29篇/方法，并完成原loss对照及3个候选各128次更新；三个候选工程上均可计算与更新，但均未通过预设逐字母科学筛选，原绝对验收也未通过。GDL使字母B验证AR16 IoU从.523932升至.552540（8/8提高），C却从.249992降至.234253（6/8退步）。GDL还有42/128次更新触发原梯度裁剪，BASE/SNR/FFL均0次，提示应优先诊断梯度尺度，尚不能认定退化根因。Min-SNR/FFL有小幅局部得失，旧B孔数正确仍伴随较大运动误差。现有结果不足以直接替换原loss或扩训。本轮不自动派下一轮。
+
+
+Tdyssey：loss文献综述与有界GPU筛选
+综述日期：2026-11-02（新加坡时间）
+范围：29篇原始论文/方法，10类；其中包括原基线、直接loss方法、相关但需改架构/训练范式的方法。不是穷尽所有论文的系统综述，也不是29种都做了训练。
+原始摘要初筛、正文/公式核对、作者源码核对分层记录在每个条目，不把只读过摘要冒充通读全文。只以原论文、会议/作者页面和作者代码为依据；搜索出现的二手解读不作技术依据。
+
+用户目标和基线
+原GPC图像+动作预测下一图像，白底/灰字母/蓝推杆，保持原物体形状、刚性和正确运动。当前筛选限定在原物理OCB数据和划分，4帧RGB/4动作、96RGB、原3次去噪、原归一化与评价不变。原动作敏感性已被有限配对检验证实，不能把失败全归因于动作未输入。
+当前HMF的原loss是H1扩散预条件残差MSE；最近AR4实验则额外反传四步raw RGB MSE，虽改善部分训练案例，未达到预设验证支持条件，C更差。它不等于Self Forcing的分布匹配，也不代表已经试过所有多步目标。
+本轮不加新数据/物理、不换表示、额外teacher/资产下载或新网络。执行仍由原6.1Sol负责人负责，本聊天综述与独立复核。
+
+文献给出的方向与项目判断
+1. 噪声级别重新加权：Min-SNR/P2可在不增网络forward下重新分配不同去噪任务的贡献。当前残差目标已经隐含EDM式权重，不能再整套重复乘一次。噪声重新分配可能改善训练，也可能损害低噪声细节，不能引用自然图像FID收益作为项目保证。[P01-P05]
+2. 图像梯度/稳健误差：GDL直接比较GT与预测的梯度幅值；不同于“在边缘mask内多算MSE”。L1/Charbonnier等改变大残差的影响，重要接触运动也可能是大残差，不能自动当离群点压低。[P06,P11,P12]
+3. 频域：正交FFT的完整复数无权L2由Parseval等式等价于像素MSE，单纯搬空间不是新目标。只比幅度谱会丢位置信息。FFL通过detach的动态频率权重改变重点，同时保留相位；它关注困难频率，不是无条件只强调高频。[P07,P08]
+4. SSIM/MS-SSIM：比较局部结构统计、实现便宜；小物体/孔洞在多尺度下可能被淡化。需要与位置、拓扑一起验，不以SSIM高替代物理正确。[P09-P11]
+5. 学习式感知：VGG/LPIPS/DreamSim等提供感知特征，可考虑，但预训练域、额外权重/显存和小灰字母细节须实测。DISTS的部分几何容忍与精确位置要求尤其有张力。不能笼统宣布它们不可用，也不能假设自然图像主观相似就能保孔。[P13-P16]
+6. IoU/轮廓/拓扑：Lovasz、Boundary、TopoLoss、clDice/cbDice更直接关联小前景与孔洞/连通。但GPC输出RGB，不是分割概率；必须先定义可微颜色→概率映射、GT边界/距离与遮挡资格。对硬阈值mask/整数孔数直接算误差通常不能提供有效梯度。分割理论不保证有限训练后的刚体朝向。[P17-P21]
+7. 时序范式：Diffusion Forcing、Self Forcing、ForeDiff分别涉及独立token噪声、自生成分布匹配、条件理解与去噪解耦。不是替换一个MSE即可完成复现；可能需要改conditioning、教师或预测流。本轮不把这些改造混入loss对照。[P22-P24]
+8. 物理监督与光流：PhyS/GNS/RAFT提供物理学习、状态或运动信息方向，但数据/表征/网络与当前目标不同。不能直接改为粒子状态模拟器，也不能把“连续帧尽量不变”当运动一致性——那会鼓励静止。[P25,P28,P29]
+9. 多目标梯度：GradNorm/PCGrad有助处理不同loss贡献和冲突，但应先测梯度而非仅比loss数值。loss数值大不等于参数梯度主导，本轮不同时加入自适应权重或梯度手术。[P26,P27]
+
+为何先选这三个
+Min-SNR、GDL、FFL代表噪声分配、局部边界、频域三个不同机制；都不要求新标签、分割head、teacher或额外模型forward，能保留原初始化/数据/训练次序作配对对照。它们不重复旧C/D区域加权或旧AR4分支。选择是受预算限制的首轮筛选，不是认定其余方法无效。
+
+冻结的实际公式与迁移注意
+共同：原残差r=(y-c_skip*z)/c_out，base=MSE(F,r)。D=c_skip*z+c_out*F.float()，用同一次网络输出得到未clamp/量化的可微去噪重建。q=D/.5、v=y/.5仅为新增loss内部单位；模型输入仍[0,1]，动作与GT预处理不变。
+BASE：原base，沿用原mean约简顺序。
+SNR：mean_sample(w_i * mean_CHW((F_i-r_i)^2))，rho=.25/(sigma_draw²+.01)，w=min(rho,5)/rho。不再加EDM权重、不对batch权重归一化、不改sigma采样。这里使用GPC原sigma_eff=sqrt(draw²+.1²)，rho是项目预条件下名义SNR，非经验测得方差。借鉴Min-SNR的EDM附录，是GPC适配而非原论文逐字复现。
+GDL：base + .5*(mean(abs(abs(dy(q))-abs(dy(v)))) + mean(abs(abs(dx(q))-abs(dx(v)))))，alpha=1、辅助系数1、无padding。梯度幅值可对某些颜色反转/偏移不敏感，所以保留base，不能单独当形状证书。
+FFL：base + mean(M*|FFT(q)-FFT(v)|²)，正交完整复数FFT；M=|Delta|/max_HW|Delta|，每sample/channel归一化，零误差矩阵设0并完整detach。alpha=1，其余作者默认patch1、平均谱/log/batch-matrix均false。96不是2的幂，FFT明确FP32并关闭该段autocast；原模型AMP不变。
+新增系数与单位均在看结果前固定，不搜索超参。GDL/FFL施加在可微单次重建，不宣称直接训练了纯噪声起点的AR16。
+
+一个项目特有的参数化差异
+由原代码可推得：base等价于重建误差乘1/c_out²=4+1/(draw²+.01)。因此原loss并非所有噪声级别等权。
+本轮SNR仅在draw<.2时降权；权重最低约.20008，其他范围为1。按原log-normal抽样（忽略极小clamp修正）约36.65%的抽样处于该范围，平均权重约0.8057。实际抽样权重另由执行记录。若错误使用draw而非sigma_eff，低噪声权重会相差很大。这是核对GPC适配的必要细节，不证明此权重必然有益。
+
+测试与验收
+BASE/SNR/GDL/FFL各128次尝试，eff16，同完整E2 model/Adam/scaler/RNG独立恢复、原HMF首128批和noise配对。每臂2048原H1曝光，合计8192，0额外GT曝光。预检最多128原模型图像级forward，正式总上限23296；不另warmup/benchmark/选seed。原loss新跑并与保存R1 A128交叉核验。
+四臂终点各评train12/seen-val24/old3的RH及raw AR16：共4992预测/14976图像级denoiser。共同E2引用已保存且与原HMF逐项一致的基线，不重推。原绝对门槛、unknown资格不变；方向性筛选沿用R1预设，并单列AR8/16、逐例得失、字母与split。train12不能代表全48拟合。
+工程可用（梯度/参数更新/显存）与科学有益（运动、形状/拓扑、验证保留）分开。128步/单seed/多候选仅筛选；反复使用seen-val也不能称一次全新独立泛化测试。无候选通过也完整报告，不自动延长或调权重。
+CPU各库/Torch/OpenCV1、单进程BelowNormal，CUDA模型及可等价GPU评分；不操作其他项目。执行新root上限900MB，共享10GB含原子预留/增长guard。无模型的图文报告问题在本轮已有结果内修复，不为报告重推模型。
+
+执行与结果状态
+本轮已完成的候选：BASE,SNR,GDL,FFL。缺失终点评测：[]。
+工程终态与科学结果分别报告；完整原始completion/预检见独立账本及执行报告。
+预先冻结的三字母方向性支持（全三字母同时满足）：{'SNR': False, 'GDL': False, 'FFL': False}。
+原绝对验收状态：{'E2': {'train': False, 'seen_val': False, 'original_failure': False}, 'BASE': {'train': False, 'seen_val': False, 'original_failure': False}, 'SNR': {'train': False, 'seen_val': False, 'original_failure': False}, 'GDL': {'train': False, 'seen_val': False, 'original_failure': False}, 'FFL': {'train': False, 'seen_val': False, 'original_failure': False}}。unknown仍不算通过。
+
+独立重算4455个主要均值与负责人分组吻合，拓扑/形状/旋转状态计数吻合；检查384对正式更新的RNG/branch配对。每臂实际使用同768个唯一H1目标，2048为曝光次数，不是独立新数据。
+
+seen-val AR4：
+letter | E2 | BASE | SNR | GDL | FFL (IoU / imagepx)
+O | 0.852754/0.500406 | 0.854977/0.478686 | 0.852345/0.467971 | 0.849604/0.507686 | 0.854441/0.477095
+C | 0.630272/0.518774 | 0.651441/0.454861 | 0.646465/0.461172 | 0.642264/0.494876 | 0.651261/0.434630
+B | 0.758849/0.923860 | 0.778506/0.826559 | 0.776744/0.831002 | 0.772484/0.849797 | 0.774582/0.851683
+
+seen-val AR16：
+letter | E2 | BASE | SNR | GDL | FFL (IoU / imagepx)
+O | 0.456442/3.042651 | 0.466823/2.919192 | 0.451512/3.021972 | 0.473135/2.889234 | 0.463589/2.963109
+C | 0.253279/3.880715 | 0.249992/3.702187 | 0.246523/3.686839 | 0.234253/4.230793 | 0.248479/3.747198
+B | 0.514797/2.108555 | 0.523932/1.667576 | 0.527388/1.679867 | 0.552540/1.622913 | 0.530842/1.620927
+
+seen-val RH强运动H1（跨全部16目标的真正强H1，非第一目标可能静止的H1）：
+letter | E2 | BASE | SNR | GDL | FFL (IoU / imagepx)
+O | 0.945364/0.109591 | 0.946537/0.120176 | 0.946532/0.118118 | 0.947487/0.111712 | 0.946169/0.124390
+C | 0.915408/0.277842 | 0.910562/0.260532 | 0.911228/0.255718 | 0.906231/0.238564 | 0.909396/0.257936
+B | 0.930029/0.174706 | 0.931566/0.185942 | 0.931915/0.187154 | 0.931129/0.186708 | 0.931306/0.187809
+
+固定train12 AR16（每字母4家族；不代表全部48训练轨迹）：
+letter | E2 | BASE | SNR | GDL | FFL (IoU / imagepx)
+O | 0.379033/3.657807 | 0.335674/4.120006 | 0.312884/4.260578 | 0.337875/4.101860 | 0.339779/4.179215
+C | 0.195370/6.392374 | 0.264316/4.430930 | 0.229687/5.193719 | 0.274154/4.561048 | 0.284783/4.143431
+B | 0.406972/3.117852 | 0.493603/2.153573 | 0.493379/2.120349 | 0.531896/1.964469 | 0.509333/2.122112
+
+旧失败3 AR16（每字母1家族）：
+letter | E2 | BASE | SNR | GDL | FFL (IoU / imagepx)
+O | 0.480000/2.547891 | 0.511111/2.166518 | 0.515406/2.155112 | 0.439678/2.454672 | 0.490358/2.160960
+C | 0.129353/5.517083 | 0.139594/4.544727 | 0.140306/4.482175 | 0.133166/4.706590 | 0.140306/4.549468
+B | 0.371849/4.304287 | 0.296137/5.671804 | 0.289979/6.001008 | 0.287281/4.683177 | 0.302575/5.773714
+
+逐例AR16 IoU变化，相对本轮BASE：
+SNR train O: IoU改善/退步=0/4，位置改善/退步=0/4
+SNR train C: IoU改善/退步=1/3，位置改善/退步=0/4
+SNR train B: IoU改善/退步=1/3，位置改善/退步=3/1
+SNR seen_val O: IoU改善/退步=2/6，位置改善/退步=3/5
+SNR seen_val C: IoU改善/退步=3/5，位置改善/退步=3/5
+SNR seen_val B: IoU改善/退步=5/2，位置改善/退步=4/4
+SNR original_failure O: IoU改善/退步=1/0，位置改善/退步=1/0
+SNR original_failure C: IoU改善/退步=1/0，位置改善/退步=1/0
+SNR original_failure B: IoU改善/退步=0/1，位置改善/退步=0/1
+GDL train O: IoU改善/退步=2/2，位置改善/退步=2/2
+GDL train C: IoU改善/退步=3/1，位置改善/退步=3/1
+GDL train B: IoU改善/退步=4/0，位置改善/退步=3/1
+GDL seen_val O: IoU改善/退步=4/4，位置改善/退步=4/4
+GDL seen_val C: IoU改善/退步=2/6，位置改善/退步=2/6
+GDL seen_val B: IoU改善/退步=8/0，位置改善/退步=4/4
+GDL original_failure O: IoU改善/退步=0/1，位置改善/退步=0/1
+GDL original_failure C: IoU改善/退步=0/1，位置改善/退步=0/1
+GDL original_failure B: IoU改善/退步=0/1，位置改善/退步=1/0
+FFL train O: IoU改善/退步=1/3，位置改善/退步=2/2
+FFL train C: IoU改善/退步=3/1，位置改善/退步=3/1
+FFL train B: IoU改善/退步=4/0，位置改善/退步=2/2
+FFL seen_val O: IoU改善/退步=5/2，位置改善/退步=1/6
+FFL seen_val C: IoU改善/退步=5/3，位置改善/退步=4/4
+FFL seen_val B: IoU改善/退步=5/3，位置改善/退步=5/3
+FFL original_failure O: IoU改善/退步=0/1，位置改善/退步=1/0
+FFL original_failure C: IoU改善/退步=1/0，位置改善/退步=0/1
+FFL original_failure B: IoU改善/退步=1/0，位置改善/退步=0/1
+
+预设条件逐项：
+SNR O: {'AR4_IoU_improved': False, 'AR4_position_not_worse': True, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': True}；拓扑fail不增=True；合计支持=False
+SNR C: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': True, 'RH_strong_position_not_worse': True}；拓扑fail不增=True；合计支持=False
+SNR B: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': True, 'RH_strong_position_not_worse': False}；拓扑fail不增=False；合计支持=False
+GDL O: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': True, 'RH_strong_position_not_worse': True}；拓扑fail不增=True；合计支持=False
+GDL C: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': True}；拓扑fail不增=True；合计支持=False
+GDL B: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': False}；拓扑fail不增=True；合计支持=False
+FFL O: {'AR4_IoU_improved': False, 'AR4_position_not_worse': True, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': False}；拓扑fail不增=True；合计支持=False
+FFL C: {'AR4_IoU_improved': False, 'AR4_position_not_worse': True, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': True}；拓扑fail不增=True；合计支持=False
+FFL B: {'AR4_IoU_improved': False, 'AR4_position_not_worse': False, 'RH_strong_IoU_not_worse': False, 'RH_strong_position_not_worse': False}；拓扑fail不增=True；合计支持=False
+
+各组128步的loss数值定义不同，不能用训练loss大小跨方法排名。SNR会乘小于1的权重，GDL/FFL添加非负项；统一用原项目评价判定。一次短预算筛选不能否定整类方法，也不能宣称收敛。
+本轮未对新候选重做动作干预、接触或穿透物理验证；旧E2/HMF的动作敏感性证据不自动保证新权重正确响应动作。
+本轮没有新增GT曝光差异，但新增loss运算/反传成本不同；源日志和资源账本分别记录，不能称等FLOP。没有新物理、数据、模型结构、额外teacher或新安装。
+
+训练时间与clip观察（loss梯度竞争机制尚未被单独隔离）：
+[{"arm": "BASE", "attempts": 128, "training_seconds": 76.10670649982058, "gradient_clip_events": 0, "gradient_norm_max": 0.09164229035377502}, {"arm": "SNR", "attempts": 128, "training_seconds": 96.23229089990491, "gradient_clip_events": 0, "gradient_norm_max": 0.02295355498790741}, {"arm": "GDL", "attempts": 128, "training_seconds": 61.65774729970144, "gradient_clip_events": 42, "gradient_norm_max": 2.4370598793029785}, {"arm": "FFL", "attempts": 128, "training_seconds": 63.358804399787914, "gradient_clip_events": 0, "gradient_norm_max": 0.07985813170671463}]
+GDL组42/128次更新的总参数梯度范数超过原clip=1阈值（32.8%，最大2.4371）；BASE/SNR/FFL均0次，BASE最大仅.09164。这是保存日志中额外发现的优化行为差异。它说明辅助项的系数/单位及梯度尺度值得检查，但没有分解各项梯度或测夹角，不能断言这就是C退化原因，也不能据此保证调小系数会解决。
+同一个预检B4、同一权重/噪声下，BASE/GDL总参数梯度范数分别.0464208/.4115463，GDL为8.87倍；FFL为1.26倍，SNR为.966倍。这个受控单批观察进一步支持尺度值得诊断；仍不能推广为所有训练批的组件梯度比或C退化因果证明，原始数值见FIXED_BATCH_GRADIENT_OBSERVATION.json。
+结合文献，下一步更有针对性的选择是先诊断native/辅助项的梯度幅值与方向、按预先规则做单变量定标；轮廓/soft-IoU/拓扑项也是未验证候选，应先核实RGB概率映射与遮挡资格。没有启动任何这类后续测试，也不把未测试方法称已有效。
+BASE对旧R1 A128的raw/主指标复现：{"raw_archive_hashes_equal": true, "primary_exact_equal": true, "differences": [], "old_baseline_not_substituted": true, "scope": "All actual differences reported, no silent reference replacement"}
+独立核对范围：源评分重聚合、同输入/槽/规范噪声哈希值（SNR缓存来源例外见下）、训练RNG和恢复证明；不把这些算新模型调用，也不宣称已将全部312份raw重新评分/全量hash。
+
+工程恢复与完整成本：
+原worker因WinError5原子替换热ledger失败，具体文件占用者未知。人类在负责人聊天明确要求解决并恢复、全部结束再统一汇报，已由本聊天read_thread核实；原中断记录保留。恢复采用新IO/journal实现，仅续未完SNR评测和GDL/FFL，不重训BASE/SNR、不重跑预检。原loss/数据/物理/精度/步数不变；两次模型实例串行，第二次属于用户批准的恢复。
+最终complete=True/failed=False。累计记账图像forward23220，实际完成23216，差4是原before-body写账失败仍保留的reservation；其中28次已完成但未落盘的denoiser重算成本未丢弃。最终独立评测4992张；含丢失前缀重算实际完成采样帧5000。总记账低于原23296 cap。正式训练512成功/8192曝光/2048反传，AMPskip0；预检20forward/6模型梯度与3tensor-only梯度只做一次。
+原活跃worker297.939s，加恢复317.447s，累计活跃615.386s（约10分15秒）；中断等待和文献/准备时间另计，非端到端总历时或纯GPU账单。CPU与存储详见源completion，单数值进程BelowNormal、线程1，无CPU模型回退或其他项目操作。
+负责人saved-only审计通过：312份raw、4份轻量weights的SHA，以及12张PNG/映射。此为负责人真实工具退出回执支持的审计；本聊天没有重复全量hash。
+SNR有两批RH训练缓存（8份raw）的原始实际噪声观察回执随内存丢失。冻结源码在保存raw前曾检查实际张量，恢复对同seed/B4独立复算哈希；metrics.noise_provenance明确这不是新的模型观察。规范噪声值与其他臂相同，但不把重建哈希冒充原丢失回执。验证与AR比较对应组为新实际观察，主要验证结论不依赖这两批训练RH缓存。
+论文证据与项目判断见上文逐篇条目；候选不是原论文数据/架构的完整复现，已预先固定GPC参数化与单位适配。等待用户审批后续，不自动调gamma/系数/步数或部署。
+
+执行root：__LOCAL_WORKSPACE__\Tdyssey-raw-tl-portable-main\artifacts\loss-screen-20261102
+
+
+
+逐篇文献与适用性（状态“本轮GPU筛选”只表示纳入，完成与否以上节/执行结果为准）
+
+P01 | 扩散噪声加权 | NeurIPS 2022
+Elucidating the Design Space of Diffusion-Based Generative Models
+Karras et al.
+核对程度：论文摘要+作者EDMLoss源码核对
+方法：EDM式图像误差已有噪声权重；当前GPC残差MSE等价于带c_out权重的重建误差。
+项目判断：作为原基线解释；不重复添加整套EDM权重。
+状态：基线
+原始来源：https://arxiv.org/abs/2206.00364
+
+P02 | 扩散噪声加权 | ICCV 2023 / arxiv v3
+Efficient Diffusion Training via Min-SNR Weighting Strategy
+Hang et al.
+核对程度：正文+附录D.1.1公式核对
+方法：截断SNR重分配不同噪声级别的训练贡献；附录明确给出EDM乘法系数。
+项目判断：选入SNR臂；用原GPC sigma_eff定义名义SNR，属于项目适配。
+状态：本轮GPU筛选
+原始来源：https://arxiv.org/html/2303.09556v3
+
+P03 | 扩散噪声加权 | CVPR 2022
+Perception Prioritized Training of Diffusion Models
+Choi et al.
+核对程度：原论文第3.2节公式核对
+方法：P2按(k+SNR)^(-gamma)调整权重，强调部分噪声区间。
+项目判断：与Min-SNR同属噪声分配，首轮不叠加或同时换采样分布。
+状态：未训练
+原始来源：https://openaccess.thecvf.com/content/CVPR2022/html/Choi_Perception_Prioritized_Training_of_Diffusion_Models_CVPR_2022_paper.html
+
+P04 | 扩散噪声加权 | CVPR 2024
+Analyzing and Improving the Training Dynamics of Diffusion Models
+Karras et al.
+核对程度：原始摘要初筛
+方法：从幅值稳定、层设计和EMA等改善扩散训练。
+项目判断：整套EDM2涉及网络/训练改造，不能当纯换loss来替代GPC基线。
+状态：范围外整体改造
+原始来源：https://arxiv.org/abs/2312.02696
+
+P05 | 扩散噪声加权 | 2024预印本 / ICCV 2025
+Improved Noise Schedule for Diffusion Training
+Hang et al.
+核对程度：原始摘要+会议论文方法摘录初筛
+方法：通过log-SNR重要采样增加关键噪声区间训练。
+项目判断：会改变noise抽样，与本轮只改loss不一致；保留为独立后续因素。
+状态：未训练
+原始来源：https://arxiv.org/abs/2407.03297
+
+P06 | 图像梯度与稳健误差 | ICLR 2016
+Deep multi-scale video prediction beyond mean square error
+Mathieu, Couprie, LeCun
+核对程度：全文方法第2.3/2.4节公式核对
+方法：GDL惩罚预测与GT的相邻像素梯度幅值差，配合像素损失。
+项目判断：选入GDL臂；在可微去噪重建图上计算，不是旧边缘mask加权MSE。
+状态：本轮GPU筛选
+原始来源：https://arxiv.org/html/1511.05440
+
+P07 | 频域 | ICCV 2021
+Focal Frequency Loss for Image Reconstruction and Synthesis
+Jiang et al.
+核对程度：论文方法+作者代码逐项核对
+方法：自适应强调困难频率；作者实现保留复数相位，权重矩阵detach。
+项目判断：选入FFL臂；FFT用FP32，保持原模型forward精度。
+状态：本轮GPU筛选
+原始来源：https://openaccess.thecvf.com/content/ICCV2021/html/Jiang_Focal_Frequency_Loss_for_Image_Reconstruction_and_Synthesis_ICCV_2021_paper.html
+
+P08 | 频域 | ICCV 2021
+Fourier Space Losses for Efficient Perceptual Image Super-Resolution
+Fuoli, Van Gool, Timofte
+核对程度：原始摘要初筛
+方法：用Fourier空间监督改善高频内容，并研究频域判别。
+项目判断：支持频域方向；首轮用无需新增判别器的FFL，不移植超分架构。
+状态：未训练
+原始来源：https://openaccess.thecvf.com/content/ICCV2021/html/Fuoli_Fourier_Space_Losses_for_Efficient_Perceptual_Image_Super-Resolution_ICCV_2021_paper.html
+
+P09 | 局部结构统计 | IEEE TIP 2004
+Image Quality Assessment: From Error Visibility to Structural Similarity
+Wang, Bovik, Sheikh, Simoncelli
+核对程度：作者论文/项目页核对
+方法：SSIM比较局部亮度、对比度和结构，而非逐像素平方差。
+项目判断：可微且便宜；大白底和小物体需检验，不能代替孔洞/角度验收。
+状态：未训练
+原始来源：https://www.ece.uwaterloo.ca/~z70wang/publications/ssim.html
+
+P10 | 局部结构统计 | Asilomar 2003
+Multi-scale Structural Similarity for Image Quality Assessment
+Wang, Simoncelli, Bovik
+核对程度：作者原始摘要初筛
+方法：多尺度组合结构相似度。
+项目判断：96px小物体的孔洞在下采样中可能消失，需另行验证尺度。
+状态：未训练
+原始来源：https://ece.uwaterloo.ca/~z70wang/publications/msssim.html
+
+P11 | 图像梯度与稳健误差 | arxiv 2015
+Loss Functions for Neural Networks for Image Processing
+Zhao, Gallo, Frosio, Kautz
+核对程度：原始摘要/方法概述初筛
+方法：比较L2、L1、结构相似等恢复损失，讨论组合目标。
+项目判断：图像恢复收益不等价于动作/物理准确；可作为后续L1/结构组合依据。
+状态：未训练
+原始来源：https://arxiv.org/abs/1511.08861
+
+P12 | 图像梯度与稳健误差 | CVPR 2019
+A General and Adaptive Robust Loss Function
+Barron
+核对程度：原论文公式与导数核对
+方法：连续稳健性参数统一L2、Charbonnier等，改变大残差的影响。
+项目判断：大误差也可能来自重要接触运动；不能把其自动当离群点降权。
+状态：未训练
+原始来源：https://openaccess.thecvf.com/content_CVPR_2019/html/Barron_A_General_and_Adaptive_Robust_Loss_Function_CVPR_2019_paper.html
+
+P13 | 学习式感知 | ECCV 2016
+Perceptual Losses for Real-Time Style Transfer and Super-Resolution
+Johnson, Alahi, Fei-Fei
+核对程度：原始摘要初筛
+方法：使用预训练视觉特征衡量图像差异。
+项目判断：需要额外特征网络/资产；自然图像感知相似不等价于刚体精确。
+状态：未训练
+原始来源：https://arxiv.org/abs/1603.08155
+
+P14 | 学习式感知 | CVPR 2018
+The Unreasonable Effectiveness of Deep Features as a Perceptual Metric
+Zhang et al.
+核对程度：原论文摘要/方法概述核对
+方法：LPIPS以校准的深特征匹配人类感知判断。
+项目判断：可能帮助外观；需检验96px字母/孔洞域偏差和新增网络费用。
+状态：未训练
+原始来源：https://openaccess.thecvf.com/content_cvpr_2018/html/Zhang_The_Unreasonable_Effectiveness_CVPR_2018_paper.html
+
+P15 | 学习式感知 | arxiv 2020
+Image Quality Assessment: Unifying Structure and Texture Similarity
+Ding, Ma, Wang, Simoncelli
+核对程度：原始摘要核对
+方法：DISTS结合深特征结构/纹理统计，容忍部分几何变化。
+项目判断：其平移/变形不敏感性与本项目精确位置要求有张力，不优先。
+状态：未训练
+原始来源：https://arxiv.org/abs/2004.07728
+
+P16 | 学习式感知 | NeurIPS 2023
+DreamSim: Learning New Dimensions of Human Visual Similarity using Synthetic Data
+Fu et al.
+核对程度：原始摘要/出版信息核对
+方法：强调前景、布局和语义等中层感知关系。
+项目判断：比纯纹理更相关，但仍需额外模型及字母域验证，未证明保孔。
+状态：未训练
+原始来源：https://arxiv.org/abs/2306.09344
+
+P17 | 轮廓与拓扑 | CVPR 2018
+The Lovász-Softmax loss: A tractable surrogate for the optimization of the intersection-over-union measure in neural networks
+Berman, Rannen Triki, Blaschko
+核对程度：原始摘要初筛
+方法：通过可优化替代函数直接针对分割IoU。
+项目判断：GPC输出RGB而非分割概率；需明确可微RGB→mask及遮挡资格。
+状态：未训练
+原始来源：https://arxiv.org/abs/1705.08790
+
+P18 | 轮廓与拓扑 | MIDL 2019
+Boundary loss for highly unbalanced segmentation
+Kervadec et al.
+核对程度：原论文摘要/方法概述核对
+方法：使用距离/边界表示补充区域损失，面向前景不平衡。
+项目判断：对小灰物体有针对性；需要可靠概率图、GT距离图与单位适配。
+状态：未训练
+原始来源：https://proceedings.mlr.press/v102/kervadec19a.html
+
+P19 | 轮廓与拓扑 | NeurIPS 2019
+Topology-Preserving Deep Image Segmentation
+Hu, Li, Samaras, Chen
+核对程度：原始摘要/方法概述初筛
+方法：用持久同调相关目标鼓励预测与GT拓扑一致。
+项目判断：直接关联孔洞，但RGB概率图、遮挡与同调计算开销尚未验证。
+状态：未训练
+原始来源：https://papers.nips.cc/paper_files/paper/2019/hash/2d95666e2649fcfc6e3af75e09f5adb9-Abstract.html
+
+P20 | 轮廓与拓扑 | CVPR 2021
+clDice -- A Novel Topology-Preserving Loss Function for Tubular Structure Segmentation
+Shit et al.
+核对程度：原始摘要与适用条件核对
+方法：基于分割和骨架交集，soft-clDice用于连通结构。
+项目判断：管状结构结论不自动推广到O/C/B的孔洞和刚体朝向。
+状态：未训练
+原始来源：https://arxiv.org/abs/2003.07311
+
+P21 | 轮廓与拓扑 | arxiv 2024
+Centerline Boundary Dice Loss for Vascular Segmentation
+Shi et al.
+核对程度：原始摘要初筛
+方法：cbDice融合中心线、边界和尺度，兼顾拓扑与几何。
+项目判断：比只保连通更相关，但仍是血管分割，需另做RGB与遮挡适配。
+状态：未训练
+原始来源：https://arxiv.org/abs/2407.01517
+
+P22 | 时序生成范式 | NeurIPS 2024
+Diffusion Forcing: Next-token Prediction Meets Full-Sequence Diffusion
+Chen et al.
+核对程度：原始摘要/训练范式初筛
+方法：对序列token使用独立噪声，结合因果预测和序列扩散。
+项目判断：改变conditioning/noise/序列训练范式，不是本轮H1 loss小替换。
+状态：范围外整体改造
+原始来源：https://arxiv.org/abs/2407.01392
+
+P23 | 时序生成范式 | 2025
+Self Forcing: Bridging the Train-Test Gap in Autoregressive Video Diffusion
+Huang et al.
+核对程度：正文/分布匹配与消融方法核对
+方法：自生成历史与整体分布匹配损失，包含DMD/SiD/GAN等路径。
+项目判断：旧AR4-MSE并非本论文复现；整体移植需教师/判别等新组件。
+状态：未训练
+原始来源：https://arxiv.org/html/2506.08009
+
+P24 | 时序生成范式 | 2025 / 2026 v2
+Foresight Diffusion: Improving Sampling Consistency in Predictive Diffusion Models
+Zhang et al.
+核对程度：最新版原始摘要核对
+方法：把条件理解与目标去噪解耦，改善预测采样一致性。
+项目判断：需要独立预测流/表征，属于结构与训练改造，非纯loss对照。
+状态：范围外整体改造
+原始来源：https://arxiv.org/abs/2505.16474
+
+P25 | 物理与状态表征 | arxiv 2026
+Distilling Physical Priors into Streaming World Models
+Zhao et al.
+核对程度：原始摘要初筛
+方法：物理视频监督、教师蒸馏与时序信用分配/RL组合。
+项目判断：涉及新数据/大型教师/训练流程，不能在当前授权内直接移植。
+状态：范围外整体改造
+原始来源：https://arxiv.org/abs/2608.07981
+
+P26 | 多目标梯度平衡 | ICML 2018
+GradNorm: Gradient Normalization for Adaptive Loss Balancing in Deep Multitask Networks
+Chen et al.
+核对程度：原始摘要/方法概述核对
+方法：动态调整多个目标的梯度幅值与学习速度。
+项目判断：适合后续检查native与辅助项平衡；需单独控制额外梯度和自适应权重。
+状态：未训练
+原始来源：https://proceedings.mlr.press/v80/chen18a.html
+
+P27 | 多目标梯度平衡 | NeurIPS 2020
+Gradient Surgery for Multi-Task Learning
+Yu et al.
+核对程度：原始摘要/方法概述核对
+方法：处理多个任务间冲突梯度。
+项目判断：仅在实测冲突后才有针对性；不是把两个loss数值归一化就等价。
+状态：未训练
+原始来源：https://papers.nips.cc/paper/2020/hash/3fe78a8acf5fda99de95303940a2420c-Abstract.html
+
+P28 | 光流运动 | ECCV 2020
+RAFT: Recurrent All-Pairs Field Transforms for Optical Flow
+Teed, Deng
+核对程度：原始摘要初筛
+方法：估计稠密像素运动，可支持flow监督或运动比较方向。
+项目判断：是光流架构而非现成GPC loss；额外教师及遮挡/刚体精度需验证。
+状态：未训练
+原始来源：https://arxiv.org/abs/2003.12039
+
+P29 | 物理与状态表征 | ICML 2020
+Learning to Simulate Complex Physics with Graph Networks
+Sanchez-Gonzalez et al.
+核对程度：原论文摘要+补充材料训练目标核对
+方法：粒子图模拟器；讨论一步噪声训练与长滚动目标的取舍。
+项目判断：表征/监督不同，不能用其物理成功替代当前image-based GPC任务。
+状态：范围外整体改造
+原始来源：https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html
+
+
+作者代码：
+https://raw.githubusercontent.com/NVlabs/edm/main/training/loss.py
+https://raw.githubusercontent.com/EndlessSora/focal-frequency-loss/master/focal_frequency_loss/focal_frequency_loss.py

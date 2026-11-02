@@ -1,0 +1,116 @@
+{
+  "cases": [
+    {
+      "actual_h1_contact": true,
+      "actual_h1_motion_class": "moving",
+      "actual_h1_rotation_abs_deg": 1.2948835147226312,
+      "actual_likely_wall_blocked_proxy": false,
+      "anchor": 4,
+      "conditions": {
+        "likely_wall_blocked_proxy": false,
+        "moving": true,
+        "near_static_contact": false,
+        "rotation": true
+      },
+      "desired_category": "moving",
+      "desired_category_unavailable": false,
+      "fallback_used": false,
+      "letter": "T",
+      "requested_spatial_class": "center",
+      "trajectory_id": "seen-val-2c-013"
+    },
+    {
+      "actual_h1_contact": true,
+      "actual_h1_motion_class": "moving",
+      "actual_h1_rotation_abs_deg": 1.0135601041124869,
+      "actual_likely_wall_blocked_proxy": false,
+      "anchor": 3,
+      "conditions": {
+        "likely_wall_blocked_proxy": false,
+        "moving": true,
+        "near_static_contact": false,
+        "rotation": true
+      },
+      "desired_category": "likely_wall_blocked_proxy",
+      "desired_category_unavailable": true,
+      "fallback_used": true,
+      "letter": "M",
+      "requested_spatial_class": "center",
+      "trajectory_id": "seen-val-2c-009"
+    },
+    {
+      "actual_h1_contact": true,
+      "actual_h1_motion_class": "moving",
+      "actual_h1_rotation_abs_deg": 1.173501075927822,
+      "actual_likely_wall_blocked_proxy": false,
+      "anchor": 3,
+      "conditions": {
+        "likely_wall_blocked_proxy": false,
+        "moving": true,
+        "near_static_contact": false,
+        "rotation": true
+      },
+      "desired_category": "rotation",
+      "desired_category_unavailable": false,
+      "fallback_used": false,
+      "letter": "P",
+      "requested_spatial_class": "center",
+      "trajectory_id": "seen-val-2c-011"
+    },
+    {
+      "actual_h1_contact": true,
+      "actual_h1_motion_class": "near_static",
+      "actual_h1_rotation_abs_deg": 0.19065259585182767,
+      "actual_likely_wall_blocked_proxy": false,
+      "anchor": 48,
+      "conditions": {
+        "likely_wall_blocked_proxy": false,
+        "moving": false,
+        "near_static_contact": true,
+        "rotation": false
+      },
+      "desired_category": "near_static_contact",
+      "desired_category_unavailable": false,
+      "fallback_used": false,
+      "letter": "V",
+      "requested_spatial_class": "center",
+      "trajectory_id": "seen-val-2c-015"
+    }
+  ],
+  "fallback_rule": "If requested condition absent, earliest valid H1 in the same letter; otherwise explicitly missing",
+  "missing": [
+    {
+      "desired_category": "likely_wall_blocked_proxy",
+      "letter": "M",
+      "reason": "desired_category_unavailable_same_letter_earliest_valid_fallback"
+    }
+  ],
+  "model_outputs_used": false,
+  "rules": {
+    "cases": [
+      {
+        "desired_category": "moving",
+        "letter": "T"
+      },
+      {
+        "desired_category": "likely_wall_blocked_proxy",
+        "letter": "M"
+      },
+      {
+        "desired_category": "rotation",
+        "letter": "P"
+      },
+      {
+        "desired_category": "near_static_contact",
+        "letter": "V"
+      }
+    ],
+    "max_cases": 4,
+    "max_consecutive_frames_per_case": 8,
+    "max_gifs": 2,
+    "max_sheet_rows": 4,
+    "model_calls_allowed": 0,
+    "physics_steps_allowed": 0,
+    "selection": "earliest seen_val trajectory/anchor satisfying fixedcategory; explicitmissing withdeterministicdisclosedfallback"
+  }
+}

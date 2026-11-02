@@ -1,0 +1,42 @@
+LOSS-AR4 工程预检失败：独立分析聊天复核
+日期：2026-11-02（新加坡时间）
+状态：尚无A/B训练结果；未应用补丁，未新增模型调用，等待用户决定是否允许一次修复后重试。
+
+已确认的实际结果
+本轮只到工程预检。原生四步采样与训练用包裹的四步输出，在一个固定训练片段上逐帧逐元素一致，四个max_abs均为0。
+账本实际33次图像级去噪前向：原生12、包裹12、第一次求导重算9。第一次H4对预测H1的求导完成，随后完整辅助loss.backward在再次进入计账上下文时失败。优化器尝试0、更新0、正式训练曝光0、正式评测图0。
+第一次跨步梯度的数值未及时落盘。只能从执行顺序知道有限/非零检查没有先抛异常，不能独立重算或补造该范数，更不能把整个梯度预检标为通过。失败不支持loss有效/无效、模型容量不足或刚体目标已修复的结论。
+
+错误原因和补丁
+独立阅读本轮worker.py、rollout_loss.py、真实traceback、本机Torch checkpoint.py及Python contextlib.py后，错误链一致：
+1. 当前Torch checkpoint为每个检查点保存一次context_fn返回的recompute_context。
+2. 预检先autograd.grad(...,retain_graph=True)，之后loss.backward()；后者需要再次进入保存的重算上下文。
+3. 原Ledger.phase用@contextmanager产生一次性_GeneratorContextManager；第一次进入会删除args/kwds/func，第二次进入报无args。
+
+拟议补丁把phase改为普通可复用context manager，并用栈保存/恢复scope；另立即落盘第一次跨步梯度数值。它不修改loss、样本、噪声、前向、梯度算子或物理。独立提取proposed-repair.patch中实际拟议类，使用纯stdlib复现原错误，并验证新类的多次连续进入、同实例嵌套、不同实例嵌套、异常传播与scope恢复。测试通过，未导入Torch或运行模型。
+这足以支持具体计账修复；不能替代完整Torch/CUDA梯度预检。未把补丁应用到冻结worker，五份本轮冻结执行源码的SHA仍匹配。
+
+实际拟验证的loss及归因边界
+A：原H1扩散预条件残差全图MSE。
+B：A + 4 × 四个原生采样raw RGB相对GT的平均MSE。额外分母为1序列×4时刻×3×96×96；4是实施方预先选择的1/sigma_data²尺度，不是已证明最优的权重，也不是再给原残差套sigma权重。
+B从四帧GT开始，后续history接回自身预测，保留四步、每步三次去噪的跨步梯度。原量化前向保留，量化反向用区间内恒等/区间外零的STE近似，不能称原量化的精确导数。原H1分支不变，不同于以前detach的B/D，也不是旧区域加权C/D。
+
+计划同E2完整model/Adam/scaler/RNG独立开始，每臂256次尝试、4096个原H1监督曝光，原H1顺序和噪声配对。B还增加1024个辅助GT曝光（总5120，比A多25%），并增加采样与重算；A训练图像级前向4096，B含重算10240，是A的2.5倍。
+因此，这一轮可以比较“增加这套AR4辅助目标”的整体效果，不能单独证明改善来自跨步梯度，而不是额外监督、不同目标权重或更多计算。没有据此要求增加第三臂或擅自改冻结对照。
+即使未来通过，本计划只有train12子集及seen-val24/旧失败3的评测，不能认证全部train48拟合；原unknown、方向、孔洞与形状门槛仍须保留。
+
+重试为什么需要明确授权
+冻结PLAN写明“Failure ends run accurately, no fallback or automatic retry.”，并给预检64次图像级前向上限。已用33，只余31。
+按当前检查图结构，完整重验预计45次：原生12 + 包裹12 + H4求导重算9 + 完整辅助反传重算12。累计78，至少超过原预检上限14次；不能把换新目录当费用归零。
+一个具体可审阅的续办方案是：只应用当前计账/日志补丁，以新修订保留旧失败证据，允许一次重试；新预检仍最多64次图像级前向、2次求导/反传调用，零优化器更新；累计历史预检上限97（33+64）。通过后完成原两臂各256次尝试和原评测，不加步数、不换系数、不换样本；再失败准确停止，不再自动重试。
+若继续沿用原执行各分项上限，累计全部图像级前向硬上限为33153（原新运行上限33120 + 历史失败33），而不是把原33120称累计总上限。旧求导2次尝试也保留累计，CPU/GPU费用不清零。实际少于上限时报告实际。
+这是建议，尚未发送继续执行指令。人类可批准此具体工程修复及一次重试，或选择停止/另议loss。
+
+资源
+已记录worker主体22.6863秒，自身CPU user8.125s、system7.515625s；无独立GPU事件计时，峰值显存未在失败前保存，不能补造。CUDA模型、CPU数值/Torch/OpenCV线程1、BelowNormal，无其他项目操作。当前约323KB，未见本次资源触顶。重试若批准仍沿用GPU优先、CPU单线程低优先级、原1.2GB新root及共享10GB含原子预留等边界；明确新修订的报告/临时文件/回执保护。
+
+可复核证据
+本目录 AUDIT.json：独立冻结SHA、33前向账本、补丁纯stdlib验证和重试预算算术。
+本目录 review_saved.py：独立只读复核脚本；无Torch导入或模型调用。
+执行源目录：__LOCAL_WORKSPACE__/Tdyssey-raw-tl-portable-main/artifacts/loss-rollout-ab-20261102/
+关键文件：PLAN.txt、config.json、worker.py、rollout_loss.py、completion.json、failure.json、preflight-forward.json、proposed-repair.patch、callback-receipt.json。

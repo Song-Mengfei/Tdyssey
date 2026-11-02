@@ -1,0 +1,22 @@
+{
+  "finished": false,
+  "halt": {
+    "at_utc": "2026-10-29T16:29:38.003660+00:00",
+    "slot_id": "R3A-train-L-000",
+    "type": "RuntimeError",
+    "reason": "System failure stops batch; no blind replacement",
+    "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect.py\", line 131, in run\n    ledger['pending_control']=dict(trajectory_id=tid,control_index=control,action=list(map(float,action)));persist()\n                                                                                                           ^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect.py\", line 100, in persist\n    atomic_json(root/'resource-ledger.json',ledger)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r2c1r1_training.py\", line 38, in atomic_json\n    os.replace(temp,path)\nPermissionError: [WinError 5] 拒绝访问。: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-raw-tl-portable-main\\\\artifacts\\\\native-rgb-supervised-20261029\\\\r3a\\\\resource-ledger.json.tmp' -> '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-raw-tl-portable-main\\\\artifacts\\\\native-rgb-supervised-20261029\\\\r3a\\\\resource-ledger.json'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect.py\", line 175, in run\n    if not failure_is_physical(failure):raise RuntimeError('System failure stops batch; no blind replacement') from failure\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: System failure stops batch; no blind replacement\n"
+  },
+  "successful_scenes": 1,
+  "charged_controls": 67,
+  "storage": {
+    "stage_bytes": 7226586,
+    "stage_limit_bytes": 100663296,
+    "shared_bytes": 1431177336,
+    "future_R3B_reserved_bytes": 150994944,
+    "atomic_reserve_bytes": 268435456,
+    "projected_bytes": 1850607736,
+    "limit_bytes": 3221225472,
+    "passed": true
+  }
+}

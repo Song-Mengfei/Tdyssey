@@ -1,0 +1,47 @@
+{
+  "kind": "tdyssey.gpc_conditioning_contract_diagnostic.v1",
+  "candidate_id": "gpc-conditioning-contract-diagnostic-02",
+  "data_manifest": "artifacts/gpc-data-stage-a-20261026/adaptation-data.json",
+  "training_schedule": {
+    "path": "artifacts/wm-sampling-b-only-20261026/training-schedule.json",
+    "sha256": "f7217a2d09393798529b00e72fcd971e8d7be11cab7a9c769704a9b30ddd004a"
+  },
+  "output_dir": "artifacts/gpc-conditioning-contract-diagnostic-20261026/auth20261026-user-autonomous-gpc-conditioning-contract-diagnostic-02",
+  "t1_sha256": "800751b7a3e32df4fee5660d1ea22c7ee0fb45b51a7b41632d420189238a7838",
+  "conditioning": {
+    "version": "gpc_clean_history_conditioning.v1",
+    "arms": {"A": {"sigma_cond": null}, "B": {"sigma_cond": 0.002}},
+    "sampler": {
+      "num_steps_denoising": 3, "sigma_min": 0.002, "sigma_max": 5,
+      "rho": 7, "order": 1, "s_churn": 0, "s_cond": 0
+    },
+    "history_noise": false,
+    "implementation": "original native denoise unbound on a private observing facade",
+    "changed_conditioner_only": "c_noise_cond",
+    "model_or_sampler_copy": false
+  },
+  "forecast": {"input_windows": 8, "seed": 5478, "mode": "AR", "horizon": 1},
+  "limits": {
+    "wall_seconds": 300, "model_loads": 2, "active_gpu_models": 1,
+    "eval_batches": 0, "eval_examples": 0, "forecasts": 32, "euler_steps": 96,
+    "output_bytes": 67108864, "metadata_bytes": 16777216, "telemetry_bytes": 67108864,
+    "checkpoint_bytes": 0, "cpu_threads": 2,
+    "cuda_allocated_bytes": 536870912, "cuda_reserved_bytes": 1073741824,
+    "max_updates": 0, "max_train_examples": 0
+  },
+  "resources": {
+    "startup_ram_gib": 4, "startup_commit_gib": 6, "startup_gpu_gib": 4, "startup_disk_gib": 2,
+    "runtime_ram_gib": 1.5, "runtime_commit_gib": 3, "runtime_gpu_gib": 1.5,
+    "process_working_set_gib": 2, "process_private_gib": 3, "native_job_gib": 3
+  },
+  "sources": {
+    "frozen": {
+      "path": "artifacts/frozen-wm-assets/denoiser.pth", "bytes": 35043916,
+      "sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892"
+    },
+    "adapted": {
+      "path": "artifacts/gpc-supervised-adaptation-pilot03-20261026/adapted-latest.pt", "bytes": 105134565,
+      "sha256": "0bfd1a944c8fb01555a7ad2d01aab6f526a4805e2bb5239a96703d356c5741d3", "logical_update": 500
+    }
+  }
+}

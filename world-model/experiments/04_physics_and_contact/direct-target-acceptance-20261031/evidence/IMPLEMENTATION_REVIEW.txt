@@ -1,0 +1,86 @@
+Direct-target acceptance implementation, 2026-10-31 Asia/Singapore
+
+Authority: actual human message was read in parent chat __LOCAL_CHAT__,
+turn__LOCAL_CHAT__. Exact message and approved scope are in HUMAN_AUTHORIZATION.json.
+This stage implements and collects at most120 new physical attempts. It does not release formal collection,
+training, learned prediction evaluation, a server job, changes to original physics or changes to the live UI.
+The earlier pipeline-config-review proposal's12/2/24/24 restrictions are superseded for this collector.
+
+New implementation:
+- tdyssey/direct_target_policy.py creates the entire deterministic96-family/120-attempt table using geometry only.
+  Seed54781031. Six letters T/L/O/C/X/B, eight scenarios and two independent initial states per scenario.
+  Twelve existing families (one translation and one eccentric per letter) each have two additional branches.
+  Every attempt has at most64controls inclusive of its3real history controls and every branch replay.
+  All64 absolute targets are frozen before environment construction. There is no online future-state replanning.
+- tdyssey/direct_target_collection.py calls the pinned PushTEnv.step method itself. Only the observation guard
+  is inherited from StrictObservedOriginalEnv; no old PilotPolicy/RequestedTargetPolicy is instantiated.
+  Its new action check accepts the original inclusive0..512domain. No clipping, smoothing, target-distance,
+  target-change, velocity, wall-room or push/entry limit is applied. Requested and actually passed targets
+  are separate exact arrays and must match the frozen plan. Input512 is not converted to511.
+  The original model/UI normalization remains unchanged and is explicitly pending later compatibility review.
+- Every physical substep remains native.01s,100Hz, solver10, original PD100/20, KINEMATIC radius15, damping0.
+  Original source geometry, mass, inertia, walls and materials remain bound by hash. Native step source and
+  the full source dependency closure are frozen in runtime-config.json. No changes to old physics files.
+  Existing observation criterion is unchanged: nonfinite, penetration>1+1e-8worldpx, or pusher center in
+  solid/closedhole terminates at the first actual illegal substep. It never repairs physical values.
+- Reset uses reset_scene, which builds/places/reindexes without calling integration. An observational
+  counter records every actual Space.step invocation during initialization and regular execution separately;
+  initialization calls are disclosed even if nonzero. No independent physics smoke/regression is run.
+- Each attempt is durably claimed before environment construction; no replacements or retries. All controls,
+  initialization failures, branch replays, invalid prefixes and integration calls stay in the denominator.
+  Raw losslessRGB/state/actions plus compressed native contact telemetry are saved every8controls and at end.
+  Missing terminalRGB is explicit engineering evidence, never a copied frame. Pending raw preservation is
+  explicit if a save fails. A software/IO failure stops this run with its ledger; it cannot create a new seed.
+- Same-history branches reconstruct the original environment and replay the entire3-control prefix.
+  Actual4states,4RGBframes and3actions must be byte-identical to the baseline before branch qualification.
+  All branches share a development family/split. Recorded outcomes are not independent initial families.
+- 4history+3historyactions+Hfutureactions+HfutureRGB windows require contiguous original.1s legal transitions.
+  H1/H4/H8/H16 complete64control maxima61/58/54/46. Paired tables share H16 anchors; separate ownH counts remain.
+
+The initial-scene geometry restricts initial circles to real exterior free space; it does not limit targets.
+Radius15 excludes closedO/Bholes and inaccessible narrow notches. Actual contact heatmaps retain all16 exterior
+arcs and mark unobserved/unknown reachability. No small batch is claimed to cover every arc/pose combination.
+Wall/corner plans request original-domain wall coordinates0/512; illegal dynamics are retained as failures.
+The negative moving path is chosen geometrically not to cross the initial object; it is a planned negative
+intent, not an asserted future no-contact result. >2D targets exist for fiveletters; B's corresponding farthest
+clear full-domain negative endpoint is1.858D. Actual per-target distances/changes and pusher motion are separate.
+Each family uses one fixed or one moving target mode; targets can change more than24worldpx without alteration.
+
+tdyssey/direct_target_report.py is saved-only CPU reporting, without simulator construction, physics replay,
+model loading or GPU. It reports net, cumulative and maximum area-centroid displacement and raw continuous
+angle for allfour horizons, plus symmetry-equivalent angles. Native.01s cumulative motion is retained too.
+Pymunk angles are already unbounded; no unwrap operation erases complete turns.
+Positive-impulse AO time is actual positive post-solve substep time/all actual executed simulation time.
+Contact AND (>=.1imagepx OR >=.5deg) is a diagnostic control label, separate from approved obvious display bands
+H1=1px/3deg,H4=2px/5deg,H8=4px/10deg,H16=8px/20deg. Translation and rotation counts remain separate.
+OWpair and OWpositive are separate; near-wall plans are not labelled contact. Corners require actual two-wall
+contacts during the same substep. Recontact needs positiveAO, at least two AO-pair-free controls, then positiveAO.
+Every letter's translation/CW/CCW/boundary/recontact examples qualify on actual saved outcomes; missing classes
+are explicitly unavailable. Fixedseed5478 chooses failure/empty cases. Videos show whole real attempts at10fps
+with display-only overlays; raw cleanRGB is unchanged. Boards show truth t,t+1,t+4,t+8,t+16, never predictions.
+
+Storage: entire newroot including raw/report/media has256MiB maximum. Existing shared3GiB and256MiBatomic
+reserve remain. Original shared roots are retained and all new review/acceptance roots are added. One collector
+uses the existing reservation implementation; the schema's conservative two16MiBcollector allocation and
+128MiBreport reservation are unchanged. Capacity denial ends collection without deleting old evidence/models.
+No time limit is introduced. Wall-clock CPU collection/report costs and simulated seconds are distinct.
+Historical R3B failure33.047s remains in its old report; it is not a cost of this collection.
+
+scripts/direct_target_background.py starts a hidden detached/breakaway Windows worker. The worker verifies it
+is outside all Windows Jobs and that its launcher exited before starting the collector. The collector also
+verifies its own Job status before constructing a scene. Ownership receipts record PID/interpreter/run/config.
+The worker runs exactly one collector and one saved-only report; it cannot launch a subsequent data/model stage.
+The existing owner-side tdyssey30minute heartbeat is retargeted to this run only after successful launch.
+It stays quiet for unchanged/nonterminal state. Actual completion/failure triggers parent callback, exacttext
+and real MCP receipt persistence, then waiting_user_review and monitor pause. No parent polling/new monitor.
+The local worker can run with Codex closed; MCP callback requires the app/tools to be available.
+
+Validation:17 focused CPU geometry/mock/saved-only report tests pass. These include input512 pass-through,
+first-invalid-substep preservation, complete-history window continuity, actualpartial time, exact action checks,
+motion/contact logic and synthetic report/video10fps decoding. These do not consume physical attempt budget.
+The repository-wide source checker additionally reports three pre-existing published evidence hash mismatches
+(custom-L-summary.json,pretrained-T-summary.json,palette-T-summary.json). They are outside the new source/data
+and were not rewritten. CHECKS.json preserves the actual check outputs. No GPU/model/optimizer calls occurred.
+
+Next authorized action is this one finite background collection and saved-only report. Complete/partial results
+must be actively sent to the authorized parent. End state waiting_user_review; no automatic expansion/training.

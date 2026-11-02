@@ -1,0 +1,23 @@
+{
+  "kind": "native-residual-target-regions.v1",
+  "coefficients": [
+    0.5,
+    0.25,
+    0.25
+  ],
+  "error": "FP32 squared native residual error, RGB-channel mean; per-sample R/E normalization, batch mean; native full term F.mse_loss",
+  "R": "Union grey object, blue pusher, enclosed background hole pixels in previous/target truth, Euclidean disk dilation radius2",
+  "E": "Union previous/target grey+blue symmetric cross morphological gradients and max uint8 RGB absolute difference>1, Euclidean disk dilation radius1",
+  "topology": "Grey foreground8/background4, every enclosed background pixel retained, frozen palette thresholds; no new hole-size threshold",
+  "border": "Binary dilation outsideFalse; erosion outsideFalse",
+  "empty_region": "Fall back to that sample full image mean and count each empty region",
+  "masks_inputs": "Training saved uint8 truth RGB at t and t+1 only, no prediction/physicalstate/letter/validation data",
+  "model_input_masks": false,
+  "prediction_repair": false,
+  "true_RGB_modified": false,
+  "original_MSE_coefficients": [
+    1,
+    0,
+    0
+  ]
+}

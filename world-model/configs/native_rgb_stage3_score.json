@@ -1,0 +1,68 @@
+{
+  "kind": "native-gpc-stage3-raw-rgb-score-protocol.v1",
+  "version": "stage3-raw-rgb-score-v1",
+  "allowed_letters": "ABCEFHIJLMOPSTUVXY",
+  "image_shape": [3, 96, 96],
+  "world_pixels_per_image_pixel": 5.333333333333333,
+  "raw_rgb": "uint8 or finite floating point in [0,1]; no clipping, registration, filling or recoloring of predictions",
+  "cohorts": {"train": 18, "development": 36},
+  "raw_array_keys": ["last", "true", "hold", "frozen", "fitted"],
+  "prediction_status_keys": ["frozen_status", "fitted_status"],
+  "optional_truth_arrays": ["last_full_mask", "true_full_mask"],
+  "methods_scored": ["hold", "frozen", "fitted"],
+  "calibration": {
+    "path": "artifacts/native-rgb-20261028/frozen-renderer-calibration.json",
+    "file_sha256": "fae795cd325ca4b88aa23faa127f9e84036f06bec485b169d12b902887c45609",
+    "internal_sha256": "cd2ed20812e8e53f138579939c45934b19329ef1afd111ec777b20ec0588e20c",
+    "legacy_evaluation_source_sha256": "dbd7cd9be081a579708f4760ecf917a1fee0b2b2e2c5794eebdbc3c5d6729c10",
+    "palette": "Reuse existing palette_masks and validate_calibration unchanged. Gray prototype [119,136,153]/255; alpha [0.40,1.25], colour residual<=0.12. Blue thresholds remain b>.60,r<.45,g<.65,b-max(r,g)>.25.",
+    "new_calibration": "No threshold fitting. Optional identity check renders only the18 seen canonical truth shapes, pusher(40,40),body-origin(256,256),angle0; zero physics steps and no predictions."
+  },
+  "primary": {
+    "object_error": "1 minus unaligned visible gray-object mask intersection-over-union; computed independently of blue pusher.",
+    "raw_contour": "Symmetric mean nearest-boundary Euclidean distance using unchanged legacy _contour_distance, reported in image pixels and world pixels; no alignment.",
+    "object_rgb_roi": "binary_dilation(last_gray OR true_gray, square3x3,iterations2) AND NOT binary_dilation(last_blue OR true_blue,square3x3,iterations1); fixed by LAST/TRUE only, never by prediction.",
+    "object_foreground_rgb_mae": "sum_{c,p in fixed_object_ROI}|pred[c,p]-true[c,p]| / (3*number_of_ROI_pixels), RGB in[0,1].",
+    "combined_foreground_rgb_roi": "binary_dilation(last_gray OR true_gray OR last_blue OR true_blue,square3x3,iterations2); separate auxiliary RGB MAE.",
+    "pusher_rgb_roi": "binary_dilation(last_blue OR true_blue,square3x3,iterations2), independent of prediction.",
+    "pusher_metrics": "Separate raw blue-mask IoU,error1-IoU,centroid distance and fixed-pusher-ROI RGB MAE; never merged into object fit criterion."
+  },
+  "failure_policy": {
+    "denominators": "Always18 TRAIN and36 development, in frozen metadata order. No failed/empty/nonfinite rows may be removed.",
+    "hard_generation_failure": ["inference status not ok", "missing or wrong-shape prediction", "nonfinite prediction", "floating RGB outside [0,1]", "empty gray object", "empty blue pusher"],
+    "invalid_prediction_penalties": {"object_error": 1.0, "pusher_error": 1.0, "rgb_mae": 1.0},
+    "empty_object": "raw IoU0/error1; raw contour penalty96*sqrt(2) imagepx. Other independently measurable metrics remain reported.",
+    "contour_or_position_unavailable_penalty_image_pixels": "96*sqrt(2), with explicit failure/unavailable reason; no finite-only primary mean.",
+    "empty_roi": "RGB MAE1 with explicit empty truth-defined ROI flag, never omitted.",
+    "shape_ambiguity": "Visible components/holes/area/fragments reported even when old deformation assessment is unknown. Occlusion or viewport-border touch retains unknown; unknown is never shape-pass.",
+    "clipping": "Report gray/blue predicted and truth border-touch separately. Raw RGB cannot determine unobserved content outside the viewport; keep that limitation explicit.",
+    "legacy_exceptions": "Catch score_rgb exceptions as named row fields; do not drop the row or its primary penalties."
+  },
+  "shape_and_auxiliary": {
+    "topology": "Unchanged legacy _topology with minimum_component_pixels2,8-connected foreground/4-connected background. Report components,holes,extra/missing fragments,tiny-fragment pixels and relative area error.",
+    "aligned_shape": "Unchanged align_masks_for_score only as offline metric; predicted raw RGB is never transformed or replaced.",
+    "registration_grid": "Centroid translation; global rotation10degrees, local1degree refinement, then angles best+-1 and translation offsets[-1,-.5,0,.5,1] imagepixels with nearest-neighbor rasterization.",
+    "motion_qualification": "Visible-mask apparent registration only, with shape symmetry/occlusion ambiguity. Grid spacing is not subdegree or subpixel pose accuracy. Auxiliary, not the fit target.",
+    "legacy_deformation": "Report unchanged shape_deformation_failure together with assessable/unknown counts and reasons, never a finite-only all-samples pass.",
+    "privileged_truth_full_masks": "Optional unoccluded LAST/TRUE alpha masks thresholded at the same calibration minimum_alpha=.40; report predicted-visible versus true-full IoU and visible truth fraction separately. They are offline truth diagnostics only; they never reconstruct or repair prediction, alter raw-visible primary IoU, or turn legacy occlusion-unknown into a pass.",
+    "static_drift": "For development H1-near_static windows report prediction-versus-LAST object1-IoU,gray centroid displacement and shape outcomes. No requirement to beat zero-error hold."
+  },
+  "train_dynamic_target": {
+    "cohort": "train",
+    "denominator": 18,
+    "mean_object_error_relative_reduction_vs_hold_gte": 0.20,
+    "strict_window_wins_vs_hold_gte": 12,
+    "strict_win_epsilon": 1e-12,
+    "requires_no_fitted_hard_generation_failures": true,
+    "requires_valid_truth_and_exact_valid_hold": true,
+    "hold_zero_error": "Relative improvement unavailable and target not passed.",
+    "interpretation": "Visible-motion18-sample fitting diagnostic only, not generalization or full acceptance; shape failures/unknown remain separately visible. Failure within bounded fit does not disprove GPC."
+  },
+  "development_report": {
+    "expected_H1_strata": {"moving": 31, "near_static": 4, "intermediate": 1},
+    "groups": ["overall", "H1 motion", "letter", "actual H1 boundary<=32 including negative", "actual boundary gap bands"],
+    "comparison": "Moving: paired raw object-error wins/improvement versus hold/frozen. Static: drift/shape, no beat-zero-hold requirement. Intermediate separately."
+  },
+  "gallery": {"order": "All frozen TRAIN18 then development36 windows in supplied metadata order; never rank by outcome", "columns": ["last", "true", "hold", "frozen", "fitted"], "rows_per_page": 6, "display_scale": 2, "resize": "nearest-neighbor display only", "invalid_display": "Explicit INVALID placeholder, raw original array retained; no clipped repaired prediction"},
+  "resource_scope": "CPU offline scoring/render only; no model, inference, GPU, optimizer or training iterator. Original raw NPZ files retained and SHA-bound."
+}

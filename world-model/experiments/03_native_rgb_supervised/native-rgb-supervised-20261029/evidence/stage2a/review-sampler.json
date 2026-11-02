@@ -1,0 +1,161 @@
+{
+  "kind": "native-rgb-supervised-2a-independent-sampler-review.v1",
+  "reviewed_at_utc": "2026-10-29T01:02:53.293725+00:00",
+  "passed": true,
+  "scope": "Static source/AST review only; not whole collector prelaunch approval.",
+  "baseline_sha256": "57fecfc81b7e6ef025b1154102e7c7a6e7ab370aa495ba14796052c3b42ec900",
+  "sampler_sha256": "38fc876f8c182a28f3b1a5e067c6a49e349367cb2485dbf85aa6e91f72858f11",
+  "allowed_changed_definitions": [
+    "plan_scene",
+    "ContinuousContactSampler.__init__"
+  ],
+  "original_constants_unchanged": {
+    "LETTERS": true,
+    "LOCATIONS": true,
+    "PHASES": true,
+    "RECOVERY_LIMITS": true,
+    "DEFAULT_SAMPLING": true
+  },
+  "all_non_init_sampler_methods_exact_source_equal": {
+    "ContinuousContactSampler._normal": true,
+    "ContinuousContactSampler._retreat": true,
+    "ContinuousContactSampler._recontact": true,
+    "ContinuousContactSampler._recovery_snapshot": true,
+    "ContinuousContactSampler._begin_recovery": true,
+    "ContinuousContactSampler._end_recovery": true,
+    "ContinuousContactSampler._recovery_waypoint": true,
+    "ContinuousContactSampler._recovery_action": true,
+    "ContinuousContactSampler._observe_recovery": true,
+    "ContinuousContactSampler.next_action": true,
+    "ContinuousContactSampler.observe": true
+  },
+  "old_sign_indices": {
+    "T": 0,
+    "L": 1,
+    "O": 2,
+    "C": 3,
+    "X": 4,
+    "B": 5
+  },
+  "new_sign_indices": {
+    "A": 6,
+    "E": 7,
+    "F": 8,
+    "H": 9,
+    "I": 10,
+    "J": 11,
+    "M": 12,
+    "P": 13,
+    "S": 14,
+    "U": 15,
+    "V": 16,
+    "Y": 17
+  },
+  "sign_rule": "1 if (LOCATIONS.index(spatial_class)+SIDE_SIGN_INDEX[letter])%2 else -1",
+  "train_letters": "ABCEFHIJLMOPSTUVXY",
+  "unseen_rejected_by_whitelist": "DGKNQRWZ",
+  "core_identity_checks": [
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_motion_statistics.py",
+      "expected_sha256": "bf5641fd269a69d02db4332987da4794a0df5e2fd47cbcefb9766a276dfc2c49",
+      "current_sha256": "bf5641fd269a69d02db4332987da4794a0df5e2fd47cbcefb9766a276dfc2c49",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_env.py",
+      "expected_sha256": "47ee5c53ed3369da7548ea1e2512e5cf1eed315e68b290dcf2fa1ee7dd5500d5",
+      "current_sha256": "47ee5c53ed3369da7548ea1e2512e5cf1eed315e68b290dcf2fa1ee7dd5500d5",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_data.py",
+      "expected_sha256": "49e54d8d40a2dec03eb75525b0e10b4c6f8e3372409dc14f1c64aba79ec3aa54",
+      "current_sha256": "49e54d8d40a2dec03eb75525b0e10b4c6f8e3372409dc14f1c64aba79ec3aa54",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_training.py",
+      "expected_sha256": "5209c9c269fc15e98c752032c1998b92bf95ee5cff43e100ff4a166f279e883d",
+      "current_sha256": "5209c9c269fc15e98c752032c1998b92bf95ee5cff43e100ff4a166f279e883d",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\envs\\official.py",
+      "expected_sha256": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+      "current_sha256": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\geometry.py",
+      "expected_sha256": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+      "current_sha256": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\letters.py",
+      "expected_sha256": "b168ee52db573ee5b626d09640ea475f484f0a74056700ec22f9a5205c7f0a28",
+      "current_sha256": "b168ee52db573ee5b626d09640ea475f484f0a74056700ec22f9a5205c7f0a28",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\manifests\\official_dp.json",
+      "expected_sha256": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+      "current_sha256": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy\\diffusion_policy\\env\\pusht\\pusht_env.py",
+      "expected_sha256": "759107dc0ea6017b8afe3380ce23817713edf26af725fc4f03c0416ced940bd0",
+      "current_sha256": "759107dc0ea6017b8afe3380ce23817713edf26af725fc4f03c0416ced940bd0",
+      "matches_1b": true
+    },
+    {
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy\\diffusion_policy\\env\\pusht\\pymunk_override.py",
+      "expected_sha256": "85e7c54b5e9630a9f7e675250ee514ae9b2249d11654ec0811d8e4bcf413fe39",
+      "current_sha256": "85e7c54b5e9630a9f7e675250ee514ae9b2249d11654ec0811d8e4bcf413fe39",
+      "matches_1b": true
+    }
+  ],
+  "reviewer_execution": {
+    "environment_constructions": 0,
+    "physical_steps": 0,
+    "model_calls": 0,
+    "optimizer_updates": 0,
+    "server_jobs": 0
+  },
+  "pending": [
+    "Review final stage2A collector/config/frozen requests/ledger/error exits and source identity before launch."
+  ],
+  "diff": [
+    "--- frozen-stage1b-57fec\n",
+    "+++ stage2a-adapter\n",
+    "@@ -15,6 +15,9 @@\n",
+    " from .native_rgb_env import CONTROLLER, PROTOCOL_SHA256, shape_geometry",
+    " ",
+    " LETTERS=tuple(\"TLOCXB\")",
+    "+ALLOWED_TRAINING_LETTERS=tuple(\"ABCEFHIJLMOPSTUVXY\")",
+    "+SIDE_SIGN_LETTERS=(*LETTERS,*sorted(set(ALLOWED_TRAINING_LETTERS)-set(LETTERS)))",
+    "+SIDE_SIGN_INDEX={letter:index for index,letter in enumerate(SIDE_SIGN_LETTERS)}",
+    " LOCATIONS=(\"center\",\"left\",\"right\",\"top\",\"bottom\",\"left-top\",\"right-top\",\"left-bottom\",\"right-bottom\")",
+    " PHASES=((0,4,\"approach\"),(4,40,\"push\"),(40,48,\"sliding\"),",
+    "         (48,52,\"retreat\"),(52,56,\"recontact\"),(56,64,\"push_again\"))",
+    "@@ -92,7 +95,7 @@\n",
+    "     import numpy as np",
+    "     from shapely import affinity",
+    "     from shapely.geometry import box",
+    "-    if letter not in LETTERS or spatial_class not in LOCATIONS:raise ValueError(\"Unauthorized stage-one scene\")",
+    "+    if letter not in ALLOWED_TRAINING_LETTERS or spatial_class not in LOCATIONS:raise ValueError(\"Unauthorized stage-one scene\")",
+    "     settings=_sampling(sampling);rng=np.random.default_rng(seed)",
+    "     angle=float(rng.uniform(-math.pi,math.pi));rotation=_rotation(angle)",
+    "     local=shape_geometry(letter);rotated=affinity.rotate(local,angle,origin=(0,0),use_radians=True)",
+    "@@ -190,7 +193,7 @@\n",
+    "         if not scene.get(\"legal\"):raise ValueError(\"Cannot roll out an illegal scene\")",
+    "         self.env=env;self.segments=segments;self.counts=coverage_counts;self.scene=scene",
+    "         self.letter=scene[\"letter\"];self.settings=_sampling(scene.get(\"sampling\"))",
+    "-        self.side_sign=1 if (LOCATIONS.index(scene[\"spatial_class\"])+LETTERS.index(self.letter))%2 else -1",
+    "+        self.side_sign=1 if (LOCATIONS.index(scene[\"spatial_class\"])+SIDE_SIGN_INDEX[self.letter])%2 else -1",
+    "         self.exterior=shape_geometry(self.letter).exterior",
+    "         self.active=int(scene[\"staging_segment\"]);self.pending=None;self.index=0",
+    "         self.blocked_streak=0;self.lost_streak=0;self.escape=None;self.escapes=0;self.cooldown=-1"
+  ]
+}

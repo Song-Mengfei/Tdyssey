@@ -1,0 +1,657 @@
+{
+  "native": [
+    {
+      "mode": "original",
+      "parent_status": "collected",
+      "seconds": 0.9680000000007567,
+      "outer": {
+        "parent_pid": 13820,
+        "python_parent_pid": 28496,
+        "cleanup_wait_ms": 800,
+        "forced_kill": false,
+        "exit_code": 0,
+        "external_timeout_ms": 58800,
+        "mode": "original",
+        "max_task_processes_including_powershell": 3,
+        "wall_seconds": 1.3209912
+      },
+      "counts": {
+        "attempted": 21,
+        "charged": 528912,
+        "last_write_operation": "G.publish.7",
+        "success": 19
+      },
+      "cases": [
+        {
+          "case": "A",
+          "status": "passed",
+          "attempted": 2,
+          "success": 2,
+          "first_error": null,
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "6e60e76363055e8dde0a0699dc71543eea638f8949c5f8b6c643dde31723d04e"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "B",
+          "status": "passed",
+          "attempted": 2,
+          "success": 2,
+          "first_error": null,
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 895,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "362e8cb6c4eaa9412dc364d75195985880792c5377451f215c1013b0283bd070"
+            }
+          ],
+          "old_reader_complete": [
+            true,
+            true
+          ],
+          "readers": null
+        },
+        {
+          "case": "C",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48895.39,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 32] \u53e6\u4e00\u4e2a\u7a0b\u5e8f\u6b63\u5728\u4f7f\u7528\u6b64\u6587\u4ef6\uff0c\u8fdb\u7a0b\u65e0\u6cd5\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-original\\C\\worker-status.json.0b8e2643d54d441e95ffb90ce0e80996.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 135, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 32] \u53e6\u4e00\u4e2a\u7a0b\u5e8f\u6b63\u5728\u4f7f\u7528\u6b64\u6587\u4ef6\uff0c\u8fdb\u7a0b\u65e0\u6cd5\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 32
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 897,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "343532a9c042806d1581bc02d1d76859e1b440a4250ccf4d31e31f9d6b8fe7c0"
+            },
+            {
+              "source": "worker-status.json.0b8e2643d54d441e95ffb90ce0e80996.tmp",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "8a27db128c0cee50bf6c8ac4221ba5ad0169164c28b0cc5412bdd3ff26648281"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "D",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48895.468,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 32] \u53e6\u4e00\u4e2a\u7a0b\u5e8f\u6b63\u5728\u4f7f\u7528\u6b64\u6587\u4ef6\uff0c\u8fdb\u7a0b\u65e0\u6cd5\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-original\\D\\worker-status.json.82b419fedd8c46fa9253eb973855f203.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 135, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 32] \u53e6\u4e00\u4e2a\u7a0b\u5e8f\u6b63\u5728\u4f7f\u7528\u6b64\u6587\u4ef6\uff0c\u8fdb\u7a0b\u65e0\u6cd5\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 32
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 897,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "102a464db79ea5f1ff66ae1b9f5e2fb3ee5047044162583b335a9d0b47c67d08"
+            },
+            {
+              "source": "worker-status.json.82b419fedd8c46fa9253eb973855f203.tmp",
+              "bytes": 897,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "81e27adfecf8e80f3341a446f2cf980427db9b821c67a0c2996eab485c7e2b8c"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "E",
+          "status": "passed",
+          "attempted": 2,
+          "success": 2,
+          "first_error": null,
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 897,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "9ded952e9c709cd130d3ca1e9aafc5fd467400cbd924b19817aa8642434a18f0"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": null
+        },
+        {
+          "case": "F",
+          "status": "observed_failure",
+          "attempted": 3,
+          "success": 3,
+          "first_error": {
+            "at": 48895.64,
+            "details": {
+              "errno": 2,
+              "exception_type": "FileNotFoundError",
+              "message": "[WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002",
+              "path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-original\\F\\worker-status.json",
+              "phase": "guardian.json_read.open",
+              "winerror": 2
+            },
+            "errno": 2,
+            "message": "storage_failure: path=__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-original\\F\\worker-status.json; phase=guardian.json_read.open; exception_type=FileNotFoundError; errno=2; winerror=2; message=[WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002",
+            "op": "reader1",
+            "step": null,
+            "temporary_path": null,
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 217, in _open_shared_read\n    raise ctypes.WinError(ctypes.get_last_error())\nFileNotFoundError: [WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 177, in reader\n    if c=='F':n=valid(wm._read(p),c)\n                      ^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 260, in _read\n    with _open_shared_read(path) as stream:\n  File \"__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib\\contextlib.py\", line 137, in __enter__\n    return next(self.gen)\n           ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 242, in _open_shared_read\n    raise _io_error(path,phase,exc) from exc\ntdyssey.wm_compat_storage.StorageError: storage_failure: path=__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-original\\F\\worker-status.json; phase=guardian.json_read.open; exception_type=FileNotFoundError; errno=2; winerror=2; message=[WinError 2] \u7cfb\u7edf\u627e\u4e0d\u5230\u6307\u5b9a\u7684\u6587\u4ef6\u3002\n",
+            "type": "StorageError",
+            "winerror": 2
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 897,
+              "generation": 2,
+              "mirror": 2,
+              "sha256": "50234b736236ba9081dccc9e729883683c6704ba54fb69dacc68adeb51249fae"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": [
+            {
+              "first_read_monotonic": 48895.609,
+              "last_read_monotonic": 48895.64,
+              "max": 1,
+              "min": 0,
+              "reads": 16,
+              "sequence_sha256": "9143e8af43b47825259e9203962ecc7ac0c96e1940ba654db4937edaeeb32aaa",
+              "successful_reads_overlapping_writer": 9
+            },
+            {
+              "first_read_monotonic": 48895.609,
+              "last_read_monotonic": 48895.625,
+              "max": 0,
+              "min": 0,
+              "reads": 8,
+              "sequence_sha256": "2de84622a56b51c09e96feabbe375cb7b1fdb1502810076b130475a40a7dc5a1",
+              "successful_reads_overlapping_writer": 2
+            }
+          ]
+        },
+        {
+          "case": "G",
+          "status": "observed_failure",
+          "attempted": 8,
+          "success": 8,
+          "first_error": {
+            "at": 48895.812,
+            "details": null,
+            "errno": 2,
+            "message": "[Errno 2] Status absent during metadata query: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\gpc-status-publication-review-20261026\\\\native-original\\\\G\\\\worker-status.json'",
+            "op": "reader1",
+            "step": null,
+            "temporary_path": null,
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 181, in reader\n    if not q.exists():raise FileNotFoundError(2,'Status absent during metadata query',str(q))\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] Status absent during metadata query: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\gpc-status-publication-review-20261026\\\\native-original\\\\G\\\\worker-status.json'\n",
+            "type": "FileNotFoundError",
+            "winerror": null
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 820,
+              "generation": 7,
+              "mirror": 7,
+              "sha256": "5f72b9393950a2c3ba259b8c8fcf41f0ca328515290bd137e1c7885aff0c6ea4"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": [
+            {
+              "first_read_monotonic": 48895.687,
+              "last_read_monotonic": 48895.812,
+              "max": -1,
+              "min": -1,
+              "reads": 61,
+              "sequence_sha256": "5cd2ec3d48aeb8177004b98997603c15df1e6f80f0dd1b24e22a155f9775040b",
+              "successful_reads_overlapping_writer": 55
+            },
+            {
+              "first_read_monotonic": 48895.687,
+              "last_read_monotonic": 48895.796,
+              "max": -1,
+              "min": -1,
+              "reads": 59,
+              "sequence_sha256": "995bf12c515922a3ea30eb4a2ec1e074a5b3da3ed635352dba3dd38a7d7f1aae",
+              "successful_reads_overlapping_writer": 53
+            }
+          ]
+        }
+      ],
+      "job_active": 0,
+      "cleanup_errors": []
+    },
+    {
+      "mode": "fixed",
+      "parent_status": "collected",
+      "seconds": 1.110000000000582,
+      "outer": {
+        "cleanup_wait_ms": 800,
+        "parent_pid": 25552,
+        "python_parent_pid": 26452,
+        "wall_seconds": 1.4453598,
+        "external_timeout_ms": 58800,
+        "max_task_processes_including_powershell": 3,
+        "forced_kill": false,
+        "exit_code": 0,
+        "mode": "fixed"
+      },
+      "counts": {
+        "attempted": 72,
+        "charged": 641427,
+        "last_write_operation": "G.publish.57",
+        "success": 65
+      },
+      "cases": [
+        {
+          "case": "A",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48986.593,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\A\\worker-status.json.355b3a55c8ef4a69a2b0aa39ea4bdab2.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 895,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "a95c6011b54df5e53cceacb9d4893ccac6073d9978d1714ae05be6886a062cc4"
+            },
+            {
+              "source": "worker-status.json.355b3a55c8ef4a69a2b0aa39ea4bdab2.tmp",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "4519ed247fd74506699751b9091a36d455ab1b98117892b035ee3c1fd84a7bdc"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "B",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48986.64,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\B\\worker-status.json.e5af25e7c550459398b17310eefd2487.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 160, in worker\n    try:publish(c,1,d)\n        ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 895,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "d0be6f6d2ebf69d0d66876c6cfc11dda6f44fa73a9f776b620d36b1a124b2712"
+            },
+            {
+              "source": "worker-status.json.e5af25e7c550459398b17310eefd2487.tmp",
+              "bytes": 894,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "fb0c70d6a530376d1929307421b07a35e97c158b15ece0310bc25c12de1310f5"
+            }
+          ],
+          "old_reader_complete": [
+            true,
+            true
+          ],
+          "readers": null
+        },
+        {
+          "case": "C",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48986.687,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\C\\worker-status.json.307e350bf67044adb7fbd3c24d110d3c.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 896,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "0c1f4a2d5d83ac44bb2e4b8a4d5c46e7fb39a03aba65d23676820f3643c96204"
+            },
+            {
+              "source": "worker-status.json.307e350bf67044adb7fbd3c24d110d3c.tmp",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "6198453017db695967a2502216afed2fd9612d72927f1d871ae11cedadb1bc02"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "D",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48986.734,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\D\\worker-status.json.12663284a56d48eaa6a086e33da3be98.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 895,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "d8dcf88c285b75d1f328e587e22e388443f79310db0642720d811b0b084b3e23"
+            },
+            {
+              "source": "worker-status.json.12663284a56d48eaa6a086e33da3be98.tmp",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "db79796b8d82b1ba51c29008f4055dddc4835056c2e7324a2e860ae05c58ced3"
+            }
+          ],
+          "old_reader_complete": true,
+          "readers": null
+        },
+        {
+          "case": "E",
+          "status": "observed_failure",
+          "attempted": 2,
+          "success": 1,
+          "first_error": {
+            "at": 48986.781,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "writer.publish.1",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\E\\worker-status.json.8445ba9a913e48e69632c3755981ed21.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 143, in hold\n    else:publish(c,1,d)\n         ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 896,
+              "generation": 0,
+              "mirror": 0,
+              "sha256": "528c0e3a4e6833c8ad38a567d126ba67c662b94efe34b39ba423807bcc6f247a"
+            },
+            {
+              "source": "worker-status.json.8445ba9a913e48e69632c3755981ed21.tmp",
+              "bytes": 896,
+              "generation": 1,
+              "mirror": 1,
+              "sha256": "76727cfe1cf86a14a20433bd8bb188ca4e7ff9e53fa6a533fd1ef814c6662c38"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": null
+        },
+        {
+          "case": "F",
+          "status": "observed_failure",
+          "attempted": 4,
+          "success": 3,
+          "first_error": {
+            "at": 48986.859,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "case.F",
+            "step": "status.atomic.publish",
+            "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-fixed\\F\\worker-status.json.65716649c08941399d24a214e5d3b22f.tmp",
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 196, in worker\n    seq.update(enc(publish(c,n,d)))\n                   ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 106, in publish\n    if c!='G':v=gpc.publish_status(d/'handoff.json',v)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 896,
+              "generation": 2,
+              "mirror": 2,
+              "sha256": "97ee565e9706dd59b45051a5dbf93c545a94e6b95cc75cb28dcd5d22e265bac0"
+            },
+            {
+              "source": "worker-status.json.65716649c08941399d24a214e5d3b22f.tmp",
+              "bytes": 895,
+              "generation": 3,
+              "mirror": 3,
+              "sha256": "423e6ab679a5882723a145eb8dd6465f9440ce6310718c843cb1a8cc9c9501f3"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": [
+            {
+              "first_read_monotonic": 48986.812,
+              "last_read_monotonic": 48986.843,
+              "max": 2,
+              "min": 0,
+              "reads": 8,
+              "sequence_sha256": "d6367ea58fb5a7ac62fc843fcb55ba95811bf205c319007a292b99f9896da988",
+              "successful_reads_overlapping_writer": 6
+            },
+            {
+              "first_read_monotonic": 48986.812,
+              "last_read_monotonic": 48986.859,
+              "max": 2,
+              "min": 0,
+              "reads": 9,
+              "sequence_sha256": "7925a6f9d7bdb8337d842bbc4dcdbd2a2b80fb2b26d260ef2eaf951bb439de85",
+              "successful_reads_overlapping_writer": 6
+            }
+          ]
+        },
+        {
+          "case": "G",
+          "status": "observed_failure",
+          "attempted": 58,
+          "success": 57,
+          "first_error": {
+            "at": 48987.265,
+            "details": null,
+            "errno": 13,
+            "message": "[WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002",
+            "op": "case.G",
+            "step": null,
+            "temporary_path": null,
+            "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 196, in worker\n    seq.update(enc(publish(c,n,d)))\n                   ^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-status-publication-review-20261026\\native-status-fixture.py\", line 110, in publish\n    wm._publish_json(tmp,d/'worker-status.json',shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 143, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002\n",
+            "type": "PermissionError",
+            "winerror": 5
+          },
+          "retained": [
+            {
+              "source": "worker-status.json",
+              "bytes": 821,
+              "generation": 56,
+              "mirror": 56,
+              "sha256": "444aac4aebbfb07f45bca9d5f99967078ee5ded8f361ce2f6af651de4f533884"
+            },
+            {
+              "source": "worker-status.json.597c4c958aa14d5290619d6f5fb8fb75.tmp",
+              "bytes": 822,
+              "generation": 57,
+              "mirror": 57,
+              "sha256": "7c5926a95070102f9c7fcf4c61fabbb87080f50407b425de4b5b93b7d6f878a9"
+            }
+          ],
+          "old_reader_complete": null,
+          "readers": [
+            {
+              "first_read_monotonic": 48986.89,
+              "last_read_monotonic": 48987.265,
+              "max": -1,
+              "min": -1,
+              "reads": 160,
+              "sequence_sha256": "4b3b7af7c11d4a9b6a4676184617be9a25188f6f4b21bd62179b3fc1bd3554f6",
+              "successful_reads_overlapping_writer": 150
+            },
+            {
+              "first_read_monotonic": 48986.89,
+              "last_read_monotonic": 48987.265,
+              "max": -1,
+              "min": -1,
+              "reads": 161,
+              "sequence_sha256": "d37d4358ea726425df1cd53472b50eb373d70d32b9adf12dd77213616277b4c4",
+              "successful_reads_overlapping_writer": 151
+            }
+          ]
+        }
+      ],
+      "job_active": 0,
+      "cleanup_errors": []
+    }
+  ],
+  "total_attempted": 93,
+  "total_success": 84,
+  "native_outer_seconds": 2.7663510000000002,
+  "native_guarded_seconds": 2.0780000000013388,
+  "synthetic": [
+    {
+      "mode": "baseline",
+      "tests": 2,
+      "failures": 7,
+      "errors": 0,
+      "successful": false,
+      "seconds": 0.125,
+      "forbidden_attempts": [],
+      "source_sha256": {
+        "tdyssey/wm_compat_guard.py": "864bd317dada6aef2078c16de1280f648aded1ee3e35be15b3373786b58df161",
+        "tdyssey/gpc_adaptation_guard.py": "ccc2459af9a0046824e6f7482631eb54d3cb87790a6e03da858b5c55dd2f3ef2",
+        "tests/test_gpc_status_publication.py": "c03aabd4337f91b0f2a868db3a51570ace4697f73d9ba370558bfc1c8ffb6874"
+      },
+      "source_unchanged": true,
+      "real_models": 0,
+      "sdk": 0,
+      "native": 0,
+      "network": 0,
+      "physical_operations": 0,
+      "output": "test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once (test_gpc_status_publication.StatusPublicationTests.test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once) ... FAIL\ntest_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) ... \n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='directory') ... FAIL\n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='hardlink') ... FAIL\n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='oversized') ... FAIL\n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='directory') ... FAIL\n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='hardlink') ... FAIL\n  test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='oversized') ... FAIL\n\n======================================================================\nFAIL: test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once (test_gpc_status_publication.StatusPublicationTests.test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 234, in test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once\n    self.assertEqual(len(failed), 1)\nAssertionError: 0 != 1\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='directory')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='hardlink')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=False, source='oversized')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='directory')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='hardlink')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n======================================================================\nFAIL: test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) (existing=True, source='oversized')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tests\\test_gpc_status_publication.py\", line 273, in test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication\n    with self.assertRaises((ValueError, RuntimeError)):\nAssertionError: (<class 'ValueError'>, <class 'RuntimeError'>) not raised\n\n----------------------------------------------------------------------\nRan 2 tests in 0.070s\n\nFAILED (failures=7)\n"
+    },
+    {
+      "mode": "fixed",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "successful": true,
+      "seconds": 2.6569999999992433,
+      "forbidden_attempts": [],
+      "source_sha256": {
+        "tdyssey/wm_compat_guard.py": "512175f6d9d029a388f09ab82b1949b0e30e896f1140e616ac76f0e55e961bd5",
+        "tdyssey/gpc_adaptation_guard.py": "ccc2459af9a0046824e6f7482631eb54d3cb87790a6e03da858b5c55dd2f3ef2",
+        "tests/test_gpc_status_publication.py": "c03aabd4337f91b0f2a868db3a51570ace4697f73d9ba370558bfc1c8ffb6874"
+      },
+      "source_unchanged": true,
+      "real_models": 0,
+      "sdk": 0,
+      "native": 0,
+      "network": 0,
+      "physical_operations": 0,
+      "output": "test_actual_publishers_and_json_reader_keep_complete_old_and_new_generations (test_gpc_status_publication.StatusPublicationTests.test_actual_publishers_and_json_reader_keep_complete_old_and_new_generations) ... ok\ntest_existing_shared_target_over_slot_or_hardlinked_is_refused_before_primitive (test_gpc_status_publication.StatusPublicationTests.test_existing_shared_target_over_slot_or_hardlinked_is_refused_before_primitive) ... ok\ntest_five_second_status_and_allocator_age_limits_remain_independent (test_gpc_status_publication.StatusPublicationTests.test_five_second_status_and_allocator_age_limits_remain_independent) ... ok\ntest_heartbeat_1175_is_durable_first_cause_and_later_update_refuses_before_publish (test_gpc_status_publication.StatusPublicationTests.test_heartbeat_1175_is_durable_first_cause_and_later_update_refuses_before_publish) ... ok\ntest_injected_1175_has_one_attempt_keeps_old_and_failed_temp_and_never_retries (test_gpc_status_publication.StatusPublicationTests.test_injected_1175_has_one_attempt_keeps_old_and_failed_temp_and_never_retries) ... ok\ntest_oversized_gpc_payload_is_refused_before_temporary_or_publication (test_gpc_status_publication.StatusPublicationTests.test_oversized_gpc_payload_is_refused_before_temporary_or_publication) ... ok\ntest_partial_write_retains_bytes_and_first_errno_without_cleanup_mask_or_retry (test_gpc_status_publication.StatusPublicationTests.test_partial_write_retains_bytes_and_first_errno_without_cleanup_mask_or_retry) ... ok\ntest_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once (test_gpc_status_publication.StatusPublicationTests.test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once) ... ok\ntest_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) ... ok\ntest_source_target_and_ancestor_links_or_reparse_are_refused_before_primitive (test_gpc_status_publication.StatusPublicationTests.test_source_target_and_ancestor_links_or_reparse_are_refused_before_primitive) ... ok\ntest_atomic_publication_diagnostics_preserve_primary_and_retain_orphan_bytes (test_wm_compat_guard.StorageRaceEngineeringChecks.test_atomic_publication_diagnostics_preserve_primary_and_retain_orphan_bytes) ... ok\ntest_atomic_only_retries_explicit_windows_sharing_or_lock_errors (test_wm_compat_guard.StorageRaceEngineeringChecks.test_atomic_only_retries_explicit_windows_sharing_or_lock_errors) ... ok\ntest_owned_ack_success_and_durable_report (test_gpc_adaptation_guard.BridgeTests.test_owned_ack_success_and_durable_report) ... ok\ntest_first_resource_failure_survives_cleanup_failure (test_gpc_adaptation_guard.BridgeTests.test_first_resource_failure_survives_cleanup_failure) ... ok\ntest_final_close_time_is_in_original_deadline_and_durable_stop (test_gpc_adaptation_guard.BridgeTests.test_final_close_time_is_in_original_deadline_and_durable_stop) ... ok\ntest_heartbeat_freshness_limit_remains_exactly_five_seconds (test_gpc_startup_observability.StartupObservabilityChecks.test_heartbeat_freshness_limit_remains_exactly_five_seconds) ... ok\ntest_refresh_failure_is_durable_and_thread_cleanup_keeps_first_cause (test_gpc_startup_observability.StartupObservabilityChecks.test_refresh_failure_is_durable_and_thread_cleanup_keeps_first_cause) ... ok\ntest_partial_status_write_and_cleanup_error_preserve_original_error (test_gpc_startup_observability.StartupObservabilityChecks.test_partial_status_write_and_cleanup_error_preserve_original_error) ... ok\ntest_publication_sharing_error_is_recorded_once_without_retry (test_gpc_startup_observability.StartupObservabilityChecks.test_publication_sharing_error_is_recorded_once_without_retry) ... ok\ntest_cuda_sample_age_and_state_cannot_be_replaced_by_fresh_heartbeat (test_gpc_startup_observability.StartupObservabilityChecks.test_cuda_sample_age_and_state_cannot_be_replaced_by_fresh_heartbeat) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 2.589s\n\nOK\n"
+    },
+    {
+      "mode": "final",
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "successful": true,
+      "seconds": 2.25,
+      "forbidden_attempts": [],
+      "source_sha256": {
+        "tdyssey/wm_compat_guard.py": "0779a7d25bf1a0214e318390ae34a848b90f2ff945d34e602da32d4542a3cab2",
+        "tdyssey/gpc_adaptation_guard.py": "ccc2459af9a0046824e6f7482631eb54d3cb87790a6e03da858b5c55dd2f3ef2",
+        "tests/test_gpc_status_publication.py": "c03aabd4337f91b0f2a868db3a51570ace4697f73d9ba370558bfc1c8ffb6874"
+      },
+      "source_unchanged": true,
+      "real_models": 0,
+      "sdk": 0,
+      "native": 0,
+      "network": 0,
+      "physical_operations": 0,
+      "output": "test_actual_publishers_and_json_reader_keep_complete_old_and_new_generations (test_gpc_status_publication.StatusPublicationTests.test_actual_publishers_and_json_reader_keep_complete_old_and_new_generations) ... ok\ntest_existing_shared_target_over_slot_or_hardlinked_is_refused_before_primitive (test_gpc_status_publication.StatusPublicationTests.test_existing_shared_target_over_slot_or_hardlinked_is_refused_before_primitive) ... ok\ntest_five_second_status_and_allocator_age_limits_remain_independent (test_gpc_status_publication.StatusPublicationTests.test_five_second_status_and_allocator_age_limits_remain_independent) ... ok\ntest_heartbeat_1175_is_durable_first_cause_and_later_update_refuses_before_publish (test_gpc_status_publication.StatusPublicationTests.test_heartbeat_1175_is_durable_first_cause_and_later_update_refuses_before_publish) ... ok\ntest_injected_1175_has_one_attempt_keeps_old_and_failed_temp_and_never_retries (test_gpc_status_publication.StatusPublicationTests.test_injected_1175_has_one_attempt_keeps_old_and_failed_temp_and_never_retries) ... ok\ntest_oversized_gpc_payload_is_refused_before_temporary_or_publication (test_gpc_status_publication.StatusPublicationTests.test_oversized_gpc_payload_is_refused_before_temporary_or_publication) ... ok\ntest_partial_write_retains_bytes_and_first_errno_without_cleanup_mask_or_retry (test_gpc_status_publication.StatusPublicationTests.test_partial_write_retains_bytes_and_first_errno_without_cleanup_mask_or_retry) ... ok\ntest_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once (test_gpc_status_publication.StatusPublicationTests.test_shared_atomic_json_1175_preserves_old_and_failed_temp_and_original_cause_once) ... ok\ntest_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication (test_gpc_status_publication.StatusPublicationTests.test_shared_source_must_be_ordinary_single_link_and_bounded_for_first_and_next_publication) ... ok\ntest_source_target_and_ancestor_links_or_reparse_are_refused_before_primitive (test_gpc_status_publication.StatusPublicationTests.test_source_target_and_ancestor_links_or_reparse_are_refused_before_primitive) ... ok\ntest_atomic_publication_diagnostics_preserve_primary_and_retain_orphan_bytes (test_wm_compat_guard.StorageRaceEngineeringChecks.test_atomic_publication_diagnostics_preserve_primary_and_retain_orphan_bytes) ... ok\ntest_atomic_only_retries_explicit_windows_sharing_or_lock_errors (test_wm_compat_guard.StorageRaceEngineeringChecks.test_atomic_only_retries_explicit_windows_sharing_or_lock_errors) ... ok\ntest_owned_ack_success_and_durable_report (test_gpc_adaptation_guard.BridgeTests.test_owned_ack_success_and_durable_report) ... ok\ntest_first_resource_failure_survives_cleanup_failure (test_gpc_adaptation_guard.BridgeTests.test_first_resource_failure_survives_cleanup_failure) ... ok\ntest_final_close_time_is_in_original_deadline_and_durable_stop (test_gpc_adaptation_guard.BridgeTests.test_final_close_time_is_in_original_deadline_and_durable_stop) ... ok\ntest_heartbeat_freshness_limit_remains_exactly_five_seconds (test_gpc_startup_observability.StartupObservabilityChecks.test_heartbeat_freshness_limit_remains_exactly_five_seconds) ... ok\ntest_refresh_failure_is_durable_and_thread_cleanup_keeps_first_cause (test_gpc_startup_observability.StartupObservabilityChecks.test_refresh_failure_is_durable_and_thread_cleanup_keeps_first_cause) ... ok\ntest_partial_status_write_and_cleanup_error_preserve_original_error (test_gpc_startup_observability.StartupObservabilityChecks.test_partial_status_write_and_cleanup_error_preserve_original_error) ... ok\ntest_publication_sharing_error_is_recorded_once_without_retry (test_gpc_startup_observability.StartupObservabilityChecks.test_publication_sharing_error_is_recorded_once_without_retry) ... ok\ntest_cuda_sample_age_and_state_cannot_be_replaced_by_fresh_heartbeat (test_gpc_startup_observability.StartupObservabilityChecks.test_cuda_sample_age_and_state_cannot_be_replaced_by_fresh_heartbeat) ... ok\n\n----------------------------------------------------------------------\nRan 20 tests in 2.183s\n\nOK\n"
+    }
+  ],
+  "final_source_sha256": "0779a7d25bf1a0214e318390ae34a848b90f2ff945d34e602da32d4542a3cab2",
+  "rejected_candidate_sha256": "512175f6d9d029a388f09ab82b1949b0e30e896f1140e616ac76f0e55e961bd5",
+  "original_source_sha256": "864bd317dada6aef2078c16de1280f648aded1ee3e35be15b3373786b58df161",
+  "native_runs_exhausted": true,
+  "original_1175_reproduced": false,
+  "publication_problem_resolved": false,
+  "real_model_sdk_physics_operations": 0
+}

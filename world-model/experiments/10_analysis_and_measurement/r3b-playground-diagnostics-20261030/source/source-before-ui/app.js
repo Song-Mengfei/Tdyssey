@@ -1,0 +1,29 @@
+'use strict';
+const $=id=>document.getElementById(id);
+let state=null,target=null,dragging=false,busy=false,closed=false,lastStarted=0,paintVersion=0,rolloutMode=false;
+const truth=$('truth'),prediction=$('prediction'),overlay=$('pointer'),board=$('board');
+const controls=[...document.querySelectorAll('[data-letter]'),$('scene'),$('reset')];
+function setBusy(value){busy=value;controls.forEach(x=>x.disabled=value||closed);$('rollout').disabled=closed;}
+async function api(path,body){const r=await fetch('/api/'+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const d=await r.json();if(!r.ok)throw Error(d.error||'请求失败');return d;}
+function drawImage(canvas,url){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,576,576);c.drawImage(im,0,0,576,576);resolve();};im.onerror=reject;im.src=url;});}
+function cross(){const c=overlay.getContext('2d');c.clearRect(0,0,576,576);if(!target)return;const [x,y]=target.map(v=>v/512*576);c.strokeStyle='#d84b4b';c.lineWidth=2;c.beginPath();c.moveTo(x-9,y);c.lineTo(x+9,y);c.moveTo(x,y-9);c.lineTo(x,y+9);c.stroke();}
+function metric(id,value,digits,unit){$(id).replaceChildren(document.createTextNode(value==null?'—':Number(value).toFixed(digits)),Object.assign(document.createElement('small'),{textContent:' '+unit}));}
+async function displayFrame(frame){const v=++paintVersion;await drawImage(truth,frame.truth);if(v!==paintVersion)return;if(frame.prediction){await drawImage(prediction,frame.prediction);$('predictionEmpty').style.display='none';}}
+async function render(d){state=d;if(!target)target=d.target.slice();document.querySelectorAll('[data-letter]').forEach(b=>{b.classList.toggle('selected',b.dataset.letter===d.letter);b.setAttribute('aria-pressed',String(b.dataset.letter===d.letter));});$('scene').value=d.scene;await displayFrame(d);$('predictionEmpty').style.display=d.prediction?'none':'grid';if(!d.prediction)prediction.getContext('2d').clearRect(0,0,576,576);
+metric('simTime',d.time_seconds,1,'s');metric('translation',d.metrics.translation_px,2,'px');metric('rotation',d.metrics.rotation_deg,2,'°');metric('contact',d.metrics.contact_substeps,0,'/ 10');metric('latency',d.metrics.latency_ms||null,0,'ms');
+$('message').textContent=d.message+(d.metrics.raw_out_of_range?' 模型原始像素有越界，已标记。':'');$('forecastLabel').textContent=d.prediction?(d.metrics.horizon===4?'连续递推 · 第 '+(d.metrics.completed||4)+' 步':'下一步 · 0.1 秒'):'等待第一次试推';$('connection').textContent=d.terminal?'场景已暂停':'模型已就绪';$('connection').classList.toggle('error',d.terminal);cross();
+$('forecastNote').textContent=d.metrics.horizon===4?'连续预测：用模型自己的图像递推，最多看 0.4 秒后。':'下一步预测：每次使用最近四帧真实画面，预测 0.1 秒后。';
+const frames=d.frames||[];$('timeline').hidden=frames.length<2;$('timelineFrames').replaceChildren();frames.forEach((f,i)=>{const b=document.createElement('button');b.classList.toggle('active',i===frames.length-1);const img=new Image();img.src=f.prediction;img.alt='第 '+f.offset+' 步预测';b.append(img,document.createTextNode('+'+(f.offset*.1).toFixed(1)+'s'));b.onclick=()=>{dragging=false;displayFrame(f);$('forecastLabel').textContent='连续递推 · 第 '+f.offset+' 步';$('message').textContent='正在回看第 '+f.offset+' 步；继续试推会从最新状态开始。';[...$('timelineFrames').children].forEach(x=>x.classList.toggle('active',x===b));};$('timelineFrames').append(b);});}
+function fail(e){dragging=false;$('connection').textContent='已暂停';$('connection').classList.add('error');$('message').textContent=e.message;}
+async function step(horizon=rolloutMode?4:1){if(busy||closed||!state||state.terminal)return;setBusy(true);lastStarted=performance.now();try{const d=await api('step',{session:state.session,revision:state.revision,target:target||state.target,horizon});await render(d);}catch(e){fail(e);}finally{setBusy(false);if(dragging&&!state?.terminal)setTimeout(()=>{if(dragging&&!closed&&!state?.terminal)step();},Math.max(0,100-(performance.now()-lastStarted)));}}
+function aim(e){const r=board.getBoundingClientRect();target=[Math.max(0,Math.min(511,(e.clientX-r.left)/r.width*512)),Math.max(0,Math.min(511,(e.clientY-r.top)/r.height*512))];cross();}
+board.addEventListener('pointerdown',e=>{if(closed||!state||state.terminal)return;e.preventDefault();board.setPointerCapture(e.pointerId);aim(e);dragging=true;$('gesture').style.opacity=0;step();});
+board.addEventListener('pointermove',e=>{aim(e);});
+function release(){dragging=false;}
+board.addEventListener('pointerup',release);board.addEventListener('pointercancel',release);window.addEventListener('blur',release);document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
+$('pause').onclick=()=>{release();$('message').textContent=busy?'当前预测批次完成后暂停。':'已暂停。按住左侧画面可以继续。';};
+async function reset(letter=state?.letter||'O',scene=$('scene').value){release();if(busy||closed)return;setBusy(true);try{target=null;await render(await api('reset',{letter,scene}));$('gesture').style.opacity=1;}catch(e){fail(e);}finally{setBusy(false);}}
+document.querySelectorAll('[data-letter]').forEach(b=>b.onclick=()=>reset(b.dataset.letter));$('scene').onchange=()=>reset();$('reset').onclick=()=>reset();$('rollout').onclick=()=>{if(closed)return;rolloutMode=!rolloutMode;$('rollout').setAttribute('aria-pressed',String(rolloutMode));$('rolloutState').textContent=rolloutMode?'已开启':'已关闭';$('message').textContent=(busy?'当前批次结束后生效。':'')+(rolloutMode?'四步预测已开启：按住画面持续触发，松开暂停；每批固定目标 0.4 秒。':'已恢复单步预测：按住画面持续触发，松开暂停。');};
+board.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();release();step();}});
+$('shutdown').onclick=async()=>{release();if(busy)return;try{await api('shutdown',{});closed=true;setBusy(true);$('connection').textContent='试验已关闭';$('message').textContent='模型已退出。下次可运行启动脚本重新打开。';$('shutdown').disabled=true;}catch(e){fail(e);}};
+api('state').then(render).catch(fail);

@@ -1,0 +1,70 @@
+Checkpoint500 evaluation: engineering complete; candidate NOT ACCEPTED under the fixed scientific gates.
+Numeric JSON only. Source checkpoint training=500; this account updates/examples=0; 32 losses,3996 forecasts,11988 Euler,2 serial model loads.
+
+Loss: matched16 pairs; frozen mean=0.00295458236; adapted mean=0.0125136126; ratio=4.2353; adapted higher/lower/equal=14/2/0.
+
+T retention: AR FAIL; absolute AR FAIL; paired ranking FAIL; overall FAIL. TF separately FAIL.
+Adapted joint object/shape and coverage: 0/1998, including AR H1 and all TF rows.
+Frozen joint object/shape and coverage: 1650/1998.
+Adapted shape reasons: fragmented_object1982/1998; object_area_mismatch16/1998. These are interface diagnostics, not a localized physical cause.
+
+L validity (joint object/shape = coverage valid; each entry n/N):
+stratum | role | AR1 | AR2 | AR4 | TF2 | TF4 | pusher AR4 | pusher TF4
+regression | frozen | 141/141 | 113/141 | 78/141 | 118/141 | 103/141 | 141/141 | 141/141
+regression | adapted | 0/141 | 0/141 | 0/141 | 0/141 | 0/141 | 128/141 | 121/141
+independent | frozen | 57/72 | 48/72 | 43/72 | 48/72 | 48/72 | 72/72 | 72/72
+independent | adapted | 0/72 | 0/72 | 0/72 | 0/72 | 0/72 | 63/72 | 61/72
+
+L pusher error P90 (pixels, conditional; valid counts in JSON; NA means undefined):
+stratum | mode/horizon | frozen | adapted
+regression | AR H1 | 1.7440 | 5.0458
+regression | AR H2 | 3.5214 | 12.0279
+regression | AR H4 | 14.3833 | 32.8326
+regression | TF H2 | 1.9633 | 7.9067
+regression | TF H4 | 1.3151 | 8.2184
+independent | AR H1 | 1.5251 | 4.1283
+independent | AR H2 | 2.3009 | 11.0833
+independent | AR H4 | 2.0913 | 31.2929
+independent | TF H2 | 1.9493 | 7.7609
+independent | TF H4 | 1.4541 | 7.6125
+
+H4 ranking: common-comparable anchors/pairs=0/0 in every stratum and shape.
+stratum | shape | informative anchors/pairs | eligible frozen/adapted | common anchors/pairs | gate
+independent | L | 2/6 | 1/0 of 6 | 0/0 | insufficient
+independent | T | 1/3 | 4/0 of 6 | 0/0 | fail
+regression | L | 4/12 | 1/0 of 12 | 0/0 | insufficient
+regression | T | 2/6 | 4/0 of 4 | 0/0 | fail
+Common-subset selected regret, accuracy, hold and uniform baselines are NA; no mismatched full-baseline comparison.
+Adapted abstains on all27/27 separable candidate pairs across the four groups. Observed scored-pair accuracy is NA; conservative accuracy including abstentions is0, explicitly not27 scored wrong answers.
+
+AR H4 dynamics:
+stratum | shape | role | contact physical/valid error rows | rotation physical/anchors/valid angle rows | contact/rotation gate
+independent | L | adapted | 4/0 | 2/2/0 | insufficient/insufficient
+independent | T | adapted | 4/0 | 2/2/0 | insufficient/insufficient
+regression | L | adapted | 9/0 | 3/3/0 | insufficient/insufficient
+regression | T | adapted | 3/0 | 1/1/0 | insufficient/insufficient
+independent | L | frozen | 4/0 | 2/2/0 | insufficient/insufficient
+independent | T | frozen | 4/12 | 2/2/6 | insufficient/insufficient
+regression | L | frozen | 9/0 | 3/3/0 | insufficient/insufficient
+regression | T | frozen | 3/9 | 1/1/3 | insufficient/insufficient
+Independent contact4<8 and rotation2<4 physical branches per shape remain insufficient; seeds are repeats.
+Regression L contact9 meets the branch floor but has0 measurable contact errors, so its null decision reflects the missing measurable subset, not contact9<8.
+All adapted object pose/coverage error statistics are undefined (no valid object), not zero.
+
+AR H4 termination:
+stratum | shape | role | TP/TN/FP/FN | unknown / all | actual-positive branches/anchors | precision
+independent | L | adapted | 0/0/0/0 | 72/72 | 1/1 | NA
+independent | T | adapted | 0/0/0/0 | 72/72 | 1/1 | NA
+regression | L | adapted | 0/0/0/0 | 141/141 | 0/0 | NA
+regression | T | adapted | 0/0/0/0 | 48/48 | 0/0 | NA
+independent | L | frozen | 0/43/0/0 | 29/72 | 1/1 | NA
+independent | T | frozen | 0/48/0/3 | 21/72 | 1/1 | NA
+regression | L | frozen | 0/78/0/0 | 63/141 | 0/0 | NA
+regression | T | frozen | 0/48/0/0 | 0/48 | 0/0 | NA
+Termination certification=false. Zero predicted successes => precision NA, not perfect accuracy.
+Independent data has1 actual-success branch/anchor per shape. Frozen T's3 FN rows repeat the same1 physical branch; original positive_anchors=0 counts predicted true-positive anchors, not absence of actual positives.
+
+Conclusion: the adapted checkpoint fails the fixed visual interface/T-retention gates from H1; TF does not restore object validity.
+Conditional pusher P90 grows along AR and is lower in TF at H4. These use different measurable subsets, so this is descriptive, not a paired causal improvement claim; TF cannot rescue acceptance.
+This does not localize the defect to model dynamics versus a visual/interface/coordinate failure.
+Next step, only if separately authorized: narrow offline inspection/source audit of existing saved evidence; no extra collection, tuning or execution.

@@ -1,0 +1,312 @@
+{
+  "kind": "R2C3-complete-actual-learning-curve-result.v1",
+  "status": "waiting_parent",
+  "lineage_updates": 6000,
+  "resumed_from_lineage_updates": 300,
+  "new_complete_updates": 5700,
+  "new_attempts": 5700,
+  "AMP_skips": 0,
+  "new_actual_draws": 91200,
+  "total_lineage_actual_draws": 96000,
+  "historical_total_complete_updates": 6250,
+  "training_forward_calls": 22800,
+  "new_sampler_batch_calls": 216,
+  "actual_sampling_denoiser_forwards": 2052,
+  "fixed_loss_forward_calls": 27,
+  "new_raw_float32_frames": 864,
+  "new_endpoint_rows": 432,
+  "reused_endpoint_rows": 216,
+  "full_report_endpoint_rows": 648,
+  "final_checkpoint": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\run\\last.pt",
+    "bytes": 105331438,
+    "sha256": "c5bfc0c7119ca5f4852e5eb6192f8c015730999ed5ea26d081e5b4912441a148",
+    "updates": 6000
+  },
+  "final_checkpoint_actual_reload_verified": true,
+  "parameter_tensors_changed_from300": 296,
+  "full_resume_verification": {
+    "model": true,
+    "optimizer": true,
+    "scaler": true,
+    "scheduler": true,
+    "rng": true,
+    "prepared_legacy_semantics": true,
+    "progress": true
+  },
+  "time_policy": "record_only_v2",
+  "human_model_time_budget": false,
+  "model_time_limit": null,
+  "current_model_seconds_statistics": 6876.985000000001,
+  "historical_total_model_seconds_statistics": 8346.110000000008,
+  "no_new300_evaluation": true,
+  "fixed_loss_points": [
+    1000,
+    3000,
+    6000
+  ],
+  "same_noise_plan_verified_not_actual_noise_tensor_bytes": true,
+  "no_new_physics": true,
+  "no_unseen_access": true,
+  "no_server": true,
+  "shape_accepted": false,
+  "convergence_claimed": false,
+  "capacity_limit_claimed": false,
+  "unseen_generalization_claimed": false,
+  "automatic_further_training": false,
+  "focus_visual_review": {
+    "B_X_notes": "B的两个孔洞和较方的外边、X的分叉改善可见；这不证明完全刚性或预测位姿正确。",
+    "IoU_or_threshold_used_as_visual_judgment": false,
+    "all_columns_common_crop_and_integer_zoom": true,
+    "elementwise_findings": {
+      "H1": {
+        "C": {
+          "classification": "局部恢复但仍明显变形",
+          "corners": "下方转角仍钝圆，未恢复真值的折角。",
+          "opening_left_end": "左侧开口端高度改善，但方切端部仍圆钝，长度未完全一致。",
+          "opening_right_end": "靠蓝推杆一侧的可见端部仍圆，方切和端部长短未恢复；局部蓝推杆接触不支持整件形状通过。",
+          "outer_straight_edges": "左臂比1000更长、更直立，更接近真值；底边仍明显U形圆弧，未成为真值横直段。",
+          "visible_support": "可见底边和下转角不被蓝推杆遮住，其弧化不能归为实际遮挡。"
+        },
+        "O": {
+          "classification": "部分恢复但直角/方内孔未恢复",
+          "corners": "关键外转角仍磨圆，没有恢复为真值的明显直角。",
+          "inner_hole": "内孔保持打开，但仍偏圆/圆角，真值方内孔未恢复。",
+          "outer_straight_edges": "部分局部边段比1000更平直，但整体仍偏圆角环，未恢复真值的四段外直边。",
+          "visible_support": "上方及远离蓝推杆的外边和内孔可见，不能以unknown覆盖这些可见畸变。"
+        }
+      },
+      "H4": {
+        "C": {
+          "classification": "局部恢复但仍明显变形",
+          "corners": "可见下方转角和底边仍圆弧化，未恢复真值锐折。",
+          "opening_left_end": "左端有所延长，但仍比真值短且方切端部圆钝。",
+          "opening_right_end": "右端的长度、方切和方向仍不同；开口两端与真值的关系未恢复。",
+          "outer_straight_edges": "左臂相比1000/3000更长、更直立，但整体仍偏U形弧，真值长直段与底边关系不符。",
+          "visible_support": "蓝推杆位于开口上方，底边和下转角可见；这些明显形变不能整件归入unknown。"
+        },
+        "O": {
+          "classification": "未恢复（仍圆/椭圆环）",
+          "corners": "四个关键外角仍被圆弧替代。",
+          "inner_hole": "孔保持打开，但内轮廓仍偏圆/椭圆，没有恢复真值方内孔。",
+          "outer_straight_edges": "6000仍是圆/椭圆环，真值四段外直边没有恢复，3000到6000没有稳定救回棱角。",
+          "visible_support": "此行蓝推杆已与物体分离，外直边/内孔大部分清楚可见；不能把圆化解释为推杆真实遮挡。"
+        }
+      }
+    },
+    "exact_columns": [
+      "truth future",
+      "trained1000 native3",
+      "trained3000 native3",
+      "trained6000 native3"
+    ],
+    "figures": [
+      {
+        "dimensions": [
+          1920,
+          1855
+        ],
+        "file": "focus-four-H1.png",
+        "labels_readable": true,
+        "overlapping_labels": false,
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-gallery\\focus-four-H1.png",
+        "reviewed_original_resolution": true,
+        "sha256": "ff68c0fe6c5d41008c046214dac659f497cc93c49eafa2f61724bdbc64efc052"
+      },
+      {
+        "dimensions": [
+          1920,
+          1855
+        ],
+        "file": "focus-four-H4.png",
+        "labels_readable": true,
+        "overlapping_labels": false,
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-gallery\\focus-four-H4.png",
+        "reviewed_original_resolution": true,
+        "sha256": "4b06f4dad14187fe1bb70511dba75afd588d2bac1d4444f4cd2b667c2812249c"
+      },
+      {
+        "dimensions": [
+          2560,
+          1568
+        ],
+        "file": "OC-detail-H1.png",
+        "labels_readable": true,
+        "overlapping_labels": false,
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-gallery\\OC-detail-H1.png",
+        "reviewed_original_resolution": true,
+        "sha256": "bb588f22716be825f9ce8f6aea728a61fb798690441c494e942337de3b0ec7b3"
+      },
+      {
+        "dimensions": [
+          2560,
+          1568
+        ],
+        "file": "OC-detail-H4.png",
+        "labels_readable": true,
+        "overlapping_labels": false,
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-gallery\\OC-detail-H4.png",
+        "reviewed_original_resolution": true,
+        "sha256": "9fdebf2335f656d063808d7fa597fa419effdea93d488d467466d03d076a944e"
+      }
+    ],
+    "focus_window_ids": [
+      "R2B-new-25-O-left-bottom:12",
+      "R2B-new-48-B-top:5",
+      "R2B-new-28-C-left:6",
+      "R2B-new-38-X-right:13"
+    ],
+    "kind": "R2C3-independent-focus-visual-corner-review.v1",
+    "metric_outcomes_unchanged": true,
+    "no_checkpoint_loads": true,
+    "no_model_calls": true,
+    "no_new_scores": true,
+    "no_rotation_or_translation_alignment": true,
+    "no_sharpening_or_smoothing_or_repair": true,
+    "reviewed": true,
+    "reviewed_at_utc": "2026-10-29T15:18:53.367060+00:00",
+    "reviewers": [
+      "implementation root (independent original-resolution review)",
+      "report agent /root/r2c2_report (independent original-resolution review)"
+    ],
+    "sampler_steps": 3,
+    "scope": "Four fixed human-requested val_motion visual examples, not unseen generalization or a statistical pass rate",
+    "shared_conclusion_confirmed_via_root_message": true,
+    "source": "saved raw RGB only; no model, checkpoint load, physics or new endpoint scoring",
+    "unknown_used_as_visual_pass": false,
+    "visibility_boundary": "unknown是可能接触/遮挡代理；可见且远离蓝推杆的底边、上方和内孔仍须如实判断。1像素阶梯仅限制局部细角判断，不能解释整段圆化。"
+  },
+  "callback_sent": true,
+  "parent_review_received": false,
+  "evidence": [
+    {
+      "file": "model-work.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\model-work.json",
+      "sha256": "02a08b1d43c6aa5b46df1b4f7488a63f5469d46c419d09ccd86595451e17bf9b"
+    },
+    {
+      "file": "source-identity-v2.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\source-identity-v2.json",
+      "sha256": "6ff0203353ebb53cdb8811f132717d6a1235552060346a996c24cf3461044259"
+    },
+    {
+      "file": "input-identities-v2.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\input-identities-v2.json",
+      "sha256": "5b213c9be832e184b08b482dbe5ef7de44f21ca638573e3ff8018e7836ba5148"
+    },
+    {
+      "file": "cpu-contracts.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\cpu-contracts.json",
+      "sha256": "6d6b525691d7da1f666f2dfbb58dacb8352aaeaf8022a8220f758f2c893066eb"
+    },
+    {
+      "file": "engineering-review.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\engineering-review.json",
+      "sha256": "d5cd1f596501926a037186a20b44c590cdd404dee3dd25eabc2e2520077690fd"
+    },
+    {
+      "file": "cold-integrity-review.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\cold-integrity-review.json",
+      "sha256": "a8caa5ba60287d663f2da386e4a60241e6f2281be60f3ebab790099c135ab180"
+    },
+    {
+      "file": "point1000-review.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\point1000-review.json",
+      "sha256": "f8a5793577b95b98684df2b3e370711527a84f548a5f146b0d2902569bf9aa5a"
+    },
+    {
+      "file": "point3000-review.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\point3000-review.json",
+      "sha256": "90620a4d7ae2987fa7180310088c5ed38d585c0651143c99638a978a31c9758a"
+    },
+    {
+      "file": "USER_CONTINUATION_AUTHORIZATION.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\USER_CONTINUATION_AUTHORIZATION.md",
+      "sha256": "9ca986afaaa1cab3561dd2e4a8d5b7246657924b125bee116e1f4a879eb16c0a"
+    },
+    {
+      "file": "PARENT_EXECUTION_CORRECTIONS.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\PARENT_EXECUTION_CORRECTIONS.md",
+      "sha256": "3093646758a96287d830cc46ee3c575efadf0f294e9756c625d0bd1bddd3bff7"
+    },
+    {
+      "file": "FINAL_FOCUS_DELIVERY.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\FINAL_FOCUS_DELIVERY.md",
+      "sha256": "1ef313a3dc028c466ba6a76efb61a67ec739d2398279fe10d29a66af78eaee61"
+    },
+    {
+      "file": "run/resume-verification.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\run\\resume-verification.json",
+      "sha256": "f2fbe8bff1bea19286d6a2ff5e91e0e3778e3fd10dc75c7fb77e5b438a96102b"
+    },
+    {
+      "file": "run/training-result.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\run\\training-result.json",
+      "sha256": "0d3892e5b4d7ff3e64fcf477e5ba1094f46df64d427b449d23ae49c2775726d5"
+    },
+    {
+      "file": "report/r2c3-learning-curve.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\r2c3-learning-curve.json",
+      "sha256": "2f3849243d5cb1298be49dcc3a21e4fc4709c23e01035819a65d9467da392ec7"
+    },
+    {
+      "file": "report/REPORT.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\REPORT.md",
+      "sha256": "21fbbf412eedf611cb9dac627b9b6df1d195859a886d94a76bd14e9b5dd5763b"
+    },
+    {
+      "file": "report/RUNTIME.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\RUNTIME.md",
+      "sha256": "792bef2c891992df815e0d3da16277c10a698a0f3093366357a9d073e3da58df"
+    },
+    {
+      "file": "report/SCIENCE_SUMMARY.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\SCIENCE_SUMMARY.md",
+      "sha256": "81d0c2784e665237e206e213b8545c0a0f85e20fc0980e3c99bb54b18b2027aa"
+    },
+    {
+      "file": "report/SCIENCE_SUMMARY.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\SCIENCE_SUMMARY.json",
+      "sha256": "217e9eaeced09080709ae4a7b7a55cef1cdd2817008d5cd99e5db60bdaa34e75"
+    },
+    {
+      "file": "report/page-QA.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\page-QA.json",
+      "sha256": "4bca35685412e01108e34cb1e0ee9329cd6fe29a88cc2a4a96e5f9d9d98ccd14"
+    },
+    {
+      "file": "report/focus-visual-review.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-visual-review.json",
+      "sha256": "b11d7f3cb61a569fffe39444d78630ac35da9ed35111b85fedd5a598a64c77c2"
+    },
+    {
+      "file": "report/index.html",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\index.html",
+      "sha256": "5dc8cd986c93155679b49bb153f743ea6ca3ef52ab3c77b60e2fcb47ddaaf8b4"
+    },
+    {
+      "file": "report/focus-gallery/index.html",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\report\\focus-gallery\\index.html",
+      "sha256": "a51f8988fd3c71a735a55ed845f82be1a2ce9317739daa2b3741955e98182116"
+    },
+    {
+      "file": "callback-point1000-result.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\callback-point1000-result.json",
+      "sha256": "661d8f5b45eb7a75e5151e39f724d26f1ff2d590e6589fbd942f092f6fca5867"
+    },
+    {
+      "file": "callback-point3000-result.json",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\callback-point3000-result.json",
+      "sha256": "661d8f5b45eb7a75e5151e39f724d26f1ff2d590e6589fbd942f092f6fca5867"
+    },
+    {
+      "file": "REPORT.md",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\REPORT.md",
+      "sha256": "9d94ef2c159b830a61d18b9169f05a329bdbf9d8528ab71317f883987c32a38a"
+    }
+  ],
+  "callback_result_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\callback-result.json",
+  "callback_result_sha256": "661d8f5b45eb7a75e5151e39f724d26f1ff2d590e6589fbd942f092f6fca5867",
+  "callback_prompt_sha256": "acd74a778cd6b0eab48313663a474d81c388c93aa0c425ad26f18889bd9444fa",
+  "stopped_at_utc": "2026-10-29T15:23:22.639714+00:00"
+}

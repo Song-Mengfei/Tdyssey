@@ -1,0 +1,41 @@
+{
+  "agent_operations": {
+    "NumPy_imports": 0,
+    "held_payload_hashes": 0,
+    "held_payload_opens": 0,
+    "model_operations": 0,
+    "native_operations": 0,
+    "real_torch_imports": 0,
+    "real_torch_loads": 0,
+    "tests_run": 0
+  },
+  "assets_pins": {
+    "initial_bytes": 35043916,
+    "initial_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+    "selected_bytes": 105134565,
+    "selected_sha256": "0bfd1a944c8fb01555a7ad2d01aab6f526a4805e2bb5239a96703d356c5741d3"
+  },
+  "implementation": "lazy torch.load(map_location=cpu,weights_only=True,mmap=True); adapted pop(model),clear container; strict pinned keys/shapes/dtypes/finite checks; return model mapping only",
+  "kind": "model_only_loader_engineering_scope.v1",
+  "new_account_updates": 0,
+  "new_sources": {
+    "tdyssey/gpc_evaluation_assets.py": {
+      "bytes": 12868,
+      "sha256": "47cfadb85ed0438343280b6a55707247bb6e57edc33a5de2e8ff4e15797595c3"
+    },
+    "tests/test_gpc_evaluation_assets.py": {
+      "bytes": 10192,
+      "sha256": "21b45fad90541681c7151636e166569240faaddcf1282b67f232233f8998c88e"
+    }
+  },
+  "not_restored": [
+    "optimizer",
+    "RNG",
+    "old account counters",
+    "old schedule cursor into new account"
+  ],
+  "reason_for_minimal_loader": "No additional pickle interpreter or generic ZIP loader; reuse the installed safe weights-only deserializer for exact hash-pinned files.",
+  "rollback_clones": 0,
+  "source_logical_steps": 500,
+  "unavoidable_scope": "Torch still deserializes complete container metadata and creates optimizer/RNG tensor wrappers before extraction. Clearing payload releases those references; returned model storages may retain the whole mapping. mmap is not a private-memory/peak guarantee. Fixed existing runtime caps remain authoritative."
+}

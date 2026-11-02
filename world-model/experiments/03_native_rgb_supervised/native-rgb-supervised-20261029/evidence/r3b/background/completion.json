@@ -1,0 +1,62 @@
+{
+  "after_callback": "STOP waiting_user_approval; no epoch2, repair, resampling or server work",
+  "callback_boundary": "Offline worker writes local results only; app/tools must be available for the authorized completion monitor to send the real callback.",
+  "callback_destination_thread_id": "__LOCAL_CHAT__",
+  "callback_required": true,
+  "callback_sent_by_worker": false,
+  "checkpoint_exists": false,
+  "checkpoint_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\run\\last.pt",
+  "closed": true,
+  "completed": false,
+  "completed_phases": [
+    "validation_frozen"
+  ],
+  "config_sha256": "5f574d283f04a3664022e29a1772a8c9918a187cbdfe1864a86d856ff507d912",
+  "failure": {
+    "at_utc": "2026-10-30T09:36:19.839677+00:00",
+    "checkpoint_save": {
+      "reason": "Engineering branch is not a formal checkpoint source",
+      "saved": false
+    },
+    "phase": "engineering_probe",
+    "reason": "A process in the process pool was terminated abruptly while the future was running or pending.",
+    "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3b_background.py\", line 296, in run\n    completed('engineering_probe',training.engineering_probe(session,status_cb=status.update))\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3b_training.py\", line 504, in engineering_probe\n    batch=next(session._ensure_loader().iterate([indices]))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_data.py\", line 393, in iterate\n    self.maximum_in_flight=max(self.maximum_in_flight,len(pending));result=pending.popleft().result()\n                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib\\concurrent\\futures\\_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib\\concurrent\\futures\\_base.py\", line 401, in __get_result\n    raise self._exception\nconcurrent.futures.process.BrokenProcessPool: A process in the process pool was terminated abruptly while the future was running or pending.\n",
+    "type": "BrokenProcessPool"
+  },
+  "final_manifest_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\background\\final-manifest.json",
+  "finished_at_utc": "2026-10-30T09:36:20.213159+00:00",
+  "formal_progress": {
+    "AMP_skips": 0,
+    "abandoned_attempts": 0,
+    "complete_optimizer_boundary": true,
+    "consecutive_AMP_overflows": 0,
+    "epoch_complete": false,
+    "formal_draws": 0,
+    "lineage_updates": 6000,
+    "maximum_consecutive_AMP_overflows": 0,
+    "pending_attempt": null,
+    "stage_attempts": 0,
+    "stage_successes": 0
+  },
+  "heartbeat_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\background\\heartbeat.json",
+  "heldout_accesses": 0,
+  "kind": "R3B-independent-first-epoch-completion.v1",
+  "new_physics_controls": 0,
+  "next_epoch_started": false,
+  "original6000_readonly_policy": true,
+  "original_inputs_verified": {
+    "checkpoint_sha256": "c5bfc0c7119ca5f4852e5eb6192f8c015730999ed5ea26d081e5b4912441a148",
+    "data_manifest_sha256": "0e91e1412f937c7d8f39473243a27a3720317a07474e730a510e628d040c0a19"
+  },
+  "pid": 18548,
+  "progress_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\run\\progress.json",
+  "recovery_policy": "Only an explicitly authorized resume from the validated saved cursor; never automatic restart or epoch replay.",
+  "report_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\FAILED.md",
+  "result_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\result.json",
+  "run_id": "R3B-firstepoch-0c0e39d5b67940799c2211eca058017f",
+  "status_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\background\\status.json",
+  "stderr_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\background\\worker.stderr.log",
+  "stdout_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\background\\worker.stdout.log",
+  "unsafe_checkpoint_path": null,
+  "worker_wall_seconds": 34.25461760000326
+}

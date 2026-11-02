@@ -1,0 +1,27 @@
+{
+  "protocol_sha256": "d83b4c544b1e5193c92e2b882d0904995b1d49e174adaf0e8c5b284031835e9b",
+  "protocol": {
+    "name": "original-kinematic-pusht-goalfree-rgb.v1",
+    "source_sha256": {
+      "diffusion_policy/env/pusht/pusht_env.py": "759107dc0ea6017b8afe3380ce23817713edf26af725fc4f03c0416ced940bd0",
+      "diffusion_policy/env/pusht/pymunk_override.py": "85e7c54b5e9630a9f7e675250ee514ae9b2249d11654ec0811d8e4bcf413fe39"
+    },
+    "pusher_body": "KINEMATIC",
+    "pusher_radius": 15,
+    "object_body": "DYNAMIC",
+    "object_mass_inertia": "unchanged official per-letter construction",
+    "space_damping": 0.0,
+    "solver_iterations": 10,
+    "physics_hz": 100,
+    "control_hz": 10,
+    "kp": 100,
+    "kv": 20,
+    "control_loop": "Pinned PushTEnv.step: velocity += (kp*(action-position)+kv*(0-velocity))*dt; space.step(dt)",
+    "force_cap": null,
+    "pre_step_speed_cap": null,
+    "post_separation_velocity_reset": false,
+    "walls_materials": "unchanged original source",
+    "renderer": "unchanged native white/gray/blue96; no goal or UI overlay in RGB",
+    "step_guard": "nonfinite only; penetration is observed, no added force/speed/position correction"
+  }
+}

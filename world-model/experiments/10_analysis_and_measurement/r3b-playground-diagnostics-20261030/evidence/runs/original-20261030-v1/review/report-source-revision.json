@@ -1,0 +1,23 @@
+{
+  "kind": "saved-frame-report-revision.v1",
+  "previous_source_sha256": "4471640cc2abf91e887b580cbb337f46aab8134aefc59110b605ae3f698721c9",
+  "current_source_sha256": "0714ec5dd0198979b6ebacf16cff9a86641cd36908d1da70eca59966e101b1f8",
+  "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_playground_report.py",
+  "reasons": [
+    "Runner stores seconds; previous report read only sampler_s and falsely rendered zero.",
+    "Prefer actual seconds, support legacy sampler_s, retain missing/invalid/extra record counts and show N/A for incomplete total.",
+    "Metadata outer-call seconds include input copies/return/finite scan, so do not force equality to model-proof inner sampler timer.",
+    "Manual visual defects are explicitly labeled separately from palette occlusion availability.",
+    "Old screenshot component matches can span clips/steps; new original-physics cohort is not old-protocol exact replay."
+  ],
+  "before_files": [
+    "report-before-manual/REPORT.md",
+    "report-before-manual/summary.json",
+    "report-before-manual/reference-correspondence.json"
+  ],
+  "evidence_note": "Manual reviewed-image hashes identify the initial grids. Current grids were regenerated from byte-identical raw NPZ with manual flags added to labels; no new prediction or truth simulation occurred.",
+  "regression": "review/report-timing-regression.json",
+  "model_calls": 0,
+  "physics_steps": 0,
+  "optimizer_updates": 0
+}

@@ -1,0 +1,100 @@
+Tdyssey 训练配置设计审查（静态草案）
+日期：2026-10-31，新加坡
+execution_authorized=false
+training_authorized=false
+文档性质：可审批设计，不是运行配置；本文件不能被训练入口当作批准文件。
+本轮仅读取源码、既有报告与父审计，做字节/样本量代数；未导入模型、未构造环境、未调用GPU、未运行测试/采集/训练。所有“建议”均待用户审批。
+
+推荐结论
+先建立同一原物理域、全参数、真实历史单步 A0；第一次模型评估即同时测 H1/H4/H8/H16。先用 A0 分开判断“一步就变形”与“自反馈后累积漂移”。再分别审批以自身生成历史为条件的 B4→B8→B16；每步损失直接反向更新共享图像网络，生成历史停止梯度。首选保留原 no_grad、三步采样与内部8bit量化，不声称可微16步，不叠加改分辨率/采样步数/损失/结构。H1形状仍差时，先审批单独损失对照，而不是用更长rollout掩盖。
+原 cal2 有长程学习价值：O/C/B H16 中位平移4.431/6.500/6.371图像px、旋转17.520/14.861/28.935deg；这些是真运动，非模型改善。每字母只有3独立轨迹，138个重叠公共锚点，不能当作独立验证或充分训练。H1低幅值不应删除长程有效数据；O/B内孔外部不可达，不作为缺陷。
+
+一、已核实的旧实现与边界
+1. tdyssey/gpc_world_model.py:20–46，特别:37，加载 pinned gpc_rank_evaluation，而不是名称相近的 gpc_opt_evaluation。后者量化注释状态不同，不能拿它冒充实际路径。
+2. tdyssey/native_rgb_r3b_training.py:274–278：FP32模型，requires_grad_(True)，AdamW所有model.parameters，训练sigma配置loc=-1.2/scale1.2/min.002/max20，AMP scaler初始128。:318恢复旧模型、Adam和scaler；:281没有实际scheduler step，:287–289保持lr1e-5。不是LoRA训练。
+3. tdyssey/raw_world_model_training.py:26：旧OPTIMIZER默认lr1e-4，betas(.9,.999)、eps1e-8、weight_decay.01；R3B:277显式覆盖lr1e-5。不能把旧默认1e-4错当本轮已有lr。
+4. tdyssey/native_rgb_r3a_conditioning.py:13–30：每microbatch 50%clean/50%weak；weak每sample sigma_cond log-uniform[.002,.05]，历史offset0；目标sigma exp(N(-1.2,1.2²))裁到[.002,20]，目标offset std.1。:205–213：4真实历史+1真实目标，只调用一次compute_model_output，用FP32残差MSE；没有自反馈训练。
+5. tdyssey/native_rgb_r3b_training.py:429–455：固定16抽样、micro4×4，loss各乘.25后backward，unscale再clip_grad_norm=1，检查全部训练参数梯度存在/有限。:462–487：AMP skip与放弃另计，不伪装成成功更新；旧:first epoch完整1499批23984目标不等于新原协议数据的epoch。
+6. upstream实际文件 __LOCAL_WORKSPACE__/Tdyssey/third_party/gpc_code/gpc_rank_evaluation/diffusion/denoiser.py:85–96：wrap_model_output/denoise均no_grad；:89将图像clamp[-1,1]后byte量化再回到[-1,1]。diffusion_sampler.py:30–31：sample也是no_grad。训练若直接对这些返回图算loss，不会产生所宣称的rollout梯度。
+7. manifests/gpc_world_model.json：4历史、96x96、3RGB；sigma_data=.5/offset.1/noise_previous_obs=true；sampler3步、sigma_min.002/max5/rho7/order1/churn0/cond0。tdyssey/gpc_world_model.py:49–57/87–120现API只接受最多4未来动作，需另建H16适配器，不能声称已有H16接口。
+8. 图像真实输入是uint8/255→float32[0,1]，动作绝对世界目标/511*2-1一次。native_rgb_r3a_data.py:255/270–271；native_rgb_r2c1r1_training.py:56–93与UI server.py:66原样反馈raw prediction，无事后重新缩放、修边或clip。上游内部量化区间[-1,1]不意味着应把真实图像也改为[-1,1]。必须把这两个层次及越界数明确记录，不能悄悄改归一化“修复”。
+9. native_rgb_r3a_data.py:145–180的旧moving=H1>=2px或>=5deg，没moving直接拒绝。新目录必须用新任务目录/抽样协议，保留旧规则/旧报告，不偷偷改标签宣布旧门槛通过。
+
+范围契约的未决风险与A0前置阻塞检查：内部Q(d)=2*floor(255*(clamp(d,-1,1)+1)/2)/255-1是量化roundtrip；对d∈[0,1]近似恒等而不是必然平移到[-1,1]。单看标注[-1,1]不能证明当前真图0..1路径错误。举例Q(0)=-1/255、Q(.5)≈.498039、Q(1)=1；量化可出现轻微负值，但不是已证明的H1圆化原因。未clip的d本身可能超出0..1，须记录、保留与区分内部clip和外部展示，不自行补缩放。
+建议独立审批的A0阻塞工程金样本：先无模型代数验证F_oracle=(y-cskip*x)/cout重建d=y，并验证Q(y)误差≤2/255；再固定6字母各一已保存干净4历史/动作、固定7499、3个sigma(.002,.5,5)，逐例比较直接compute_model_output重建d与denoise实际返回Q(d)的逐像素对应（浮点容差1e-6）；共18cases、两路36次model-output calls，另6次H1三步sampler共18denoiser calls，总54forward、0optimizer、0physics。导出范围、rawhash、动作归一化、帧与动作索引、量化前后误差、实际sample最终输出和raw反馈哈希，不能只断言shape通过。若Q(d)不对齐或RGB/action被重复变换则阻止A0；若只是模型输出负值，保留并评测，不能自动改range方案。54调用不含在后面的16optimizer工程矩阵，必须另获批、分别记账。任何新RGB range/量化方案都先提交独立配置差异与同源金样本证据，不在当前设计阶段实现。
+
+二、数据与训练窗口契约
+模型输入仍只有图像和动作，不输入字母ID、状态、接触、姿态、分割模板或新运动头。状态/几何仅用于采样先验、分层标签和离线评测，披露特权信息使用。
+a_t: I_t→I_(t+1)。最大窗口：I_(t-3:t+17)，共20帧；a_(t-3:t+16)，共19动作；所有H共用anchor t，动作前缀一致。训练器递推第j步只接受最近4图与a_(t+j-4:t+j)，后一个是当前待执行动作。未来真实图仅作为对应步target；不得进入已生成历史。
+离线记录中完整未来实际动作是“已知动作条件预测”；在线只有在anchor时已经冻结的未来16绝对目标序列，或明确“保持当前目标16步”，才是当时可用条件。未来控制若依赖后来真状态重规划，只能标为反馈策略轨迹的离线条件评估；不能标为预定计划分支。
+合法窗口验证原始t/frame_index/segment/reset/validity，H1/4/8/16不跨reset/非法/缺帧。H16失效不抹掉此前合法H1；失败片段留在全尝试分母。
+校准36条已看过，列开发回归，不进新的“未见验证”。保留原18训练/8保留字母划分；本地只T/L/O/C/X/B。所有分支属于初态+共同前缀的同一family，整体同split。
+A0训练池取新获批数据的全部合法、有4真实历史的H1；不以大运动阈值过滤。多步B和跨H公平评估用共同完整H16锚点。另列H1更广池与公共H16池，不能混淆分母。
+以root候选1500独立family（每字母200train/50seen-val、80%32控/20%64控）为算例，未经批准：
+train每字母160×29+40×61=7080合法H1，全6=42480/epoch；公共H16每字母160×14+40×46=4080，全6=24480/epoch。
+seen-val每字母40×29+10×61=1770合法H1；公共H16每字母40×14+10×46=1020，全6=6120。
+这些仅在全部合法/完整时成立；实际拒绝/partial按真实目录重新计算，不能补复制帧或重试补齐。
+root新增动作分支候选：每字母2train+1val的长64family各3分支，额外36 runs/2304 controls；完整候选1536runs但仍1500独立family、59904controls。上面的42480H1/24480H16仅基础1500算例；额外train最多增加1464H1/1104H16，公共prefix窗口必须去重后才冻结真实pool。P2实际审核后重新确定数据manifest与attempt上限并复批，不凭算例自动增加A0/B训练授权。
+每epoch固定合法目录中的每个训练窗口恰好一次，按字母/事件分层打乱，batch内family不重复；分层只决定顺序，不replacement，不以每epoch过采样某事件却称“全部一次”。优先用采集配额控制事件比例。尾部不足16时保留短batch并按实际micro_size/batch_size累积，不drop、不补重复样本；旧R3B硬16入口不适用，需要独立trainer。报告每类family数、anchor数、抽样次数、实际梯度曝光次数和零曝光量。
+
+三、候选A0：原协议真实历史H1基线（独立审批阶段）
+初始化：只加载冻结7499的model权重，strict load。路径 artifacts/native-rgb-supervised-20261029/r3b/attempts/recovery-20261030/run/last.pt，SHA23cc0f847fe585f894a7528bd5db1ea3c8541228c6de4396c82f11ce373ce5e7。旧7499历史训练物理为dynamic/.1半衰期，故这是跨域初始化，不冒充原协议已训练。旧权重只读保留。
+新optimizer/scaler/RNG/order从零初始化；这是提议变更，不能通过旧continuation入口强行恢复6000/7499 optimizer。训练阶段新计数从0，parent lineage7499仅来源字段；模型参数不重新随机化。
+trainable_parameters = 所有named_parameters，预计8,729,827个（旧加载验证 docs/VALIDATION.md:731）；包括inner_model.act_emb.*、cond_proj.*、conv_in.*、unet.*（卷积/attention/norm）、norm_out.*、conv_out.*，以及噪声embedding中实际Parameter。任何buffer不当成优化参数。未来工程验收导出逐name/shape/requires_grad清单、总数与SHA，检查optimizer参数集合精确相等，不新增LoRA/运动头。不能仅写“全部”却漏掉动作embedding。
+推荐精确值（未运行）：AdamW，lr=1e-5，betas=(.9,.999)，eps=1e-8，weight_decay=.01；所有训练参数单一参数组，不新增norm/bias免decay；amsgrad=false，maximize=false，foreach=false，fused=false，capturable=false，differentiable=false；scheduler=null，lr固定。相比现有R3B，数值核心保留，optimizer状态重置、新命令显式固定执行选项。
+FP32参数和Adam矩；CUDA autocast float16；残差MSE/所有归约FP32；GradScaler init_scale128，growth_factor2/backoff_factor.5/growth_interval2000；unscale后globalL2 clip_norm1，nonfinite不step。原scale只明确init128，其他为新显式候选，不伪称旧日志逐项已验证。
+microbatch4，目标effective16（4micro）；只在完整optimizer边界保存；zero_grad(set_to_none=true)。尾batch按上节实际数加权。AMP skip消耗已抽样窗口并单列，不无限追加成功数；连续16skip停止记录，不能自动减batch/lr。OOM/非有限/worker工程失败停止该阶段，保留完整费用和最后完整checkpoint，不自动换配置。
+目标sigma与offset保持旧值；真实历史clean/weak50:50，weak sigma_cond[.002,.05]且history offset0，保留三独立RNG流。此A0仍是真实历史，不把弱高斯噪声叫自身生成历史。sigma_data=.5，目标offset.1固定；conditioners用effective_sigma=sqrt(raw_sigma²+.1²)，噪声draw/edge gate仍用raw_sigma。模型输入RGB/255和action/511*2-1一次。
+首批建议3完整epoch，按实际冻结池自动推导attempt上限而非固定“300步”。示例42480H1/epoch且可整16时2655attempt/epoch，三epoch7965attempt；每个窗口三次正式曝光，实际成功数/skip数另列。3epoch是学习曲线审查点，不是收敛或路线失败判据；追加epoch/lr/采样改变另批。
+训练随机种子建议5478；目录打乱每epoch由run seed+epoch派生；目标noise/branch/weak三独立派生流；评估另用固定5478/5479/5480三种seed，不碰训练RNG/order。新增seed配置需要审批。
+评估：初始化E0及每个完整epoch末E1/E2/E3，第一次起就相同独立seen-val family上同时做：锚点真实历史H1（身份相同时复用raw rollout首步；不在主预算另跑整段TF曲线）、纯raw自反馈H1/4/8/16、copy-last、冻结7499、动作分支对照。不能只评训练loss，也不能每16步喂回GT后称H16。自然分布与事件压力集分列。
+保存：每epoch末完整checkpoint（model/optimizer/scaler/RNG/order/data+config+sourceSHA）；运行期间在min(epoch_batches,k*ceil(epoch_batches/4)),k=1..4的去重完整optimizer边界更新滚动last（包含epoch末，最多四次/epoch）；previous_epoch只在完整epoch边界轮换；长期只保留last+previous_epoch两个完整检查点，initial7499引用原文件不复制；默认阶段候选为最后完整epoch，不自动挑best。若用户需要保留更早最佳epoch，须先审批模型选择规则及新增/置换保留策略，不能训练后临时挑有利点。不得删旧6000/7499或覆盖旧run。
+
+四、自身生成历史B4/B8/B16：真实梯度路径与成本
+每个B阶段独立审批，候选各3完整epoch；B4从A0获批选定checkpoint继续、B8从获批B4、B16从获批B8。同一系列继续Adam/scaler/RNG/order，不在每个B长度偷偷重置optimizer；如要重置须单独对照。A0→B的顺序不自动执行，H1形状不良时先看第五节。
+每个epoch开始冻结当前student权重到只读teacher快照，记录teacher权重SHA；teacher.eval/requires_grad=false。一个epoch内teacher不变，下一epoch显式换身份；这叫epoch-entry模型生成条件，不声称每次更新后都是当前student最新分布。若需逐batch更新teacher是另一待批变更。
+在每个共同H16锚点上，teacher从4真实历史开始，只为后续history按已知同一动作序列依次sample H-1=3/7/15次；最后一步监督后不再采无用终帧。保留原3-step/no_grad/8bit采样；所有teacher结果detach，仅RAM保存当前microbatch的H张float32 raw，无clip/修边/再归一化；滑动历史不加入任何未来GT。每个j=1..H，定义g_(j-1)为teacher生成至j-1后的最近4图，输入真实动作前缀，target仅为真实I_(t+j)。
+student对每个j重新做有梯度的残差训练forward，而不是直接对teacher/no_grad采样输出求梯度。损失 L_B = 0.25 L_true_H1 + 0.75*(sum_{j=1..H} L_residual(student; detach(g_(j-1)), target I_(t+j))/H)。uniform每步权重，H1/4/8/16只是评估重点，不丢中间帧。真实H1分支仍保留旧clean/weak50:50；generated分支sigma_cond=None、不给已经生成的history另加weak噪声（提议的新显式条件，需批准），targetnoise仍旧分布。
+精确backward：每microbatch大小m、实际optimizer batch B，先scale[0.25*m/B*L_true].backward并释放该图；再逐j scale[0.75*m/(B*H)*L_j].backward后立即释放图，retain_graph=false；四micro完成后一次unscale/clip/step/update。teacher与history无梯度，未来L_j不会穿过先前sample或先前student图；各j的直接局部损失都更新同一共享student参数，不能称端到端H16 BPTT。每步loss/梯度曝光均记账。
+A0/B4/B8/B16的student局部监督目标数每anchor分别1/5/9/17（B含额外真实H1）；其中H=1步骤可能相同历史但独立有标签的分支，不当作新独立场景。B一次anchor约3(H-1) teacher无梯度denoiser调用+H+1次student有梯度forward，共4H-2，分别14/30/62；A0一次为1。此为调用数代数，推理/反向耗时不同，不能直接当实际GPU秒倍率。
+共同H16池24480 anchors示例：每B epoch1530effective16批，三epoch4590attempt；B4/B8/B16各自另外审批，不能合计授权。所有valid中间帧均监督；所有family与原始窗口曝光量单列，不能把17次局部loss当17独立数据。
+原GPC forward虽然表面支持多步，实际wrap_model_output从加噪真实target生成denoised再反馈，且no_grad；这属于“带真实target噪声的去噪估计条件”，不等同于从随机噪声部署sampler纯生成历史。不得直接调用原forward并宣称解决UI自反馈分布差距。
+默认不落盘生成历史。全24480 train公共H16 anchor的16张float32 RGB共43,316,674,560 B（40.34GiB）；uint8也10,829,168,640 B（10.09GiB），超3GiB且会额外量化raw，不能当无损替代。当前micro4的16帧float32结果只6.75MiB，滚动RAM可行性需未来GPU工程验证。
+如果后来批准有限缓存，key至少含teacher checkpoint SHA、epoch/teacher版本、模型source/config SHA、sampler SHA与3步等全部字段、data manifest/rawSHA、family/anchor/segment/frame indices、未来动作全序列SHA、图像动作normalization版本、noise seed/dtype/H。只能train，禁val/保留字母；teacher身份一变全部旧cache失效，不能跨版本混用；cache raw float32且预先审批硬字节上限，不能转换8bit再声称协议不变。主方案没有persistent cache，避免在3GiB内引入不必要副本。
+
+五、形状/蓝推杆损失：各自独立候选，不与多步同时换
+A0基线定义：令真实y=RGB/255，x=y+offset+sigma*epsilon，cs用原compute_conditioners（含offset_sigma=.1的有效sigma），F_theta=compute_model_output(x,history,actions,cs)。r*=(y-c_skip*x)/c_out；L0=mean_all_pixels_channels[(F_theta-r*)²]。不经过quantized/no_grad wrap，梯度直接到F_theta。现无证据说白背景梯度已主导；必须先报告灰/蓝/背景像素比例、对应residual损失和参数梯度贡献，不能只按像素数量推断。
+候选C-gray（单独对照）：L=L0+0.25*sum_p,c M_gray(p)*(F-r*)²/(3*max(1,sum_p M_gray))，所有sigma使用；mask只由clean真实RGB的冻结palette算法取得并stop_gradient，不用状态/模板。灰mask无像素时此项0并报告该分母，不伪补。0.25为待批起始权重，没有已验证最优证据。
+候选C-blue（另独立对照，不叠C-gray）：L=L0+0.10*sum_p,c M_blue(p)*(F-r*)²/(3*max(1,sum_p M_blue))，所有sigma；推杆不可见样本此项0并计缺失。小蓝杆单独归一化会提高其相对权重，需看物体运动是否受损。0.10为待批候选。
+候选C-edge（另独立对照，不叠前两者）：d_theta=c_skip*x+c_out*F_theta，直接有梯度float，不调原no_grad wrap；Sx/Sy为L1归一化3x3 Sobel；E为clean真实grey-mask可见轮廓的2像素膨胀减2像素腐蚀带，去除真实blue-mask膨胀1像素区。L_edge=mean_{p in E,c,k∈{x,y}} smoothL1(S_k(d_theta)-S_k(y), beta=.02)。L=L0+0.05*1[sigma≤.05]*L_edge。sigma取原目标draw（范围.002–20），只有低噪声[.002,.05]用edge；offset.1仍保留，不能称零噪清图。E空则项0并报告。0.05/.05/.02/2px/1px均是未验证待批值。此局部轮廓项不保证孔洞拓扑或刚性，不修补输出。
+mask算法必须使用训练集cleanRGB冻结校准并保存SHA；现有native_rgb_evaluation.palette_masks可作候选源，但其evaluation校准不能未经审查直接作为训练配置；禁止用val/heldout调阈值。上述mask只用于loss/评测，不喂模型，也不贴回输出。
+每个C对照：相同新原协议数据、相同7499起点/新Adam、相同seed/noise draw与完整曝光（建议各3epoch），一次仅变一个loss因子，冻结7499与A0都配对评估；不能一个C只跑300步另一个跑3epoch。所有C都是备选，主推荐A0先建立，不自动启动三条。
+3/8/16采样步、去量化、96→128、架构、完整BPTT等各为另待批因素。保留原no_grad/量化的主方案不需要无依据改它们。
+
+六、3060Ti资源与有限可行性验证（此轮不执行）
+已实测仅旧H1微批：run/engineering-probe.json:52 peak_cuda_reserved=2,025,848,832 B≈1.887GiB，实际micro4×4、一次真实更新并恢复父状态；其数据/代码/epoch与新设计不同，不能据此保证H16。
+既有模型8,729,827参数，FP32权重34,919,308 B=33.30MiB；权重+梯度+Adam两矩约139,677,232 B=133.21MiB（仅张量下界，不含activation/allocator/workspace/老师/RNG/CUDAcontext）。epoch教师另约33.3MiB权重。一次只留一个student backward图、teacher无梯度，理论避免16份反向图叠加；不能把这个推论写成显存实测。
+候选CUDA reserved硬上限6GiB，给3060Ti8GiB其他应用余量；若实测不满足则停止提交新batch/精度方案，不自动降batch/清占用/改模型。UI模型并驻需单独计入，不能私自关闭用户session挤显存。
+建议后续独立审批M-GPU工程矩阵：A0/H4/H8/H16各4个optimizer attempts，同64个独立train anchors分4个16batch，四模式成对（共256anchor draws，但仅64独立anchors）；每模式用独立可丢弃工程分支，正式曝光/epoch0，验证真实gradient+完整save/reload与无GT泄漏。工程训练本身也需显式批准，不能以“检查”为由执行。最多16engineering attempts、4×[1+14+30+62]×16=6848按sample计的denoiser forwards上限（不含另列的最多8次save/reload固定loss验收调用）；另列每模式保存前/重载后各一次固定A0残差loss forward，共最多8个microbatch调用/32sample-forward-equivalent，不作backward；合计训练工程调用上限1720microbatch/6880sample-equivalent。先确认逐模式计数，不无限重试。记录cold/warm、每attempt时长范围/均值、max_allocated/max_reserved、CPU/loader/保存时间、AMPskip与实际weights变化，4点不声称稳定P95或收敛。首个OOM或非有限即止，不试下一个配置救通过。
+注：上行6848为4attempt×16samples×(1+14+30+62)=6848，只有以单sample forward-equivalent计数才成立；实际microbatch调用数为4attempt×4micro×107=1712。A0残差与B teacher推理/训练反向需分别记账，不能用该合计代替实测。
+旧R3B完整1epoch23984目标总模型流水线1456.531s（REPORT.md），含工程/评估/其他开销，不是新A0单步稳态测速；不能直接承诺新数据几分钟或B16几小时。可在上面工程矩阵获批、实测后，用实际N_batches、各forward/backward/teacher/loader/save成本给区间，再让用户决定本地训练或手动服务器。3epoch和B长度不是自动吞吐探索预算。
+checkpoint完整文件旧105,438,958 B；新last+previous_epoch暂按2×112MiB=224MiB候选上界，另可选36MiB weights导出；原子reserve另256MiB，全局已有3GiB上限保持；若真实序列/RNG/optimizer元数据增加，按实际保存大小复核，不预承诺恰好105MB。上述224MiB是单个活动阶段，不是A0/B全部阶段总量；若保留前阶段两完整checkpoint与报告，下一阶段需累计复算并审批存储/保留策略，不自动覆盖或删历史。报告原float评估索引另预算，不落盘全train生成历史；服务器18训练字母、更多数据、显存/吞吐另审，用户手动运行。
+
+七、实施文件建议与验证失败的含义（仅提案）
+新tdyssey/native_rgb_sequence_data.py：20帧19动作目录、strict-original source/manifest/training审批身份、跨H公共锚点/宽H1池、按family去泄漏、尾batch不补重复；从旧R3A moving硬门槛隔离。静态/合成数据验证不跨reset/非法/缺帧、未来truth只在target；未来批准后保存数据真实取样验证。失败意味着接口尚不可信，不开始训练。
+新tdyssey/native_rgb_sequence_training.py：A0/B的独立会话、全参数清单、分段backward与teacher身份、optimizer完整边界、费用/skip不重抽、只load7499 weights的明确新分支。旧R3B1499/6000硬编码继续保持历史原样。未来工程实际梯度/权重变化/save reload检查失败只判工程不成立，不能判学习路线失败。
+新tdyssey/native_rgb_sequence_rollout.py：将原4步桥适配到16（最少改变），给同anchor四H prefixes，raw反馈、每帧审计、已知未来动作身份；底层pinned sampler不改。静态索引/未来动作因果测试与批准后固定模型一致性检查。失败先查动作/图像对齐，不能误判动作不重要。
+新tdyssey/native_rgb_image_loss_candidates.py：只实现获批的独立C候选，余项默认无执行入口；区分直接F残差和no_grad量化sampler；不要更改上游源码。
+新scripts/native_rgb_sequence_train.py：只接受正式批准记录+SHA和运行config，不得加载本review目录候选为执行配置；所有变更diff列明。旧脚本不热替换新类。
+新/扩展sequence评估器：真历史H1与raw openloop16从首次评估就存在；copy-last/冻结7499/分支对照、symmetry/unknown、轮廓孔洞碎片蓝杆边界逐帧，原始mask/拟合不进入模型。无评估可测性不算通过。
+所有代码改动清单、训练stage配置、GPU工程批准与实际数据身份，在下一用户批准后才具体实现；本轮只交设计稿。
+
+八、审批/不确定性清单
+必须审批：新目录/窗口规则与训练分层；7499权重初始化和Adam/scaler重置；全参数清单；lr/betas/eps/wd/AMP/scaler/clip/seed/batch/epoch/save/eval；B真/生成比例、每步权重、teacher刷新和detach路径；mask校准及每个C公式权重/噪声范围；GPU工程矩阵、6GiB硬限、checkpoint/评估预算；服务器规模/后续追加。未批准不运行。
+已有而非新结果：现训练为全参数/真实或弱噪历史H1；旧3步sampler量化no_grad；旧micro4峰值约1.887GiB；旧7499历史结果；父审计cal2 H16真实运动。这些不能证明候选收敛、H16内存、动作响应、棱角修复、泛化或所需数据量。
+无依据/未来待证：3epoch是否足够；lr1e-5对原域是否最佳；teacher每epoch刷新是否够；25:75真/生成比例；所有C权重/阈值；新事件数据是否覆盖UI长程分布；96px抗锯齿与8bit/3denoise是否形状失败主因；3060Ti多步吞吐与缓存必要性。不伪造已验证结果，不无限追加训练，不解除LoRA（本来没有）。
+
+根审集成补充（同为待批设计）：
+实现可行性补充：generated history验证不能直接沿用旧conditioning_residual_loss的_batch，后者conditioning.py:97-111把整组5图限制0..1，会拒绝合法raw预测轻微负值。新sequence loss应分开history与clean_target：history只验finite/shape/dtype/detach及原始反馈身份；clean_target仍严格0..1；动作仍一次归一化。不改旧_batch、不clip预测去适配旧接口。A0可复用旧数学；B直接调用同一pinned conditioners/model_output完成明确新签名。teacher推荐torch.no_grad；若采用inference_mode桥，离开该上下文后要clone成普通detach张量才交student反向图，未来M1验证实际saved-for-backward路径，不能直接把inference张量塞入训练。
+线程/加载候选：首P1单CPU collector，避免并发混淆配对；训练torch threads=2、CPU loader workers=2、total prefetch_batches=2、frame cache16MiB/worker、state/aux cache8MiB/worker（RAM，不落盘）。旧R3B已有2线程/2workers/2prefetch及16/8MiB配置，新序列reader显式限制全局在途2批，不能继承后产生无界20帧缓存。GPU/CPU loader内存与时长须M1实测，OOM不自动改值。
+

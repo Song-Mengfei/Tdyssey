@@ -1,0 +1,21 @@
+# Policy baselines, simulator search and planning
+
+- [d-search-early88-20261021-r1](d-search-early88-20261021-r1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [d-search-initial-20261021-r1](d-search-initial-20261021-r1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [d-search-resume-20261021-r1](d-search-resume-20261021-r1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [d-sequence-20261022](d-sequence-20261022/README.md) — historical_evidence; consult supplied report (13 source entries).
+- [d-sequence-20261022-r2](d-sequence-20261022-r2/README.md) — historical_evidence; consult supplied report (14 source entries).
+- [d-sequence-20261022-r3](d-sequence-20261022-r3/README.md) — historical_evidence; consult supplied report (14 source entries).
+- [d-sequence-20261022-r4](d-sequence-20261022-r4/README.md) — historical_evidence; consult supplied report (17 source entries).
+- [d-sequence-20261022-r4-final](d-sequence-20261022-r4-final/README.md) — historical_evidence; consult supplied report (18 source entries).
+- [d-sequence-20261022-r4-settle](d-sequence-20261022-r4-settle/README.md) — historical_evidence; consult supplied report (18 source entries).
+- [d-teacher-20261021](d-teacher-20261021/README.md) — historical_evidence; consult supplied report (33 source entries).
+- [git-sync-20261023](git-sync-20261023/README.md) — historical_evidence; consult supplied report (9 source entries).
+- [handoff-reranking-20261021](handoff-reranking-20261021/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [reranking-20261021](reranking-20261021/README.md) — historical_evidence; consult supplied report (9 source entries).
+- [simulator-search-20261021](simulator-search-20261021/README.md) — historical_evidence; consult supplied report (2 source entries).
+- [td-abc-20261021-A](td-abc-20261021-A/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [td-abc-20261021-B](td-abc-20261021-B/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [td-abc-20261021-C](td-abc-20261021-C/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [td-baseline-300-20261021](td-baseline-300-20261021/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [td-simulator-smoke-20261021-r2](td-simulator-smoke-20261021-r2/README.md) — historical_evidence; consult supplied report (0 source entries).

@@ -1,0 +1,5 @@
+# Fixed-step speed-nonamplifying candidate3 before running
+
+Candidate2 finished all37 B controls; maxOW.118876/AO.577345/AW0, no illegal center,20.59% intervention time,5.1876403s. Preserve full v2 raw/source/summary. A read-only check found104 microsteps with projected speed above requested speed, maximum1.0188x. This is not a claimed explosion, but violates the intended non-amplifying command execution contract.
+
+Candidate3 adds a speed disk |v|<=|v_PD| to the same2D halfplane projection, solved analytically via line projections, line intersections and line-circle intersections. An empty linearized feasible set yields stationary kinematic command, explicitly recorded; the physical object still evolves normally and existing strict legality guard remains. No object state is changed by the controller. Same thresholds, fixed.001dt/1000Hz integration,100Hz PD,10Hz controls,solver50. Freeze before one37-control B check, then root-owned wider regression. No free-contact duplication by this agent.

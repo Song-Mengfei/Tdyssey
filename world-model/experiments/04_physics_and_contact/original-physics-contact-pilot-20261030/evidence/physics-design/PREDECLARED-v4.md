@@ -1,0 +1,7 @@
+# Candidate4 before four-case replay
+
+The root's frozen96-case v3 regression failed28 cases despite B replay passing. Preserve all rootv1 raw. Four inspected failures show (a) wall-inward kinematic velocities persist while solver wall/pusher impulses oppose at>5e4, (b) two simultaneous concave AO faces but only nearest face constrained, and (c) wall collision creates angular twist that penetrates on next integration. Guard-only stopping is not repair.
+
+Freeze v4 before testing: same.001dt,100Hz PD,solver50,epsilon.25,valid1world,geometry/material/body. Simultaneously constrain every active actual convex-component point-query gap, not just one union-nearest face. Add an incoming-command limit from unchanged mass/inertia contact unit-impulse mobility: every body vertex's outward wall velocity induced by the normal contact command must fit the wall gap+epsilon budget after subtracting the current twist's already committed next-step displacement. Restrict only kinematic velocity; do not assign object pose/velocity, reset solver caches or change threshold. Intersect with requested-speed disk as before. This is explicit new protocolv4.
+
+Run exactly the root's four already-failed frozen cases (T-wall_top,T-corner_tl,O-wall_left,C-corner_br),24controls each or preserve actual partial failure. Full state/RGB/contacts/actions/substeps and costs retained. No additional B replay or broad sweep by this agent until root reviews these four results. No model/GPU/training.

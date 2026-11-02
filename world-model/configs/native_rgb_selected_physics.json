@@ -1,0 +1,17 @@
+{
+  "kind": "tdyssey.selected-native-physics.v1",
+  "display_name": "0.1秒半衰期（已选）",
+  "candidate_arm": "D-half-life-0.1s",
+  "space_damping": 0.0009765625,
+  "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+  "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+  "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+  "factory": "tdyssey.native_rgb_selected_physics.make_selected_env",
+  "default_for_all_new_data_generation": true,
+  "new_generation_scopes": ["collection", "train", "validation", "test"],
+  "legacy_entrypoints": "historical reproduction only; cannot serve as the default for new data generation before explicit routing migration",
+  "applies_to": "all newly generated collection and future train/validation/test data",
+  "historical_data_policy": "preserve original protocol identities; never relabel or mix old D0 data as selected-physics data",
+  "selection_source": "direct human decision retained in R2B PARENT_REVIEW.md",
+  "protocol_name_policy": "retain the existing candidate protocol name and hash; display_name records the selected status"
+}

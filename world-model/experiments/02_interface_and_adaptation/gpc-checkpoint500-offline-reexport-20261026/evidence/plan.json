@@ -1,0 +1,25 @@
+{
+  "kind":"checkpoint500_explicitly_dispatched_offline_reexport.v1",
+  "base_commit":"639995a65c5c59893d40daa6e715ea2d3cf7e760",
+  "change":"Only four ROI slice bounds become Python int; all diagnostic numerical/image algorithms unchanged.",
+  "old_helper_sha256":"4ec121d2b1b61601a5883be39a50695214b1a32aed6fd97699b7b3e07e57e8b8",
+  "manifest":"artifacts/gpc-checkpoint500-offline-diagnosis-20261026/fixed-samples.json",
+  "manifest_bytes":252831,
+  "manifest_sha256":"193096b5f23df1bec4e8f2ed73df5d15fbc4f2ef9c3edc571ad9701eb61a7ed7",
+  "commands":[
+    {"number":1,"arguments":["-B","-m","unittest","tests.test_gpc_checkpoint500_offline_pixels","tests.test_gpc_checkpoint500_offline_contract"],"baseline_env":"TDYSSEY_OFFLINE_PIXEL_BASELINE=new-output/baseline-helper.py","expected_tests":11},
+    {"number":2,"arguments":["-B","scripts/gpc_checkpoint500_offline_pixels.py","--root","REPO","--output","artifacts/gpc-checkpoint500-offline-reexport-20261026","--manifest","ORIGINAL_FIXED_MANIFEST"],"same_timed_wrapper_checks":"Full JSON/durable counts48+64+40;48action/32real input hashes;16AR4unknown;32PNGs SHA identical to old partial."}
+  ],
+  "max_commands":2,
+  "timeout_seconds_each":60,
+  "total_seconds":120,
+  "cpu_cores":2,
+  "library_threads":2,
+  "working_set_bytes":1073741824,
+  "new_evidence_bytes":33554432,
+  "allowed_raw_frames":{"predictions":48,"case":64,"train":40},
+  "forbidden":"All real Torch/SDK/models/weights/CUDA/neural/optimizer/policy/training/new predictions/Euler/physics/reset/control/render/collection operations0. Held contents0. No productionconfig/account/candidate/claim; no install/download/push/merge.",
+  "stop":"First error/limit/PNG difference stops without retry/third command; preserve everything, remaining static only.",
+  "preservation":"Old639995a/failure/receipts/manifest/partialPNGs/budget untouched; new task has explicit main dispatch. No old budget refund.",
+  "handoff":"Main reads local commit/evidence; do not repeat rejected cross-thread send or ask user to transport results."
+}

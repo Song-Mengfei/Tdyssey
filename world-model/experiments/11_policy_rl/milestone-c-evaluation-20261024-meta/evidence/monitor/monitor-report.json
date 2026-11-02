@@ -1,0 +1,84 @@
+{
+  "elapsed_seconds": 2141.7820000000065,
+  "ended_at_utc": "2026-10-24T08:05:39.316588+00:00",
+  "final": {
+    "disk": {
+      "at_utc": "2026-10-24T08:05:39.284590+00:00",
+      "free_bytes": 19996499968,
+      "ok": true,
+      "queried_path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a",
+      "requested_path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a",
+      "source": "Python shutil.disk_usage / Windows GetDiskFreeSpaceExW",
+      "total_bytes": 1023073640448,
+      "used_bytes": 1003077140480
+    },
+    "gpu": {
+      "at_utc": "2026-10-24T08:05:39.230070+00:00",
+      "devices": [
+        {
+          "free_bytes": 7206862848,
+          "free_mib": 6873,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3060 Ti",
+          "total_bytes": 8589934592,
+          "total_mib": 8192,
+          "used_bytes": 1207959552,
+          "used_mib": 1152
+        }
+      ],
+      "elapsed_seconds": 0.05445160006638616,
+      "exit_code": 0,
+      "ok": true,
+      "raw_stderr": "",
+      "raw_stdout": "0, NVIDIA GeForce RTX 3060 Ti, 8192, 6873, 1152\n",
+      "source": "installed NVIDIA nvidia-smi; current driver memory, not process allocator peaks",
+      "source_command": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.free,memory.used",
+        "--format=csv,noheader,nounits"
+      ]
+    },
+    "system": {
+      "at_utc": "2026-10-24T08:05:39.229067+00:00",
+      "commit": {
+        "headroom_bytes": 17273683968,
+        "limit_bytes": 34047442944,
+        "page_size_bytes": 4096,
+        "peak_bytes": 39511334912,
+        "raw_pages": {
+          "CommitLimit": 8312364,
+          "CommitPeak": 9646322,
+          "CommitTotal": 4095156
+        },
+        "total_bytes": 16773758976
+      },
+      "elapsed_seconds": 0.00044840003829449415,
+      "ok": true,
+      "physical": {
+        "available_bytes": 7123103744,
+        "load_percent": 58,
+        "total_bytes": 17023721472
+      },
+      "source": "Win32 GlobalMemoryStatusEx and PSAPI GetPerformanceInfo"
+    }
+  },
+  "guard_reason": null,
+  "launcher_pid": 32552,
+  "monitor_error": null,
+  "phase": "evaluate",
+  "pid": 7996,
+  "process_observed_peaks": {
+    "peak_pagefile_bytes": 5556494336,
+    "peak_working_set_bytes": 3390939136,
+    "private_bytes": 5262581760,
+    "working_set_bytes": 3390939136
+  },
+  "returncode": 0,
+  "sampled_minimum_available_bytes": 3805130752,
+  "sampled_minimum_commit_headroom_bytes": 11967074304,
+  "sampled_minimum_gpu_free_bytes": 5640290304,
+  "samples": 10486,
+  "schema_version": 1,
+  "status": "exited",
+  "worker_exit_code": 0
+}

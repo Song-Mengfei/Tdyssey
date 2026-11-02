@@ -1,0 +1,63 @@
+LOSS-AR4: one bounded loss-alignment comparison, frozen before predictions.
+
+Authorization: direct human selection of this chat to implement one loss comparison,
+verified in read_thread and repeated in this chat. Exact recipe below is the
+implementer's choice under that authorization, not a previously user-specified formula.
+
+Hypothesis: native H1 denoising can improve while recursive prediction degrades.
+An auxiliary loss on the actual four-step sampling forward may better align weights
+to recursion. Previous B/D detached generated histories and C/D spatial weighting
+do not test this across-step gradient. Background domination is NOT established.
+
+A = native residual MSE, unchanged. B = A + 4 * mean((AR4_RGB - GT4_RGB)^2).
+The additional mean denominator is 1 sequence * 4 horizons * 3 * 96 * 96.
+Coefficient4 is 1/sigma_data^2, fixed once; it is NOT a new sigma weighting on A.
+No region/edge/pose/angle/topology term. Native conditioning/noise/math are unchanged.
+
+The auxiliary branch starts from four GT RGB frames, then only its own raw predictions.
+GT future frames only enter the loss. Three original denoising steps per prediction,
+original FP32, sigma schedule, pure unit-noise start, quantization and action mapping.
+The graph spans all four steps and all three denoiser calls in each. Original byte
+quantization is nondifferentiable: training uses its EXACT forward with surrogate
+derivative1 inside [-1,1] and0 outside. Thus this is a straight-through surrogate,
+not the true derivative of quantization. Upstream/inference code stays unchanged.
+Activation checkpointing recomputes denoisers in backward to fit3060Ti memory.
+
+Both arms independently restore completed E2 model+Adam+scaler+global and conditioning
+RNG. Native16 targets/update, microbatch4, original FP16AMP/FP32 loss, AdamW lr1e-5,
+clip1. Same first256 frozen HMF batches, same50/50cleanweak noise draws. No dataset,
+split, native history, noise distribution, architecture, preprocessing or physics edit.
+B alone adds one B1 four-step auxiliary block/update from the SAME48 training clips:
+192 blocks = offsets0/4/8/12 in each16-frame trajectory. Frozen seed2026110201 cycles
+all192 before repeating64. Fixed independent auxiliary noise seed2026110202.
+Additional generated history belongs ONLY to added objective, not native supervision.
+
+Primary matching budget:256 optimizer attempts/4096 native exposures per arm.
+B adds1024 future-image exposures,3072 denoiser forwards and3072 backward recomputes.
+NOT equal total compute or total supervised exposures. No claim isolating gain per FLOP.
+Any AMP skip/nonfinite stops both, no replacement attempt. A first then B, single process.
+Time is recorded, not a cutoff. Pre-run estimate15–30minutes, actual throughput reported.
+
+Evaluation: freshly evaluate common E2 once, and each arm after128/256 attempts.
+Frozen HMF train-panel12 + ALL24seen-val + ALL3old failures, original B4/B3 slots,
+primary seeds unchanged. RH and raw AR all16 steps, highlight1/4/8/16. Total6240 images,
+18720 image-denoiser calls. No best-seed selection; no extra seed/epoch runs.
+Existing HMF metric definitions/strict gates/unknown unchanged. This subset cannot
+certify full48 fitting. Additional directional-support comparison described in config
+is separate from original absolute acceptance, not a relaxed replacement gate.
+
+Preflight: ONE B1 sequence, original4-step and surrogate4-step exact forward comparison;
+H4 loss gradient must reach predicted H1 and be finite/nonzero; whole auxiliary backward
+must give finite/nonzero parameter gradients. At most64 image forwards,2 gradient calls,
+zero optimizer updates. Failure ends run accurately, no fallback or automatic retry.
+Preserve this compute in ledger; restore parent state before actualA.
+
+One CUDA process BelowNormal; numerical env/Torch intra+inter/OpenCV all1. No CPU model,
+multiworkers, concurrent agents/audits, CPU video encoding or other project changes.
+New root cap1.2GB includes all raw, two midweights/two final complete states, logs,
+report, exact callback body/receipt and temporary writes. Reserve16MiB for final metadata
+before EVERY normal write; shared10GB includes256MiB atomic reserve +64MiB outside guard.
+Raw NPZ uncompressed to avoidCPU compression; no dataset/env copy or old evidence deletion.
+Storage/source/forward guards fail closed. No automatic retry, resume, or next training.
+After finish/failure actually send evidence to analysis chat__LOCAL_CHAT__,
+save exact body and real tool receipt, then waiting_user_review.

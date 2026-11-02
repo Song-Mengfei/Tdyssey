@@ -1,0 +1,53 @@
+{
+  "kind": "tdyssey.gpc_supervised_adaptation.v1",
+  "candidate_id": "gpc-tl-supervised-one-step-01",
+  "data_manifest": "artifacts/gpc-data-stage-a-20261026/adaptation-data.json",
+  "benchmark_manifest": "artifacts/gpc-data-stage-b2-20261026/benchmark.json",
+  "training_schedule": {
+    "path": "artifacts/wm-sampling-b-only-20261026/training-schedule.json",
+    "sha256": "f7217a2d09393798529b00e72fcd971e8d7be11cab7a9c769704a9b30ddd004a"
+  },
+  "output_dir": "artifacts/gpc-supervised-adaptation-pilot-20261025",
+  "t1_sha256": "800751b7a3e32df4fee5660d1ea22c7ee0fb45b51a7b41632d420189238a7838",
+  "objective": {
+    "name": "pinned_phase_two_one_step_residual_mse", "history_frames": 4,
+    "target_frames": 1, "image_shape": [3,96,96], "image_range": [0.0,1.0],
+    "actions": "already normalized a/511*2-1; unchanged by loss", "action_shape": [4,2],
+    "sigma_log_loc": -1.2, "sigma_log_scale": 1.2, "sigma_min": 0.002, "sigma_max": 20.0,
+    "sigma_data": 0.5, "sigma_offset_noise": 0.1, "noise_previous_obs": true,
+    "loss": "mean((model_output-(clean-c_skip*noisy)/c_out)^2)",
+    "weighting": "implicit 1/c_out^2 reconstruction weighting; no extra weight",
+    "offset": "independent per flattened channel, added without multiplying by sigma",
+    "feedback": "t=5 has no later target; native quantized tail is unused by this loss"
+  },
+  "optimizer": {"name":"AdamW","lr":0.0001,"betas":[0.9,0.999],"eps":1e-8,"weight_decay":0.01,"amsgrad":false},
+  "trainable_prefixes": ["inner_model."],
+  "train": {"batch_size":1,"max_updates":500,"max_examples":500,"phase_seconds":900,
+    "checkpoint_every":50,"selected_update":500,"seed":5478,"grad_clip_norm":1.0,
+    "shape_ratio":[1,1],"order":"frozen_train_schedule_v1"},
+  "evaluation": {"loss_examples_per_role":16,"loss_shape_ratio":[1,1],"loss_seed":15478,
+    "seeds":[5478,5479,5480],"modes":{"AR":[1,2,3,4],"TF":[2,4]},
+    "regression_branches":63,"independent_branches":48,"sampler_euler_steps":3},
+  "limits": {"wall_seconds":3600,"model_loads":3,"active_gpu_models":1,"eval_batches":32,
+    "eval_examples":32,"forecasts":3996,"euler_steps":11988,"output_bytes":1073741824,
+    "metadata_bytes":16777216,"telemetry_bytes":67108864,"checkpoint_bytes":167772160,
+    "cpu_threads":2,"cuda_allocated_bytes":536870912,"cuda_reserved_bytes":1073741824},
+  "resources": {"startup_ram_gib":4,"startup_commit_gib":6,"startup_gpu_gib":4,"startup_disk_gib":2,
+    "runtime_ram_gib":1.5,"runtime_commit_gib":3,"runtime_gpu_gib":1.5,
+    "process_working_set_gib":2,"process_private_gib":3,"native_job_gib":3},
+  "screens": {"shape_valid_fraction":0.9,"pusher_valid_fraction":0.95,"position_p90_pixels":5,
+    "angle_p90_degrees":5,"pusher_p90_pixels":5,"coverage_p90":0.05,"noncontact_drift_pixels":2,
+    "rotation_direction_fraction":0.8,"pair_separation":0.05,"ranking_accuracy":0.75,
+    "selected_regret":0.03,"tie_tolerance":1e-6,"success_strictly_above":0.95},
+  "retention": {
+    "allowed_validity_drop_count":0,"allowed_new_invalid_count":0,"allowed_error_increase":0.0,
+    "numeric_tolerance":{"position":1e-6,"angle":1e-6,"pusher":1e-6,"coverage":1e-9},
+    "minimum_common_valid_fraction":{"position":0.9,"angle":0.9,"pusher":0.95,"coverage":0.9},
+    "ranking_regret_numeric_tolerance":1e-9,"allowed_ranking_accuracy_drop":0.0,
+    "minimum_rank_comparable_anchors":1,"minimum_rank_separable_pairs":1,
+    "require_complete_planned_ranking_grid":true,"require_all_informative_rank_anchors":true,
+    "required_strata":["regression","independent"],
+    "required_noise_seeds":[5478,5479,5480],
+    "modes":{"AR":[1,2,3,4],"TF":[2,4]}
+  }
+}

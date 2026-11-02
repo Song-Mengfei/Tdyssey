@@ -1,0 +1,3859 @@
+{
+  "T": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F00-T-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "275a751b29fab3576ecf4051162f627e3d109c0ce11f91d5909dcea5af9cf666",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "T",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 3000.0,
+          "center_of_gravity": [
+            0.0,
+            45.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 3000.0,
+              "center_of_gravity": [
+                0.0,
+                45.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -15.0,
+                  30.0
+                ],
+                [
+                  15.0,
+                  30.0
+                ],
+                [
+                  15.0,
+                  120.0
+                ],
+                [
+                  -15.0,
+                  120.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 3000.0,
+              "center_of_gravity": [
+                0.0,
+                45.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -60.0,
+                  0.0
+                ],
+                [
+                  60.0,
+                  0.0
+                ],
+                [
+                  60.0,
+                  30.0
+                ],
+                [
+                  -60.0,
+                  30.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "5bf56d080e1788ec9e1821d29a1dad71bc44edabe9edad44eb563e4ce8e3af21",
+      "initial_state": [
+        278.54613409119975,
+        310.2839841419755,
+        267.57132789080555,
+        295.8772624863111,
+        2.601249734302411,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  },
+  "L": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F01-L-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "c37df97206595e28bf656704f760e23d15688be913a79a54c1d31319e0a1f501",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "L",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 1875.0,
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 1875.0,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -30.0,
+                  -75.0
+                ],
+                [
+                  0.0,
+                  -75.0
+                ],
+                [
+                  0.0,
+                  45.0
+                ],
+                [
+                  -30.0,
+                  45.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 1875.0,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  0.0,
+                  15.0
+                ],
+                [
+                  60.0,
+                  15.0
+                ],
+                [
+                  60.0,
+                  45.0
+                ],
+                [
+                  0.0,
+                  45.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "71f31d2b56fac130e17e4ff8ab5cfca0d7d3e53b0b005cde26556660ff19578e",
+      "initial_state": [
+        295.7497142327517,
+        206.88063485452253,
+        254.48876598181843,
+        254.48876598181843,
+        -2.42749514249321,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  },
+  "O": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F02-O-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "fd759b986a6a33ac7eae0f8d8837e89410aa45e4ed61533eb453d9e5e943fe74",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "O",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 2340.2721088435374,
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -30.0,
+                  -60.00000000000001
+                ],
+                [
+                  30.0,
+                  -60.00000000000001
+                ],
+                [
+                  30.0,
+                  -42.85714285714286
+                ],
+                [
+                  -30.0,
+                  -42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -30.0,
+                  42.857142857142854
+                ],
+                [
+                  30.0,
+                  42.857142857142854
+                ],
+                [
+                  30.0,
+                  59.99999999999999
+                ],
+                [
+                  -30.0,
+                  59.99999999999999
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  -25.714285714285722
+                ],
+                [
+                  -30.0,
+                  -25.714285714285722
+                ],
+                [
+                  -30.0,
+                  -8.571428571428577
+                ],
+                [
+                  -50.0,
+                  -8.571428571428577
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  -42.85714285714286
+                ],
+                [
+                  -10.0,
+                  -42.85714285714286
+                ],
+                [
+                  -10.0,
+                  -25.714285714285722
+                ],
+                [
+                  -50.0,
+                  -25.714285714285722
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  -8.571428571428577
+                ],
+                [
+                  -30.0,
+                  -8.571428571428577
+                ],
+                [
+                  -30.0,
+                  8.571428571428562
+                ],
+                [
+                  -50.0,
+                  8.571428571428562
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  25.7142857142857
+                ],
+                [
+                  -10.0,
+                  25.7142857142857
+                ],
+                [
+                  -10.0,
+                  42.857142857142854
+                ],
+                [
+                  -50.0,
+                  42.857142857142854
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  8.571428571428562
+                ],
+                [
+                  -30.0,
+                  8.571428571428562
+                ],
+                [
+                  -30.0,
+                  25.7142857142857
+                ],
+                [
+                  -50.0,
+                  25.7142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  10.0,
+                  -42.85714285714286
+                ],
+                [
+                  50.0,
+                  -42.85714285714286
+                ],
+                [
+                  50.0,
+                  -25.714285714285722
+                ],
+                [
+                  10.0,
+                  -25.714285714285722
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  10.0,
+                  25.7142857142857
+                ],
+                [
+                  50.0,
+                  25.7142857142857
+                ],
+                [
+                  50.0,
+                  42.857142857142854
+                ],
+                [
+                  10.0,
+                  42.857142857142854
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  30.0,
+                  -25.714285714285722
+                ],
+                [
+                  50.0,
+                  -25.714285714285722
+                ],
+                [
+                  50.0,
+                  -8.571428571428577
+                ],
+                [
+                  30.0,
+                  -8.571428571428577
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  30.0,
+                  -8.571428571428577
+                ],
+                [
+                  50.0,
+                  -8.571428571428577
+                ],
+                [
+                  50.0,
+                  8.571428571428562
+                ],
+                [
+                  30.0,
+                  8.571428571428562
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2340.2721088435374,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  30.0,
+                  8.571428571428562
+                ],
+                [
+                  50.0,
+                  8.571428571428562
+                ],
+                [
+                  50.0,
+                  25.7142857142857
+                ],
+                [
+                  30.0,
+                  25.7142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "1e9a2f612281ca66a820596eea6dd1285379aee8f9e25acf7e32fdd12453a6a9",
+      "initial_state": [
+        324.2601974396846,
+        218.16935514172087,
+        256.0,
+        256.0,
+        -2.753324045289304,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  },
+  "C": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F03-C-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "aca6ba498cf36fa6d73487133c153179209503065b0ffbc612655c7fd956bb05",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "C",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 2613.977324263039,
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -19.33333333333333,
+                  -60.0
+                ],
+                [
+                  60.66666666666667,
+                  -60.0
+                ],
+                [
+                  60.66666666666667,
+                  -42.85714285714286
+                ],
+                [
+                  -19.33333333333333,
+                  -42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -19.33333333333333,
+                  42.85714285714286
+                ],
+                [
+                  60.66666666666667,
+                  42.85714285714286
+                ],
+                [
+                  60.66666666666667,
+                  60.0
+                ],
+                [
+                  -19.33333333333333,
+                  60.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -39.33333333333333,
+                  -25.714285714285715
+                ],
+                [
+                  -19.33333333333333,
+                  -25.714285714285715
+                ],
+                [
+                  -19.33333333333333,
+                  -8.57142857142857
+                ],
+                [
+                  -39.33333333333333,
+                  -8.57142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -39.33333333333333,
+                  -42.85714285714286
+                ],
+                [
+                  0.6666666666666714,
+                  -42.85714285714286
+                ],
+                [
+                  0.6666666666666714,
+                  -25.714285714285715
+                ],
+                [
+                  -39.33333333333333,
+                  -25.714285714285715
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -39.33333333333333,
+                  -8.57142857142857
+                ],
+                [
+                  -19.33333333333333,
+                  -8.57142857142857
+                ],
+                [
+                  -19.33333333333333,
+                  8.57142857142857
+                ],
+                [
+                  -39.33333333333333,
+                  8.57142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -39.33333333333333,
+                  25.714285714285708
+                ],
+                [
+                  0.6666666666666714,
+                  25.714285714285708
+                ],
+                [
+                  0.6666666666666714,
+                  42.85714285714286
+                ],
+                [
+                  -39.33333333333333,
+                  42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2613.977324263039,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -39.33333333333333,
+                  8.57142857142857
+                ],
+                [
+                  -19.33333333333333,
+                  8.57142857142857
+                ],
+                [
+                  -19.33333333333333,
+                  25.714285714285708
+                ],
+                [
+                  -39.33333333333333,
+                  25.714285714285708
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "1cdfdac8f0a44f36aa426b76c39686f1759341799530bc6319b80a43c2b31627",
+      "initial_state": [
+        244.2240711172893,
+        305.87434276886574,
+        249.43733091638003,
+        243.1635740255989,
+        1.247653268648846,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  },
+  "X": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F04-X-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "0a41aa19bc39ec81331b32544dab7fdb04299fea7b9f1058703f5cde81e2a01e",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "X",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 2316.646658663465,
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -10.0,
+                  -25.714285714285722
+                ],
+                [
+                  10.0,
+                  -25.714285714285722
+                ],
+                [
+                  10.0,
+                  -8.571428571428577
+                ],
+                [
+                  -10.0,
+                  -8.571428571428577
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -10.0,
+                  -8.571428571428577
+                ],
+                [
+                  10.0,
+                  -8.571428571428577
+                ],
+                [
+                  10.0,
+                  8.571428571428562
+                ],
+                [
+                  -10.0,
+                  8.571428571428562
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -10.0,
+                  8.571428571428562
+                ],
+                [
+                  10.0,
+                  8.571428571428562
+                ],
+                [
+                  10.0,
+                  25.7142857142857
+                ],
+                [
+                  -10.0,
+                  25.7142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -30.0,
+                  -42.85714285714286
+                ],
+                [
+                  30.0,
+                  -42.85714285714286
+                ],
+                [
+                  30.0,
+                  -25.714285714285722
+                ],
+                [
+                  -30.0,
+                  -25.714285714285722
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -30.0,
+                  25.7142857142857
+                ],
+                [
+                  30.0,
+                  25.7142857142857
+                ],
+                [
+                  30.0,
+                  42.857142857142854
+                ],
+                [
+                  -30.0,
+                  42.857142857142854
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  -60.00000000000001
+                ],
+                [
+                  -10.0,
+                  -60.00000000000001
+                ],
+                [
+                  -10.0,
+                  -42.85714285714286
+                ],
+                [
+                  -50.0,
+                  -42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -50.0,
+                  42.857142857142854
+                ],
+                [
+                  -10.0,
+                  42.857142857142854
+                ],
+                [
+                  -10.0,
+                  59.99999999999999
+                ],
+                [
+                  -50.0,
+                  59.99999999999999
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  10.0,
+                  -60.00000000000001
+                ],
+                [
+                  50.0,
+                  -60.00000000000001
+                ],
+                [
+                  50.0,
+                  -42.85714285714286
+                ],
+                [
+                  10.0,
+                  -42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2316.646658663465,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  10.0,
+                  42.857142857142854
+                ],
+                [
+                  50.0,
+                  42.857142857142854
+                ],
+                [
+                  50.0,
+                  59.99999999999999
+                ],
+                [
+                  10.0,
+                  59.99999999999999
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "510e16a0b9e556a847945ef2fa464c3ad7ef480b50023c5fe1accb16fbf4f86b",
+      "initial_state": [
+        339.2356093616995,
+        287.00224921897666,
+        256.0,
+        256.0,
+        -0.3423115910464394,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  },
+  "B": {
+    "metadata_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a2\\trajectories\\R2A2-F05-B-center-A0-sustained-normal-D-half-life-0.1s\\metadata.json",
+    "metadata_sha256": "9fe1245cd30199343becc0ae36ccf1836531857bf47ff1bcae3836b1180a94d5",
+    "initial_identity": {
+      "kind": "tdyssey.r2a2-initial-identity.v1",
+      "arm": "D-half-life-0.1s",
+      "letter": "B",
+      "protocol_version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+      "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+      "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+      "candidate_protocol": {
+        "version": "finite-force-pd-v1-r2a2-constant-damping-candidate-v1",
+        "candidate_name": "D-half-life-0.1s",
+        "base_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+        "sole_physics_delta": {
+          "parameter": "space.damping",
+          "original": 0.0,
+          "candidate": 0.0009765625
+        },
+        "damping_rule": "native constant Space.damping, velocity retention D**elapsed_seconds",
+        "velocity_half_life_seconds": 0.1
+      },
+      "physics": {
+        "controller": "finite-force-pd-v1",
+        "base_control_protocol": {
+          "name": "finite-force-pd-v1",
+          "control_hz": 10,
+          "physics_hz": 100,
+          "target": "absolute_xy_0_511",
+          "pusher_body": "dynamic",
+          "pusher_mass": 1.0,
+          "pusher_radius": 15.0,
+          "pusher_moment": "infinite_no_spin",
+          "kp": 100.0,
+          "kv": 20.0,
+          "force_limit": 10000.0,
+          "pre_step_speed_limit": 200.0,
+          "solver_iterations": 50,
+          "collision_slop": 0.1,
+          "object_geometry": "unchanged_official_alphabet",
+          "object_inertia": "unchanged",
+          "walls": "unchanged_segments_inner_7_504",
+          "damping": "upstream_0"
+        },
+        "kp": 100.0,
+        "kv": 20.0,
+        "control_dt": 0.1,
+        "substep_dt": 0.01,
+        "substeps_per_control": 10,
+        "space": {
+          "damping": 0.0009765625,
+          "iterations": 50.0,
+          "collision_slop": 0.1,
+          "collision_bias": 0.0017970074436457143,
+          "collision_persistence": 3.0,
+          "sleep_time_threshold": "infinity",
+          "idle_speed_threshold": 0.0,
+          "gravity": [
+            0.0,
+            0.0
+          ],
+          "threads": 1
+        },
+        "agent": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": "infinity",
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "object": {
+          "body_type": 0,
+          "mass": 1.0,
+          "moment": 2204.024943310658,
+          "center_of_gravity": [
+            0.0,
+            0.0
+          ]
+        },
+        "shapes": [
+          {
+            "role": "agent",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "circle",
+              "offset": [
+                0.0,
+                0.0
+              ],
+              "radius": 15.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  -25.714285714285715
+                ],
+                [
+                  -28.333333333333336,
+                  -25.714285714285715
+                ],
+                [
+                  -28.333333333333336,
+                  -8.57142857142857
+                ],
+                [
+                  -48.333333333333336,
+                  -8.57142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  -42.85714285714286
+                ],
+                [
+                  -28.333333333333336,
+                  -42.85714285714286
+                ],
+                [
+                  -28.333333333333336,
+                  -25.714285714285715
+                ],
+                [
+                  -48.333333333333336,
+                  -25.714285714285715
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  -60.0
+                ],
+                [
+                  31.666666666666664,
+                  -60.0
+                ],
+                [
+                  31.666666666666664,
+                  -42.85714285714286
+                ],
+                [
+                  -48.333333333333336,
+                  -42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  -8.57142857142857
+                ],
+                [
+                  31.666666666666664,
+                  -8.57142857142857
+                ],
+                [
+                  31.666666666666664,
+                  8.57142857142857
+                ],
+                [
+                  -48.333333333333336,
+                  8.57142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  25.714285714285708
+                ],
+                [
+                  -28.333333333333336,
+                  25.714285714285708
+                ],
+                [
+                  -28.333333333333336,
+                  42.85714285714286
+                ],
+                [
+                  -48.333333333333336,
+                  42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  42.85714285714286
+                ],
+                [
+                  31.666666666666664,
+                  42.85714285714286
+                ],
+                [
+                  31.666666666666664,
+                  60.0
+                ],
+                [
+                  -48.333333333333336,
+                  60.0
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  -48.333333333333336,
+                  8.57142857142857
+                ],
+                [
+                  -28.333333333333336,
+                  8.57142857142857
+                ],
+                [
+                  -28.333333333333336,
+                  25.714285714285708
+                ],
+                [
+                  -48.333333333333336,
+                  25.714285714285708
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  11.666666666666664,
+                  -25.714285714285715
+                ],
+                [
+                  51.666666666666664,
+                  -25.714285714285715
+                ],
+                [
+                  51.666666666666664,
+                  -8.57142857142857
+                ],
+                [
+                  11.666666666666664,
+                  -8.57142857142857
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  11.666666666666664,
+                  -42.85714285714286
+                ],
+                [
+                  51.666666666666664,
+                  -42.85714285714286
+                ],
+                [
+                  51.666666666666664,
+                  -25.714285714285715
+                ],
+                [
+                  11.666666666666664,
+                  -25.714285714285715
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  11.666666666666664,
+                  25.714285714285708
+                ],
+                [
+                  51.666666666666664,
+                  25.714285714285708
+                ],
+                [
+                  51.666666666666664,
+                  42.85714285714286
+                ],
+                [
+                  11.666666666666664,
+                  42.85714285714286
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "object",
+            "body": {
+              "body_type": 0,
+              "mass": 1.0,
+              "moment": 2204.024943310658,
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "poly",
+              "vertices": [
+                [
+                  11.666666666666664,
+                  8.57142857142857
+                ],
+                [
+                  51.666666666666664,
+                  8.57142857142857
+                ],
+                [
+                  51.666666666666664,
+                  25.714285714285708
+                ],
+                [
+                  11.666666666666664,
+                  25.714285714285708
+                ]
+              ],
+              "radius": 0.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                5.0,
+                5.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                5.0,
+                506.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "role": "wall",
+            "body": {
+              "body_type": 2,
+              "mass": "infinity",
+              "moment": "infinity",
+              "center_of_gravity": [
+                0.0,
+                0.0
+              ]
+            },
+            "geometry": {
+              "kind": "segment",
+              "a": [
+                506.0,
+                5.0
+              ],
+              "b": [
+                506.0,
+                506.0
+              ],
+              "radius": 2.0
+            },
+            "friction": 0.0,
+            "elasticity": 0.0,
+            "sensor": false,
+            "collision_type": 0,
+            "filter": {
+              "group": 0,
+              "categories": 4294967295,
+              "mask": 4294967295
+            },
+            "surface_velocity": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      },
+      "physics_sha256": "f9d258d4949239fcf443e1ca2799208c0dc5f13821d21ec73497e990f4d177d1",
+      "initial_state": [
+        258.999224000702,
+        174.4704185054134,
+        251.16208593079318,
+        260.92671022547444,
+        2.3623273456093035,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "state_columns": [
+        "pusher_x",
+        "pusher_y",
+        "object_x",
+        "object_y",
+        "angle",
+        "pusher_vx",
+        "pusher_vy",
+        "object_vx",
+        "object_vy",
+        "omega",
+        "pusher_fx",
+        "pusher_fy",
+        "object_fx",
+        "object_fy",
+        "object_torque"
+      ],
+      "force_observation": "unclipped exact-formula reconstruction; clipped engine property at integrator entry",
+      "impulse_convention": "native arbiter.total_impulse vector and native shapes order; no sign relabelling",
+      "arc_mapping": "canonical contour_segments(letter,8); nearest exact ring within 2 world pixels",
+      "inherited_telemetry_version": "tdyssey.r2a-substeps.v1"
+    }
+  }
+}

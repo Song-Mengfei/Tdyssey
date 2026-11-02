@@ -1,0 +1,236 @@
+{
+  "document_type": "NON_EXECUTABLE_STAGE_APPROVAL_REVIEW",
+  "execution_authorized": false,
+  "training_authorized": false,
+  "approval_record": null,
+  "stages": [
+    {
+      "stage": "R0",
+      "kind": "design_only",
+      "requires": [],
+      "status": "design_complete",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "当前仅文档已释放",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "P1-I",
+      "kind": "implementation",
+      "requires": [
+        "R0"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "用户单独批准代码和fixture范围",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "P1-V",
+      "kind": "bounded_sampling_validation",
+      "requires": [
+        "P1-I"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 7680,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "用户单独批准120尝试/256MiB/冻结矩阵",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "P2-D",
+      "kind": "full_local_data",
+      "requires": [
+        "P1-V"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 59904,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "看实际P1后重审数量/参数/事件覆盖/容量",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "P3-I",
+      "kind": "training_evaluation_implementation",
+      "requires": [
+        "P1-V"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "训练/评估代码与无副作用fixture实现单独批准；不包含GPU实测",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "M-E",
+      "kind": "saved_image_metric_calibration",
+      "requires": [
+        "P3-I"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "saved_image_cases_max": 36,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 0,
+      "optimizer_attempt_candidate_limit": 0,
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "M0",
+      "kind": "range_contract_preflight",
+      "requires": [
+        "P3-I"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 54,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "独立批准无物理金样本模型调用；54次为独立调用，不含M1",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "M1",
+      "kind": "GPU_engineering",
+      "requires": [
+        "M0",
+        "P2-D"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": 6880,
+      "optimizer_attempt_candidate_limit": 16,
+      "decision_note": "计sample-forward-equivalent含reload，非正式epoch；实际64 anchors需冻结",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "A0",
+      "kind": "real_history_H1",
+      "requires": [
+        "M-E",
+        "M1",
+        "P2-D"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "实际数据/order/3epoch准确attempt与评估GPU预算再批",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "B4",
+      "kind": "generated_history_4",
+      "requires": [
+        "A0"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "单独审A0局部形状和多H证据，3epoch候选",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "B8",
+      "kind": "generated_history_8",
+      "requires": [
+        "B4"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "单独批准，保留逐帧loss",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "B16",
+      "kind": "generated_history_16",
+      "requires": [
+        "B8"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "单独批准，非端到端16步BPTT",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "C-one",
+      "kind": "one_image_loss_candidate",
+      "requires": [
+        "A0"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 0,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "可与B择优顺序，但不能同时首次变所有因素",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "SERVER",
+      "kind": "server_scale",
+      "requires": [
+        "P2-D",
+        "A0"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": 179712,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": null,
+      "decision_note": "全18聚合控制示例；复用本地后新增119808，用户手动运行",
+      "automatic_next_stage": false
+    },
+    {
+      "stage": "FINAL_TEST",
+      "kind": "reserved_test",
+      "requires": [
+        "A0"
+      ],
+      "status": "not_authorized",
+      "execution_authorized": false,
+      "training_authorized": false,
+      "physical_control_candidate_limit": null,
+      "model_forward_candidate_limit": null,
+      "optimizer_attempt_candidate_limit": 0,
+      "decision_note": "设计冻结后新seen-test/8保留集另批，不混进train",
+      "automatic_next_stage": false
+    }
+  ],
+  "model_counter_units": "M0 sample-forward (B1); M1 sample-forward-equivalent includes batched train/teacher/reload, see detailed breakdown; never treat these as model quality"
+}

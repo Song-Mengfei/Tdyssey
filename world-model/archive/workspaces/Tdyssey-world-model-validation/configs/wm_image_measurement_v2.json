@@ -1,0 +1,13 @@
+{
+  "version": "wm-image-measurement-v2-development",
+  "scope": "Development on previously inspected saved RGB only; no independent validation claim",
+  "input": {"size": 96, "world_extent": 512},
+  "known_priors": ["official L/T rigid geometry", "gray/red object chromatic directions", "blue radius-15 pusher", "fixed goal for coverage only"],
+  "forbidden_inputs": ["true pose", "true contact", "future ROI", "true coverage", "action target", "true stop time"],
+  "chromatic": {"gray_direction": [41, 21], "red_direction": [164, 140], "red_direction_estimation": "median of top chroma quartile among RGB-only red seeds r>=100,r-g>=50,r-b>=35; fixed fallback if fewer than 12", "blue_direction": [177, 129], "perpendicular_sigma": 12, "blue_angular_sigma": 0.04, "green_background_rgb": [144, 238, 144], "green_unmix_residual_sigma": 8, "noise_chroma_floor": 4, "component_seed_alpha": 0.2, "roi_pad_image_pixels": 4},
+  "fit": {"coarse_degrees": 3, "survivors": 3, "position_span_pixels": 10, "angle_span_degrees": 6, "max_iterations": 45, "edge_softness_world_pixels": 0.65, "border_chroma_ratio": 0.84, "official_outline_world_pixels": 2, "red_outline_bounds_world_pixels": [0, 2], "generated_blur_sigma_image_pixels": [0, 1.0]},
+  "shape_gate": {"soft_iou_min": 0.85, "area_ratio": [0.72, 1.35], "component_mass_fraction_min": 0.95, "minimum_object_seed_pixels": 12, "note": "Same rigid size/consistency thresholds as v1; fractional antialias evidence is preserved, never relax geometry to make malformed predictions scoreable"},
+  "pusher_gate": {"radius": 15, "area_ratio": [0.48, 1.6], "soft_iou_min": 0.6, "minimum_seed_pixels": 3, "meaningful_component_nominal_mass_min": 0.2, "meaningful_component_relative_mass_min": 0.35},
+  "termination": {"threshold": 0.95, "coverage_half_width": 0.03, "uncertainty_kind": "development_absolute_error_bound", "basis": "Old 24-state saved calibration maximum absolute error 0.025193 rounded up to 0.03; development empirical floor, not a confidence interval or guaranteed bound on new/generated images. Fit residual is never a probability."},
+  "local_validity": "Object, shape and pusher are independent records. Coverage requires valid rigid shape/object pose, not pusher. A raw endpoint measurement never repairs unknown stopping history."
+}

@@ -1,0 +1,384 @@
+{
+  "kind": "native-gpc-r2c0-offline-training-proposal.v1",
+  "is_proposal": true,
+  "execution_authorized": false,
+  "execute": false,
+  "actual_model_entry_ready": false,
+  "seed": 5478,
+  "stage_scope": "R2C0 CPU saved-array/sampling/evaluation preparation only; future300/1200 not authorized",
+  "initialization": {
+    "mode": "published_original_denoiser_only",
+    "checkpoint_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-assets\\denoiser.pth",
+    "checkpoint_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+    "checkpoint_bytes": 35043916,
+    "source_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\gpc_code",
+    "source_commit": "a96146e568826ef46134f73c22fdf59a675e7264",
+    "source_manifest": "manifests/gpc_world_model.json",
+    "source_manifest_sha256": "f6cfb1a78e7d0b73950e8b422e7306e2ce213adcd39756308188d7f9f1b41ca6",
+    "strict_all_weights": true,
+    "all_parameters_trainable": true,
+    "resume": null,
+    "allow_optimizer_or_rng_restore_from_old_experiment": false,
+    "reject_old_microfit250_checkpoint_sha256": "7a3c3fed60f444536afe8999d6f6346d1ce41258f8df7d87dc78f18bcb4ba28f"
+  },
+  "model": {
+    "architecture": "unchanged published GPC96 RGB/action->nextRGB",
+    "settings": {
+      "img_channels": 3,
+      "num_steps_conditioning": 4,
+      "cond_channels": 256,
+      "depths": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "channels": [
+        96,
+        96,
+        96,
+        96
+      ],
+      "attn_depths": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "num_actions": 4,
+      "sigma_data": 0.5,
+      "sigma_offset_noise": 0.1,
+      "noise_previous_obs": true
+    },
+    "original_sampler": {
+      "num_steps_denoising": 3,
+      "sigma_min": 0.002,
+      "sigma_max": 5,
+      "rho": 7,
+      "order": 1,
+      "s_churn": 0,
+      "s_cond": 0
+    },
+    "history_frames": 4,
+    "target_frames_training": 1,
+    "image_shape": [
+      3,
+      96,
+      96
+    ],
+    "real_image_range": [
+      0,
+      1
+    ],
+    "absolute_action_range": [
+      0,
+      511
+    ],
+    "network_action_range": [
+      -1,
+      1
+    ],
+    "no_pose_motion_head": true,
+    "no_geometry_loss_or_state_model_input": true,
+    "no_output_repair": true
+  },
+  "training_settings_proposed": {
+    "effective_batch": 16,
+    "microbatch": 4,
+    "gradient_accumulation_microbatches": 4,
+    "amp": true,
+    "amp_dtype": "float16",
+    "loss_dtype": "float32",
+    "grad_scaler_init_scale": 128.0,
+    "optimizer": "AdamW",
+    "lr": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.01,
+    "gradient_clip_norm": 1.0,
+    "scheduler": {
+      "kind": "CosineAnnealingLR",
+      "T_max": 3000,
+      "eta_min": 1e-05,
+      "reason": "retain nativeglobal3000 horizon; localattemptcap300 does not silently compress schedule"
+    },
+    "trainable_parameter_count_from_prior_actual_report": 8729827,
+    "initial_optimizer_scheduler_scaler_and_model_rng": "fresh; no old250 continuation",
+    "CPU_saved_RGB_cache_bytes": 1048576,
+    "render_workers": 0,
+    "new_environment_rendering": false,
+    "max_cuda_reserved_bytes_proposed": 6442450944,
+    "OOM_policy": "stop and retain charged attempt; no automatic microbatch retry/probe"
+  },
+  "settings_provenance": {
+    "batch_AMP_lr": "configs/native_rgb_supervised_stage3b.json andstage3c.json, actualstage3b/model-work.json",
+    "microbatch4_peak_reserved_bytes_engineering": 2055208960,
+    "microbatch4_peak_reserved_bytes_stage3c": 2059403264,
+    "hardware_from_existing_report": "NVIDIA GeForce RTX3060Ti ~8GiB; no R2C0 device query or benchmark",
+    "local_settings_are_not_upstream_exact_training_hyperparameters": true,
+    "upstream_original_LR": "world_model_train_phase_two/train.py AdamW lr0.0001; localAMP/accumulation/clip/scheduler separately disclosed"
+  },
+  "data": {
+    "source_only": "R2B accepted53 complete trajectories; selected0.1s protocol",
+    "protocol_sha256": "58563255fe5b9023387d1051a3331131da1c299c63ad30a57c2a4237c20f81f6",
+    "references": {
+      "manifest.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/manifest.json",
+        "sha256": "e8d78646c3869557ddc54a752addb0463e8ead05424ae1e9e03bd7cc211f4eb6"
+      },
+      "split-plan.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/split-plan.json",
+        "sha256": "0b05ad6ff820e34c0f4c6e3a0c961bee96da70d0adbd3f8c35e068d5861c79c0"
+      },
+      "h1-windows.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/h1-windows.json",
+        "sha256": "cbac217adabe55ef1b6309dcbf4cbb1827514ea7354e86a2ba9df7fd9c2180c7"
+      },
+      "h4-windows.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/h4-windows.json",
+        "sha256": "153c296f4ef6ec92e0ea1bcb2928ea65706a12c2036e9030f20e9ab25518ccbb"
+      },
+      "pools.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/pools.json",
+        "sha256": "11db84d37f27994fb9a58acef7ca7501eb12965da2b2ee20e5243a072562a6ec"
+      },
+      "draws480.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/draws480.json",
+        "sha256": "712c61e19564d7bbfb42191afece4e60e11a4666e08e61c550807b0db45356d5"
+      },
+      "draws4800.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/draws4800.json",
+        "sha256": "e4ee1035144ec053245f900c5b03fd2afe56365ec69db079647f69bcc1a0a0fc"
+      },
+      "order-state480.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/order-state480.json",
+        "sha256": "e05b2a14606455047621b2914bece5d15784c3e0c0130493127a6b4b85cfa204"
+      },
+      "order-state4800.json": {
+        "path": "artifacts/native-rgb-supervised-20261029/r2c0/data/order-state4800.json",
+        "sha256": "d859970107c6af7db0710a46069867eb5c110e391450877e9b743d4efa4dae67"
+      }
+    },
+    "TRAIN_trajectories": 41,
+    "seen_val_trajectories": 12,
+    "TRAIN_H1_windows": 861,
+    "seen_val_H1_windows": 252,
+    "TRAIN_H4_windows": 738,
+    "seen_val_H4_windows": 216,
+    "reference_original_RGB_no_full_dataset_copy": true,
+    "blocked_X_left_top_no_training_sample": true,
+    "old_D0_D1_R2A_R2A2_excluded": true,
+    "unseen_letters_accessed": false
+  },
+  "sampling": {
+    "module": "tdyssey.native_rgb_r2c0_data",
+    "dataset_class": "R2C0Dataset",
+    "order_class": "R2C0WindowOrder",
+    "sampler_factory": "metadata_only_sampler_factory",
+    "seed": 5478,
+    "obvious_motion": {
+      "translation_image96_px_gte": 2.0,
+      "rotation_abs_deg_gte": 5.0,
+      "combine": "OR; overlappingcategories countedonce"
+    },
+    "target_obvious_fraction": 0.8,
+    "target_other_fraction": 0.2,
+    "balance": "letter -> independentfamily -> disjointtranslation/rotation/both subgroup andwindow queue",
+    "first_cycle_draws": 480,
+    "cycle_per_letter": 80,
+    "cycle_per_letter_obvious": 64,
+    "cycle_per_letter_other": 16,
+    "proposed_max_training_draws": 4800,
+    "cycles_are_new_RNG_orders_not_mechanical_repeats": true,
+    "old70_10_10_10_not_used": true
+  },
+  "evaluation": {
+    "module": "tdyssey.native_rgb_r2c0_evaluation",
+    "indices_path": "artifacts/native-rgb-supervised-20261029/r2c0/evaluation/indices.json",
+    "protocol_path": "artifacts/native-rgb-supervised-20261029/r2c0/evaluation/protocol.json",
+    "cohort_identity_path": "artifacts/native-rgb-supervised-20261029/r2c0/evaluation/preparation-audit.json",
+    "cohorts": {
+      "train_visual": 12,
+      "val_natural": 12,
+      "val_motion_at_most": 12
+    },
+    "seed": 5478,
+    "batch_size": 4,
+    "horizons": [
+      1,
+      4
+    ],
+    "H1_is_first_step_of_same_H4_rollout": true,
+    "max_native_batch_calls_per_model": 36,
+    "planned_models": [
+      "originalpublishedbaseline",
+      "finaltrainedmodel_or_lastcompleteearlystop"
+    ],
+    "max_native_batch_calls_total": 72,
+    "copy_last_requires_no_model": true,
+    "no_old3B_baseline_reuse_for_new_data": true,
+    "intermediate_validation_updates": [],
+    "future_callback_action_domain": "normalized[-1,1] exactly once; do not use oldabsolute-normalizing wrapper directly",
+    "finite_OOR": "persist nativefloat raw andstatus; unmodified rawfeedback; horizonhardfailurepenalties",
+    "nonfinite_shape_OOM": "stop all modelwork and retain raw/missing denominators",
+    "no_future_truth_state_geometry_in_feedback": true,
+    "no_model_result_selection_or_newacceptance_thresholds_in_R2C0": true,
+    "indices_sha256": "48829714f3739276a79f4f9740600c3e70d3831a5a6f4b8ea7bc96fda517bcb5",
+    "protocol_sha256": "7ca3270f441154fb7ab5e07b089e9a5485c4435459d3f18e23625e1016e5b35d",
+    "cohort_identity_file_sha256": "a02ebdaca2c4af4ed83b1bfa7d4f44d7bf5f61d16e9e1c464a343c1c02659359",
+    "frozen_cohort_identities": {
+      "train_visual": {
+        "cohort": "train_visual",
+        "data_manifest_sha256": "e8d78646c3869557ddc54a752addb0463e8ead05424ae1e9e03bd7cc211f4eb6",
+        "first480_draws_sha256": "712c61e19564d7bbfb42191afece4e60e11a4666e08e61c550807b0db45356d5",
+        "h1_catalogue_sha256": "cbac217adabe55ef1b6309dcbf4cbb1827514ea7354e86a2ba9df7fd9c2180c7",
+        "h4_catalogue_sha256": "153c296f4ef6ec92e0ea1bcb2928ea65706a12c2036e9030f20e9ab25518ccbb",
+        "indices_file_sha256": "48829714f3739276a79f4f9740600c3e70d3831a5a6f4b8ea7bc96fda517bcb5",
+        "protocol_file_sha256": "7ca3270f441154fb7ab5e07b089e9a5485c4435459d3f18e23625e1016e5b35d",
+        "split_plan_sha256": "0b05ad6ff820e34c0f4c6e3a0c961bee96da70d0adbd3f8c35e068d5861c79c0",
+        "window_ids_sha256": "82d3d770691883f874d3c9f50cb55cb62a9ba296e5d60d79ceb413f31a3ca92a"
+      },
+      "val_motion": {
+        "cohort": "val_motion",
+        "data_manifest_sha256": "e8d78646c3869557ddc54a752addb0463e8ead05424ae1e9e03bd7cc211f4eb6",
+        "first480_draws_sha256": "712c61e19564d7bbfb42191afece4e60e11a4666e08e61c550807b0db45356d5",
+        "h1_catalogue_sha256": "cbac217adabe55ef1b6309dcbf4cbb1827514ea7354e86a2ba9df7fd9c2180c7",
+        "h4_catalogue_sha256": "153c296f4ef6ec92e0ea1bcb2928ea65706a12c2036e9030f20e9ab25518ccbb",
+        "indices_file_sha256": "48829714f3739276a79f4f9740600c3e70d3831a5a6f4b8ea7bc96fda517bcb5",
+        "protocol_file_sha256": "7ca3270f441154fb7ab5e07b089e9a5485c4435459d3f18e23625e1016e5b35d",
+        "split_plan_sha256": "0b05ad6ff820e34c0f4c6e3a0c961bee96da70d0adbd3f8c35e068d5861c79c0",
+        "window_ids_sha256": "a39e72fa8b750d080c44a6863027150ed78a4b3e9e53a0bb1988df74fad5ae01"
+      },
+      "val_natural": {
+        "cohort": "val_natural",
+        "data_manifest_sha256": "e8d78646c3869557ddc54a752addb0463e8ead05424ae1e9e03bd7cc211f4eb6",
+        "first480_draws_sha256": "712c61e19564d7bbfb42191afece4e60e11a4666e08e61c550807b0db45356d5",
+        "h1_catalogue_sha256": "cbac217adabe55ef1b6309dcbf4cbb1827514ea7354e86a2ba9df7fd9c2180c7",
+        "h4_catalogue_sha256": "153c296f4ef6ec92e0ea1bcb2928ea65706a12c2036e9030f20e9ab25518ccbb",
+        "indices_file_sha256": "48829714f3739276a79f4f9740600c3e70d3831a5a6f4b8ea7bc96fda517bcb5",
+        "protocol_file_sha256": "7ca3270f441154fb7ab5e07b089e9a5485c4435459d3f18e23625e1016e5b35d",
+        "split_plan_sha256": "0b05ad6ff820e34c0f4c6e3a0c961bee96da70d0adbd3f8c35e068d5861c79c0",
+        "window_ids_sha256": "f6604984bb36a71e75a80bd640394b1ae9babac667569430b1706bb4dfe4bda5"
+      }
+    },
+    "actual_cohort_counts": {
+      "train_visual": 12,
+      "val_motion": 12,
+      "val_natural": 12
+    }
+  },
+  "future_budget_proposed": {
+    "execution_authorized": false,
+    "maximum_optimizer_attempts": 300,
+    "maximum_all_model_work_seconds": 1200.0,
+    "first_limit_stops": true,
+    "latest_new_optimizer_attempt_seconds": 900.0,
+    "initial_reserved_tail_seconds": 300.0,
+    "dynamic_tail": "increase if actualbaseline/finalestimatedeval+save/reload needs more; cutoff can only getearlier",
+    "time_scope": [
+      "modelconstruction_and_originalweightload",
+      "baselineH1H4",
+      "fixedloss_ifused",
+      "allmicrobatchforwardbackward_andoptimizerattempts",
+      "finalH1H4",
+      "checkpointsave",
+      "necessaryreloadandverification",
+      "failures_andcleanup"
+    ],
+    "no_guarantee_300_completed_updates": true,
+    "attempt_reservation_before_draw_andno_refunds": true,
+    "candidate_existing_budget_class": "FormalModelWorkBudget with explicit300/1200/900/300 parameters afternew authorization; no stagecreatednow",
+    "prior_global_ledger_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\native-rgb-cost-ledger.json",
+    "prior_global_ledger_sha256": "2729b06c8e565618624c65e1835701f2a37eabbcc9da0722c5bccad8bd7c40e6",
+    "prior_global_charged_attempts": 250,
+    "prior_global_charged_seconds": 868.484000000004,
+    "global_caps_attempts_seconds": [
+      3000,
+      5400.0
+    ],
+    "remaining_before_any_future_run": {
+      "attempts": 2750,
+      "seconds": 4531.515999999996
+    },
+    "proposal_is_subset_not_reset_or_reservation": true,
+    "historical_native1899_attempts_5352point516_seconds_separate": true
+  },
+  "future_checkpoint_policy_proposed": {
+    "kind": "last_complete_only_no_best_by_denoising_loss",
+    "baseline_parameters_reference": "originalimmutableasset+runtimealltensorhashes; do notcopyold250",
+    "save_boundaries": [
+      "finalcomplete_or_earlystopcleanboundary"
+    ],
+    "maximum_persistent_complete_payloads": 1,
+    "atomic_temporary_reserved_separately": true,
+    "reload_verification_only_if_time_reserved": true,
+    "full_state_required": [
+      "model",
+      "optimizer",
+      "scaler",
+      "scheduler",
+      "modelRNG",
+      "dataorderRNG_queues_cursor",
+      "prepared_input_pendingcursor",
+      "source_data_eval_config_identity",
+      "progress_and_chargedledgerlink"
+    ]
+  },
+  "runtime_preparation": {
+    "array_adapter_module": "tdyssey.native_rgb_r2c0_interfaces",
+    "array_adapter_class": "PreparedInputs",
+    "evaluation_array_bridge": "evaluate_prepared_cohort",
+    "legacy_train_directly_compatible": false,
+    "legacy_blockers": [
+      "last_only18/36guard",
+      "formal36and250/500guard",
+      "oldNativeRGBDataset/dataidentity schema",
+      "old4Asampler/eval pinsoldD0cohorts"
+    ],
+    "old4A_snapshots_and_files_unchanged": true,
+    "no_FunctionType_or_privateglobal_replacement": true,
+    "future_entry_and_real_model_budget_execution_guard": "not implemented/authorized inR2C0; must be explicit nextstage",
+    "frozen_sources_sha256": {
+      "tdyssey/native_rgb_r2c0_interfaces.py": "8a0fa3e07e4a8840d33bdc1c53c68f6384362de24c31ff51b26b38afd53c4633",
+      "tdyssey/native_rgb_r2c0_data.py": "fb5568216ed9955774158d8e9c6579947ef4ca9dc08b8bceca63f58294ef4839",
+      "tdyssey/native_rgb_r2c0_evaluation.py": "0ae5de733554ecf569538f3b2572f92b31c69a7281a59e373cd081e3c3d71de3",
+      "scripts/native_rgb_r2c0_evaluation.py": "3130755b59d649f3e0000e415fb2cfc2e9e30297eaf17dceb1f95c4fae94aa61"
+    },
+    "data_and_eval_identity_binding_complete": true,
+    "actual_joint_CPU_audit": "artifacts/native-rgb-supervised-20261029/r2c0/interface-joint-cpu-check.json",
+    "root_joint_CPU_audit": "artifacts/native-rgb-supervised-20261029/r2c0/root-joint-interface-audit.json",
+    "CPU_midmicro_restore_scope": "Data/RNG/queue/cursor only; not gradient/model resume. Real training checkpoints require a completed optimizer boundary plus full model/optimizer/scaler/scheduler/modelRNG.",
+    "prepared_state_checksum": "Covers identity, order RNG/queues/cursor, pending indices, micro cursor and delivered draws; changed pending rejected before order mutation"
+  },
+  "storage": {
+    "R2C0_stage_bytes_cap": 33554432,
+    "this_agent_persistent_bytes_cap": 3145728,
+    "combined_old_new_native_cap_bytes": 3221225472,
+    "atomic_reserve_bytes": 268435456,
+    "old_evidence_retained": true,
+    "new_checkpoints_and_predictionstorage_requires_nextstage_audit": true
+  },
+  "current_phase_resource_delta": {
+    "torch_imports": 0,
+    "weights_deserialized": 0,
+    "model_constructions": 0,
+    "GPU_CUDA_calls": 0,
+    "optimizer_attempts": 0,
+    "physics_controls": 0,
+    "environment_constructions": 0,
+    "closed_ledger_mutations": 0,
+    "server_jobs": 0,
+    "installs_downloads": 0
+  },
+  "unresolved_before_future_execution": [
+    "Parent must explicitly authorize any future model operation; this configuration is a proposal only.",
+    "Future runner must implement an explicit original-GPC predictor receiving normalized actions exactly once, with all-model-work budget checks before every call.",
+    "Future model/optimizer/training entry must consume the new saved-array interfaces; legacy train hard18/36 and250/500 guards remain incompatible and unchanged.",
+    "Future checkpoint save/reload must include full state at completed optimizer boundaries; CPU midmicro data restoration does not restore in-flight gradients.",
+    "Future real baseline/final evaluation latency and remaining disk must be checked under the authorized clock; cutoff can get earlier and300 completed updates are not promised.",
+    "Six seen letters and small selected cohorts do not establish unseen-shape generalization or complete contour coverage; keep shape unknowns and data gaps."
+  ]
+}

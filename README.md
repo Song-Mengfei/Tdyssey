@@ -21,6 +21,16 @@ imagined rollouts and policy training remain pending. GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
 
+## Letter world-model source archive
+
+The organized [world-model archive](world-model/README.md) contains the available
+local implementations, loss comparisons, negative results and HMF500 inspection
+app through 3 November 2026. Start with the [experiment matrix](world-model/docs/EXPERIMENT_MATRIX.md)
+and [reproduction guide](world-model/docs/REPRODUCIBILITY.md). It keeps historical
+source profiles separate; private datasets and checkpoints are not included.
+Run its commands from `world-model/`; the existing project entrypoints below
+remain separate.
+
 ## Start here
 
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)

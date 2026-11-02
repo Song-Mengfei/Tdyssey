@@ -1,0 +1,136 @@
+Tdyssey：训练导向的配置审批稿
+日期：2026-10-31（Asia/Singapore）
+状态：waiting_user_config_approval
+execution_authorized=false
+training_authorized=false
+review_only=true；没有运行入口、执行gate或用户批准记录；本目录不能当作获批运行配置加载。
+
+推荐方案与决策理由
+先保留已核验的原物理、96px/10Hz、4历史和12/2/24/24请求数值，重构独立事件策略与20帧/19动作序列接口；先审批实现，再单独审批最多7680控制的受控验证。验证只检查采样机制、动作因果和记录契约，不训练，不自动释放1500家族或后续训练。
+训练路线是A0原协议真历史H1基线（从首次评估起测H1/4/8/16），随后分别审批生成历史B4、B8、B16。H1形状已差则先分析单步；H1较好而长程漂移才优先推进生成历史课程。不要一次更改数据、动作幅度、损失、量化、采样步数、分辨率和架构。
+本稿纠正上轮结论：cal2有长程学习价值，H1较小不能否定H16；O/B封闭内孔不可达，不应当作必须补齐的采集缺陷。上轮原始报告保持原样，本稿另存修正判断，不以改标签让旧门槛通过。
+
+本轮完成了什么
+只读取父PROPOSAL.txt/TRAINING_DATA_AUDIT.json、实际源码、已有报告/文件尺寸；写本审查目录的文档和配置“说明对象”。物理调用0、模型/GPU调用0、优化更新0；未跑测试、未采新数据、未改源码/运行配置/旧报告/监控。旧tdyssey保持暂停。原审查和本轮源码身份见SOURCE_EVIDENCE.json；完成时重新核对其SHA。
+本目录CANDIDATE_CONFIG.review.json使用review文档类型，配置值在proposed_design中，不含可执行命令/执行gate；approval_record=null。未来获批后还须生成独立run/config/SHA与批准记录，不能把本文件复制到入口直接执行。
+
+1. 事实、未证实假设与当前数据的价值
+父审计同一组4真实历史+完整16未来的锚点，每字母3独立轨迹、138重叠窗口：
+字母       T       L       O       C       X       B
+H16平移中位图像px 5.093   3.786   4.431   6.500   6.443   6.371
+H16旋转中位deg   5.763   2.122  17.520  14.861   4.632  28.935
+平移/旋转中位数未必来自同一窗口；这些是实际真运动，不是预测结果或配对改善百分比。当前36条校准已看过，保留开发/回归，不能叫未见验证；未自动获准训练。
+645个push_intent请求实际距离中位11.96194世界px、H1物体位移中位.705994图像px，说明小步与当前请求策略相符，不证明原环境只能慢推。原12/2/24/24是采样策略而非原环境硬要求，本轮推荐保留以减少混杂因素，不据H1阈值盲目增幅。
+当前训练已是全参数、真实/弱噪4历史单目标残差MSE；UI却递推自身输出。H1圆化与长程漂移是两个问题。无证据说白背景已经主导梯度，或3步采样/量化是主因。O/B内孔接触不入外部可达分母，但输出图像的可见孔洞必须保持。
+
+2. 数据/任务契约
+定义a_t执行I_t→I_(t+1)。最大样本是I_(t-3)..I_(t+16)共20张真实RGB、a_(t-3)..a_(t+15)共19动作：4历史、3过去动作、16未来动作、16真未来帧。状态/几何/接触仅用于采样先验、标签和真值评估，披露特权使用；模型输入仅图像/动作，不加字母ID、运动头或几何模板。
+GPC递推第j步只读最近4图和3过去+当前这4动作；H1不能偷看更后的动作，H4/8/16用同一已知16动作的前缀。不改架构把16目标拼成新动作embedding。
+共同评估锚点必须整段19转换合法、同segment、逐帧索引连续且0.1s；不能跨reset/非法/缺帧。短合法前缀仍进入相应H1/H4/H8支持统计，不能拼接成H16。
+全合法N控制时带4历史的单H窗口数=N-H-2；N32时29/26/22/14，N64时61/58/54/46。公平四H共用H16锚点，分别最多14/46；窗口重叠不增加独立家族。
+真RGB/255为float32[0,1]，绝对动作/511*2-1一次。采样输出raw float32原样反馈，允许越界并记录；不在反馈端clip、修边或重映射。内部既有8bit量化保留。其[-1,1]量化roundtrip不自动说明输入范围错误，A0前要独立批准金样本对齐检查。
+
+动作的两种因果身份
+F（feedback_recorded）：每步可读当时真态生成下一请求。离线获得记录中的未来16实际动作是有效条件预测任务，但未来动作可能编码反馈控制器的未来观测，不能用该分数冒充在线已预知动作的能力。
+P（anchor_committed）：锚点时生成、签名、冻结16个绝对XY目标；记录生成时刻、anchor、完整序列SHA；后续不能按真态换目标。运行中距限/安全guard只能终止，不得裁目标后仍声称执行原计划。16动作全按原序执行才具备在线计划H16支持。
+在线只有当前鼠标目标时，明确假设“未来16步保持该绝对目标”；预定第8步切换/撤离可在锚点给出。用户临时改目标是新预测问题，不能声称原预测知道改动。新数据的24距离/变化限仅是采样支持域；当前UI可发更远绝对目标，首阶段不覆盖所有鼠标请求，不擅自给UI限幅。是否扩展动作域要看真实任务缺口再另批成对对照。
+分支整个家族同split；完整原构造+共同前缀重放，并比较15状态/4帧RGB/过去动作/时间及源SHA。公开snapshot不含solver cache，不用于宣称完全配对。旧新策略同初态后即可分叉时只叫“同初态策略效果对照”，不叫后来同历史预测对照。
+
+3. 最小重构与首个待批阶段
+运行物理始终pinned原PushTEnv.step：100Hz/.01s、solver10、PD100/20、KINEMATIC推杆、damping0；原几何/质量/惯量/摩擦/墙/碰撞全部不变，原非法>1世界px及其余判据不放宽。v6/2000Hz/solver50、速度投影、清速度、姿态修补均不进入候选。
+保留可靠观察/原始记录/原子存储/独立后台实现与身份核查；新策略不继承旧V1/V2，不临时替换旧类。新collector显式注入唯一策略；旧运行脚本、旧来源和视频保持历史原样。
+拟新文件（当前均未创建代码）：
+- tdyssey/event_requested_policy.py：独立FSM、P/F计划与事件确认，不改变物理。
+- tdyssey/event_collection_plan.py：家族/分支/姿态/事件/可达sector冻结与split检查。
+- tdyssey/event_contact_collector.py、scripts/event_contact_collect.py：显式策略注入，N32/N64及plan记录，复用原观察/存储/后台；记录与规划解耦。
+- tdyssey/native_rgb_sequence_data.py：唯一20/19序列目录、H1宽池/H16公共池、合法窗口/身份/家族去重。它同时承担采样分稿所称causal_rgb_windows职责，避免另造两个重叠加载器。
+- tdyssey/native_rgb_sequence_training.py、scripts/native_rgb_sequence_train.py：新A0/B会话与全参数/梯度/费用契约，隔离旧1499/6000硬编码入口。
+- tdyssey/native_rgb_sequence_rollout.py：不改底层sampler的16步适配、raw反馈、动作前缀与种子身份。
+- tdyssey/native_rgb_sequence_evaluation.py、scripts/event_contact_report.py：四H真历史/自反馈/基线、事件分母、可达覆盖、专属run报告与长程旋转展示。
+- tdyssey/native_rgb_image_loss_candidates.py：只有某独立C候选获批后才实现该项，不把全部loss同时打开。
+- tests/对应新模块：未来批准后写纯状态机/保存fixture/窗口/梯度路径检查；物理/模型实测分别受下面的有限矩阵约束，不能把它们藏在普通“检查”里。
+- 拟新tdyssey/event_phase_runtime.py及scripts/event_phase_background.py：从已核验后台提取/复用Job独立、launcher退出、原子状态和身份校验的最小逻辑，新CLI严格allowlist与新阶段批准记录。现background/phase.py:51-89硬编码旧root/phase/CLI，不能直接接新FSM；保留旧执行源不改，新增适配需mock身份/owned-child-stop验证，不能泛放任任意命令。
+- background阶段配置适配：仅获批新阶段才冻结新CLI/run/gate/批准SHA，保留原Job独立与launcher-exit证明。当前不创建/恢复任务。现UI不改，H16计划UI以后单独审批。
+每文件旧证据、行为差异与验证/失败含义见CONFIG_DIFF.tsv和附录A/B/C。任何源码/配置更改都先审批；实现也不自动包含物理或GPU验证权限。
+
+首批状态机参数（具体转换完整列于附录A）
+HISTORY=3真实hold控制；近/远初始化分别选择原表面18/33世界px staging（真实gap3/18），已到位直接ENTER；SEEK_STAGE<=8控制，到staging<=4世界px；ENTER<=12控制，选定真实正冲量>1e-8且本控制累计>=.05s、最后微步仍接触，法向<=45deg/点距<=24世界px，才进入CONTACT_RUN。接触统计>0与策略确认>1e-8分开。
+CONTACT_RUN_F主段16控制，lost连续3控制触发退出，wall_stall需真实OW+AO且位移<.1图像px/旋转<.1deg连续3控制；P活动期同类事件只观察不重规划。STOP_INTENT=2控制；WITHDRAW<=8，连续2控制无AO pair/正冲量且间隙>=3世界px才确认脱离；REACQUIRE路径4+entry8总<=12，不reset。E7紧凑链专用withdraw<=4/reacquire<=8，必须实际在一个H16中发生才算E7链支持；超时不加时、不换点重试。
+初始化候选表面间隙3/18世界px、75/25；推杆半径15/几何clearance.5不变；只能轨迹开始reset。边界原gap18–32保留，允许明确wall_probe意图，停止旧room<24就回避墙的策略；仍原非法终止，OW没发生只记wall_attempt。center场景最小wall gap>=64是新推荐未验证值。
+P首三分支：anchor推杆u、当前向内法向d和切向q，前8步共同u+12d；后8步保持u+12d、切换u+12q、撤离u-12d。切换量0/16.97/24世界px；还必须在commit前静态检查历史末动作到首目标的变化<=24及所有目标界限，不符则取消本次计划并保留失败，不裁目标。另有独立静止hold=u。保持目标不等于速度清零。E7另用完整预定4/4/8计划：前4向内u+12d、中4撤离u-12d、后8返回u+12d；其三分支共享前8，后8为返回/保持撤离点/转向u+12q。只有实际观察到接触→脱离→再接触才算E7链支持，不能拿普通P-H16替代。
+需要完整16控制主段的recipe还受ready_deadline=N-16约束；外层deadline优先于局部SEEK/ENTER上限，迟到记event_late终止并保留合法前缀，不能N32后缀不足还叫完成主段。所有新时限/比例是有限可证伪推荐，不是已验证最佳；沿用12/2/24/24不意味着策略无需审批。
+
+P1-I（建议先审批的实现范围）：上述采样/序列接口、记录适配与无物理/无模型fixture检查；物理控制0、GPU/模型0、更新0。训练器和C损失的编码可再单独批准，不要求一次全部实现。
+P1-V（独立审批才执行）：
+A=6字母×4新家族×旧冻结V2/新FSM×64=48尝试/3072控制；4家族分别近质心、正偏心、退出再接触、墙接近。两臂使用同冻结初态及初始化选择，分开记录策略真实动作，比较事件/超时/非法/H16支持，不追求大步。
+B=另外6×4家族×3预定分支×64=72尝试/4608控制；类型首次接触、偏心、E7连续脱离再接触、墙侧（近质心已由A覆盖）；E7使用4/4/8专用分支，其余使用8/8分支。分支共同前缀至少3真实控制，锚点按冻结规则最晚32，前缀全部重复重放计入64，不使用snapshot分叉。无完整匹配前缀的家族不能作因果分支，无替换。
+总48初始家族、120构造尝试、<=7680控制/76800子步/768模拟秒，模型/训练0；设计种子54781031（推荐，未运行）、全为design_probe开发数据不进新seen-val。每字母A/B边界意图各1/4，不称实际OW25%。
+假设：FSM避免未确认就推/entry折返，P承诺不被改写且在原24限内可完整执行；候选工程门槛是0身份/时间/动作篡改、每字母B至少3/4家族有完整P-H16。阈值是待批小样本工程条件，不能证明8事件充分、训练有效或模型性能。
+若身份/保存/未知工程失败，整阶段停止；原非法/预期事件超时保留准确partial，后续只走冻结尝试表，不补量。若P-H16不足、E7链或真实OW没出现，提交被否定的假设与证据，不自动加时、加幅或第三校准。完成主动回传后停止；不自动P2。
+阶段总输出<=256MiB（含原始证据/视频/日志），每写做原共享3GiB+256MiB原子reserve预检。按现64控raw均值/max外推约21–32MB，metadata约2.8MB；这不是压缩保证。硬上限可能提前停止，不删除旧数据救通过。
+
+4. 完整数据规模是另一个审批问题
+保持train18=ABCEFHIJLMOPSTUVXY、holdout8=DGKNQRWZ，本地先T/L/O/C/X/B；所有P1/cal1/cal2是开发，正式seen-val必须新家族。最终未见测试/保留字母在设计冻结后另批，不在本轮查看新样本。
+完整本地候选：每字母200train+50seen-val=1500独立初态家族，80%N32/20%N64。八事件配额、姿态/可达sector及H16事件支持目标完整见附录A；每字母train15/25/35/40/25/20/20/20，val4/6/9/10/6/5/5/5，不能只报累计frames/contacts。
+每家族至少目标一个“主事件前有4历史、随后完整16未来”的锚点；是否实际取得要按独立家族报告。E7长64不能自动证明链在一个H16内；N32理论14锚点不保证它们含事件。可达外轮廓8等弧sector，train/val按事件分别目标3–6/2–4sector，姿态8bin中目标至少4/2bin；几何路径unknown和不适用单列，封闭内孔不入分母。
+候选P/F=40/60（由预先指定的family流配额；每个实际锚点另按真实承诺认定，不靠事后标签凑数）；八事件各自分配见附录。train近墙但无OW意图15%、wall_probe10%，val取整合25.2%边界意图，实际OW仍另报。
+每字母再从预先分到P流的E6/E7选2train+1val的长64家族（train各E6/E7一、val选E7一）各3分支；baseline分支已计1500，额外36条记录/2304控制。总1536记录、1500家族、<=59904控制；18个独立分支前缀/54个分支结果，不叫1536独立场景。共同prefix的重复窗口去重，不删除原始尝试证据。
+基础1500全合法时train H1=42480、共同H16=24480，val H1=10620、共同H16=6120；每字母H16=4080/1020。额外分支上限train再1464H1/1104H16，去重/partial后需重建准确目录与训练配置，再交用户批准；不能拿上限直接启动。
+全部窗口一次/epoch，分层只排序、无replacement；batch内家族不重复，尾batch按实数权重，不drop/补重复。80/20是家族比例，不是窗口比例；长片段会贡献较多窗口和梯度。基线不额外改家族权重，报告实际事件/幅度/家族曝光；按家族归一权重是另一个待批候选。
+full-local新数据候选hard cap512MiB，先看P1实际编码成本再批；不假定1500一定可装下。若失败，保留失败/合法前缀，不能新增场景直到凑齐配额。
+服务器备选：若沿同每字母250家族扩到原18训练字母，总4500家族，基础172800控制；加每字母3个长家族三分支共108额外记录，合4608记录/179712控制。已获批本地6字母可按manifest复用一次，因此新增12字母为3000家族/3072记录/119808控制，不重复计算旧6。该规模、设备/空间和训练曝光均未批准，用户手动运行服务器；8保留字母仍不进训练。压缩率、样本量充分性和泛化均未知，不以服务器替代本地机制审查。
+
+5. 训练精确候选与梯度路径
+A0：冻结7499只加载model权重；SHA23cc0f847fe585f894a7528bd5db1ea3c8541228c6de4396c82f11ce373ce5e7，旧动态/.1半衰期训练身份披露；不恢复Adam/scaler旧状态。新optimizer/scaler/RNG/order，从0记录新阶段；模型不是重新随机初始化。
+全参数（预计8729827，实施时导出name/shape/requires_grad与参数集合SHA，optimizer集合精确一致），不解LoRA、不加运动头。AdamW lr1e-5/betas(.9,.999)/eps1e-8/wd.01；单参数组；amsgrad/maximize/foreach/fused/capturable/differentiable=false；无scheduler。FP32参数/Adam/残差归约，AMP FP16；GradScaler init128/growth2/backoff.5/interval2000；unscale后globalL2 clip1。micro4、target effective16；尾batch按实际m/B；AMPskip消耗该抽样并单列，连续16skip停止，OOM/非有限停止，不自动改batch/lr。
+raw目标sigma=clip(exp(N(-1.2,1.2²)),.002,20)，offset标准差.1、sigma_data.5；conditioners使用effective_sigma=sqrt(raw_sigma²+.1²)，噪声draw与edge门控仍按raw_sigma；真历史50%clean/50%weak，weak sigma loguniform[.002,.05]、history offset0。RGB/action一次归一化。训练seed5478及三独立派生RNG；eval固定5478/5479/5480三seed，不用best-of-three，不影响训练RNG。
+A0首提3完整epoch作为学习曲线审查；基准1500理想全16批为2655批/epoch、7965attempt，不是普遍固定批数。实际加入分支、去重/partial与family不重复batch后的order必须先冻结，准确batches/epoch×3再复批。不能几百步宣布路线失败，也不能按不收敛自动无限追加。
+初始化和每完整epoch末评四H，保留last+previous_epoch两完整checkpoint，各候选112MiB上限；不自动挑best。滚动last在四个去重quarter/epoch边界更新，epoch末轮换previous_epoch；每个atomic写用原reserve；可选weights-only导出36MiB，实际大小超限要停报，不丢optimizer伪称可恢复。默认供用户审阅最后完整epoch，模型选择规则变化另批。
+
+B4→B8→B16分别审批：每阶段候选3完整epoch，从用户选定上一阶段checkpoint继续Adam/scaler，不能每阶段偷偷reset。完整H16共同池作anchor，逐j=1..H真图监督。
+每epoch入口冻结当前student到teacher，记录权重/数据/源/seed/sampler身份；teacher整个epoch不变。teacher从4真实历史开始按同动作sample H-1次（3/7/15），原no_grad/量化保留、raw图detach进history。它是epoch-entry模型生成条件，不是每次更新后最新student的on-policy分布。
+student每j直接compute_model_output残差loss，有梯度；真未来只作target，不作生成history。L_B=.25 L_true_H1 + .75/H *sum_j L_residual(theta; detach(g_(j-1)), I_(t+j))。
+真历史分支保留50/50历史noise；generated分支不再叠weak noise，sigma_cond=None是明确的新推荐配置需批。每micro m、optimizer真实B：真分支乘.25m/B立即backward释放；每j乘.75m/(BH)立即backward释放；最后一次unscale/clip/step。不retain旧图；梯度不穿teacher/量化/先前生成图，不叫端到端BPTT。每个j直接更新同一共享student；H1/4/8/16是报告重点，所有中间步都有监督。
+每anchor A0/B4/B8/B16的有梯度target数=1/5/9/17；teacher三步denoise前向数=0/9/21/45，总sample-forward-equivalent=1/14/30/62。反向/推理耗时不同，不能直接把调用比当GPU秒倍率。基础24480公共anchor时每B理想1530批/epoch，3epoch4590attempt；同样以实际冻结order复批，不合并为自动四阶段授权。
+默认persistent_cache=0；单micro4×16帧raw仅6.75MiB RAM图像张量，全train16帧float32 cache约40.34GiB，不能装进3GiB。teacher刷新epoch即更换身份；未来若另批缓存，key要含teacher checkpoint、source/model/data/raw/anchor/actions/normalization/sampler/seed/dtype/H且版本变就失效，禁止validation缓存参与训练。
+
+实现可行性补充：generated history验证不能直接沿用旧conditioning_residual_loss的_batch，后者conditioning.py:97-111把整组5图限制0..1，会拒绝合法raw预测轻微负值。新sequence loss应分开history与clean_target：history只验finite/shape/dtype/detach及原始反馈身份；clean_target仍严格0..1；动作仍一次归一化。不改旧_batch、不clip预测去适配旧接口。A0可复用旧数学；B直接调用同一pinned conditioners/model_output完成明确新签名。teacher推荐torch.no_grad；若采用inference_mode桥，离开该上下文后要clone成普通detach张量才交student反向图，未来M1验证实际saved-for-backward路径，不能直接把inference张量塞入训练。
+线程/加载候选：首P1单CPU collector，避免并发混淆配对；训练torch threads=2、CPU loader workers=2、total prefetch_batches=2、frame cache16MiB/worker、state/aux cache8MiB/worker（RAM，不落盘）。旧R3B已有2线程/2workers/2prefetch及16/8MiB配置，新序列reader显式限制全局在途2批，不能继承后产生无界20帧缓存。GPU/CPU loader内存与时长须M1实测，OOM不自动改值。
+
+训练前另批的有限工程矩阵
+P3-I训练/评估实现也须单独批准（无GPU/物理），不含在首P1-I采样实现内。M-E仪器校准候选最多36个保存图像case：每字母4个位移0/.5/1/2imagepx及2个1/5deg旋转的已知变换，仅CPU测量；图像warp的插值误差单列，不能称原环境新真值或测量零误差。
+M0归一化/量化金样本：6字母×3sigma，两路direct residual重建d与实际Q(d)共36forward，另6×H1三步sampler18forward；共54sample-forward、0更新、0物理。代数oracle重建及Q(y)误差<=2/255，模型两路Q(d)对应容差1e-6；验证索引、动作、raw反馈及range。失败阻止A0，不自动改范围或去量化。
+M1-GPU：A0/B4/B8/B16各4optimizer attempts，同64个train anchor分4个16batch，工程隔离分支不进入正式epoch；16engineering attempts。含逐模式前后各一次固定loss save/reload检查，合最多1720microbatch调用/6880sample-forward-equivalent；其中有梯度训练调用与无梯度teacher/验收调用分列。54金样本另计。首OOM/非有限/漏梯度/真未来泄漏即停止，不加试配置。
+候选CUDA reserved上限6GiB，3060Ti8GiB并不保证可用；旧micro4已测约1.887GiB，仅是旧H1工程证据。参数+梯度+Adam下界约133MiB、teacher权重约33MiB不含activations/context；逐loss释放理论避免16反向图并存，尚未实测。不能关闭用户UI挤显存。
+先量每模式cold/warm、forward/backward/teacher/loader/save、max allocated/reserved与失败，再算真实epoch耗时区间供审批。4attempt不估稳定P95，不判断收敛。评估也计费用：固定396最大唯一锚点、3seed、16步×3denoise，每model-version上限57024 sample-forward；这只包含16步自反馈及其同身份的首步H1复用，整段TF-H1曲线不在此预算，另测须先审批；最初冻结7499及A0三epoch最多4个不同权重版本为228096，不再加跑等价t0。只有身份/seed/上下文完全一致才可复用已算冻结基线；新数据须新算。M1不含这些正式评估，必须在A0审批时分别列model-call预算。
+
+形状/推杆loss独立备选
+基线L0是现有FP32 residualMSE。先测灰/蓝/背景损失和梯度贡献；不凭白底像素多就断言主导。
+C-gray：L0+.25*灰mask归一化残差MSE，所有sigma；C-blue：L0+.10*蓝mask归一化残差MSE，所有sigma；二者各独立对照。
+C-edge：d_theta=cskip*x+cout*Ftheta可微重建，L0+.05*1[sigma<=.05]*边界带内Sobel smoothL1，beta .02；灰轮廓膨胀2减腐蚀2、排除蓝mask膨胀1，原offset.1仍在。完整公式、空mask处理、sigma和权重见附录B。mask只由train cleanRGB校准冻结SHA，用于loss/评估，不给网络/不修输出。
+每个C如批准，用同数据/初始化/seed/完整曝光3epoch，只变一个因子，不与B课程同时首次改变。3/8/16denoise、去量化、96→128、全BPTT、其他初始化均为另审备选，不纳入主方案。所有权重/阈值尚未证明有效。
+
+6. 四长度验收：目标与本阶段可证明的事
+P1只能证明事件/动作承诺/时间线工程，不能证明模型准确；M0/M1只能证明数值/梯度/内存及有限吞吐，不证明收敛；A0/B才用独立seen-val比较预测。每阶段有自己的失败含义，不将工程计数冒充模型结果。
+未来模型评估同一真实4历史、同一动作前缀、同一seed/batchcontext：真历史H1仅锚点第一步（与自反馈首步完全同身份时复用，不另跑16次TF曲线）、仅t有真实历史的纯自反馈1..16、copy-last、冻结7499（跨物理参考）和候选。teacher-forced H1@t+16不是开环H16。动作分支必须有各自真实未来，仅换输入动作的输出差异不能证明因果预测正确。
+自然集300家族各1冻结公共H16锚点，另最多96压力锚点，唯一上限396；自然与压力分开。固定3seed逐个报告/平均、不选最好；每家族聚合所有锚点/分支/seed，字母等权，2000次family cluster bootstrap，seed5478。重叠窗口和分支不独立重采。
+每H报告物体/蓝推杆位置、对称角与轮廓边缘角误差、原位/刚体对齐后轮廓、O/C棱角、孔洞/连通性/碎片、时间坏例首次步/持续时间、边界/真实接触、可测/遮挡/对称unknown。真未来仅评估，offline pose fit不改输出。
+候选任务容差（未证明、审批前不当自动通过规则）：物体质心P50 H1/4/8/16=.5/1/1.5/2 imagepx、P90=1/2/3/4；蓝杆P90=1/1.5/2/2.5；角误差按对称性及r_image*angle_rad换算边缘位移，P90同1/2/3/4imagepx。轮廓均距P90<=1px、95%轮廓距<=2px，O/C可见棱角匹配P90<=1px。依据是96/512尺度和可见像素分辨率，长程放宽幅度是设计取舍，不是实验证实最优。
+可见非遮挡孔洞>=4像素时孔数差0；新增无关>=4像素碎片记失败；真蓝杆可见>=2像素却预测消失记失败；每中间帧都检查。unknown不能遮住明显消失/碎裂或非有限生成失败。0.1s为帧级事件容差候选，不能声称RGB定位.01s接触。
+copy-last可能满足小运动H1绝对容差，必须同时看真实动态分层、分支正确性、相对基线。候选相对20%改善+95%家族配对区间正向+超过2倍仪器校准误差，仅待批“实际效果”目标；不是数据删除条件。指标无法分辨亚像素差异时结论不可判定，不能扩大阈值让结果通过。完整unknown/仪器局限见附录C。
+三个分母并列：全冻结尝试/实际执行与费用；合法连续片段/各H与共同H16及事件支持家族；训练实际抽样/重复曝光/有梯度目标/无梯度生成帧。不能以contacts或累计frames代替独立事件家族。
+旋转视频可按真实H4>=5deg/H8>=10deg/H16>=15deg展示，标明所用H及H1幅度；这是展示分类候选，不是训练准入/模型成功门槛。cal2 O/C/B有长程旋转，不再因H1<5度全叫不可用。本轮未执行模型，不生成假预测图。
+新报告只写新run/checkpoint/cohort目录，索引绑定run/config/source/raw/actions/checkpoint/sampler/normalization/seed和编码SHA；不覆盖旧cal1/cal2视频。完整指标流式计算，预先冻结<=12诊断锚点仅保存seed5478两模型16帧raw（约42.47MB）；其他seed/全体未保留图像必须记not_retained、保留身份与指标，不假称全量raw已存。全输出保存要另批空间。
+
+7. 容量、成本与批准边界
+实际cal2 18条N64 raw合3220979B、metadata415042B，raw均178943B/max263739B；仅是现小样本。1500基础80/20的未压缩RGB1633996800B；含36分支1536条净RGB1698693120B。以现压缩外推含metadata约203–282MB，复杂事件/新字母可能不同，不是保证。
+候选预算：审查16MiB、P1全部256MiB、full-local数据512MiB、2完整checkpoint×112MiB、可选weights36MiB、新训练/评估报告128MiB、原子reserve256MiB，全部1428MiB。旧共享快照1643309333B+1428MiB=3140675861B，距3GiB名义余80549611B。这1428MiB预算只覆盖一个活动A0训练阶段的两完整checkpoint和一份128MiB报告，不覆盖同时保留A0+B4+B8+B16所有阶段产物。若四阶段各保留两完整checkpoint和一份128MiB报告，且weights导出只算一次，快照总上限将为4247972117B，超3GiB达1026746645B；C候选还会追加。不得因此暗删旧阶段或覆盖历史；B/C前必须叠加已保留数据重算，提交获批保留/外存/服务器策略或更小scope，原3GiB不自动扩大。它是快照算术，不是当前全盘实扫；实际源码/日志变化和额外模型都会占用，实施前全旧根+新根预检，不足则停报，不自动删历史/减少证据/加预算。现6000/7499继续保留。
+服务器4608条的净RGB约5.096GB，遥测/模型/缓存/报告另计；本机3GiB不因此扩大。任何服务器数据/训练必须另审、用户手动运行。
+GPU小时没有本轮实测，不承诺“几分钟/几小时”。旧epoch总流水线1456.531s含工程评估，不直接缩放成新课程时长。有限M1给吞吐和内存区间后，由用户决定阶段epoch/device；追加训练或更改配置一律先批。
+
+8. 分阶段批准顺序与仍需决定的事项
+R0（当前）仅本设计文档，已完成；P1-I代码/接口实现另批；P1-V上述7680控制另批；P2-D采样实际数据规模及精确配置另批；P3-I训练评估实现另批；M-E测量仪器、M0/M1 GPU调用/工程更新另批；A0数据目录/准确epoch与评估预算另批；B4、B8、B16分别另批；各C候选/服务器/保留测试另批。STAGE_DEPENDENCIES.review.json明确依赖，没有“通过就自动下一步”。
+未解决但已经明确：事件超时/初始gap/P:F/32:64/sector与姿态目标是否实际够；E7紧凑链与固定P计划在24限内可行性；完整1500规模是否必要/容量允许；指标亚像素分辨率；3epoch/lr/teacher刷新/25:75比例是否足够；形状loss权重、量化/3denoise影响；3060Ti真实吞吐/显存和服务器收益。上述数值全为可审推荐，不伪造已验证结果。
+父聊天先审本文与完整diff再展示用户。无需用户重复确认大方向，但任何具体配置变更/实现/新实验须明确批准。回传后本聊天停在waiting_user_config_approval，不实施、不续跑、不恢复监控。
+
+完整配置差异表见下节；采样/训练/评估细节全文作为附录，均属于本审批稿，保留源证据和数值的未验证标记。

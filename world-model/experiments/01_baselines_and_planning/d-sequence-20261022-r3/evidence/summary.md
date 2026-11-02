@@ -1,0 +1,10 @@
+# Two failed D states: matched revision 2/3 recovery comparison
+
+| Revision | Scene | Result | Controls new/total | Peak/final coverage | Position px start/final | Angle deg start/final | RMS start/final |
+|---|---|---|---|---|---|---|---|
+| 2 | 100000 | control_budget | 140/300 | 0.819795/0.819795 | 5.242/0.931 | 103.041/9.973 | 82.206/9.160 |
+| 2 | 100200 | control_budget | 140/300 | 0.750035/0.750035 | 1.120/4.620 | 102.088/12.559 | 81.613/12.210 |
+| 3 | 100000 | control_budget | 140/300 | 0.729963/0.700424 | 5.242/8.629 | 103.041/8.314 | 82.206/11.334 |
+| 3 | 100200 | search_budget | 138/298 | 0.784122/0.764457 | 1.120/6.502 | 102.088/7.856 | 81.613/9.524 |
+
+Independent audit: passed. Frozen source copies checked per version; no current-code substitution for the first version. Not reset or held-out successes.

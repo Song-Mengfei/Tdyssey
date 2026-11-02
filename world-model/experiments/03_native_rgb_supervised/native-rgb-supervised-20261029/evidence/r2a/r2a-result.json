@@ -1,0 +1,966 @@
+{
+  "kind": "native-rgb-R2A512-probe-result.v1",
+  "stage": "R2A",
+  "created_at_utc": "2026-10-29T07:47:46.258179+00:00",
+  "authorized_stage_evidence_complete": true,
+  "physical_collection_complete": true,
+  "callback_sent": true,
+  "outcome": "sole_damping_intervention_confirms_velocity_memory_and_larger_motion_but_coasting_contact_and_letter_gaps_need_parent_acceptance",
+  "planned_slots": 64,
+  "attempted_slots": 64,
+  "completed_slots": 64,
+  "failed_slots": 0,
+  "new_charged_controls": 512,
+  "new_completed_controls": 512,
+  "physical_substeps": 5120,
+  "actual_initial_and_non_damping_equal_pairs": 32,
+  "raw_frames": 576,
+  "complete_raw_controls": 512,
+  "valid_H1_windows": 320,
+  "valid_H4_endpoint_windows": 128,
+  "summaries_by_protocol": {
+    "P0-frozen": {
+      "all_controls": {
+        "planned": 256,
+        "observed_complete": 256,
+        "missing_planned": 0,
+        "valid_windows": 256,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 256,
+          "measured": 256,
+          "missing": 0,
+          "min": 0.0,
+          "median": 0.09604444743884155,
+          "p95": 0.7273913601261677,
+          "max": 0.9353549721969963,
+          "counts_gte": {
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "8": 0
+          }
+        },
+        "rotation_deg": {
+          "total": 256,
+          "measured": 256,
+          "missing": 0,
+          "min": 0.0,
+          "median": 0.14722368201588443,
+          "p95": 2.8350637155607807,
+          "max": 3.933050342957999,
+          "counts_gte": {
+            "5": 0,
+            "15": 0
+          }
+        },
+        "contact_counts": {
+          "False": 75,
+          "True": 181
+        },
+        "object_wall_contact_counts": {
+          "False": 234,
+          "True": 22
+        },
+        "boundary_process_counts": {
+          "interior": 96,
+          "boundary_other": 105,
+          "approaching_boundary_geometry": 32,
+          "along_near_boundary_geometry": 9,
+          "observed_wall_contact_stall": 4,
+          "leaving_boundary_geometry": 9,
+          "near_wall_contact_stall_proxy": 1
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 14
+      },
+      "h1_windows": {
+        "planned": 160,
+        "observed_complete": 160,
+        "missing_planned": 0,
+        "valid_windows": 160,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 160,
+          "measured": 160,
+          "missing": 0,
+          "min": 0.0,
+          "median": 0.14628653252031365,
+          "p95": 0.9166305315451695,
+          "max": 0.9353549721969963,
+          "counts_gte": {
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "8": 0
+          }
+        },
+        "rotation_deg": {
+          "total": 160,
+          "measured": 160,
+          "missing": 0,
+          "min": 0.0,
+          "median": 0.28270162892177697,
+          "p95": 3.0104852556358432,
+          "max": 3.933050342957999,
+          "counts_gte": {
+            "5": 0,
+            "15": 0
+          }
+        },
+        "contact_counts": {
+          "True": 125,
+          "False": 35
+        },
+        "object_wall_contact_counts": {
+          "False": 139,
+          "True": 21
+        },
+        "boundary_process_counts": {
+          "interior": 60,
+          "approaching_boundary_geometry": 19,
+          "along_near_boundary_geometry": 8,
+          "observed_wall_contact_stall": 4,
+          "boundary_other": 62,
+          "leaving_boundary_geometry": 6,
+          "near_wall_contact_stall_proxy": 1
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 14
+      },
+      "h4_windows": {
+        "planned": 64,
+        "observed_complete": 64,
+        "missing_planned": 0,
+        "valid_windows": 64,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 64,
+          "measured": 64,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.1379907108259226,
+          "p95": 2.663813998119917,
+          "max": 2.670776858368176,
+          "counts_gte": {
+            "1": 36,
+            "2": 13,
+            "3": 0,
+            "4": 0,
+            "8": 0
+          }
+        },
+        "rotation_deg": {
+          "total": 64,
+          "measured": 64,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.7486934307965738,
+          "p95": 9.375067786964335,
+          "max": 11.075542436567977,
+          "counts_gte": {
+            "5": 16,
+            "15": 0
+          }
+        },
+        "contact_counts": {
+          "True": 53,
+          "False": 11
+        },
+        "object_wall_contact_counts": {
+          "False": 54,
+          "True": 10
+        },
+        "boundary_process_counts": {
+          "interior": 24,
+          "approaching_boundary_geometry": 16,
+          "along_near_boundary_geometry": 6,
+          "leaving_boundary_geometry": 5,
+          "boundary_other": 12,
+          "near_wall_contact_stall_proxy": 1
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 14
+      }
+    },
+    "P1-damping1-candidate": {
+      "all_controls": {
+        "planned": 256,
+        "observed_complete": 256,
+        "missing_planned": 0,
+        "valid_windows": 256,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 256,
+          "measured": 256,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.4083305535393151,
+          "p95": 4.269633283513852,
+          "max": 7.3635929211645745,
+          "counts_gte": {
+            "1": 148,
+            "2": 85,
+            "3": 43,
+            "4": 31,
+            "8": 0
+          }
+        },
+        "rotation_deg": {
+          "total": 256,
+          "measured": 256,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.6654941782611765,
+          "p95": 11.375919730688643,
+          "max": 13.725346019660387,
+          "counts_gte": {
+            "5": 81,
+            "15": 0
+          }
+        },
+        "contact_counts": {
+          "True": 126,
+          "False": 130
+        },
+        "object_wall_contact_counts": {
+          "False": 206,
+          "True": 50
+        },
+        "boundary_process_counts": {
+          "interior": 102,
+          "approaching_boundary_geometry": 38,
+          "along_near_boundary_geometry": 33,
+          "boundary_other": 37,
+          "leaving_boundary_geometry": 43,
+          "observed_wall_contact_stall": 3
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 14
+      },
+      "h1_windows": {
+        "planned": 160,
+        "observed_complete": 160,
+        "missing_planned": 0,
+        "valid_windows": 160,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 160,
+          "measured": 160,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.8615675264422813,
+          "p95": 4.746937018127187,
+          "max": 7.3635929211645745,
+          "counts_gte": {
+            "1": 112,
+            "2": 77,
+            "3": 43,
+            "4": 31,
+            "8": 0
+          }
+        },
+        "rotation_deg": {
+          "total": 160,
+          "measured": 160,
+          "missing": 0,
+          "min": 0.0,
+          "median": 1.6654941782611765,
+          "p95": 12.049885674231351,
+          "max": 13.725346019660387,
+          "counts_gte": {
+            "5": 57,
+            "15": 0
+          }
+        },
+        "contact_counts": {
+          "True": 45,
+          "False": 115
+        },
+        "object_wall_contact_counts": {
+          "False": 122,
+          "True": 38
+        },
+        "boundary_process_counts": {
+          "interior": 66,
+          "along_near_boundary_geometry": 28,
+          "leaving_boundary_geometry": 30,
+          "approaching_boundary_geometry": 12,
+          "observed_wall_contact_stall": 3,
+          "boundary_other": 21
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 13
+      },
+      "h4_windows": {
+        "planned": 64,
+        "observed_complete": 64,
+        "missing_planned": 0,
+        "valid_windows": 64,
+        "invalid_or_unverified_windows": 0,
+        "translation_image96_px": {
+          "total": 64,
+          "measured": 64,
+          "missing": 0,
+          "min": 0.0,
+          "median": 7.446270105769125,
+          "p95": 20.315956027636783,
+          "max": 27.642671443629983,
+          "counts_gte": {
+            "1": 55,
+            "2": 55,
+            "3": 52,
+            "4": 45,
+            "8": 30
+          }
+        },
+        "rotation_deg": {
+          "total": 64,
+          "measured": 64,
+          "missing": 0,
+          "min": 0.0,
+          "median": 6.62497866084991,
+          "p95": 47.534866128038175,
+          "max": 54.901384078641506,
+          "counts_gte": {
+            "5": 33,
+            "15": 24
+          }
+        },
+        "contact_counts": {
+          "True": 35,
+          "False": 29
+        },
+        "object_wall_contact_counts": {
+          "False": 48,
+          "True": 16
+        },
+        "boundary_process_counts": {
+          "interior": 25,
+          "leaving_boundary_geometry": 20,
+          "along_near_boundary_geometry": 7,
+          "approaching_boundary_geometry": 4,
+          "boundary_other": 8
+        },
+        "actual_independent_families": 16,
+        "actual_contact_independent_families": 13
+      }
+    }
+  },
+  "joint_target_support": {
+    "all_controls": {
+      "P0-frozen": {
+        "total": 256,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "translation_dominant_4to8": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "rotation_dominant_5to15": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "translation_gte2": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "rotation_gte5": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          }
+        }
+      },
+      "P1-damping1-candidate": {
+        "total": 256,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 20,
+            "with_AO_contact": 15,
+            "without_AO_contact": 5,
+            "with_object_wall_contact": 8,
+            "independent_family_count": 8,
+            "letters": [
+              "B",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          },
+          "translation_dominant_4to8": {
+            "count": 16,
+            "with_AO_contact": 3,
+            "without_AO_contact": 13,
+            "with_object_wall_contact": 8,
+            "independent_family_count": 3,
+            "letters": [
+              "L",
+              "T"
+            ]
+          },
+          "rotation_dominant_5to15": {
+            "count": 34,
+            "with_AO_contact": 14,
+            "without_AO_contact": 20,
+            "with_object_wall_contact": 1,
+            "independent_family_count": 6,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "X"
+            ]
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 18,
+            "with_AO_contact": 7,
+            "without_AO_contact": 11,
+            "with_object_wall_contact": 6,
+            "independent_family_count": 3,
+            "letters": [
+              "B",
+              "O"
+            ]
+          },
+          "translation_gte2": {
+            "count": 85,
+            "with_AO_contact": 38,
+            "without_AO_contact": 47,
+            "with_object_wall_contact": 24,
+            "independent_family_count": 12,
+            "letters": [
+              "B",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          },
+          "rotation_gte5": {
+            "count": 81,
+            "with_AO_contact": 35,
+            "without_AO_contact": 46,
+            "with_object_wall_contact": 11,
+            "independent_family_count": 9,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "X"
+            ]
+          }
+        }
+      }
+    },
+    "h1_windows": {
+      "P0-frozen": {
+        "total": 160,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "translation_dominant_4to8": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "rotation_dominant_5to15": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "translation_gte2": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "rotation_gte5": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          }
+        }
+      },
+      "P1-damping1-candidate": {
+        "total": 160,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 15,
+            "with_AO_contact": 10,
+            "without_AO_contact": 5,
+            "with_object_wall_contact": 7,
+            "independent_family_count": 6,
+            "letters": [
+              "B",
+              "L",
+              "T",
+              "X"
+            ]
+          },
+          "translation_dominant_4to8": {
+            "count": 16,
+            "with_AO_contact": 3,
+            "without_AO_contact": 13,
+            "with_object_wall_contact": 8,
+            "independent_family_count": 3,
+            "letters": [
+              "L",
+              "T"
+            ]
+          },
+          "rotation_dominant_5to15": {
+            "count": 18,
+            "with_AO_contact": 1,
+            "without_AO_contact": 17,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 4,
+            "letters": [
+              "B",
+              "C",
+              "L"
+            ]
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 18,
+            "with_AO_contact": 7,
+            "without_AO_contact": 11,
+            "with_object_wall_contact": 6,
+            "independent_family_count": 3,
+            "letters": [
+              "B",
+              "O"
+            ]
+          },
+          "translation_gte2": {
+            "count": 77,
+            "with_AO_contact": 30,
+            "without_AO_contact": 47,
+            "with_object_wall_contact": 23,
+            "independent_family_count": 12,
+            "letters": [
+              "B",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          },
+          "rotation_gte5": {
+            "count": 57,
+            "with_AO_contact": 14,
+            "without_AO_contact": 43,
+            "with_object_wall_contact": 8,
+            "independent_family_count": 8,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "X"
+            ]
+          }
+        }
+      }
+    },
+    "h4_windows": {
+      "P0-frozen": {
+        "total": 64,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 8,
+            "with_AO_contact": 8,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 5,
+            "letters": [
+              "L",
+              "O",
+              "T"
+            ]
+          },
+          "translation_dominant_4to8": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "rotation_dominant_5to15": {
+            "count": 3,
+            "with_AO_contact": 3,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 2,
+            "letters": [
+              "C",
+              "L"
+            ]
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 1,
+            "with_AO_contact": 1,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 1,
+            "letters": [
+              "O"
+            ]
+          },
+          "translation_gte2": {
+            "count": 13,
+            "with_AO_contact": 13,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 6,
+            "letters": [
+              "L",
+              "O",
+              "T"
+            ]
+          },
+          "rotation_gte5": {
+            "count": 16,
+            "with_AO_contact": 16,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 4,
+            "independent_family_count": 7,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "X"
+            ]
+          }
+        }
+      },
+      "P1-damping1-candidate": {
+        "total": 64,
+        "actual_goals": {
+          "translation_dominant_2to4": {
+            "count": 3,
+            "with_AO_contact": 1,
+            "without_AO_contact": 2,
+            "with_object_wall_contact": 3,
+            "independent_family_count": 1,
+            "letters": [
+              "B"
+            ]
+          },
+          "translation_dominant_4to8": {
+            "count": 2,
+            "with_AO_contact": 0,
+            "without_AO_contact": 2,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 1,
+            "letters": [
+              "L"
+            ]
+          },
+          "rotation_dominant_5to15": {
+            "count": 0,
+            "with_AO_contact": 0,
+            "without_AO_contact": 0,
+            "with_object_wall_contact": 0,
+            "independent_family_count": 0,
+            "letters": []
+          },
+          "mixed_gte2px_gte5deg": {
+            "count": 33,
+            "with_AO_contact": 20,
+            "without_AO_contact": 13,
+            "with_object_wall_contact": 6,
+            "independent_family_count": 10,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          },
+          "translation_gte2": {
+            "count": 55,
+            "with_AO_contact": 34,
+            "without_AO_contact": 21,
+            "with_object_wall_contact": 15,
+            "independent_family_count": 14,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          },
+          "rotation_gte5": {
+            "count": 33,
+            "with_AO_contact": 20,
+            "without_AO_contact": 13,
+            "with_object_wall_contact": 6,
+            "independent_family_count": 10,
+            "letters": [
+              "B",
+              "C",
+              "L",
+              "O",
+              "T",
+              "X"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "source_and_original_ledgers_unchanged": true,
+  "model_ledger_closed_and_byte_identical": true,
+  "cumulative_supervised_controls": 40192,
+  "cumulative_all_native_controls": 74752,
+  "new_model_loads": 0,
+  "new_native_inference_calls": 0,
+  "new_GPU_work": 0,
+  "new_optimizer_attempts": 0,
+  "new_server_jobs": 0,
+  "new_upload_packages": 0,
+  "new_unseen_access": 0,
+  "protocol_final_selection": null,
+  "R2B_executed": false,
+  "R2B_authorized": false,
+  "formal_resampling_executed": false,
+  "training_executed": false,
+  "old_unused320_spent": false,
+  "old_evidence_deleted": false,
+  "raw96_lossless_videos": 64,
+  "paired_1x_review_videos": 32,
+  "native_frames_per_slot": 9,
+  "physical_span_seconds_per_slot": 0.8,
+  "encoded_span_seconds_per_slot": 0.9,
+  "fixed_penetration_threshold": 2,
+  "max_substep_penetrations": [
+    1.8470413904870213,
+    1.5944444533349706,
+    0.5058420460165394
+  ],
+  "passed_current_probe_quality": true,
+  "sampling_acceptance_claimed": false,
+  "WM_shape_or_prediction_improvement_claimed": false,
+  "storage_snapshot": {
+    "at_utc": "2026-10-29T07:47:46.252181+00:00",
+    "label": "final-report-before-callback",
+    "combined_bytes": 2126050553,
+    "atomic_reserve_bytes": 268435456,
+    "combined_limit_bytes": 3221225472,
+    "r2a_artifact_bytes": 30666493,
+    "r2a_limit_bytes": 134217728,
+    "reserve_next_bytes": 1048576,
+    "disk_free_bytes": 18123100160,
+    "files": 5056,
+    "passed": true,
+    "kind": "R2A-final-storage-and-resources.v1",
+    "qualification": "Metadata snapshot before this small audit/result/callback files; 1MiB explicit finalization headroom is reserved in both limits.",
+    "source_frozen_unchanged": true,
+    "original_resource_ledgers_unchanged": true,
+    "model_ledger_byte_identical_to_prior": true,
+    "original_model_ledger_sha256": "2729b06c8e565618624c65e1835701f2a37eabbcc9da0722c5bccad8bd7c40e6",
+    "new_physics_controls": 512,
+    "cumulative_supervised_controls": 40192,
+    "cumulative_all_native_controls": 74752,
+    "model_loads": 0,
+    "native_inference_calls": 0,
+    "GPU_work": 0,
+    "optimizer_attempts": 0,
+    "old_unused320_spent": false,
+    "old_evidence_deleted": false,
+    "unseen_shapes_accessed": false,
+    "R2B_executed": false,
+    "training_executed": false
+  },
+  "evidence": {
+    "REPORT.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\REPORT.md",
+      "sha256": "1cce412573f88d8cf50e75548daeaf42e22c38553a176742c646570cf0ba8372"
+    },
+    "PARENT_REVIEW.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\PARENT_REVIEW.md",
+      "sha256": "f47f94362c4e7296bb0035619c5f52b0607c5c7d9cab1b381d20740ba9d27932"
+    },
+    "frozen-config.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\frozen-config.json",
+      "sha256": "0c3d32d70039ae10d4e5b83985b43d7f55d8b874eb7ad636202b3ac0c3b68ab7"
+    },
+    "frozen-requests.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\frozen-requests.json",
+      "sha256": "d40e793404abf3fc6ac7c2322c11094ef3f8906f50943ab2638a1e36876b8485"
+    },
+    "source-identity.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\source-identity.json",
+      "sha256": "a66c03b19b83187a815b70297f73b6ad48a26913ef54bb30af7c2787d0b6b842"
+    },
+    "runtime-identity.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\runtime-identity.json",
+      "sha256": "9858d7fc33e555f4c1d5e13c42de8d345b7d292cb5c080f8af9eeea09d3de353"
+    },
+    "preflight-checks.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\preflight-checks.json",
+      "sha256": "dd0f3acb5967972be9b8112067a708f2d55f61da65ac12534c93fdfa3a456585"
+    },
+    "resource-ledger.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\resource-ledger.json",
+      "sha256": "a5a3b9104f512d6f96f107284d888e9a21ee1ab6cd7398c81d7c672fe4210df8"
+    },
+    "index.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\index.json",
+      "sha256": "815a4a06ac5faccc214af3d43684352ce1a40a3912ddcf2d8b12334cafd3a9fc"
+    },
+    "root-gate-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\root-gate-review.json",
+      "sha256": "730f3dbed99c12e8c1c7c982379920758fba55b1f6daf3e15d942ee8943a4970"
+    },
+    "root-integrity-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\root-integrity-review.json",
+      "sha256": "acd56c9063394200778c73989d79ed49f60db177a09446cbf4cba75018ebc734"
+    },
+    "old-data-reference-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\old-data-reference-review.json",
+      "sha256": "31b54d55a8e2884d82bbf43de4e0e11301675270a337fc11a666db58084cb940"
+    },
+    "joint-target-support.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\joint-target-support.json",
+      "sha256": "3acb0d7bb456ceb322740afc57d282bcc34e3e9d5ce2aad39eec946085a72468"
+    },
+    "storage-and-resource-audit.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\storage-and-resource-audit.json",
+      "sha256": "2a53de0e3ba0f37d0c430c72919036f1b7b867d367919fe4c0d168b56f6122b0"
+    },
+    "report/r2a-report.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\report\\r2a-report.json",
+      "sha256": "c6df36acbae907720b63be330c905c42c59e2694d28e240702fe8290c38455fc"
+    },
+    "report/DIAGNOSIS.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\report\\DIAGNOSIS.md",
+      "sha256": "593fc7135144070e0da9f3c6271f2c4f2a278ae5393f02e36f7252399d7b13ad"
+    },
+    "report/actual-summary.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\report\\actual-summary.json",
+      "sha256": "3c02bf1348beaf650f1fee7c296a396a6d5f33e4c267706ea6af7929ee921515"
+    },
+    "telemetry-audit/statistics.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\telemetry-audit\\statistics.json",
+      "sha256": "2c00d6adbe600af68ec9a3224bdf0656f3e573576f7ab2a4e0adba968b7154f2"
+    },
+    "telemetry-audit/REPORT.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\telemetry-audit\\REPORT.md",
+      "sha256": "a202df489041507919382a08fbb3a4876d50e0d74a4d7d08ed1aef86eccaaf08"
+    },
+    "telemetry-audit/signed-contact-support.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\telemetry-audit\\signed-contact-support.json",
+      "sha256": "0564f1011642afcd8498e24d2620829d41fa5ad30e499c63b2265c2471ebfd21"
+    },
+    "media/index.html": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\media\\index.html",
+      "sha256": "9a13aad8ea59394560ea25ac83d0f593eeebb3938379d67daa31618352562b51"
+    },
+    "media/manifest.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\media\\manifest.json",
+      "sha256": "a36b8f1b400d3538b436604b7a02bab993c8b165a59ba923283cdc439fe4e722"
+    },
+    "media/codec-and-visual-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\media\\codec-and-visual-review.json",
+      "sha256": "3264ec105b70ed7d3c7ca5003048324f810ea21e3d2bdd3bb0095cba729c7042"
+    },
+    "media/post-generation-audit.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\media\\post-generation-audit.json",
+      "sha256": "16928fd28739a5da227a572b9039ff5a994fa51af4cdecdf7a78fa1e2334b39d"
+    },
+    "gallery-caption-clarification.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\gallery-caption-clarification.json",
+      "sha256": "478cb5bf95f31556174748ebf00475fab68e3761e05e41648c49af75c3e4a456"
+    },
+    "finalize-r2a.py": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\finalize-r2a.py",
+      "sha256": "a2d990936a311832e337355bb36fc64cf26e43745489880051ccd02b19ca3408"
+    },
+    "callback-r2a.txt": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\callback-r2a.txt",
+      "sha256": "88d851a7210367dc6cd153ffa586a456d1e3fe197b1500311e3ece8dbca74e0d"
+    },
+    "callback-result.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\callback-result.json",
+      "sha256": "53307810f05010c7f80b8add3a6e35a7c80772693ab1bb1c101448ab9c32adb3"
+    },
+    "telemetry-audit/signed-contact-support-helper.py": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\telemetry-audit\\signed-contact-support-helper.py",
+      "sha256": "6d7fe491efbfaeddfce76a51780e863a960a15bf9cbef839467e77956ae35ecc"
+    }
+  },
+  "next_action": "STOP waiting_parent. No further physics, R2B, formal resampling, model/GPU/training without a new explicit stage release.",
+  "status": "waiting_parent",
+  "callback_sent_at_utc": "2026-10-29T07:51:51.989855+00:00",
+  "callback_receipt": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2a\\callback-result.json",
+    "sha256": "53307810f05010c7f80b8add3a6e35a7c80772693ab1bb1c101448ab9c32adb3"
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "actual_worker_pid": 22072,
+  "deadline_seconds": 1800,
+  "elapsed_seconds": 20.469000000040978,
+  "ended_at_utc": "2026-10-24T09:34:50.865103+00:00",
+  "final": {
+    "disk": {
+      "at_utc": "2026-10-24T09:34:50.849590+00:00",
+      "free_bytes": 18943606784,
+      "ok": true,
+      "queried_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024",
+      "requested_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024",
+      "source": "Python shutil.disk_usage / Windows GetDiskFreeSpaceExW",
+      "total_bytes": 1023073640448,
+      "used_bytes": 1004130033664
+    },
+    "gpu": {
+      "at_utc": "2026-10-24T09:34:50.804572+00:00",
+      "devices": [
+        {
+          "free_bytes": 7047479296,
+          "free_mib": 6721,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3060 Ti",
+          "total_bytes": 8589934592,
+          "total_mib": 8192,
+          "used_bytes": 1367343104,
+          "used_mib": 1304
+        }
+      ],
+      "elapsed_seconds": 0.04501379991415888,
+      "exit_code": 0,
+      "ok": true,
+      "raw_stderr": "",
+      "raw_stdout": "0, NVIDIA GeForce RTX 3060 Ti, 8192, 6721, 1304\n",
+      "source": "installed NVIDIA nvidia-smi; current driver memory, not process allocator peaks",
+      "source_command": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.free,memory.used",
+        "--format=csv,noheader,nounits"
+      ]
+    },
+    "system": {
+      "at_utc": "2026-10-24T09:34:50.804572+00:00",
+      "commit": {
+        "headroom_bytes": 13659557888,
+        "limit_bytes": 34047442944,
+        "page_size_bytes": 4096,
+        "peak_bytes": 39511334912,
+        "raw_pages": {
+          "CommitLimit": 8312364,
+          "CommitPeak": 9646322,
+          "CommitTotal": 4977511
+        },
+        "total_bytes": 20387885056
+      },
+      "elapsed_seconds": 0.00046250002924352884,
+      "ok": true,
+      "physical": {
+        "available_bytes": 4696588288,
+        "load_percent": 72,
+        "total_bytes": 17023721472
+      },
+      "source": "Win32 GlobalMemoryStatusEx and PSAPI GetPerformanceInfo"
+    }
+  },
+  "guard_reason": "actual_worker_exit_failed_or_unconfirmed",
+  "initial": {
+    "disk": {
+      "at_utc": "2026-10-24T09:34:30.334606+00:00",
+      "free_bytes": 18944581632,
+      "ok": true,
+      "queried_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024",
+      "requested_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024",
+      "source": "Python shutil.disk_usage / Windows GetDiskFreeSpaceExW",
+      "total_bytes": 1023073640448,
+      "used_bytes": 1004129058816
+    },
+    "gpu": {
+      "at_utc": "2026-10-24T09:34:30.290265+00:00",
+      "devices": [
+        {
+          "free_bytes": 7047479296,
+          "free_mib": 6721,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3060 Ti",
+          "total_bytes": 8589934592,
+          "total_mib": 8192,
+          "used_bytes": 1367343104,
+          "used_mib": 1304
+        }
+      ],
+      "elapsed_seconds": 0.044496600050479174,
+      "exit_code": 0,
+      "ok": true,
+      "raw_stderr": "",
+      "raw_stdout": "0, NVIDIA GeForce RTX 3060 Ti, 8192, 6721, 1304\n",
+      "source": "installed NVIDIA nvidia-smi; current driver memory, not process allocator peaks",
+      "source_command": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.free,memory.used",
+        "--format=csv,noheader,nounits"
+      ]
+    },
+    "system": {
+      "at_utc": "2026-10-24T09:34:30.289263+00:00",
+      "commit": {
+        "headroom_bytes": 14103236608,
+        "limit_bytes": 34047442944,
+        "page_size_bytes": 4096,
+        "peak_bytes": 39511334912,
+        "raw_pages": {
+          "CommitLimit": 8312364,
+          "CommitPeak": 9646322,
+          "CommitTotal": 4869191
+        },
+        "total_bytes": 19944206336
+      },
+      "elapsed_seconds": 0.0006906000198796391,
+      "ok": true,
+      "physical": {
+        "available_bytes": 5086765056,
+        "load_percent": 70,
+        "total_bytes": 17023721472
+      },
+      "source": "Win32 GlobalMemoryStatusEx and PSAPI GetPerformanceInfo"
+    }
+  },
+  "kill_on_parent_job_close": true,
+  "kind": "tdyssey.frozen_wm_guard.v1",
+  "launcher_pid": 27152,
+  "monitor_error": null,
+  "process_observed_peaks": {
+    "peak_pagefile_bytes": 1230389248,
+    "peak_working_set_bytes": 468357120,
+    "private_bytes": 1229275136,
+    "working_set_bytes": 467267584
+  },
+  "returncode": 2,
+  "sampled_minimum_available_bytes": 4195987456,
+  "sampled_minimum_commit_headroom_bytes": 12380672000,
+  "sampled_minimum_gpu_free_bytes": 7047479296,
+  "samples": 92,
+  "schema_version": 1,
+  "status": "stopped",
+  "storage": {
+    "output_bytes": 427125,
+    "telemetry_bytes": 171952
+  },
+  "worker_exit_code": 2
+}

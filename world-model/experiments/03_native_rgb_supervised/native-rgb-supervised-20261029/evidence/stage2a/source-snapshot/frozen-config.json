@@ -1,0 +1,137 @@
+{
+  "kind": "native-rgb-supervised-stage2a.v1",
+  "stage": "2A",
+  "split": "train",
+  "letters": [
+    "A",
+    "B",
+    "C",
+    "E",
+    "F",
+    "H",
+    "I",
+    "J",
+    "L",
+    "M",
+    "O",
+    "P",
+    "S",
+    "T",
+    "U",
+    "V",
+    "X",
+    "Y"
+  ],
+  "unseen_letters": [
+    "D",
+    "G",
+    "K",
+    "N",
+    "Q",
+    "R",
+    "W",
+    "Z"
+  ],
+  "locations": [
+    "center",
+    "left",
+    "right",
+    "top",
+    "bottom",
+    "left-top",
+    "right-top",
+    "left-bottom",
+    "right-bottom"
+  ],
+  "seed_base": 2026120000,
+  "controls_per_trajectory": 64,
+  "max_execution_slots": 162,
+  "max_attempted_controls": 10368,
+  "previous_supervised_controls": 3968,
+  "planned_supervised_controls_after": 14336,
+  "max_combined_artifact_bytes": 3221225472,
+  "disk_reserve_bytes": 536870912,
+  "old_artifact_root": "artifacts/native-rgb-20261028",
+  "new_artifact_root": "artifacts/native-rgb-supervised-20261029",
+  "environment": {
+    "controller": "finite-force-pd-v1",
+    "protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+    "render_size": 96,
+    "max_penetration_world_px": 2,
+    "control_hz": 10,
+    "physics_hz": 100
+  },
+  "sampling": {
+    "arc_segment_world_px": 8,
+    "wall_gap_bands_world_px": [
+      [
+        0,
+        8
+      ],
+      [
+        8,
+        32
+      ],
+      [
+        32,
+        64
+      ]
+    ],
+    "wall_gap_representatives_world_px": [
+      4,
+      18,
+      48
+    ],
+    "initial_legal_staging_world_px": 18,
+    "action_distance_world_px": {
+      "near": 32,
+      "mid": 96,
+      "far": 224
+    },
+    "prior_coverage": "artifacts/native-rgb-20261028/data/coverage/train/coverage.json",
+    "priority_counts": "new_2A_contact_controls_then_historical_TRAIN_independent_trajectories",
+    "validation_feedback_allowed": false,
+    "recovery_logic": "frozen_stage1b_57fec_methods_unchanged"
+  },
+  "dedup": {
+    "old_native_manifest": "artifacts/native-rgb-20261028/data/manifest.json",
+    "old_native_physics_probe": "artifacts/native-rgb-20261028/physics-probe",
+    "stage1_manifest": "artifacts/native-rgb-supervised-20261029/probe/manifest.json",
+    "stage1b_manifest": "artifacts/native-rgb-supervised-20261029/stage1b/probe/manifest.json",
+    "validation_identity_only_for_dedup": true
+  },
+  "examples": {
+    "new_letters": [
+      "A",
+      "E",
+      "F",
+      "H",
+      "I",
+      "J",
+      "M",
+      "P",
+      "S",
+      "U",
+      "V",
+      "Y"
+    ],
+    "desired_category_cycle": [
+      "moving",
+      "rotation",
+      "near_static_contact",
+      "recovery_failure"
+    ],
+    "selection": "earliest trajectory_id then anchor for desired category, explicit missing category and deterministic fallback; at most4 extra cases for present missing categories",
+    "max_cases": 16,
+    "max_sheet_rows": 8,
+    "max_gifs": 4,
+    "max_consecutive_frames_per_case": 8,
+    "physics_steps_allowed": 0,
+    "model_calls_allowed": 0
+  },
+  "model_calls_allowed": 0,
+  "optimizer_updates_allowed": 0,
+  "validation_collection_allowed": 0,
+  "stop_after_callback": true,
+  "subsequent_stages_authorized": false
+}

@@ -1,0 +1,1698 @@
+{
+  "kind": "R2B-independent-cold-policy-formula-review.v1",
+  "passed": true,
+  "review_scope": "Independent algebraic source/log/hash/geometry checks, not duplicate stateful policy replay. No future state used to choose any action; root separately owns fullpure policy replay.",
+  "frozen_bindings": {
+    "requests_sha256": "eb4521bfcb321628c33831f1bebb7f6e2d839c3cead660fe9e26ebacbd1bcd31",
+    "rules_sha256": "5b08ba34657d5b89bb9523a206734bcbaf05547ba0aaeaa12de150ed74e6b01c",
+    "policy_identity": {
+      "kind": "R2B-current-state-same-arc-feedback.v1",
+      "rules_sha256": "8b62864db8fc018ef0c546805aae44bf6034b1ce2334bcd92b8f2f060de57fb3",
+      "rules_file": "frozen-rules.json",
+      "rules_file_sha256": "5b08ba34657d5b89bb9523a206734bcbaf05547ba0aaeaa12de150ed74e6b01c",
+      "source_file": "tdyssey/native_rgb_r2b_sampling.py",
+      "source_sha256": "20a75fbbc83603cea6fa03da67246c6bd7dab34249a816ad1020e31ad6e72a15",
+      "policy_sha256": "4ba928ca5cb21ab9259acc8b42e482f6a1236ecef3dd9408f7447b0d0929864d"
+    },
+    "index_sha256": "2fa6b3eb19c359e01e6a008933f8bb1df55e81e99557da3932ab8227ff803bd2"
+  },
+  "checks": {
+    "54_frozen_request_ids_unique": {
+      "checked": 1,
+      "failed": 0
+    },
+    "frozen_rules_canonical_hash": {
+      "checked": 1,
+      "failed": 0
+    },
+    "frozen_request_file_binding": {
+      "checked": 1,
+      "failed": 0
+    },
+    "frozen_rule_file_binding": {
+      "checked": 1,
+      "failed": 0
+    },
+    "selected_protocol_is_user_chosen_point1": {
+      "checked": 1,
+      "failed": 0
+    },
+    "frozen_source_and_snapshot_SHA": {
+      "checked": 80,
+      "failed": 0
+    },
+    "source_R1_plan_SHA": {
+      "checked": 1,
+      "failed": 0
+    },
+    "54_registry_matches_frozen": {
+      "checked": 1,
+      "failed": 0
+    },
+    "registry_role_family_location_match": {
+      "checked": 54,
+      "failed": 0
+    },
+    "old_source_pose_reference_binding": {
+      "checked": 54,
+      "failed": 0
+    },
+    "old_source_file_SHA": {
+      "checked": 108,
+      "failed": 0
+    },
+    "metadata_hash": {
+      "checked": 53,
+      "failed": 0
+    },
+    "NPZ_hash": {
+      "checked": 53,
+      "failed": 0
+    },
+    "metadata_request_matches_frozen": {
+      "checked": 53,
+      "failed": 0
+    },
+    "metadata_policy_identity_matches_config": {
+      "checked": 53,
+      "failed": 0
+    },
+    "protocol_actual_selected_and_no_midreset": {
+      "checked": 53,
+      "failed": 0
+    },
+    "24_complete_original_timeline": {
+      "checked": 53,
+      "failed": 0
+    },
+    "initial_state15_matches_frozen": {
+      "checked": 53,
+      "failed": 0
+    },
+    "actual_initial_state_vs_NPZ": {
+      "checked": 53,
+      "failed": 0
+    },
+    "four_signed_initial_gaps": {
+      "checked": 53,
+      "failed": 0
+    },
+    "pose_yaw_delta_declared": {
+      "checked": 53,
+      "failed": 0
+    },
+    "origin_delta_declared": {
+      "checked": 53,
+      "failed": 0
+    },
+    "planned_physical_CoG_lever": {
+      "checked": 53,
+      "failed": 0
+    },
+    "positive_rotation_lever_intent": {
+      "checked": 7,
+      "failed": 0
+    },
+    "decisionlog_SHA": {
+      "checked": 53,
+      "failed": 0
+    },
+    "telemetry_SHA": {
+      "checked": 53,
+      "failed": 0
+    },
+    "24_decisions_records_and_telemetry": {
+      "checked": 53,
+      "failed": 0
+    },
+    "decision_current_hash_and_index_phase": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "decision_redundant_log_equals_metadata": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "fixed_arc_and_local_contact_never_changed": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "policy_identity_and_no_future_claim": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "current_state_is_recorded_before": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "state_before_alias_matches": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "local_to_world_contact_point": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "local_to_world_outward_normal": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "world_lever_rotation_invariance": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "actual_absolute_action_is_logged_bounded": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "actual_action_alias": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "record_action_alias": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "both_command_limits_and_wall_box": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "contact_intent_raw_normal_tangent_formula": {
+      "checked": 601,
+      "failed": 0
+    },
+    "fixed_24_phase_no_budget_extension": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "actual_contact_samples_post_only_count": {
+      "checked": 1272,
+      "failed": 0
+    },
+    "actual_callback_point_world_local": {
+      "checked": 6059,
+      "failed": 0
+    },
+    "actual_contact_sample_substep_phase_arcs": {
+      "checked": 6059,
+      "failed": 0
+    },
+    "actual_contact_sample_normal": {
+      "checked": 6059,
+      "failed": 0
+    },
+    "actual_contact_sample_signed_lever": {
+      "checked": 6059,
+      "failed": 0
+    },
+    "free_route_raw_next_waypoint": {
+      "checked": 601,
+      "failed": 0
+    },
+    "translation_intent_tangent_and_lever_limits": {
+      "checked": 21,
+      "failed": 0
+    },
+    "negative_rotation_lever_intent": {
+      "checked": 7,
+      "failed": 0
+    },
+    "mixed_fixed_tangent_ratio": {
+      "checked": 11,
+      "failed": 0
+    },
+    "blocked_slot_unexecuted_and_charged_zero": {
+      "checked": 1,
+      "failed": 0
+    },
+    "actual1272_and53_slots": {
+      "checked": 1,
+      "failed": 0
+    },
+    "actual_control_arc_union_after_canonical_ID": {
+      "checked": 1272,
+      "failed": 0
+    }
+  },
+  "anomalies": [],
+  "max_absolute_formula_errors": {
+    "initial_state15_matches_frozen": 5.684341886080802e-14,
+    "actual_initial_state_vs_NPZ": 0.0,
+    "four_signed_initial_gaps": 5.684341886080802e-14,
+    "pose_yaw_delta_declared": 0.0,
+    "origin_delta_declared": 5.684341886080802e-14,
+    "planned_physical_CoG_lever": 0.0,
+    "current_state_is_recorded_before": 0.0,
+    "state_before_alias_matches": 0.0,
+    "local_to_world_contact_point": 0.0,
+    "local_to_world_outward_normal": 0.0,
+    "world_lever_rotation_invariance": 5.684341886080802e-14,
+    "actual_absolute_action_is_logged_bounded": 0.0,
+    "actual_action_alias": 0.0,
+    "record_action_alias": 0.0,
+    "contact_intent_raw_normal_tangent_formula": 0.0,
+    "actual_callback_point_world_local": 1.1368683772161603e-13,
+    "actual_contact_sample_normal": 3.3306690738754696e-16,
+    "actual_contact_sample_signed_lever": 2.842170943040401e-14,
+    "free_route_raw_next_waypoint": 0.0,
+    "mixed_fixed_tangent_ratio": 0.0
+  },
+  "counts": {
+    "completed_slots": 53,
+    "decisions": 1272,
+    "actual_phase:approach_contact_intent": 180,
+    "command_mode:contact_push_intent": 601,
+    "actual_postsolve_contact_points": 6059,
+    "actual_phase:push_contact_intent": 418,
+    "actual_phase:withdraw_route": 52,
+    "command_mode:free_route": 601,
+    "actual_phase:decay_fixed_release_target": 260,
+    "actual_phase:recontact_exterior_route": 205,
+    "actual_phase:approach_exterior_route": 32,
+    "actual_phase:push_unconfirmed_command_hold": 50,
+    "command_mode:hold": 70,
+    "actual_phase:same_arc_recovery": 52,
+    "actual_phase:push_miss": 10,
+    "actual_phase:recontact_contact_intent": 3,
+    "actual_phase:withdraw_miss": 6,
+    "actual_phase:recontact_miss": 4
+  },
+  "by_letter": {
+    "T": {
+      "controls": 216,
+      "actual_AO_controls": 107,
+      "planned_arc_contact_controls": 26,
+      "other_arc_only_contact_controls": 81,
+      "contact_intent_misses": 14,
+      "planned_initial_arc_ids": [
+        12,
+        18,
+        22,
+        30,
+        39,
+        43
+      ],
+      "actual_hit_arc_ids": [
+        "11",
+        "12",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "29",
+        "30",
+        "39",
+        "40",
+        "41",
+        "43",
+        "44"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "positive": 779,
+        "negative": 262
+      }
+    },
+    "C": {
+      "controls": 216,
+      "actual_AO_controls": 73,
+      "planned_arc_contact_controls": 33,
+      "other_arc_only_contact_controls": 40,
+      "contact_intent_misses": 16,
+      "planned_initial_arc_ids": [
+        4,
+        15,
+        24,
+        32,
+        33,
+        40,
+        42,
+        47,
+        72
+      ],
+      "actual_hit_arc_ids": [
+        "15",
+        "16",
+        "17",
+        "24",
+        "25",
+        "32",
+        "33",
+        "40",
+        "41",
+        "42",
+        "44",
+        "45",
+        "46",
+        "5",
+        "6",
+        "7",
+        "72",
+        "73"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "positive": 314,
+        "negative": 322
+      }
+    },
+    "X": {
+      "controls": 192,
+      "actual_AO_controls": 77,
+      "planned_arc_contact_controls": 28,
+      "other_arc_only_contact_controls": 49,
+      "contact_intent_misses": 12,
+      "planned_initial_arc_ids": [
+        7,
+        20,
+        24,
+        32,
+        37,
+        39,
+        61,
+        75
+      ],
+      "actual_hit_arc_ids": [
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "32",
+        "37",
+        "38",
+        "39",
+        "59",
+        "60",
+        "61",
+        "67",
+        "7",
+        "73",
+        "74",
+        "75",
+        "8"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "negative": 480,
+        "positive": 442
+      }
+    },
+    "B": {
+      "controls": 216,
+      "actual_AO_controls": 97,
+      "planned_arc_contact_controls": 42,
+      "other_arc_only_contact_controls": 55,
+      "contact_intent_misses": 14,
+      "planned_initial_arc_ids": [
+        0,
+        4,
+        5,
+        14,
+        17,
+        18,
+        45,
+        59
+      ],
+      "actual_hit_arc_ids": [
+        "0",
+        "1",
+        "11",
+        "12",
+        "13",
+        "14",
+        "17",
+        "18",
+        "19",
+        "2",
+        "20",
+        "21",
+        "3",
+        "45",
+        "46",
+        "49",
+        "5",
+        "50",
+        "58",
+        "59",
+        "6",
+        "7"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "positive": 528,
+        "negative": 487
+      }
+    },
+    "L": {
+      "controls": 216,
+      "actual_AO_controls": 112,
+      "planned_arc_contact_controls": 44,
+      "other_arc_only_contact_controls": 68,
+      "contact_intent_misses": 13,
+      "planned_initial_arc_ids": [
+        0,
+        11,
+        24,
+        29,
+        34,
+        52
+      ],
+      "actual_hit_arc_ids": [
+        "0",
+        "12",
+        "13",
+        "22",
+        "23",
+        "24",
+        "26",
+        "27",
+        "28",
+        "29",
+        "34",
+        "49",
+        "50",
+        "51",
+        "52"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "negative": 784,
+        "positive": 233
+      }
+    },
+    "O": {
+      "controls": 216,
+      "actual_AO_controls": 108,
+      "planned_arc_contact_controls": 73,
+      "other_arc_only_contact_controls": 35,
+      "contact_intent_misses": 16,
+      "planned_initial_arc_ids": [
+        4,
+        7,
+        15,
+        25,
+        32,
+        42,
+        55
+      ],
+      "actual_hit_arc_ids": [
+        "0",
+        "10",
+        "15",
+        "16",
+        "19",
+        "20",
+        "23",
+        "24",
+        "25",
+        "27",
+        "3",
+        "32",
+        "33",
+        "34",
+        "4",
+        "42",
+        "51",
+        "52",
+        "53",
+        "54",
+        "8",
+        "9"
+      ],
+      "actual_postsolve_lever_sign_point_samples": {
+        "positive": 663,
+        "negative": 765
+      }
+    }
+  },
+  "actual_phase_counts_by_role": {
+    "rotation_positive": {
+      "approach_contact_intent": 28,
+      "push_contact_intent": 60,
+      "withdraw_route": 7,
+      "decay_fixed_release_target": 35,
+      "recontact_exterior_route": 28,
+      "push_unconfirmed_command_hold": 6,
+      "same_arc_recovery": 4
+    },
+    "translation_1": {
+      "approach_contact_intent": 28,
+      "approach_exterior_route": 8,
+      "push_contact_intent": 70,
+      "push_unconfirmed_command_hold": 9,
+      "same_arc_recovery": 11,
+      "withdraw_route": 9,
+      "decay_fixed_release_target": 45,
+      "recontact_exterior_route": 36
+    },
+    "rotation_negative": {
+      "approach_contact_intent": 27,
+      "push_contact_intent": 59,
+      "withdraw_route": 6,
+      "decay_fixed_release_target": 30,
+      "recontact_exterior_route": 24,
+      "push_unconfirmed_command_hold": 6,
+      "same_arc_recovery": 4,
+      "approach_exterior_route": 1,
+      "push_miss": 1,
+      "withdraw_miss": 6,
+      "recontact_miss": 4
+    },
+    "wall_along": {
+      "approach_contact_intent": 28,
+      "push_contact_intent": 46,
+      "withdraw_route": 7,
+      "decay_fixed_release_target": 35,
+      "recontact_exterior_route": 28,
+      "push_unconfirmed_command_hold": 14,
+      "same_arc_recovery": 10
+    },
+    "translation_2": {
+      "approach_contact_intent": 36,
+      "approach_exterior_route": 12,
+      "push_contact_intent": 106,
+      "withdraw_route": 12,
+      "decay_fixed_release_target": 60,
+      "recontact_exterior_route": 45,
+      "push_unconfirmed_command_hold": 6,
+      "same_arc_recovery": 7,
+      "push_miss": 1,
+      "recontact_contact_intent": 3
+    },
+    "mixed_positive": {
+      "approach_contact_intent": 15,
+      "approach_exterior_route": 5,
+      "push_contact_intent": 42,
+      "withdraw_route": 5,
+      "decay_fixed_release_target": 25,
+      "recontact_exterior_route": 20,
+      "push_unconfirmed_command_hold": 1,
+      "same_arc_recovery": 4,
+      "push_miss": 3
+    },
+    "mixed_negative": {
+      "approach_contact_intent": 18,
+      "approach_exterior_route": 6,
+      "push_contact_intent": 35,
+      "push_unconfirmed_command_hold": 8,
+      "same_arc_recovery": 12,
+      "push_miss": 5,
+      "withdraw_route": 6,
+      "decay_fixed_release_target": 30,
+      "recontact_exterior_route": 24
+    }
+  },
+  "gap_request_adjustments": [
+    {
+      "request_id": "R2B-new-15-L-right-top",
+      "requested": 4.0,
+      "selected": 48.0
+    },
+    {
+      "request_id": "R2B-new-42-X-right-top",
+      "requested": 4.0,
+      "selected": 18.0
+    },
+    {
+      "request_id": "R2B-new-51-B-right-top",
+      "requested": 18.0,
+      "selected": 48.0
+    }
+  ],
+  "old_four_static_gaps": [
+    {
+      "request_id": "R2B-new-06-T-right-top",
+      "source_family": "R2B-F06-T-right-top",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "translation_2",
+      "dispatchable": true,
+      "scope": "newrole static proof only; old requestedlever/direction/dynamics not thereby satisfied"
+    },
+    {
+      "request_id": "R2B-new-17-L-right-bottom",
+      "source_family": "R2B-F17-L-right-bottom",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "wall_along",
+      "dispatchable": true,
+      "scope": "newrole static proof only; old requestedlever/direction/dynamics not thereby satisfied"
+    },
+    {
+      "request_id": "R2B-new-41-X-left-top",
+      "source_family": "R2B-F41-X-left-top",
+      "old_missing": [
+        "requested_process_direction"
+      ],
+      "new_role": "mixed_positive",
+      "dispatchable": false,
+      "scope": "newrole static proof only; old requestedlever/direction/dynamics not thereby satisfied"
+    },
+    {
+      "request_id": "R2B-new-44-X-right-bottom",
+      "source_family": "R2B-F44-X-right-bottom",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "wall_along",
+      "dispatchable": true,
+      "scope": "newrole static proof only; old requestedlever/direction/dynamics not thereby satisfied"
+    }
+  ],
+  "slots": [
+    {
+      "request_id": "R2B-new-00-T-center",
+      "letter": "T",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 43,
+      "normal_intent_lever": 72.0,
+      "resultant_intent_lever": 72.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 4,
+      "actual_other_arc_only_controls": 10,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 185.70905656750801,
+        "right": 185.7090565675079,
+        "top": 177.76801806901977,
+        "bottom": 177.76801806901983
+      }
+    },
+    {
+      "request_id": "R2B-new-27-C-center",
+      "letter": "C",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 4,
+      "normal_intent_lever": 24.66666666666667,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 5,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 5,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 195.0019039073632,
+        "right": 195.00190390736316,
+        "top": 185.83168783644544,
+        "bottom": 185.83168783644538
+      }
+    },
+    {
+      "request_id": "R2B-new-36-X-center",
+      "letter": "X",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 7,
+      "normal_intent_lever": 2.857142857142861,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 171.40719503424052,
+        "right": 171.4071950342405,
+        "top": 170.41367373999404,
+        "bottom": 170.413673739994
+      }
+    },
+    {
+      "request_id": "R2B-new-45-B-center",
+      "letter": "B",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 4,
+      "normal_intent_lever": 24.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 5,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 5,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 176.49672340734406,
+        "right": 176.49672340734412,
+        "top": 179.29759357667277,
+        "bottom": 179.29759357667274
+      }
+    },
+    {
+      "request_id": "R2B-new-09-L-center",
+      "letter": "L",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 52,
+      "normal_intent_lever": -73.0,
+      "resultant_intent_lever": -73.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 4,
+      "actual_other_arc_only_controls": 10,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 201.77492958503592,
+        "right": 201.77492958503598,
+        "top": 182.49797251034772,
+        "bottom": 182.49797251034772
+      }
+    },
+    {
+      "request_id": "R2B-new-19-O-left",
+      "letter": "O",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 15,
+      "normal_intent_lever": 48.85714285714286,
+      "resultant_intent_lever": 48.85714285714286,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 48.0,
+        "right": 340.3125657426789,
+        "top": 185.60617785123273,
+        "bottom": 185.6061778512327
+      }
+    },
+    {
+      "request_id": "R2B-new-01-T-left",
+      "letter": "T",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 30,
+      "normal_intent_lever": -4.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.000000000000014,
+        "right": 357.26622302482855,
+        "top": 186.6758317515682,
+        "bottom": 186.67583175156824
+      }
+    },
+    {
+      "request_id": "R2B-new-02-T-right",
+      "letter": "T",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 12,
+      "normal_intent_lever": -10.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 355.3087872315192,
+        "right": 18.0,
+        "top": 181.3201843957749,
+        "bottom": 181.32018439577496
+      }
+    },
+    {
+      "request_id": "R2B-new-03-T-top",
+      "letter": "T",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 43,
+      "normal_intent_lever": 72.0,
+      "resultant_intent_lever": 72.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 4,
+      "actual_other_arc_only_controls": 10,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 187.15808867156954,
+        "right": 187.15808867156954,
+        "top": 48.0,
+        "bottom": 307.81849126011883
+      }
+    },
+    {
+      "request_id": "R2B-new-04-T-bottom",
+      "letter": "T",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 18,
+      "normal_intent_lever": -58.0,
+      "resultant_intent_lever": -58.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 12,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 178.71970656917577,
+        "right": 178.7197065691758,
+        "top": 370.64911989331097,
+        "bottom": 4.0
+      }
+    },
+    {
+      "request_id": "R2B-new-05-T-left-top",
+      "letter": "T",
+      "role": "mixed_positive",
+      "status": "completed",
+      "fixed_arc": 43,
+      "normal_intent_lever": 72.0,
+      "resultant_intent_lever": 77.25,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 9,
+      "actual_other_arc_only_controls": 3,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 17.999999999999993,
+        "right": 354.21957721194315,
+        "top": 17.99999999999997,
+        "bottom": 357.2514327177531
+      }
+    },
+    {
+      "request_id": "R2B-new-06-T-right-top",
+      "letter": "T",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 39,
+      "normal_intent_lever": 14.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 317.4054665462404,
+        "right": 48.0,
+        "top": 47.99999999999997,
+        "bottom": 325.5517948938333
+      }
+    },
+    {
+      "request_id": "R2B-new-07-T-left-bottom",
+      "letter": "T",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 22,
+      "normal_intent_lever": 53.033008588991066,
+      "resultant_intent_lever": 41.896076785302945,
+      "actual_AO_controls": 4,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 2,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.000000000000014,
+        "right": 351.6531341966891,
+        "top": 368.9207212512316,
+        "bottom": 4.0
+      }
+    },
+    {
+      "request_id": "R2B-new-08-T-right-bottom",
+      "letter": "T",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 18,
+      "normal_intent_lever": -58.0,
+      "resultant_intent_lever": -58.0,
+      "actual_AO_controls": 13,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 355.80429412712226,
+        "right": 17.999999999999943,
+        "top": 348.845495632463,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-10-L-left",
+      "letter": "L",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 0,
+      "normal_intent_lever": -4.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 18.0,
+        "right": 347.64690748180146,
+        "top": 187.6347434088341,
+        "bottom": 187.63474340883408
+      }
+    },
+    {
+      "request_id": "R2B-new-11-L-right",
+      "letter": "L",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 24,
+      "normal_intent_lever": -16.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 343.3223599543832,
+        "right": 48.0,
+        "top": 187.0053810649879,
+        "bottom": 187.0053810649879
+      }
+    },
+    {
+      "request_id": "R2B-new-12-L-top",
+      "letter": "L",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 34,
+      "normal_intent_lever": 54.0,
+      "resultant_intent_lever": 54.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 198.64874565079424,
+        "right": 198.64874565079424,
+        "top": 4.0,
+        "bottom": 343.1797643782318
+      }
+    },
+    {
+      "request_id": "R2B-new-13-L-bottom",
+      "letter": "L",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 52,
+      "normal_intent_lever": -73.0,
+      "resultant_intent_lever": -73.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 6,
+      "actual_other_arc_only_controls": 8,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 191.10061151030254,
+        "right": 191.1006115103026,
+        "top": 355.324564649334,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-14-L-left-top",
+      "letter": "L",
+      "role": "mixed_positive",
+      "status": "completed",
+      "fixed_arc": 52,
+      "normal_intent_lever": -73.0,
+      "resultant_intent_lever": -73.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 12,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 48.0,
+        "right": 304.53057756350705,
+        "top": 48.0,
+        "bottom": 354.24719796837473
+      }
+    },
+    {
+      "request_id": "R2B-new-15-L-right-top",
+      "letter": "L",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 11,
+      "normal_intent_lever": 12.999999999999993,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 12,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 341.16549658131584,
+        "right": 48.0,
+        "top": 48.00000000000001,
+        "bottom": 325.76679707489495
+      }
+    },
+    {
+      "request_id": "R2B-new-16-L-left-bottom",
+      "letter": "L",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 29,
+      "normal_intent_lever": -56.0,
+      "resultant_intent_lever": -71.75,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 3,
+      "actual_other_arc_only_controls": 9,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 18.0,
+        "right": 329.66709248115455,
+        "top": 376.07886388047666,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-17-L-right-bottom",
+      "letter": "L",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 29,
+      "normal_intent_lever": -56.0,
+      "resultant_intent_lever": -56.0,
+      "actual_AO_controls": 8,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 6,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 304.01122795606443,
+        "right": 48.0,
+        "top": 336.2141766808037,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-18-O-center",
+      "letter": "O",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 7,
+      "normal_intent_lever": 20.000000000000007,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 12,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 181.46585613070758,
+        "right": 181.4658561307076,
+        "top": 184.05451215821307,
+        "bottom": 184.05451215821313
+      }
+    },
+    {
+      "request_id": "R2B-new-20-O-right",
+      "letter": "O",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 25,
+      "normal_intent_lever": -14.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 379.8739319412641,
+        "right": 4.0,
+        "top": 184.27041962101583,
+        "bottom": 184.27041962101583
+      }
+    },
+    {
+      "request_id": "R2B-new-21-O-top",
+      "letter": "O",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 15,
+      "normal_intent_lever": 48.85714285714286,
+      "resultant_intent_lever": 48.85714285714286,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 182.8742389420259,
+        "right": 182.87423894202595,
+        "top": 18.0,
+        "bottom": 360.6184455763409
+      }
+    },
+    {
+      "request_id": "R2B-new-22-O-bottom",
+      "letter": "O",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 4,
+      "normal_intent_lever": -48.857142857142854,
+      "resultant_intent_lever": -48.857142857142854,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 182.82549864048045,
+        "right": 182.82549864048042,
+        "top": 316.79614089369716,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-23-O-left-top",
+      "letter": "O",
+      "role": "mixed_positive",
+      "status": "completed",
+      "fixed_arc": 32,
+      "normal_intent_lever": 39.999999999999964,
+      "resultant_intent_lever": 57.499999999999964,
+      "actual_AO_controls": 11,
+      "actual_planned_arc_hit_controls": 5,
+      "actual_other_arc_only_controls": 6,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.0,
+        "right": 361.3080939698897,
+        "top": 4.0,
+        "bottom": 362.5446967900805
+      }
+    },
+    {
+      "request_id": "R2B-new-24-O-right-top",
+      "letter": "O",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 55,
+      "normal_intent_lever": -29.999999999999943,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 5,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 5,
+      "actual_contact_intent_misses": 4,
+      "initial_signed_gaps": {
+        "left": 353.9667774273171,
+        "right": 18.0,
+        "top": 18.0,
+        "bottom": 345.2104998708988
+      }
+    },
+    {
+      "request_id": "R2B-new-25-O-left-bottom",
+      "letter": "O",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 15,
+      "normal_intent_lever": 48.85714285714286,
+      "resultant_intent_lever": 33.85714285714286,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 11,
+      "actual_other_arc_only_controls": 1,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 48.0,
+        "right": 318.61066753973665,
+        "top": 317.30159569810826,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-26-O-right-bottom",
+      "letter": "O",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 42,
+      "normal_intent_lever": -40.0,
+      "resultant_intent_lever": -40.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 372.38034331296217,
+        "right": 4.0,
+        "top": 392.11088600982396,
+        "bottom": 4.0
+      }
+    },
+    {
+      "request_id": "R2B-new-28-C-left",
+      "letter": "C",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 47,
+      "normal_intent_lever": 17.809523809523782,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 6,
+      "actual_planned_arc_hit_controls": 0,
+      "actual_other_arc_only_controls": 6,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.0,
+        "right": 359.7443946115577,
+        "top": 189.46139392992887,
+        "bottom": 189.46139392992882
+      }
+    },
+    {
+      "request_id": "R2B-new-29-C-right",
+      "letter": "C",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 33,
+      "normal_intent_lever": -8.6666666666667,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 10,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 353.0501618372418,
+        "right": 18.0,
+        "top": 179.35309398762882,
+        "bottom": 179.35309398762877
+      }
+    },
+    {
+      "request_id": "R2B-new-30-C-top",
+      "letter": "C",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 72,
+      "normal_intent_lever": -57.80952380952378,
+      "resultant_intent_lever": -57.80952380952378,
+      "actual_AO_controls": 10,
+      "actual_planned_arc_hit_controls": 9,
+      "actual_other_arc_only_controls": 1,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 177.5023024253765,
+        "right": 177.50230242537646,
+        "top": 48.0,
+        "bottom": 305.1177990426437
+      }
+    },
+    {
+      "request_id": "R2B-new-31-C-bottom",
+      "letter": "C",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 15,
+      "normal_intent_lever": 36.0,
+      "resultant_intent_lever": 36.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 3,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 177.2097310791538,
+        "right": 177.2097310791538,
+        "top": 349.51223462788994,
+        "bottom": 4.0
+      }
+    },
+    {
+      "request_id": "R2B-new-32-C-left-top",
+      "letter": "C",
+      "role": "mixed_positive",
+      "status": "completed",
+      "fixed_arc": 42,
+      "normal_intent_lever": 57.80952380952378,
+      "resultant_intent_lever": 42.80952380952378,
+      "actual_AO_controls": 2,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 4,
+      "initial_signed_gaps": {
+        "left": 17.999999999999993,
+        "right": 351.44777325233946,
+        "top": 18.0,
+        "bottom": 339.7692906987565
+      }
+    },
+    {
+      "request_id": "R2B-new-33-C-right-top",
+      "letter": "C",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 32,
+      "normal_intent_lever": -0.6666666666666998,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 14,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 306.2450026217986,
+        "right": 48.0,
+        "top": 48.0,
+        "bottom": 314.4509351985051
+      }
+    },
+    {
+      "request_id": "R2B-new-34-C-left-bottom",
+      "letter": "C",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 24,
+      "normal_intent_lever": -36.000000000000014,
+      "resultant_intent_lever": -49.76666666666668,
+      "actual_AO_controls": 3,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 2,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.0,
+        "right": 360.52336719052335,
+        "top": 376.06565873515746,
+        "bottom": 4.0
+      }
+    },
+    {
+      "request_id": "R2B-new-35-C-right-bottom",
+      "letter": "C",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 40,
+      "normal_intent_lever": 56.0,
+      "resultant_intent_lever": 56.0,
+      "actual_AO_controls": 7,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 5,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 334.87326687263345,
+        "right": 18.0,
+        "top": 337.73818484639673,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-37-X-left",
+      "letter": "X",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 75,
+      "normal_intent_lever": -22.57142857142867,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 17.999999999999993,
+        "right": 367.718579922721,
+        "top": 183.88770291170732,
+        "bottom": 183.88770291170738
+      }
+    },
+    {
+      "request_id": "R2B-new-38-X-right",
+      "letter": "X",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 32,
+      "normal_intent_lever": -12.85714285714289,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 12,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 323.4383807450878,
+        "right": 48.0,
+        "top": 178.37027677592346,
+        "bottom": 178.37027677592346
+      }
+    },
+    {
+      "request_id": "R2B-new-39-X-top",
+      "letter": "X",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 39,
+      "normal_intent_lever": 48.28571428571422,
+      "resultant_intent_lever": 48.28571428571422,
+      "actual_AO_controls": 9,
+      "actual_planned_arc_hit_controls": 8,
+      "actual_other_arc_only_controls": 1,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 172.2034581029399,
+        "right": 172.20345810293986,
+        "top": 4.0,
+        "bottom": 336.88605617475156
+      }
+    },
+    {
+      "request_id": "R2B-new-40-X-bottom",
+      "letter": "X",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 61,
+      "normal_intent_lever": -54.85714285714286,
+      "resultant_intent_lever": -54.85714285714286,
+      "actual_AO_controls": 9,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 7,
+      "actual_contact_intent_misses": 0,
+      "initial_signed_gaps": {
+        "left": 177.99165805937588,
+        "right": 177.99165805937582,
+        "top": 352.4110245006332,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-41-X-left-top",
+      "letter": "X",
+      "role": "mixed_positive",
+      "status": "static_blocked",
+      "reason": [
+        "finite_geometry_candidates_do_not_support_fixed_role"
+      ]
+    },
+    {
+      "request_id": "R2B-new-42-X-right-top",
+      "letter": "X",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 24,
+      "normal_intent_lever": 16.85714285714286,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 328.2022927455687,
+        "right": 18.0,
+        "top": 18.0,
+        "bottom": 338.02161620198814
+      }
+    },
+    {
+      "request_id": "R2B-new-43-X-left-bottom",
+      "letter": "X",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 37,
+      "normal_intent_lever": 57.1428571428571,
+      "resultant_intent_lever": 39.6428571428571,
+      "actual_AO_controls": 3,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 2,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 18.0,
+        "right": 345.8022183623738,
+        "top": 362.7003116784481,
+        "bottom": 18.0
+      }
+    },
+    {
+      "request_id": "R2B-new-44-X-right-bottom",
+      "letter": "X",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 20,
+      "normal_intent_lever": 48.85714285714286,
+      "resultant_intent_lever": 48.85714285714286,
+      "actual_AO_controls": 8,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 6,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 326.41994240644726,
+        "right": 48.0,
+        "top": 310.9700913788963,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-46-B-left",
+      "letter": "B",
+      "role": "translation_1",
+      "status": "completed",
+      "fixed_arc": 5,
+      "normal_intent_lever": 16.0,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 47.999999999999986,
+        "right": 307.14952431997506,
+        "top": 176.5263380980469,
+        "bottom": 176.52633809804684
+      }
+    },
+    {
+      "request_id": "R2B-new-47-B-right",
+      "letter": "B",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 17,
+      "normal_intent_lever": 28.333333333333336,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 8,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 7,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 349.12863166630103,
+        "right": 4.0,
+        "top": 177.49125550040065,
+        "bottom": 177.4912555004007
+      }
+    },
+    {
+      "request_id": "R2B-new-48-B-top",
+      "letter": "B",
+      "role": "rotation_positive",
+      "status": "completed",
+      "fixed_arc": 0,
+      "normal_intent_lever": 56.0,
+      "resultant_intent_lever": 56.0,
+      "actual_AO_controls": 9,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 7,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 178.3918643101667,
+        "right": 178.39186431016668,
+        "top": 18.0,
+        "bottom": 334.7780993908627
+      }
+    },
+    {
+      "request_id": "R2B-new-49-B-bottom",
+      "letter": "B",
+      "role": "rotation_negative",
+      "status": "completed",
+      "fixed_arc": 14,
+      "normal_intent_lever": -56.0,
+      "resultant_intent_lever": -56.0,
+      "actual_AO_controls": 13,
+      "actual_planned_arc_hit_controls": 2,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 186.1855677292014,
+        "right": 186.1855677292014,
+        "top": 342.94876884215273,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-50-B-left-top",
+      "letter": "B",
+      "role": "mixed_positive",
+      "status": "completed",
+      "fixed_arc": 45,
+      "normal_intent_lever": 50.523809523809554,
+      "resultant_intent_lever": 65.52380952380955,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 12,
+      "actual_other_arc_only_controls": 0,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 4.0,
+        "right": 349.1314048098004,
+        "top": 4.0,
+        "bottom": 350.9769366183609
+      }
+    },
+    {
+      "request_id": "R2B-new-51-B-right-top",
+      "letter": "B",
+      "role": "translation_2",
+      "status": "completed",
+      "fixed_arc": 18,
+      "normal_intent_lever": 20.333333333333336,
+      "resultant_intent_lever": 0.0,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 1,
+      "actual_other_arc_only_controls": 11,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 313.66328254158157,
+        "right": 48.0,
+        "top": 48.0,
+        "bottom": 327.78736770524296
+      }
+    },
+    {
+      "request_id": "R2B-new-52-B-left-bottom",
+      "letter": "B",
+      "role": "mixed_negative",
+      "status": "completed",
+      "fixed_arc": 45,
+      "normal_intent_lever": 50.523809523809554,
+      "resultant_intent_lever": 35.523809523809554,
+      "actual_AO_controls": 12,
+      "actual_planned_arc_hit_controls": 11,
+      "actual_other_arc_only_controls": 1,
+      "actual_contact_intent_misses": 2,
+      "initial_signed_gaps": {
+        "left": 48.0,
+        "right": 315.09212501556425,
+        "top": 306.51639652836656,
+        "bottom": 48.0
+      }
+    },
+    {
+      "request_id": "R2B-new-53-B-right-bottom",
+      "letter": "B",
+      "role": "wall_along",
+      "status": "completed",
+      "fixed_arc": 59,
+      "normal_intent_lever": -44.333333333333336,
+      "resultant_intent_lever": -44.333333333333336,
+      "actual_AO_controls": 14,
+      "actual_planned_arc_hit_controls": 12,
+      "actual_other_arc_only_controls": 2,
+      "actual_contact_intent_misses": 1,
+      "initial_signed_gaps": {
+        "left": 379.7874822428998,
+        "right": 4.0,
+        "top": 363.1259185180829,
+        "bottom": 4.0
+      }
+    }
+  ],
+  "limits": [
+    "Role/normal+tangent resultant lever is action intent; actual frictionless contact impulse/torque may differ.",
+    "Fixed requested arc in decisions does not imply actual contacts stay on that arc; otherarc contacts and misses are reported.",
+    "Old4 newrole geometric proofs do not establish the original requestedlever/direction or actual dynamics.",
+    "Finite geometry unconfirmed X-lefttop remains staticblocked; no proven global impossibility or replacement.",
+    "Gap4/18/48 are requested; three declared adjustments retained.",
+    "No motion threshold acceptance in this policy review; fullbehavior/amplitude report is independent."
+  ],
+  "new_physics_steps": 0,
+  "new_environment_instances": 0,
+  "new_renderer_calls": 0,
+  "new_model_or_GPU_calls": 0,
+  "audit_internal_correction": "Before delivery, normalized int frozen arc IDs and string control-record IDs to the same decimal string for set membership; the initial derived0 plannedarc-hit counters were a report-only type mismatch, corrected here. Frozen source, inputs and45,664 formula/hash checks unchanged."
+}

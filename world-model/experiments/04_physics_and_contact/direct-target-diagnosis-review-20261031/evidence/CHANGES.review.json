@@ -1,0 +1,211 @@
+{
+  "kind": "non-executable-focused-revision-review.v1",
+  "review_only": true,
+  "loadable_by_runtime": false,
+  "execution_authorized": false,
+  "training_authorized": false,
+  "current_new_physics_calls": 0,
+  "current_model_calls": 0,
+  "current_optimizer_updates": 0,
+  "source_run_id": "DTA-20261031-7b4e4819a73b41a78dba24947fd6579b",
+  "unchanged_physics": {
+    "physics_hz": 100,
+    "dt": 0.01,
+    "solver_iterations": 10,
+    "kp": 100,
+    "kv": 20,
+    "pusher": "KINEMATIC",
+    "pusher_radius": 15,
+    "space_damping": 0,
+    "geometry_masses_inertia_materials_walls": "unchanged"
+  },
+  "unchanged_action_domain": [
+    0,
+    512
+  ],
+  "old_120_files_and_labels_preserved": true,
+  "approval_required_for_every_proposed_runtime_or_index_change": true,
+  "changes": [
+    {
+      "id": "C1",
+      "area": "观察判据语义",
+      "old": "custom OW/AO/AW任一>1+1e-8立即中断，并统一标invalid_original_state",
+      "proposed": "保留旧valid/终止标签和原始数据；新的诊断结果另外记录geometry_depth、native_distance、would_stop_legacy、observed_recovery、confirmed_crossing或censored_unknown，不把瞬时阈值事件直接等同原物理失效。生产新终止规则仍待证据。",
+      "evidence": [
+        "ORIGIN_AND_TIMING.txt",
+        "geometry/geometry_validation.json",
+        "contact/CONTACT_DIAGNOSIS.json"
+      ],
+      "risk": "不能把新解释当成已证明74次都是误报或把旧非法标签改为训练准入。",
+      "minimum_validation": "本次离线逐子步核对已做；跨越>1后的恢复仍需另批C2。"
+    },
+    {
+      "id": "C2",
+      "area": "仅4例原物理延续诊断",
+      "old": "74个首个>1点后无记录",
+      "proposed": {
+        "new_attempts": 4,
+        "total_control_cap": 35,
+        "total_regular_substep_cap": 350,
+        "followup_controls_after_failure_control": 4,
+        "selected_cases": "contact/MINIMAL_VERIFICATION.review.json",
+        "guard_delta": "仅所选4例将AO/OW>1的即时中断改为would_stop事件；AW>1仍原样立即停止。非有限、圆心进入solid/closed-hole硬停保持。",
+        "no_new_acceptable_depth": true,
+        "training_eligible": false,
+        "retries": 0,
+        "extra_seeds": 0,
+        "automatic_extension": false
+      },
+      "evidence": [
+        "contact/first-violations.csv",
+        "contact/MINIMAL_VERIFICATION.review.json"
+      ],
+      "risk": "4例不构成普遍安全性校准；0.4秒后未恢复继续未知。继续动作可能使原生重叠恶化，因此必须单独批准。",
+      "minimum_validation": "先完整原环境构造、逐子步公共前缀/动作和已有RGB匹配，再观察原失败控制余部及4个原冻结控制；不使用公有snapshot接续。"
+    },
+    {
+      "id": "C3",
+      "area": "4例诊断的额外几何护栏",
+      "old": "原已有nonfinite/solid/hole/>1观察终止，无独立外墙包络事件",
+      "proposed": {
+        "scope": "仅C2诊断，不是生产规则",
+        "retain": "nonfinite、圆心进入物体solid/closed-hole和AW>1即时停止",
+        "add": "object_outer_wall_envelope_crossed",
+        "formula": "从实际墙segment centres 5/506和radius2求外包络3..508；任一物体实际碰撞多边形顶点x或y<3或>508，记录明确外包络越界并停止。并非把容许深度改为2/5。",
+        "new_persistence_duration_threshold": null
+      },
+      "evidence": [
+        "geometry/geometry_validation.json",
+        "ORIGIN_AND_TIMING.txt"
+      ],
+      "risk": "外包络事件是独立保守诊断护栏，不证明尚未越界的重叠就可作生产训练真值。复杂边角和后续持续接触仍未知。",
+      "minimum_validation": "静态fixture/保存shape坐标复算几何公式，C2实际运行需单独批准；本次未构造物理对象。"
+    },
+    {
+      "id": "C4",
+      "area": "动作任务长度",
+      "old": {
+        "controls_per_attempt": 64,
+        "ordinary_moving": "3真实历史+16步移动目标+45步终点保持",
+        "ordinary_fixed": "3真实历史+61步固定目标"
+      },
+      "proposed": {
+        "short": 19,
+        "two_task": 35,
+        "three_task": 51,
+        "structure": "3真实历史控制+1/2/3个各16控制的明确任务块；按任务选长度，不统一补尾。短块用于平移/双向旋转/接触变化；两块用于持续推动后转向或停止；三块用于推动→撤离→再接触。",
+        "H16_legal_window_math_max": [
+          1,
+          17,
+          33
+        ]
+      },
+      "evidence": [
+        "exposure/EXPOSURE_FINDINGS.txt",
+        "exposure/control_phase_exposure.csv"
+      ],
+      "risk": "缩短不自动产生接触或合法运动；一刀切19将损失长事件和多锚点。35/51也不能保证再接触或边界成功。",
+      "minimum_validation": "批准后先静态验证目标计划、真实历史与窗口边界；任何新物理收集须另定有限场景和预算，不能沿用旧120授权。"
+    },
+    {
+      "id": "C5",
+      "area": "动作因果性",
+      "old": "所有64目标在开始前冻结；跨后续重复尾段也有大量anchor_committed窗口",
+      "proposed": {
+        "default": "每个任务块起点冻结未来16个绝对目标；如在块边界用当前真实观测重规划，则跨该边界窗口明确feedback_recorded。块内不读未来真态修路、不限幅。",
+        "pure_anchor_committed_H16_start_counts_for_19_35_51": [
+          1,
+          2,
+          3
+        ],
+        "cross_feedback_windows": "19/35/51的H16数学容量1/17/33中，默认只有各块起点1/2/3可宣称提前知道完整16目标。"
+      },
+      "evidence": [
+        "DIAGNOSIS_AND_REVISION.txt",
+        "exposure/EXPOSURE_FINDINGS.txt"
+      ],
+      "risk": "不能把数学合法滑窗数全部算在线提前计划支持；反馈条件数据和预定动作评估必须分报。",
+      "minimum_validation": "静态计划commit时间与窗口标签验证，动作仍a_t:I_t→I_t+1。"
+    },
+    {
+      "id": "C6",
+      "area": "停止/静止负例",
+      "old": "固定静止negative或撤离后的同目标通常保留至64结束，缺少曝光配额",
+      "proposed": "保留固定目标直到停止、无接触蓝推杆移动、受阻与停止响应任务。若需要完整H16停止响应，安排一块16步专用响应；静止任务用一个完整16步任务。其后没有另一个任务就结束，不再统一补45步。已有原始文件全部保留；索引只选必要上下文代表，不删除全类静止。",
+      "evidence": [
+        "exposure/control_phase_exposure.csv",
+        "exposure/REVIEW_ONLY_window_indices.csv"
+      ],
+      "risk": "保持目标不保证物体停止；不能按未来位移大小全删静止，蓝推杆运动/停止上下文必须保留。",
+      "minimum_validation": "离线已有按原类别、逐步运动及逐比特RGB三种口径对照；新任务是否真的产生停止响应须后续获批真值验收。"
+    },
+    {
+      "id": "C7",
+      "area": "negative与边界目标的任务含义",
+      "old": "moving negative选择对象静态轮廓不相交的0/512角落，6个此类AW失败；boundary也追墙内",
+      "proposed": "动作输入仍允许原0..512且原样传入，不加23..488或距离/速度clip。普通无接触负例在规划时选择原几何下圆盘可达的空移/保持路线；故意追0/512墙内作为单独诊断目标，不冒充可行负例或自动回缩到边界。边界任务设计物体触墙/沿墙/离墙而非让推杆无限追墙内。已有9例AW证据不为证明同一点再重跑。",
+      "evidence": [
+        "contact/CONTACT_DIAGNOSIS.json",
+        "contact/first-violations.csv",
+        "geometry/wall_target-process.png"
+      ],
+      "risk": "这是需审批的目标生成策略差异，不是更改原action_space；不能借可达性筛选排除所有物体触墙场景或隐性恢复24规则。",
+      "minimum_validation": "静态实际shape可达性、原始请求=传入动作检查；新物理仍未授权。"
+    },
+    {
+      "id": "C8",
+      "area": "同历史动作分支",
+      "old": "公共3控制历史之后立即分叉；12个家族中没有三支都合法H16，全部配对仅T/C两个家族有turn-vs-withdraw双侧合法",
+      "proposed": "在一段已有真实合法接触历史的任务块边界分叉，例如首16任务后anchor19；完整重建并重放19个控制到该锚点，4帧历史/动作/状态/RGB真实核对，再比较继续/转向/撤离16未来。整个家族同split，所有前缀重放计费，不自动替换失败家族。",
+      "evidence": [
+        "../direct-target-acceptance-20261031/background/all-sibling-branch-pairs.json",
+        "EFFECTIVE_DATA_SUPPORT.csv"
+      ],
+      "risk": "更长前缀会增加重放成本且仍可能早停，需新的有限预算；匹配历史不保证动作结果分离。",
+      "minimum_validation": "静态回放预算/完整前缀身份检查；新物理分支比较需后续明确批准。"
+    },
+    {
+      "id": "C9",
+      "area": "未来训练曝光索引",
+      "old": "若所有滑窗同权，H16为2117窗口，79.74%逐步低运动、63.06%全部RGB相同；未启用新训练",
+      "proposed": {
+        "review_index": "exposure/REVIEW_ONLY_window_indices.csv",
+        "candidate_unique_indices_H1_H4_H8_H16": [
+          846,
+          798,
+          747,
+          666
+        ],
+        "supported_families": [
+          69,
+          61,
+          57,
+          45
+        ],
+        "selection": "真实事件或持续物体/蓝推杆运动+最早合法无AO/受阻hold/停止响应代表；只选完整合法历史未来。",
+        "weight": "家族1/96→有支持事件桶等权→桶内有支持同胞分支等权→唯一窗口等权。缺失家族质量不填0运动。",
+        "review_H16_weighted_object_low_motion_fraction": 0.5547942259907228,
+        "review_H16_weighted_exact_RGB_static_fraction": 0.15411764705882353,
+        "training_index_enabled": false
+      },
+      "evidence": [
+        "exposure/compact_three_exposure_views.csv",
+        "exposure/CHECKS.json"
+      ],
+      "risk": "事件桶优先级与权重是待批设计，不是最优证明；索引不增加独立场景，也不能声称模型改善。",
+      "minimum_validation": "本次原raw绑定、合法完整历史未来、唯一键、权重和已离线核对。后续启用仍须批准；旧非法标签不重写。"
+    },
+    {
+      "id": "C10",
+      "area": "有效数据充分性",
+      "old": "以120尝试完成/大量重叠窗口易误当充分",
+      "proposed": "验收同时报独立初态家族、实际事件、净/累计幅度和H1/4/8/16完整支持。当前H16只45/96家族、L强平移0家族、全部字母真实OW H16支持0、三支全合法家族0；这些缺口只能由后续获批的新有效场景填补。此次不冻结1500配额或放行扩采。",
+      "evidence": [
+        "EFFECTIVE_DATA_SUPPORT.csv",
+        "exposure/early_termination_window_loss.csv"
+      ],
+      "risk": "现有数据可保留待批准复用，不等于已经足够；不能以索引降低静止比例掩盖缺失事件。",
+      "minimum_validation": "先完成C2或人类决定保留旧判据，再审阅具体新有限采样计划；无自动阶段推进。"
+    }
+  ]
+}

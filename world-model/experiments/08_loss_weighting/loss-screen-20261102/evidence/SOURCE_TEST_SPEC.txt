@@ -1,0 +1,47 @@
+LOSS-LIT-SCREEN-20261102：文献驱动的有界四臂筛选（运行前固定）
+负责人：原6.1Sol/Ultra执行聊天__LOCAL_CHAT__。分析聊天__LOCAL_CHAT__。
+直接人类新授权：turn__LOCAL_CHAT__，userMessage__LOCAL_CHAT__，广泛文献综述后测试loss是否可用于本项目。最新执行归属纠正在规划聊天turn__LOCAL_CHAT__，userMessage__LOCAL_CHAT__“你别自己跑啊 你让那个6.1sol 负责人去干”。
+
+主问题：在完全保留GPC模型/原物理/原数据与H1训练输入的条件下，三个不同loss方向是否比原生残差MSE更适合现有运动、轮廓和raw自反馈评价。它们是论文方法的GPC适配，不宣称复现原论文数据或FID。先做128更新筛选，不宣称收敛、全面泛化或全48拟合。
+
+所有臂共同：
+同完整E2 model/Adam/scaler/global+conditioning RNG独立开始。原HMF首128个eff16批（micro4）、全部原来的50%clean/weak、图像[0,1]、一次动作归一化、原sigmadata=.5/offset=.1/targetsigma分布、原AMP模型forward+FP32 loss、AdamW lr1e-5、clip1不变。每臂128次尝试/2048个H1曝光；4臂合计512尝试/8192曝光。0额外训练GT曝光，0新数据，0rollout训练分支。
+令s=原drawsigma，t=sqrt(s²+.1²)，cs为原compute_conditioners(s,sigma_cond)，z=y+target_offset+s*epsilon，F=同一次原生模型输出，r=(y-c_skip*z)/c_out。
+base=F.mse_loss(F.float(),r.float())，默认mean全batch/CHW。A必须直接沿用原原生loss的约简与运算顺序，避免为了统一接口先分sample再平均导致不必要差别。
+D=c_skip*z+c_out*F.float()，这是未clamp、未量化、可微单次去噪重建；不调用原no_grad+byte的wrap_model_output，不更改真实模型输入或推理。q=D/.5，v=y/.5仅为新增loss内部的单位换算，不是把训练图改成另一预处理。
+
+四臂（名称避免与旧ABCD或字母B混淆）：
+BASE：L=base。
+SNR：每sample先mean_CHW((F-r)^2)，再乘w_i并mean_batch。rho_i=.5²/(s_i²+.1²)，w_i=min(rho_i,5)/rho_i；gamma=5，范围0<w<=1。不额外乘原EDM图像权重（残差目标已隐含），不做batch均值归一化，不再改sigma采样/分布。不叠加GDL/FFL。rho是本项目原预条件尺度定义的名义SNR，非直接测得信号方差；使用eff而非draw，明确为GPC适配。
+GDL：L=base + 1*GDL(q,v)，alpha=1。
+GDL(q,v)=.5*(mean(| |q[:,:,1:,:]-q[:,:,:-1,:]|-|v[:,:,1:,:]-v[:,:,:-1,:]| |)
+                 +mean(| |q[:,:,:,1:]-q[:,:,:,:-1]|-|v[:,:,:,1:]-v[:,:,:,:-1]| |))。
+不在相邻边界padding，不是对残差噪声图取梯度，不是旧C/D的边缘区域加权MSE。不加TV或另一个损失。
+FFL：L=base + 1*FFL(q,v)。使用作者默认alpha=1、patch_factor=1、ave_spectrum/log_matrix/batch_matrix=False。Delta=fft2(q,norm='ortho')-fft2(v,norm='ortho')，保留复数相位；M=abs(Delta)/max_{H,W}abs(Delta)，按每sample每channel归一化，max=0时该矩阵=0。M完整detach，FFL=mean(M*(Delta.real²+Delta.imag²))。不改成只比较幅度谱，不固定高频band，不跨batch取max。fft必须在FP32、autocast disabled（96不是halfFFT所需2的幂）；native模型forward精度保持原样。系数1/归一化是本轮预冻结适配选择，未经超参搜索，不能称最优。
+
+已核对原始依据（不依赖二手综述）：
+Min-SNR Hang等ICCV2023，arxiv2303.09556v3附录D.1.1明确EDM是在EDMLoss上乘min(SNR,5)/SNR，而不是直接照抄DDPM epsilon权重：
+https://arxiv.org/html/2303.09556v3#A4.SS1.SSS1
+https://openaccess.thecvf.com/content/ICCV2023/html/Hang_Efficient_Diffusion_Training_via_Min-SNR_Weighting_Strategy_ICCV_2023_paper.html
+GDL Mathieu/Couprie/LeCun ICLR2016，第2.3节公式6/7，图像梯度幅值差、alpha>=1、与像素loss配合：
+https://arxiv.org/html/1511.05440
+FFL Jiang等ICCV2021，原论文与作者实现（源码已读到默认值、FFT norm、矩阵detach与复数平方距离）：
+https://openaccess.thecvf.com/content/ICCV2021/html/Jiang_Focal_Frequency_Loss_for_Image_Reconstruction_and_Synthesis_ICCV_2021_paper.html
+https://raw.githubusercontent.com/EndlessSora/focal-frequency-loss/master/focal_frequency_loss/focal_frequency_loss.py
+不安装新库/下载权重；自行实现这些短公式并标注来源。本文献筛选还覆盖perceptual、SSIM、boundary/IoU/topology和时序/physics方法；它们不在本次训练集合，不能同时扩大。
+
+工程验证：
+预检累计最多128图像级原模型前向，0optimizer更新。包含native BASE loss/梯度一致性、MinSNR与等价重建加权式、GDL/FFL公式/边界、FFT Parseval/相位敏感、零误差返回0且有限、每候选实际模型参数梯度有限非零。可先做GPU tensor-only玩具检查（无模型调用也记实际开销），再一个固定B4真实batch检查四臂。没有模型warmup/测速或多seed。
+参考/候选在同一noise_plan上比；预检不消耗正式训练RNG，之后各臂完整恢复E2。只在累计128前向内允许一次不改loss/数据/精度的纯工程修复重检，保留失败源版本和费用；科学非有限/不兼容/OOM不换配置凑通过，不加上限。正式训练/评测失败准确partial停止，不自动续跑别的配置。路径/报告等不需模型的工程缺陷应在本轮已有结果范围修正完成，保留最初错误记录，不为报告重推模型。
+
+评测：
+只评4个最终128检查点，无新增中期。每臂原train12（每字母4家族）+seen-val24（每字母8）+旧失败3（每字母1），保持原batch/slot/actual epsilon，RH与原raw AR16。合计4*39*16*2=4992预测、14976图像级denoiser。共同E2严格复用R1保存结果/证据（独立审计3744数值与原HMF完全一致），不重推。原loss新跑BASE128与R1 A128交叉核查，若有差异先报告实际差异，不能静默换baseline。
+重点H1/4/8/16和全部16时刻，train/val/old、O/C/B分开，unknown原样、原绝对fit门槛不变。评分定义/资格/拓扑不改，GPU基础评分可用已验证模块；有资格legacy项仍串行CPU。
+预先分类：工程可用不等于科学有效；原绝对验收独立报告；方向性筛选保留R1预设对照条件（每字母val AR4 IoU提高/位置不差、RH强H1 IoU/位置不差、H1/4/8/16拓扑fail不增），另单列AR8/16得失，不能用ALL掩C或挑最好seed。所有逐例改善/退步给出分母。多候选/单seed/128预算与反复使用同一seen-val意味着探索筛选，不是全新独立测试集证明；不事后改变划分。
+若无候选通过，完整报告负结果，别自动增加steps/调gamma/系数/另批；若某候选局部改善，也不自动部署/继续训练。
+
+硬预算：
+模型图像forward总上限23296=8192训练+14976评测+128预检；预测评测4992上限，训练尝试512/更新512上限；单模型构建，4份state恢复，所有preflight失败/工程重检都累计。按micro4训练batchforward2048；评测原39分10批每mode16steps3denoise，4checkpoint3840批；preflight最坏128B1批，总batchforward上限6016。梯度/重算调用另准确记，禁止额外模型调用。
+新持久root上限900,000,000B（4992FP32预测约552MB+4份35MB轻量weights+metrics/report），包含全部metadata/临时写入及至少16MiB结束报告预留。保留旧E2完整state引用，不复制4套Adam/环境/数据、不删旧唯一证据。共享10GB含256MiB原子预留与64MiB外部增长guard。
+CPU单数值进程，各库/Torch intra+inter/OpenCV1，BelowNormal隐藏；GPU模型及可等价GPU统计，0CPU模型/多worker/CPU视频/其他项目操作。预计约15–35分钟，CPU满载可更慢，这不是硬截止或加费授权。先运行计入正式预算的16次更新后回传实际吞吐/显存/ETA（不另测速），终态成功/失败主动回传本分析聊天并保存真实收据；本轮完成即waiting_user_review。
+

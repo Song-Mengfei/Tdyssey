@@ -1,0 +1,3616 @@
+{
+  "kind": "oc23-saved-only-diagnostic-review.v1",
+  "run_id": "OC23-20261031-6625db79bbfd4bf19e19540a5cc7ef5b",
+  "saved_only": true,
+  "torch_imported": false,
+  "new_physics_calls": 0,
+  "new_model_calls": 0,
+  "evaluation_reruns": 0,
+  "checks": {
+    "motion_group_counts": {
+      "train:O": 8,
+      "train:C": 8,
+      "seen_val:O": 8,
+      "seen_val:C": 8
+    },
+    "unique_families": 32,
+    "paired_H1_bitwise_equal": {
+      "1": 32,
+      "3": 32
+    },
+    "raw_motion_sequences_verified": 128,
+    "fixed_loss_samples_noise_identical_all_epochs": true,
+    "denoise16_scope": {
+      "cases": 8,
+      "letters": {
+        "C": 4,
+        "O": 4
+      },
+      "original_batch_sizes": [
+        4
+      ],
+      "original_slots": [
+        0,
+        1,
+        3
+      ],
+      "epsilon_hash_receipts": 128,
+      "unique_epsilon_hashes": 128,
+      "extra_sibling_model_calls": 0
+    },
+    "rng_restoration": [
+      {
+        "label": "epoch1_diagnostics",
+        "before_equals_after": true,
+        "matches": true,
+        "model_mode_restored": true,
+        "optimizer_applications": 0,
+        "training_progress_unchanged": true,
+        "wall_seconds": 827.7339999999967
+      },
+      {
+        "label": "epoch2_formal48",
+        "before_equals_after": true,
+        "matches": true,
+        "model_mode_restored": true,
+        "optimizer_applications": 0,
+        "training_progress_unchanged": true,
+        "wall_seconds": 207.59399999998277
+      },
+      {
+        "label": "epoch2_diagnostics",
+        "before_equals_after": true,
+        "matches": true,
+        "model_mode_restored": true,
+        "optimizer_applications": 0,
+        "training_progress_unchanged": true,
+        "wall_seconds": 5.578000000037719
+      },
+      {
+        "label": "epoch3_formal48",
+        "before_equals_after": true,
+        "matches": true,
+        "model_mode_restored": true,
+        "optimizer_applications": 0,
+        "training_progress_unchanged": true,
+        "wall_seconds": 216.75
+      },
+      {
+        "label": "epoch3_diagnostics",
+        "before_equals_after": true,
+        "matches": true,
+        "model_mode_restored": true,
+        "optimizer_applications": 0,
+        "training_progress_unchanged": true,
+        "wall_seconds": 347.31300000002375
+      }
+    ]
+  },
+  "passed": true,
+  "errors": [],
+  "diagnostic_overall": [
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7967377263047437,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.5686731572794675,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.373014580026652,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9070399752170357,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.23523150717973768,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.14386263388553494,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 11,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.940252548384252,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.20092602553518124,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.09478427784337434,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 7,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.97788893151371,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.09527090159981046,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.034740761669069434,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.8987086813483826,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.28556191524846763,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.1600105520716148,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 13,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9346356139383916,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.16670797759216577,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.0963062553117428,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 12,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9568247111275779,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.08920185930073804,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.06295685991092069,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 9,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9687298830747284,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.10882643474199774,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.0498055871274202,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7967377263047437,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.5686731572794675,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.373014580026652,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6029158047330858,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.6411438117409651,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.7263213547099865,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 12,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.455168181711752,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.983023186113406,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.1740288695392698,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 9,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.39303560800292403,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 4.334556283701962,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.806082167156874,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.8987086813483826,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.28556191524846763,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.1600105520716148,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 15,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7362200890758728,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.7355417582328048,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.448819855456755,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 12,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6599440602296001,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.1162224820930156,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.5918582475454057,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 11,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5704728482256076,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.7107233237008024,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.8033151725124528,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.8236455002525562,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.5091052515196416,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.32616961150391327,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9252990017512772,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.188301551502581,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.11802285897165733,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 10,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9466988884631017,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.21118409912680258,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.08546103014680871,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 7,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.98109382376324,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.10534256000349493,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.03065431352907309,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9110453317573848,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.2632071208204627,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.13991733818269117,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 13,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.950003364552749,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.16013832516597,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.07101021155095132,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 12,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9610809362342245,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.08497103600640729,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.0591941899661665,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 9,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9756539913867854,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.07916409321516005,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.03749495427947802,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.8236455002525562,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.5091052515196416,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.32616961150391327,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6382947409738244,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.2748758158225557,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.6594409524849705,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 14,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.4960449435483202,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.449708058378529,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.9934389608792433,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 9,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.4247627350297917,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 3.355860586730929,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.3683583595010196,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 16,
+      "shape_unknown": 16,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9110453317573848,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.2632071208204627,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.13991733818269117,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 16,
+      "shape_unknown": 14,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7673658527826288,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.6751092899908091,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.3902893901773258,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 16,
+      "shape_unknown": 12,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6972570554229417,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.8397354521749298,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.5155302138522777,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 16,
+      "shape_unknown": 9,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6257204513505541,
+          "available": 16,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.1933571225818351,
+          "available": 16,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.6537694962513989,
+          "available": 16,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 16
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 16,
+          "unknown": 0
+        }
+      }
+    }
+  ],
+  "diagnostic_letter_h16": [
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 1,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9825510243270279,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.07879692609880513,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.030464762349057865,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 6,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9732268387003922,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.11174487710081579,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.03901676098908101,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9757008108135397,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.0826887490251684,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.03896446898353239,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 5,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9617589553359174,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.13496412045882708,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.06064670527130801,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.3979386351780497,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 3.887272508072481,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.476460665731937,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 5,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.3881325808277984,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 4.781840059331445,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 2.135703668581811,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 5,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.58442382385931,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.699392751210175,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.7722533050987819,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "1",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 6,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5565218725919052,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.7220538961914293,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.8343770399261238,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 1,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9848480624457827,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.09527384029750675,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.025950965904483432,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "train",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 6,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9773395850806972,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.1154112797094831,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.035357661153662755,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9817038265381341,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.06277211878120775,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.028144077027543533,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "real_history",
+      "split": "seen_val",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 5,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9696041562354367,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.09555606764911233,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.0468458315314125,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 3,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.4783350406837741,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.8085938992921795,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.0990390167586717,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "train",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 6,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.37119042937580937,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 3.9031272741696776,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.6376777022433675,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6694382727091599,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.1655299553789014,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.5859340076585209,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    },
+    {
+      "epoch": "3",
+      "mode": "autoregressive",
+      "split": "seen_val",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 8,
+      "shape_unknown": 5,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5820026299919483,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.2211842897847687,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.7216049848442767,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        }
+      }
+    }
+  ],
+  "fixed_loss": {
+    "1": {
+      "train": {
+        "mean": 0.0013906028761994094,
+        "samples": 16
+      },
+      "train:O": {
+        "mean": 0.0013002350460737944,
+        "samples": 8
+      },
+      "train:C": {
+        "mean": 0.0014809707063250244,
+        "samples": 8
+      },
+      "seen_val": {
+        "mean": 0.0007670696795685217,
+        "samples": 16
+      },
+      "seen_val:O": {
+        "mean": 0.0007733686070423573,
+        "samples": 8
+      },
+      "seen_val:C": {
+        "mean": 0.000760770752094686,
+        "samples": 8
+      }
+    },
+    "2": {
+      "train": {
+        "mean": 0.0013390724052442238,
+        "samples": 16
+      },
+      "train:O": {
+        "mean": 0.0012816413072869182,
+        "samples": 8
+      },
+      "train:C": {
+        "mean": 0.0013965035032015294,
+        "samples": 8
+      },
+      "seen_val": {
+        "mean": 0.0006508435908472165,
+        "samples": 16
+      },
+      "seen_val:O": {
+        "mean": 0.0006831631762906909,
+        "samples": 8
+      },
+      "seen_val:C": {
+        "mean": 0.0006185240054037422,
+        "samples": 8
+      }
+    },
+    "3": {
+      "train": {
+        "mean": 0.0012832984648412094,
+        "samples": 16
+      },
+      "train:O": {
+        "mean": 0.001206116983667016,
+        "samples": 8
+      },
+      "train:C": {
+        "mean": 0.0013604799460154027,
+        "samples": 8
+      },
+      "seen_val": {
+        "mean": 0.0006276313797570765,
+        "samples": 16
+      },
+      "seen_val:O": {
+        "mean": 0.0006805807643104345,
+        "samples": 8
+      },
+      "seen_val:C": {
+        "mean": 0.0005746819952037185,
+        "samples": 8
+      }
+    }
+  },
+  "fixed_loss_relative_reduction_epoch1_to3": {
+    "train": 0.0771639503950032,
+    "train:O": 0.07238542192119678,
+    "train:C": 0.08135931372242682,
+    "seen_val": 0.18178048686513007,
+    "seen_val:O": 0.11997880685482865,
+    "seen_val:C": 0.24460556137127465
+  },
+  "inference_only_denoise_groups": [
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9865122038479854,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.060385155828964795,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.1907227985729683,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.02066014298816672,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.008230750174297854,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005430645391965737,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.060385155828964795,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 6
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6694691908539065,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.8878112380766653,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.40254560757777696,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.59768389006983,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 27.75,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.03323357303665744,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.005178172398403729,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.8878112380766653,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 7
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.47861499129469964,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.9216730296251208,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.26069490221376757,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.358029203102374,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 18.75,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.06626086349062713,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.00893178501667488,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 1.9216730296251208,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 8
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.347216293114187,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 3.8291691340751015,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.35457199864431366,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.8757348376090222,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 65.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.09663081735969757,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.011978755144307867,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 3.8291691340751015,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 6
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "O",
+      "horizon": 1,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9876601551575916,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.04406345833436937,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.17022076904913033,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.017683683217390264,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.0066146540027137045,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005749072825741402,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.04406345833436937,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "O",
+      "horizon": 4,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7316823074010215,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.0113793295595515,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.38252370418163706,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.5008990663965324,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 47.75,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.03375794652226012,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.00461480509956535,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 1.0113793295595515,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "O",
+      "horizon": 8,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5932223069550436,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.9051922662340743,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.2605114572473417,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.8067868992775111,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 18.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.04676966636910165,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.007213935959902771,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 1.9051922662340743,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.4624880518742411,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.7769007247631636,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.2932999901582127,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.022663313512987,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 97.25,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.09077157246783885,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.010175075919707066,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 2.7769007247631636,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "C",
+      "horizon": 1,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9853642525383792,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.07670685332356021,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.21122482809680632,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.023636602758943182,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.009846846345882003,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005112217958190072,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.07670685332356021,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "C",
+      "horizon": 4,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6072560743067916,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.7642431465937791,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.42256751097391687,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.6944687137431276,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 7.75,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.032709199551054766,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.005741539697242108,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.7642431465937791,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "C",
+      "horizon": 8,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.36400767563435577,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.9381537930161672,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.26087834718019337,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.9092715069272366,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 19.5,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.08575206061215258,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.010649634073446988,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 1.9381537930161672,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise3",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.23194453435413287,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 4.881437543387041,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.41584400713041453,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 2.7288063617050575,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 32.75,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.1024900622515563,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.013782434368908665,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 4.881437543387041,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "ALL_OC",
+      "horizon": 1,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9870296053773466,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.04527114645722127,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.23264211024696152,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.019018807579688157,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.007751010354475266,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005623889403628557,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.04527114645722127,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 6
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "ALL_OC",
+      "horizon": 4,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.6370021638893347,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.9959894968183937,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.5620634807917262,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.6599044735602204,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 25.25,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.024345916732255758,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.005911054564011351,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.9959894968183937,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 7
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "ALL_OC",
+      "horizon": 8,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.4150438152835918,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.4793027534984224,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.41617039605216816,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.5923339011333157,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 68.125,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.06557739502365606,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.010524815437233888,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 2.4793027534984224,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 8
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "ALL_OC",
+      "horizon": 16,
+      "denominator": 8,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.2838587933945912,
+          "available": 8,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 4.676430769449606,
+          "available": 8,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.4604704350939728,
+          "available": 8,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 2.2345418591272272,
+          "available": 8,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 44.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 8,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.0930096736561423,
+          "available": 8,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.01391134838643467,
+          "available": 8,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 4.676430769449606,
+          "available": 8,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 8
+        }
+      },
+      "shape_unknown": 6
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "O",
+      "horizon": 1,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.9886287607869442,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.03960382686725046,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.2219181750704546,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.015059015476231178,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.0056859655740252755,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005982385788134184,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.03960382686725046,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "O",
+      "horizon": 4,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.7015806191395221,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 1.229103083499913,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.569474402103895,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.5583668833828057,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 43.25,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.0235460219194767,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.005349531099286483,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 1.229103083499913,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "O",
+      "horizon": 8,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5288325341578349,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.5705974813731,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.44718753329874983,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.9930392651527444,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 114.25,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.03376152724387439,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.009008271409466303,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 2.5705974813731,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "O",
+      "horizon": 16,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.3940728855171646,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 3.828610072977093,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.3958609008208418,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 1.3953171266349427,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 50.25,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.040287441819525316,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.012285712584266445,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 3.828610072977093,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "C",
+      "horizon": 1,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.985430449967749,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.05093846604719208,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.24336604542346846,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.022978599683145137,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.009816055134925257,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.0005265393019122929,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.05093846604719208,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "C",
+      "horizon": 4,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.5724237086391474,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 0.7628759101368743,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.5546525594795576,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 0.761442063737635,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 7.25,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.02514581154503482,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.00647257802873622,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 0.7628759101368743,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "C",
+      "horizon": 8,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.3012550964093485,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 2.3880080256237446,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.3851532588055865,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 2.191628537113887,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 22.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.0973932628034377,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.01204135946500147,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 2.3880080256237446,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 4
+    },
+    {
+      "epoch": "epoch1/denoise16",
+      "letter": "C",
+      "horizon": 16,
+      "denominator": 4,
+      "means": {
+        "raw_mask_iou": {
+          "mean": 0.17364470127201784,
+          "available": 4,
+          "unknown": 0
+        },
+        "object_position_error_image_px": {
+          "mean": 5.524251465922119,
+          "available": 4,
+          "unknown": 0
+        },
+        "pusher_position_error_image_px": {
+          "mean": 0.5250799693671038,
+          "available": 4,
+          "unknown": 0
+        },
+        "raw_contour_error_image_px": {
+          "mean": 3.0737665916195116,
+          "available": 4,
+          "unknown": 0
+        },
+        "visible_angle_error_deg": {
+          "mean": 37.75,
+          "available": 4,
+          "unknown": 0
+        },
+        "holes_difference": {
+          "mean": 0.0,
+          "available": 4,
+          "unknown": 0
+        },
+        "area_fraction_error": {
+          "mean": 0.14573190549275927,
+          "available": 4,
+          "unknown": 0
+        },
+        "rgb_full_mae": {
+          "mean": 0.015536984188602894,
+          "available": 4,
+          "unknown": 0
+        },
+        "motion_vector_error_image_px": {
+          "mean": 5.524251465922119,
+          "available": 4,
+          "unknown": 0
+        },
+        "underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        },
+        "absolute_underrotation_deg": {
+          "mean": null,
+          "available": 0,
+          "unknown": 4
+        }
+      },
+      "shape_unknown": 3
+    }
+  ],
+  "timing": {
+    "total_wall_seconds": 30912.091557799984,
+    "total_wall_hours": 8.586692099388884,
+    "engine_wall_seconds": 30612.49999999997,
+    "training_epochs_seconds": 29006.20299999998,
+    "training_epochs_hours": 8.057278611111105,
+    "protected_evaluation_seconds": 1604.969000000041,
+    "report_and_owner_other_seconds": 299.5915578000131,
+    "engine_other_seconds": 1.327999999950407,
+    "epoch_seconds": {
+      "2": 15146.266000000003,
+      "3": 13859.936999999976
+    },
+    "seconds_per_optimizer_batch": {
+      "2": 7.8315749741468474,
+      "3": 7.166461737331942
+    },
+    "limitation": "Wall times include CPU I/O and GPU execution; not GPU kernel profiling. Current logs do not identify why throughput differed from the earlier2-3hour estimate. No new physics, retry or extra epoch explains the duration."
+  },
+  "conclusions": [
+    "Fixed-sample/fixed-noise residual loss decreases on both selected train and seen-val groups across epochs1/2/3, supporting continued learning with unchanged recipe; does not establish convergence or model capacity limits.",
+    "Both train and seen-val AR16 position errors improve overall, but the true-history versus recursive gap remains large. This supports autoregressive error accumulation/history distribution mismatch as a candidate factor, not a proof of its exclusive cause.",
+    "No simple train-improves/seen-val-worsens overfit pattern in these fixed selected groups. Groups are motion-biased and composition differs across splits, so lower seen-val loss is not evidence that generalization is better than fitting, and overfitting elsewhere is not excluded.",
+    "C training-group H16 AR IoU regresses despite better position error; centroid improvement is not preservation of shape, corners, holes or contact.",
+    "Sixteen-denoise inference on epoch1 O4/C4 is worse at H4/H8/H16 on the stored paired comparison; no evidence here that increasing denoising solves long-range failure. Original B4 epsilon is reconstructed by seed/shape/slot and B1 network rounding remains a confound.",
+    "Signed underrotation metrics are unavailable. Many shape/angle cases are occluded/symmetric/ambiguous; unknown is not a pass. Real-history t+16 is one-step conditioned on actual prior frames, not closed-loop H16 prediction."
+  ],
+  "limits": [
+    "Only two additional full epochs were approved. No new physical sampling, architecture/loss/LR change, server or fourth epoch.",
+    "Formal48 uses the unchanged seen-val cases, three-denoise sampler and recursive predictions. All six letters, including B regressions, remain in the tables.",
+    "The O/C movement diagnostic deliberately favors recorded movement/contact. Training and seen-val are separate; this is not a natural-distribution or unseen-letter test.",
+    "Real-history predictions each receive four prior true frames for that target time. Their t+16 image is a single-step diagnostic, never a sixteen-step closed-loop prediction.",
+    "AR16 receives true history only at its initial anchor, then raw predictions, with no future truth feedback or shape repair.",
+    "Position/IoU, angular error, raw contour and visible hole counts are distinct observations. Occlusion/symmetry/deformation can make angle or shape unknown; unknown is not a pass.",
+    "Raw contour error mixes position, rotation and boundary shape. Corner counts or lower contour error alone cannot establish rigid-corner or hole preservation.",
+    "Absolute angular alignment error alone cannot establish underrotation. A signed, assessable motion comparison is required; unavailable underrotation remains unknown.",
+    "Three-vs-sixteen denoising is an inference-only comparison at the same epoch1 checkpoint on eight fixed O/C strong cases. It cannot be counted as training improvement or a new default.",
+    "The sixteen-denoise diagnostic injects each case's original batch-four initial noise into a batch-one call. Batch-one versus batch-four floating-point kernel rounding may also differ; this is not a perfectly isolated causal estimate of denoising-step count.",
+    "Display PNG/video clips and quantizes only for viewing. Saved raw floats and all existing machine metrics remain unchanged. No shape or penetration correction is claimed.",
+    "These finite comparisons can support candidate causes; they do not prove model-capacity failure, convergence or a universal cure for autoregressive drift."
+  ],
+  "selected_postrun_media": [
+    {
+      "split": "train",
+      "letter": "O",
+      "sample_id": "AC-O-05-25:AC-O-05-25:a5:H16:motion-diagnostic",
+      "raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\accelerated-rgb-run-20261031\\collection\\attempts\\AC-O-05-25.npz",
+      "anchor": 5,
+      "truth_h1_signed_rotation_deg": -5.545169226591329,
+      "truth_h16_signed_rotation_deg": -53.04300930291999,
+      "board": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\postrun-media\\diagnostic-train-O-max-truth-H16-rotation.png",
+      "sha256": "ccdfcdc25ce8f3a1d08a4a4cda0fbe217c0783767d443f7ad5908c614453ec8f",
+      "bytes": 162869,
+      "inputs": [
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\real_history\\raw-001-0.npz",
+          "sha256": "232f85810142cd4c6c68a8d8db3ada99c9a07eed0e8d50b5b545ef16b3dad648"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\autoregressive\\raw-001-0.npz",
+          "sha256": "653aba35d856d6b5a73543edef508100f3bd18b79af6cc868593c3bf7da21384"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\real_history\\raw-001-0.npz",
+          "sha256": "319590e8606596fb9745417fe697003c8a27def81584f179188a13667a9b8a90"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\autoregressive\\raw-001-0.npz",
+          "sha256": "29d2cd1732f12d2c5e83b325731528c5e7d045b20c892dea183305fd7780ce4b"
+        }
+      ],
+      "selection": "Among existing32 frozen motion-biased examples in each split/letter, maximum absolute TRUE H16 rotation; tie by sample ID. Predictions not consulted."
+    },
+    {
+      "split": "train",
+      "letter": "C",
+      "sample_id": "AC-C-04-13:AC-C-04-13:a7:H16:motion-diagnostic",
+      "raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\accelerated-rgb-run-20261031\\collection\\attempts\\AC-C-04-13.npz",
+      "anchor": 7,
+      "truth_h1_signed_rotation_deg": 6.325746444281746,
+      "truth_h16_signed_rotation_deg": 58.240149596773726,
+      "board": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\postrun-media\\diagnostic-train-C-max-truth-H16-rotation.png",
+      "sha256": "2ca3446ddc74868e59a07671bb6e6009f00680136b105c2bea2612ad1dbc5e3d",
+      "bytes": 151100,
+      "inputs": [
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\real_history\\raw-002-2.npz",
+          "sha256": "707a9e3424ddaabc1d05c32b4f1f5c18ac6ac30099b6d9e2308f21635b8d5e6d"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\autoregressive\\raw-002-2.npz",
+          "sha256": "adca97e93d5db68b6a93dca906cb13aedfa9c6e68577aa66f668c80616c460ab"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\real_history\\raw-002-2.npz",
+          "sha256": "dfa314324ff357a42ffac23d6cb0743cbdcd445801d262bfb7475163f78d8b9f"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\autoregressive\\raw-002-2.npz",
+          "sha256": "169d64170212c4b045378b247171146e5631c518258846e050a4acd648df4105"
+        }
+      ],
+      "selection": "Among existing32 frozen motion-biased examples in each split/letter, maximum absolute TRUE H16 rotation; tie by sample ID. Predictions not consulted."
+    },
+    {
+      "split": "seen_val",
+      "letter": "O",
+      "sample_id": "AC-O-05-16:AC-O-05-16:a5:H16:motion-diagnostic",
+      "raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\accelerated-rgb-run-20261031\\collection\\attempts\\AC-O-05-16.npz",
+      "anchor": 5,
+      "truth_h1_signed_rotation_deg": -2.745264049424123,
+      "truth_h16_signed_rotation_deg": -32.038380705218074,
+      "board": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\postrun-media\\diagnostic-seen_val-O-max-truth-H16-rotation.png",
+      "sha256": "e198916274e23ebbc592134178a0103adf376efcd290e138c4eb6067c6ad9aad",
+      "bytes": 171001,
+      "inputs": [
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\real_history\\raw-004-3.npz",
+          "sha256": "7d8c0ab751dc758d8f13c1061c47cb55ee0959538937b8d6bba2ee74100ef16c"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\autoregressive\\raw-004-3.npz",
+          "sha256": "63cdc5f3dc6fbfbf5e2d169b24c043506db338a8b007be7d1799a8e05c56c587"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\real_history\\raw-004-3.npz",
+          "sha256": "d59585743ca30062f8073639ab64a5cff9ffe4fdd37a62d3324a721a3e68490b"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\autoregressive\\raw-004-3.npz",
+          "sha256": "45620ed8a9a10c93991ddecd2c6f478b489c3c8754e0850d5303e4551206b210"
+        }
+      ],
+      "selection": "Among existing32 frozen motion-biased examples in each split/letter, maximum absolute TRUE H16 rotation; tie by sample ID. Predictions not consulted."
+    },
+    {
+      "split": "seen_val",
+      "letter": "C",
+      "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+      "raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\accelerated-rgb-run-20261031\\collection\\attempts\\AC-C-05-00.npz",
+      "anchor": 6,
+      "truth_h1_signed_rotation_deg": -5.396410326428155,
+      "truth_h16_signed_rotation_deg": -56.16487084910366,
+      "board": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\postrun-media\\diagnostic-seen_val-C-max-truth-H16-rotation.png",
+      "sha256": "6a30e603c29e2dd89fd9d0a9a58838eebbb6a5bacbde0daa65e8dc2224b8d0b4",
+      "bytes": 150481,
+      "inputs": [
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\real_history\\raw-006-0.npz",
+          "sha256": "44cfae4c58de6a20716187aea04c2b02976c93145333c5e83192e8d432467d68"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch1\\autoregressive\\raw-006-0.npz",
+          "sha256": "8d7e2948936f1e66dce034aaf3721807067865527a445d52fdb90d8943a17e54"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\real_history\\raw-006-0.npz",
+          "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+        },
+        {
+          "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\oc-continuation-20261031\\diagnostics\\epoch3\\autoregressive\\raw-006-0.npz",
+          "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+        }
+      ],
+      "selection": "Among existing32 frozen motion-biased examples in each split/letter, maximum absolute TRUE H16 rotation; tie by sample ID. Predictions not consulted."
+    }
+  ]
+}

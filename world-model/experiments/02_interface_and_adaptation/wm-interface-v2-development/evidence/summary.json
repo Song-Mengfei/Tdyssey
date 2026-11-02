@@ -1,0 +1,2109 @@
+{
+  "additional_model_inference": 0,
+  "additional_physics_controls": 0,
+  "available_by_source": {
+    "calibration": 24,
+    "forecast": 756,
+    "history": 252,
+    "physical_future": 252
+  },
+  "available_image_rows": 1284,
+  "case_previews": [
+    "real_image_interface_bias_reduced-00.png",
+    "real_image_interface_bias_reduced-01.png",
+    "real_image_interface_bias_reduced-02.png",
+    "real_image_interface_bias_reduced-03.png",
+    "real_image_interface_bias_reduced-04.png",
+    "real_image_interface_bias_reduced-05.png",
+    "near_threshold_declared_interval_ambiguity-00.png",
+    "near_threshold_declared_interval_ambiguity-01.png",
+    "near_threshold_declared_interval_ambiguity-02.png",
+    "near_threshold_declared_interval_ambiguity-03.png",
+    "near_threshold_declared_interval_ambiguity-04.png",
+    "near_threshold_declared_interval_ambiguity-05.png",
+    "model_shape_or_image_ambiguity-00.png",
+    "model_shape_or_image_ambiguity-01.png",
+    "model_shape_or_image_ambiguity-02.png",
+    "model_shape_or_image_ambiguity-03.png",
+    "model_shape_or_image_ambiguity-04.png",
+    "model_shape_or_image_ambiguity-05.png",
+    "measurable_model_state_error-00.png",
+    "measurable_model_state_error-01.png",
+    "measurable_model_state_error-02.png",
+    "measurable_model_state_error-03.png",
+    "measurable_model_state_error-04.png",
+    "measurable_model_state_error-05.png",
+    "near_threshold_missing_measurement-00.png",
+    "near_threshold_missing_measurement-01.png",
+    "near_threshold_missing_measurement-02.png",
+    "near_threshold_missing_measurement-03.png",
+    "near_threshold_missing_measurement-04.png",
+    "near_threshold_missing_measurement-05.png"
+  ],
+  "caveats": [
+    "All reused data are development data already inspected before v2; no validation claim.",
+    "Development absolute-error intervals are assumptions, not probabilities or calibrated guarantees on generated images.",
+    "Raw image measurements are separate from sequence score eligibility; unknown earlier stopping is never repaired from future truth.",
+    "Baselines have independent physical denominators; model abstention does not hide them.",
+    "Contact is a posthoc real solver-contact stratum, not a decoded contact prediction."
+  ],
+  "controls": 0,
+  "cpu_seconds": 273.59375,
+  "created_at": "2026-10-24T11:51:10.974417+00:00",
+  "data_seen_before_decoder_revision": true,
+  "decoder_calls": {
+    "v1": 208,
+    "v2": 988
+  },
+  "development_only": true,
+  "environment_creations": 0,
+  "expected_by_source": {
+    "calibration": 24,
+    "forecast": 768,
+    "history": 256,
+    "physical_future": 256
+  },
+  "expected_forecast_rows": 768,
+  "expected_image_rows": 1304,
+  "expected_noise_seeds": [
+    5478,
+    5479,
+    5480
+  ],
+  "expected_physical_branches": 64,
+  "forbidden_runtime_imports": [],
+  "independent_validation": false,
+  "input_files": {
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-away-noise-5478.npz": {
+      "bytes": 9437,
+      "sha256": "ae0fb77dd797f1fe1565d6b0914c3266bb5163c2e3f93477467ddba2b5b681a4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-away-noise-5479.npz": {
+      "bytes": 9654,
+      "sha256": "4ddfec0ebcda5bc24ee4dbc6a15ca4f7da658cc1afffb1baa458dde327955e14"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-away-noise-5480.npz": {
+      "bytes": 9596,
+      "sha256": "b965c8710dc1bc40d1eae0072e6eb49c160e1328168e569ff3de0a9f82ca7d33"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-away-physical.npz": {
+      "bytes": 20216,
+      "sha256": "bf602b7df8b2c02bbd9bc46c39d05cb29da2500025b20bddc331c46eb1cc2a4d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-hold-noise-5478.npz": {
+      "bytes": 9371,
+      "sha256": "8a19c73dfd419d67f6636508a4cdb89f5f4f802760fc2222feab2b5f402a3feb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-hold-noise-5479.npz": {
+      "bytes": 9575,
+      "sha256": "e4bb2d1cc5a1701af0c96f7022b9d8d165cae6829aa66fb1d7b15e23ce4b87e7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-hold-noise-5480.npz": {
+      "bytes": 9635,
+      "sha256": "4630c40f8d4fe86ae5197ed176167972982bb9269717c2203afd81c1cfe20358"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-hold-physical.npz": {
+      "bytes": 20332,
+      "sha256": "cb891b349b312f68d9fc0e6499a9eff0e7eaebe478697b36bd4ee4572dba97bd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-side-noise-5478.npz": {
+      "bytes": 9437,
+      "sha256": "23f2d029f3d6ef0e6a00697edb48bee7feeb6de080602959de037da3e6fbaa48"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-side-noise-5479.npz": {
+      "bytes": 9604,
+      "sha256": "f05eb260dbafb78d166e3b373249bfb24d9bb85fdfd0bbc91e90b3260c33f05c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-side-noise-5480.npz": {
+      "bytes": 9746,
+      "sha256": "3929375f41aa1d49c7f263e1868c65c4aa14954353d639510b7c37a63e4e14de"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-side-physical.npz": {
+      "bytes": 20136,
+      "sha256": "f1f411002cbda68d625b697121b7a90319d2c4266d764cfaabe9f33194ded8cb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-toward-noise-5478.npz": {
+      "bytes": 9387,
+      "sha256": "b32ab5e5398d2509e4161e458831ff94f27b05882cdd545d7b0eed907f9afc10"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-toward-noise-5479.npz": {
+      "bytes": 9472,
+      "sha256": "17d88294beb6fe49c81b11f25ff0fba6588435ec532fe3b4b6a77e6d79906458"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-toward-noise-5480.npz": {
+      "bytes": 9764,
+      "sha256": "14d9f124b8bf3156de38569567769a40303ba9b23d2750a3d9013b72c3039b19"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L00-toward-physical.npz": {
+      "bytes": 20288,
+      "sha256": "812879d464eec8b38b2ef66beaf1e7a812ede682743f0a4f27440119ebd1c848"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-away-noise-5478.npz": {
+      "bytes": 8610,
+      "sha256": "2aa3bec1eb9046fa622ed539e9becac721eb1742f6234cc11738a619dc4ac8d7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-away-noise-5479.npz": {
+      "bytes": 8525,
+      "sha256": "c0ce3bee12a7dde7619e9b7e5fba3eb439fa3f57efddc81bdf818026ce221a61"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-away-noise-5480.npz": {
+      "bytes": 9129,
+      "sha256": "a12490ef94eaf986aff23a8aec33224808b0528457d51affb8f7b5b004d64cf5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-away-physical.npz": {
+      "bytes": 16424,
+      "sha256": "edbb7d3a829de16ee8ee3fe958a099052cad9f0c4c9c1bb9e51fa9aa14558bc4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-side-noise-5478.npz": {
+      "bytes": 9334,
+      "sha256": "2e1328d10a91d73b0adb8f41206d968dc18fdaeef9e5ccffe5358294789d95dd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-side-noise-5479.npz": {
+      "bytes": 9454,
+      "sha256": "33be7dbcd16cf3399ff3b53d264421fd4e5d2b5f1e108e1ce79e2d6cf227293c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-side-noise-5480.npz": {
+      "bytes": 9318,
+      "sha256": "5f1e2a72c4f00b7478bddcc687ca4e2b66a75f5aef4f039c01466d849990710c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-side-physical.npz": {
+      "bytes": 16406,
+      "sha256": "7344feecca3ad89a961bd7c8cabbc9f7233aa227bfdb6ed4ec701eeb5cd678b4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-toward-noise-5478.npz": {
+      "bytes": 9317,
+      "sha256": "ed402b45c610f3856591ca329c391f39e06efe44f76ad2cd76a39a1709222b87"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-toward-noise-5479.npz": {
+      "bytes": 9236,
+      "sha256": "9e8cd0abaa1fa386c80a881497f29198ae2b8e4568be405cc58705924d29e132"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-toward-noise-5480.npz": {
+      "bytes": 9367,
+      "sha256": "d9123c4ae2153bf49d43af0f99f9cf8da9e0bd7d9a2feb46049addf61adc428c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L01-toward-physical.npz": {
+      "bytes": 16464,
+      "sha256": "a41546da3dfa41c357eeb33efce64a7e3e8a51f171e9639bea88025e8fa0a71c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-away-noise-5478.npz": {
+      "bytes": 9737,
+      "sha256": "f55322d7f763085bfd2efc770ba7744240087471aee2e514dae1b8039b2662a3"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-away-noise-5479.npz": {
+      "bytes": 9739,
+      "sha256": "bbdb7a1dcd62d45322a7cf3ae6c9559155f518d5388fc86f8d1612155ac5b5a7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-away-noise-5480.npz": {
+      "bytes": 10364,
+      "sha256": "50c88f0f76558fd19763739903dad686f96bd4a2b7d7273216a48aa21195a555"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-away-physical.npz": {
+      "bytes": 20494,
+      "sha256": "7c9a54f8d0bd33d0c6da7ca4a7bd1a188ed3751111a98018d4a6193c8ecd29c7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-hold-noise-5478.npz": {
+      "bytes": 10292,
+      "sha256": "e3cec864a45c09475bfe152d0dbb321f099240ef53042fd5981605edba4f5c89"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-hold-noise-5479.npz": {
+      "bytes": 10192,
+      "sha256": "ba2bb395ea37c889e562c9130e897094f320d7d8e2388887c5aed9907759fada"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-hold-noise-5480.npz": {
+      "bytes": 10213,
+      "sha256": "b7f4aab0eaf7d4a67348dbfb60fe69ff2338c2bf2414c948f0c9035d8928d44e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-hold-physical.npz": {
+      "bytes": 20566,
+      "sha256": "2c65a2aceb27f3df7904cba4c04d41a68be17e7ec6be3a31f6891a24c26c45a0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-side-noise-5478.npz": {
+      "bytes": 10561,
+      "sha256": "2942b61f0385676ed85be4bc07c9d961fc16f877b50253ad471915e21ba3dfe0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-side-noise-5479.npz": {
+      "bytes": 10371,
+      "sha256": "6a6b2c95f276c5a70d53f31ddbb3f43197eac3e2c32493581d09093c3177980d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-side-noise-5480.npz": {
+      "bytes": 10383,
+      "sha256": "bd77822c035c99a47857263bd5c1216a7d146a95ec90415b00993c2454e9c6ae"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-side-physical.npz": {
+      "bytes": 20481,
+      "sha256": "c236e61f12bc22f442d4165566876a928d8960ebd6f01190e22f74c180850b61"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-toward-noise-5478.npz": {
+      "bytes": 10374,
+      "sha256": "db590f8022fcde7b9ec7ed19c7185c9b43cb348bcb42442425a9ed808f004bb1"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-toward-noise-5479.npz": {
+      "bytes": 10384,
+      "sha256": "82e009666ceccc59864a3199c1d61730a40675befab66e3545d759ac32adff3e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-toward-noise-5480.npz": {
+      "bytes": 10248,
+      "sha256": "65e19296c4191270d1988e6d3beccd53e63850f12f4bb3975d619103fa5e87ea"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L02-toward-physical.npz": {
+      "bytes": 20536,
+      "sha256": "968c25af53ef91d31747bb5342c7ebe14a4dc98c59204ae533bfcc8ccab6ae41"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-away-noise-5478.npz": {
+      "bytes": 9873,
+      "sha256": "40766af9f4cbef1f52604ef3f40cb407cfb8fc9c747a65f3a769ef4c11e8126e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-away-noise-5479.npz": {
+      "bytes": 9835,
+      "sha256": "8d3a9bb1bb1674590d1084ad095967f6582a1f7d40fe41d757f2f0d93b90e633"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-away-noise-5480.npz": {
+      "bytes": 9841,
+      "sha256": "c9ee117273e9481dff7c151d66bafce20b75bcbfa3af47a28427079186f241e2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-away-physical.npz": {
+      "bytes": 19898,
+      "sha256": "0a2f8a059f8c269a61fe58282768e27b557eafdf64c88602dbf7407fb05f1a51"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-hold-noise-5478.npz": {
+      "bytes": 9842,
+      "sha256": "9c9c1cf77c09f66d817e7250ca61217a9e601212195e656305b1fa3e467a92c7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-hold-noise-5479.npz": {
+      "bytes": 9831,
+      "sha256": "9b6d4b3b8573eda49998995981522108e5dac8bf088774e3d004c39649b6f509"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-hold-noise-5480.npz": {
+      "bytes": 9808,
+      "sha256": "9a8aa006ffa0b874d4d7e4561b6b6cac2e3f23940ddd1666b8049c85b0a02ba5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-hold-physical.npz": {
+      "bytes": 19880,
+      "sha256": "edf582c7ff821e3fb2a6d0972dd47ea5dc0608197476bf00b014f34493ece494"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-side-noise-5478.npz": {
+      "bytes": 10076,
+      "sha256": "c835ca48255613ef1fb4e6a5b01a686c830b88b2399198b0843430b3e8353242"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-side-noise-5479.npz": {
+      "bytes": 10207,
+      "sha256": "916baf3e679862118b5bf0ee1aeb8d792d68fa07ad270c2cd9ed575e61a16bf9"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-side-noise-5480.npz": {
+      "bytes": 10262,
+      "sha256": "d853d27d7f1f54037c97585c53a52b9ba521b4ca6d01224592a56d5d501eb1b7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-side-physical.npz": {
+      "bytes": 19804,
+      "sha256": "f7dfa452dcb086ff4f0d04abc98ca5a3b3a6f29b7c4861e2bf8aac8c8daafe0c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-toward-noise-5478.npz": {
+      "bytes": 9823,
+      "sha256": "193190d841de60672e5d331d884bb34f4ffd93496558315ce6183da103039fd3"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-toward-noise-5479.npz": {
+      "bytes": 10183,
+      "sha256": "d5f3a358b54e6a2d2a3d8e99f002d8d2a6abd1a43d9fe88725951de164ecd2fd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-toward-noise-5480.npz": {
+      "bytes": 10228,
+      "sha256": "db88db5282c125a9562494155c68102495ff9629750d6402ef69debe38d1c72d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L03-toward-physical.npz": {
+      "bytes": 19851,
+      "sha256": "a17a3122d7e53828f3f28b20d9e61f7e32d172905e27af3f1200d839a404a737"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-away-noise-5478.npz": {
+      "bytes": 9538,
+      "sha256": "93b2aa60acbb8093d97147782bae4d3d143486bab7ebf0431ee7057a1d9cecdd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-away-noise-5479.npz": {
+      "bytes": 9337,
+      "sha256": "b956d61c64c3ea3332f1380ef2b4dfec1d144200421547134e1a2585194ee67a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-away-noise-5480.npz": {
+      "bytes": 9390,
+      "sha256": "485d871ce1478f87d0dca15a8f698c262646e39c5e6a174be940a3c3e82b13c8"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-away-physical.npz": {
+      "bytes": 16593,
+      "sha256": "d4d8aa36e955d59c39e0a13b1ff592243f14be8ec320da33ee4467debaa3d979"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-hold-noise-5478.npz": {
+      "bytes": 9629,
+      "sha256": "5759c839b4ffc41df9d3aa04d11e66bbc5993feddb7c93d825451d0bbe9cdb8b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-hold-noise-5479.npz": {
+      "bytes": 9418,
+      "sha256": "1866999dc4cf2049814d8c7f6a6fbb66375516aad5558071c316303cf2c2c941"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-hold-noise-5480.npz": {
+      "bytes": 9591,
+      "sha256": "7e299cf093dd2dd22609cbe382336783bd2895195990c69bf7f1b0747586b1a7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-hold-physical.npz": {
+      "bytes": 16620,
+      "sha256": "4493fd4a709001b2c9b1516520849587506f4957843d41b308536cca75eb644f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-side-noise-5478.npz": {
+      "bytes": 9302,
+      "sha256": "471ce7371bd50027cac26780739edd662d90599c08e81c5a4f9734b291cc6c4b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-side-noise-5479.npz": {
+      "bytes": 9311,
+      "sha256": "b0e2cc7286ec724c088a031c377af7d2d0feea6871ed6bd57958f9dbdbcc0379"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-side-noise-5480.npz": {
+      "bytes": 9461,
+      "sha256": "888f057c536afbe0a74e8b71081618dcf80101d4bc3a0aede4a5358377006beb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-side-physical.npz": {
+      "bytes": 16468,
+      "sha256": "22b667dd3dfa7320bed0ca89c0da7179471ee325899165bdc6d8f00445877ef0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-toward-noise-5478.npz": {
+      "bytes": 10427,
+      "sha256": "98bde7eb55934a20b0dfeb822cb7f5fe20a93098de8260172891a724c4a9bd8e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-toward-noise-5479.npz": {
+      "bytes": 10361,
+      "sha256": "0be5bc475367aae50b3f216ae1fd4ac9543703f29b986b711f2d0f0d174b1f08"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-toward-noise-5480.npz": {
+      "bytes": 10101,
+      "sha256": "347d4c8db41fe849ab5b10616f70efa9d4607a57459d211ab055f2068a91acdd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L04-toward-physical.npz": {
+      "bytes": 16550,
+      "sha256": "a832ef9c6cab8d6ab6934929fdd2dc8b135d07dbff67822e4d39d09fb0853c3a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-away-noise-5478.npz": {
+      "bytes": 10254,
+      "sha256": "c21ccf02fd823e0f5084c03427dc9dab3c054535ff86c161f19877db938084b5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-away-noise-5479.npz": {
+      "bytes": 10653,
+      "sha256": "cdccd20faa96009d8c2c3a9d2586d932b4e9e7c4417cb4d97dc1b18f4c19c31d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-away-noise-5480.npz": {
+      "bytes": 10306,
+      "sha256": "3f834f11a03c01e658bfdfa0a0e71465401b1e7b77459c80e71f7dc9b664bfd6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-away-physical.npz": {
+      "bytes": 19947,
+      "sha256": "b40a109f809bd1ce429e213d359c733edf7e119072292bff4e22a5b000458899"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-hold-noise-5478.npz": {
+      "bytes": 10424,
+      "sha256": "c8bc7346005e136df3903753cd84028d6d9d0fcf2a8b4118ecf86acbe4001195"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-hold-noise-5479.npz": {
+      "bytes": 10281,
+      "sha256": "183f9efb1ecc257d2c51a5d7edd0a79e39ae8e4375d7b51634c66521effe22cf"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-hold-noise-5480.npz": {
+      "bytes": 10224,
+      "sha256": "319cab911cbf669f284422f304a4b1d0d15586e80c2a96f484aa108628d5d6ee"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-hold-physical.npz": {
+      "bytes": 19650,
+      "sha256": "9cc7c254e7b22bc4cb10dee2d4510c4b4778b4233b6f4a39f737af589893bee1"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-side-noise-5478.npz": {
+      "bytes": 10455,
+      "sha256": "619778a813ed7a2a9e65f7751f3796e6fd6f830f8f3a981ab1e2f4482128adc2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-side-noise-5479.npz": {
+      "bytes": 10152,
+      "sha256": "618a5074bfaba054fc02497b8ccfc7ccb90ca73df0a07c49cbd4f1e1b95c3fa5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-side-noise-5480.npz": {
+      "bytes": 10232,
+      "sha256": "7e3bfd6487169395259aded8d92b9a522d274fb6dd18a3ac6e725485573a3053"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-side-physical.npz": {
+      "bytes": 19971,
+      "sha256": "0ced0edc8b720bb3c0d4f9a62cd4483d246997bf80b4c0a56be398786d7caf76"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-toward-noise-5478.npz": {
+      "bytes": 10911,
+      "sha256": "3e4c51d5ed5284ef6d069c2795fd85048664f22a4600ed8002388a7ba17fefa5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-toward-noise-5479.npz": {
+      "bytes": 10940,
+      "sha256": "6c2b4e1834105c0ac4658abf8db62b73e6f54d6d46b4fc07aa5681550c4409a2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-toward-noise-5480.npz": {
+      "bytes": 10775,
+      "sha256": "7bf0055136e18532daca0996aa7135f53a40876fd1d12c6551b028fa09305910"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L05-toward-physical.npz": {
+      "bytes": 19860,
+      "sha256": "3e06e3002c8b94e38a14def2ec29d55112120975ac269e2ceaab289038568db7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-away-noise-5478.npz": {
+      "bytes": 9511,
+      "sha256": "e38dbb5d795507e1b031ecebb46dc49269622181cc8ce067452fc63e708e9837"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-away-noise-5479.npz": {
+      "bytes": 9488,
+      "sha256": "5d48dacb51b2771ec3a68007ed35af7b16c4930a0a0a9085bcbad8b6b6871f41"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-away-noise-5480.npz": {
+      "bytes": 9484,
+      "sha256": "e145a916b07a13a60bdd49789439cd2e06b09b132a95933c96b50def65c0627a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-away-physical.npz": {
+      "bytes": 16358,
+      "sha256": "73155486942d07b40a72050150ce1172e34a4179bd50ee73001e8b06b3a4b985"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-hold-noise-5478.npz": {
+      "bytes": 9438,
+      "sha256": "126f0926cfc31ee5dc65c1346fc9a49ff30b739131b38449d7853d483c148ca1"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-hold-noise-5479.npz": {
+      "bytes": 9412,
+      "sha256": "0eecc3833004d4f4da46b37af361a994ab51292484a2ca2dc160f2272288767b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-hold-noise-5480.npz": {
+      "bytes": 9252,
+      "sha256": "a128b67238f38b36e8a41a67eebf59b3939673f72cf11ae571f9c285e9668c5f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-hold-physical.npz": {
+      "bytes": 16337,
+      "sha256": "1e657e4c145d573921231a3cb2b6d0c660a987f92992fc9852dac84241deaa40"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-side-noise-5478.npz": {
+      "bytes": 9763,
+      "sha256": "baa2803195ec9979032fc149139c6320365872bcc7ee4e162e98fdaf80a29206"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-side-noise-5479.npz": {
+      "bytes": 9978,
+      "sha256": "90e55235e3e4a6654bb3887ca23b433c60e166f46ed9060a730d6241741eaf3e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-side-noise-5480.npz": {
+      "bytes": 9768,
+      "sha256": "e48fc9af56e48a5ca1cd0913d00678962ebb7cf299049f31f7c7f54d0af97c25"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-side-physical.npz": {
+      "bytes": 16394,
+      "sha256": "827d62e7e37ea8c77f7b4a23d6994adc57729319d5ca3aefad7d628dea16e200"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-toward-noise-5478.npz": {
+      "bytes": 10476,
+      "sha256": "ce976e6ef19df36b9ef46b1dd50212da6dbfd5d2080e2ff90da08a8f871702fb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-toward-noise-5479.npz": {
+      "bytes": 10344,
+      "sha256": "a3a0fedc40a2982e3bef12c4b9e136cb77fd814b3e9f0bafc69329542e3a96a8"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-toward-noise-5480.npz": {
+      "bytes": 10492,
+      "sha256": "0ed2354076fb46192f4466cd9ef72fe493bf649467e41bde95ceff03b5086e99"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L06-toward-physical.npz": {
+      "bytes": 17460,
+      "sha256": "78977663533e1f9f0852fc1b1e4cb312db21e2cc57902f3bb33a4aa5b38cc3cd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-away-noise-5478.npz": {
+      "bytes": 9197,
+      "sha256": "c0bf6ddc2496c508d2ebb5ee44118441c5cb971f581d8ef1948961982383af18"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-away-noise-5479.npz": {
+      "bytes": 9661,
+      "sha256": "1d4c3745f96c8084fb8e9aeeafef316eaabe7052f4a316481acb362a1cf248ad"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-away-noise-5480.npz": {
+      "bytes": 9229,
+      "sha256": "025a5a5e44a68fc40a577252a9e08bbcf563e5dbdbd60189c23e9dbc6856cc27"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-away-physical.npz": {
+      "bytes": 16100,
+      "sha256": "1a968a5d76acdb36dbb890be10080655c1f8c487f863d72d8108da193642f809"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-hold-noise-5478.npz": {
+      "bytes": 9386,
+      "sha256": "a4ffefd1417b73f567d07f18639962dace9bceb1e2385c3a791d2b5f0d19eea4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-hold-noise-5479.npz": {
+      "bytes": 9448,
+      "sha256": "db53a1d69b29ea0c45a846e3fedabe9edc7b42197f26fb7668b78bc587f76fd4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-hold-noise-5480.npz": {
+      "bytes": 9461,
+      "sha256": "e8a8105c4079a83189bf11e28d7876ccb0a87c9217290502c64c6cbe556755e8"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-hold-physical.npz": {
+      "bytes": 15967,
+      "sha256": "ddb1e555ca5e1019724ff802d5fc86253c71288512884bfcd6907f59d059ddb5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-side-noise-5478.npz": {
+      "bytes": 9464,
+      "sha256": "7b57b33aae3a052abf49463c45d4c98a5625e052d3562f687c4f180a7897062f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-side-noise-5479.npz": {
+      "bytes": 9454,
+      "sha256": "9d355c9f6ef870f0fbf6ea0f639b50a6ba714f4c8d0dfb6c51fa190ee0052881"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-side-noise-5480.npz": {
+      "bytes": 9387,
+      "sha256": "22d4d3b5e1c76199b030c83779f28644aefc0ece0c47830b57b27a3fac512910"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-side-physical.npz": {
+      "bytes": 16060,
+      "sha256": "7b5efba34b8191c767002d66e059ebd5d85e27542c69adac2a8b0ca85d5959d5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-toward-noise-5478.npz": {
+      "bytes": 9640,
+      "sha256": "918a3bb92839aca733a3508306db3f4fd7289f8ef3649afc2a39ff9b89e6bbd6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-toward-noise-5479.npz": {
+      "bytes": 9663,
+      "sha256": "39cb541dce57236c393472dc3b131a44fd41c9b9dc61cffa801253f5cc131d08"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-toward-noise-5480.npz": {
+      "bytes": 9702,
+      "sha256": "5b23fee712bc6434fe6c910336a0f07bfa8d9d809a3f346e9bb4fcff7af2ce38"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L07-toward-physical.npz": {
+      "bytes": 17001,
+      "sha256": "cfe69a8a82f306f4ca5eede42bbf03a2290f1e3c53519fc8f1e4792f0c0b3f52"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-away-noise-5478.npz": {
+      "bytes": 10373,
+      "sha256": "8d1d9b41d942d85dcfd16aa3002f9348d51aba15e2040360fe6f491cbf4a9bea"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-away-noise-5479.npz": {
+      "bytes": 10440,
+      "sha256": "e4242286004a2e31798a238c0f6023dee91231c56caa78f932a58485fefe030b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-away-noise-5480.npz": {
+      "bytes": 10410,
+      "sha256": "8439bca59523c99b2b6ca4a5ba45b3dfa71f896382d1400e3d5c879c46ed6a10"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-away-physical.npz": {
+      "bytes": 20274,
+      "sha256": "ab0d016865e77f7e1714a69eab575dd2e9b93485ed0b029e0ee3fe5740979e47"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-hold-noise-5478.npz": {
+      "bytes": 10347,
+      "sha256": "1b2f3ff1c1cd4f563172e6a33b6025d46ee45cc1e02fe5d50b8da06f26c04bdf"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-hold-noise-5479.npz": {
+      "bytes": 10437,
+      "sha256": "65dc37c16b2d935e0b1e2e6dbca315286e73c725aecb72401af81b79303b26a2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-hold-noise-5480.npz": {
+      "bytes": 10408,
+      "sha256": "68f03bbf01d77e4d3b635268c453fb53797dcf82be325cd6b7711a5f3bbbb5ec"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-hold-physical.npz": {
+      "bytes": 20236,
+      "sha256": "36c661e33f99964b7c877763355cc28b7fc07d1023bea1f6570177e4fc3be05d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-side-noise-5478.npz": {
+      "bytes": 10552,
+      "sha256": "c13316236686bcf4665d187691ca6e51a5f838a31436ab3d1b6dd480f003f31e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-side-noise-5479.npz": {
+      "bytes": 10401,
+      "sha256": "d505131cc7b684e45a3521a2d860a60f97ce059ba870b0d401039930444ea1ae"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-side-noise-5480.npz": {
+      "bytes": 10431,
+      "sha256": "60567191f846ed82f6a2b4bea2f51d2102e64e07d35b49e757c30d787eb63c47"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-side-physical.npz": {
+      "bytes": 20272,
+      "sha256": "3310114907954451afa1c9f7658a0afd1cf78338db53dbfd7f93fba7f75cca1b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-toward-noise-5478.npz": {
+      "bytes": 10110,
+      "sha256": "d1941a6dad1b0cd794745280c01e464af311277987e24f0f38d1d7bede2d3e60"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-toward-noise-5479.npz": {
+      "bytes": 10190,
+      "sha256": "de7eae20a3eb509bd6ace4d3e35b5271ac671272bee291f4cff2d5fb39263949"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-toward-noise-5480.npz": {
+      "bytes": 10262,
+      "sha256": "75298426696deff82434a23fd5f7928f94ac061a8938d0ee9bb69fd0b18f2ee3"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L08-toward-physical.npz": {
+      "bytes": 19884,
+      "sha256": "a6ebf724d7a137317d68fd849b0a3d120cb34c8def2da6ad6fd28e644d11e471"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-away-noise-5478.npz": {
+      "bytes": 9464,
+      "sha256": "b0d09aa15a69372f542b4b193636c974aa9f3f03e6eb1c2e25b888fb56070ed6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-away-noise-5479.npz": {
+      "bytes": 9369,
+      "sha256": "4a3ae256cd98556e34fb868401259f3401afdfc1fda46424ba1f84d1bc7623cb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-away-noise-5480.npz": {
+      "bytes": 9403,
+      "sha256": "2abbdf0d3d853e83e77ceb95778965ffaacb4db78b6dce82a81e7977f6a93895"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-away-physical.npz": {
+      "bytes": 16951,
+      "sha256": "c8cc8f858a436c8cd84da1db3f41d8099ae2ff3e48ac9d6360d3398bdb897d5e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-hold-noise-5478.npz": {
+      "bytes": 9312,
+      "sha256": "19a4827424c752e1ea5658546a1fa381c014df5186d46c7ef94da778f2867511"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-hold-noise-5479.npz": {
+      "bytes": 9320,
+      "sha256": "de7186364e0e6e8288f662f3a883db7def0b7e63101b2ef257d8fe86ea45a227"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-hold-noise-5480.npz": {
+      "bytes": 9314,
+      "sha256": "563b48fad68ec04a4bcb8a35ce9125eba3d03cfd00566aaf444dd4d5be450828"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-hold-physical.npz": {
+      "bytes": 16946,
+      "sha256": "7e7f4fab1e1cdc06da2c3de5f92f31a2c253cc508ae42c0e5b758559ce79d8b8"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-side-noise-5478.npz": {
+      "bytes": 9438,
+      "sha256": "f27c7251d17c8c0bfcd404dc5420479ab00ebccc2a0347df04b11f0a45980c38"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-side-noise-5479.npz": {
+      "bytes": 9385,
+      "sha256": "191dfefc409777070b4c6865e9e7ffede7d95d1ee2f4f5b34a48f89617af2cd2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-side-noise-5480.npz": {
+      "bytes": 9221,
+      "sha256": "ffd02ba16f5ad73123e3a2992717c68602ed2a82d96f1a17c4556e9bf143f1e6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-side-physical.npz": {
+      "bytes": 16929,
+      "sha256": "fb2423ead9c9d50f44bfb8653e4baaed94304cc72c7677650bb3bc6de843ca9f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-toward-noise-5478.npz": {
+      "bytes": 10171,
+      "sha256": "e061434c384e13f1b610c42c1816bffa889849a58583d2636e34caccf9ff8139"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-toward-noise-5479.npz": {
+      "bytes": 10303,
+      "sha256": "f25113914e160fccc209b60a7b2a9fe0419e953fad48d8c8b0a39ab704a5ef9c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-toward-noise-5480.npz": {
+      "bytes": 10395,
+      "sha256": "e8e466af9cab533a139d06be6d57a5f18a7d90d2d5060fa8defc08e4c1257a4f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L09-toward-physical.npz": {
+      "bytes": 17264,
+      "sha256": "60b86facb93cd6b4a5a577cce6974557646c43c82133dc130a8d0a081ebf200a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-away-noise-5478.npz": {
+      "bytes": 9484,
+      "sha256": "6df39ca0cf92b21172970b5693a83f59171b1fa9c50df1eef3c7acba089404fe"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-away-noise-5479.npz": {
+      "bytes": 9996,
+      "sha256": "0f78ce2e121b4a183bcc14b0724c335da86be400425ccdf93a4c024edb44b278"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-away-noise-5480.npz": {
+      "bytes": 10060,
+      "sha256": "71bcca3039154cdb7ba68201987c1ca8cb6651d2008ec713190dd0efba4a7c03"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-away-physical.npz": {
+      "bytes": 15949,
+      "sha256": "c70146e493466f51fc66dc70277c65bc8b450a5ba5b18e3191b6e09a30f7737e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-hold-noise-5478.npz": {
+      "bytes": 8564,
+      "sha256": "835748c9d68ebc8fa889708f9d383dc5f32d874b11a41fb752176cc30c0ed05a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-hold-noise-5479.npz": {
+      "bytes": 9580,
+      "sha256": "da373efa4080fb970420a90fe45fc4755a66c8dd458c0a911c87f3910c393960"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-hold-noise-5480.npz": {
+      "bytes": 9710,
+      "sha256": "ed5a41bd2842e5c8c88ad62bc5ca88f436008695254f4873a11b502de3ce301f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-hold-physical.npz": {
+      "bytes": 16024,
+      "sha256": "5cfa0791ab415e449bbe01a456d6c3ce0ebccd4b0ab295a210ce48184020fb6f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-side-noise-5478.npz": {
+      "bytes": 8660,
+      "sha256": "14079e442c74313049c5a037a22f9af657d83c7b3b6c83a7bdd0d716b9bb5225"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-side-noise-5479.npz": {
+      "bytes": 9865,
+      "sha256": "ac6485f6db6e10abab07bbc45a288d7c7e31cf3fb05241728777c4e18ea6cf95"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-side-noise-5480.npz": {
+      "bytes": 9749,
+      "sha256": "55f233df2bc15b1fabbf42c2ab990eb4630e7588445ece42154ca01108c27066"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-side-physical.npz": {
+      "bytes": 15989,
+      "sha256": "741f6894c48bdf893cc8ebdb66d5dc092db1d54f7903fd2eb5fc788b318d8b27"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-toward-noise-5478.npz": {
+      "bytes": 9064,
+      "sha256": "9fb8344ab07378fbff13129a7e13822d71e205b80551ed531ad73d352f83e750"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-toward-noise-5479.npz": {
+      "bytes": 10515,
+      "sha256": "fd4a032ce15556c0396bcfc9547a1b8138911f1ab6c2ed3386ff90fdbff28711"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-toward-noise-5480.npz": {
+      "bytes": 10297,
+      "sha256": "caad6cb1d856b702cacb4bdea6671f73e0cbc06aca1069f73356ec4d7aa8d278"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L10-toward-physical.npz": {
+      "bytes": 16184,
+      "sha256": "ad43d6cbb70007ac4681df5f879e68b899e16df3cd08ceddcc09ac74baf9d942"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-away-noise-5478.npz": {
+      "bytes": 9874,
+      "sha256": "bad90194af638dab9ac7fe298edcd91ac30b533b5263b7065a197b595a2a16d2"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-away-noise-5479.npz": {
+      "bytes": 9919,
+      "sha256": "16ef334852457bd0fc7e1223fc453a8c03d1ebf6f84d7ca0f69d47b342aa846d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-away-noise-5480.npz": {
+      "bytes": 9691,
+      "sha256": "0b9d453692f03c30f672360150f859d19d0a2d5bd5e7739bc8b0ca8ebebb4dcb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-away-physical.npz": {
+      "bytes": 17176,
+      "sha256": "c79792047713daf754e8321fa74ef91e2e2e5be996c87c16299b4dfbebb6ac91"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-hold-noise-5478.npz": {
+      "bytes": 9577,
+      "sha256": "971369156fdcc5b0f006779b0949076e2a97884bf9b067bfb597566dacb00597"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-hold-noise-5479.npz": {
+      "bytes": 9712,
+      "sha256": "0ffdc5ee0a481c3e7f717946725e26b03461346cafa8f3631627e31c32bd417c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-hold-noise-5480.npz": {
+      "bytes": 9723,
+      "sha256": "eac5c3bf5e4eff2c984a303c080c0c7c001ba939db9fb8803e2f6696ce5f9a8c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-hold-physical.npz": {
+      "bytes": 17072,
+      "sha256": "ae3a7cbbd49341c823eb1eb381f71adaaf38972f9f6adcc345b060502bf359de"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-side-noise-5478.npz": {
+      "bytes": 9708,
+      "sha256": "211b221f27b215366d28a1518a6d022d53470d4192db995611ff25992193a348"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-side-noise-5479.npz": {
+      "bytes": 9704,
+      "sha256": "6bbdaa0282859b4c3f1aac0d2f2a5b2c2fa16ebedf77c654399e2abd03a5a071"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-side-noise-5480.npz": {
+      "bytes": 9702,
+      "sha256": "241e4d9b6997ac55385e9338a791dffd87f7d04b7d0511acfac67942ffeef472"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-side-physical.npz": {
+      "bytes": 17063,
+      "sha256": "223209b330d0ad630e27740b92cdd716d4b3809f8daf90595f8d2b08a180863a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-toward-noise-5478.npz": {
+      "bytes": 10265,
+      "sha256": "6b3db795b5da0f3a754ae9a6c83c0ccd895f775f0dd71caf16853ab8bdd667aa"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-toward-noise-5479.npz": {
+      "bytes": 10089,
+      "sha256": "e5ecaa39397ae7a5cbcfa772e3186f722ecafca7137e36103a8b09b7fc8ca550"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-toward-noise-5480.npz": {
+      "bytes": 10075,
+      "sha256": "31da34fc9101354c1afe98b594db014e58d1ae26968467f4fcf4153aab93fa17"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\L11-toward-physical.npz": {
+      "bytes": 17157,
+      "sha256": "69a30a3f7fdac2b119d52c8e39223a9f822b04210208484d04d537b5fa2bee80"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-away-noise-5478.npz": {
+      "bytes": 10093,
+      "sha256": "f0753a129c0de9f88198c7ecca8581c9e209410ee293d8888bc2942dd31c173d"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-away-noise-5479.npz": {
+      "bytes": 9931,
+      "sha256": "d552488466245dfed54b51c4fac2427a843ac7077737024aebf14b84ba05838e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-away-noise-5480.npz": {
+      "bytes": 10167,
+      "sha256": "ade0882f137f8090d2ad4f96b6978ace9a0e25329f81539a7f9124862bcb2bcc"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-away-physical.npz": {
+      "bytes": 16340,
+      "sha256": "7ff145b28f67ebeb41265ee8766f0e6d4eb3871472c7b2613dbf89b7b3c24e00"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-hold-noise-5478.npz": {
+      "bytes": 9963,
+      "sha256": "4bff95089cca27859ab4d301c223ccba5a823345c36bf3f99d048ba5da103212"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-hold-noise-5479.npz": {
+      "bytes": 10354,
+      "sha256": "4a4290f02da5980e5cec6ac6c29e2d7d516476d13736c5891a6386eb7507de08"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-hold-noise-5480.npz": {
+      "bytes": 9912,
+      "sha256": "90a775fc34ba4b04c6f6b5795cfabfcbf0e28da3373816313446f329f2a7c993"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-hold-physical.npz": {
+      "bytes": 16288,
+      "sha256": "7d2a33c7bba8edd4fa4cb0a761ca254716b84a2ff356090cdf555df9741ff8f6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-side-noise-5478.npz": {
+      "bytes": 9994,
+      "sha256": "3270a0a9a289f5b0e3181cfa530ecf8240661a39d785271c8f03e0d9c775d9ab"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-side-noise-5479.npz": {
+      "bytes": 10148,
+      "sha256": "353c8e4341df9d6a743934741f29bc86f8bcddec0a46f0a340617927c2d34fd9"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-side-noise-5480.npz": {
+      "bytes": 10053,
+      "sha256": "67c4af47aa9beeec8b1898bfedfa71bf7a94d6f41d259aca7db1c8ad5f1c256a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-side-physical.npz": {
+      "bytes": 16391,
+      "sha256": "f820cd9c915ba292eab80ab97f6766c1bb5351e715d6995de89cb07c6a66fe35"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-toward-noise-5478.npz": {
+      "bytes": 10072,
+      "sha256": "12a876caf5888dce38afe8ea695a242ad989c3ce48b9c9ae35cdae6639e26ddf"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-toward-noise-5479.npz": {
+      "bytes": 10094,
+      "sha256": "57a56337690d15cf1c726c0b418ef45a482cdffe907cae6322f49a35644ee3e6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-toward-noise-5480.npz": {
+      "bytes": 9988,
+      "sha256": "b1767c1200197b198243b03cc15928cba88ac11f3d71066262a54f206460c255"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T12-toward-physical.npz": {
+      "bytes": 16312,
+      "sha256": "5b41a306e46013d793f5a61f48715057da2a94fb1009bf78803273b40ed175d7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-away-noise-5478.npz": {
+      "bytes": 9591,
+      "sha256": "abeff59061f3b19c077ae50ab1c46bafe833252d14f5a0d95cfee4fb50fb7b4f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-away-noise-5479.npz": {
+      "bytes": 9659,
+      "sha256": "addb0ba5701c5f4284013cd0d4a7ed4ef9b2845b07ff0e3d2be0c397dcb7c829"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-away-noise-5480.npz": {
+      "bytes": 9602,
+      "sha256": "894fe00107f52cf856f242c3000ee27e926cfea9f8019f29791760af5395e29e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-away-physical.npz": {
+      "bytes": 16840,
+      "sha256": "56574896edd21fab4816ac372650e87ac1150edbd3fb97fd6f0ac839a8949329"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-hold-noise-5478.npz": {
+      "bytes": 10100,
+      "sha256": "85f48eb84cac64e360c0ba0a5287c2469905ec571a22a7cb5ac96629fcb2ed26"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-hold-noise-5479.npz": {
+      "bytes": 9984,
+      "sha256": "6c7ac806db17bd0600a5a3783f83e30df29d3141a2eca43a0aaba889b10ad728"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-hold-noise-5480.npz": {
+      "bytes": 10059,
+      "sha256": "bedab33334ec3da1e7d787874b101a15acfa9579740d1b5f141e83e6dc0ccd46"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-hold-physical.npz": {
+      "bytes": 16857,
+      "sha256": "1df05b869025f873fca5cbd810974236102caf074eba8365e73b6395ed3add84"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-side-noise-5478.npz": {
+      "bytes": 9688,
+      "sha256": "530308b565835f75468840dc2d5d5c3aa59a9cfee44aa69c1c5b43a069e7db4f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-side-noise-5479.npz": {
+      "bytes": 9847,
+      "sha256": "7769c75b59e608862c706dd2e07314a728509681414fd39c822196eb85c40920"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-side-noise-5480.npz": {
+      "bytes": 10007,
+      "sha256": "2f2f8e5b9cd67a68bd647b97aea42869b45e73b1fd3da54504740710537bc354"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-side-physical.npz": {
+      "bytes": 16787,
+      "sha256": "5da283015f1185daac73a4680b0b6de0cbceb9f617c2c1c33d8677bda7bf63ff"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-toward-noise-5478.npz": {
+      "bytes": 10282,
+      "sha256": "761bcb1db7591371a32d7632f6e0962bb37c084ddab2dcf9059041b8a01aa681"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-toward-noise-5479.npz": {
+      "bytes": 10252,
+      "sha256": "c3b26635775f26267377a37cfd5a5fde4686766eddd290014c89b3f4876202a0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-toward-noise-5480.npz": {
+      "bytes": 10272,
+      "sha256": "9eabe3300d3592de00fd04bee2755ed8c4f5939072b0757adf5ae6e8e8c49694"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T13-toward-physical.npz": {
+      "bytes": 16651,
+      "sha256": "3d9732acda71c531f30cc31c919a0f1ca409d338f3310329ba5dbdf0cf80fcd1"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-away-noise-5478.npz": {
+      "bytes": 9901,
+      "sha256": "4576435148604616c596d4f1a1fe14da7d4ed942601dca5e0f2f3d4f7c416b08"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-away-noise-5479.npz": {
+      "bytes": 9967,
+      "sha256": "c32b81f1008850410787cc39b2c36236eaae863eb406f03d8cced7899b83af7f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-away-noise-5480.npz": {
+      "bytes": 9793,
+      "sha256": "8b5ff7ad762963b1b2c75c55e89faf1e41598da01a78e61d28953af9b2475425"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-away-physical.npz": {
+      "bytes": 16279,
+      "sha256": "85faccb2cd146c7627fea6fc8f89a8d9d3e19314d325d8e7f18c674043d24dda"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-hold-noise-5478.npz": {
+      "bytes": 10203,
+      "sha256": "78afc9a094cd93cd7d0260dab0d18512fe0eeb8544f2f68d7614f74bf122024a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-hold-noise-5479.npz": {
+      "bytes": 10069,
+      "sha256": "1407a633c92f9634347479c53d8c44bc33787a3218c879e4f3d4001d651901fe"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-hold-noise-5480.npz": {
+      "bytes": 9950,
+      "sha256": "3bb42c360dd69b43b861fb8e3bbe5c6943cbb3360de24070f804fff9841ac824"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-hold-physical.npz": {
+      "bytes": 16292,
+      "sha256": "e0219348f4f3f1ec377c48859a4dcd437445cd85c603c4946586deacda37bcdf"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-side-noise-5478.npz": {
+      "bytes": 10357,
+      "sha256": "4587490f8e9ac4b25df8b5c770ccf372ed5bed429e46542ae10d5c4fee0ee44f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-side-noise-5479.npz": {
+      "bytes": 10221,
+      "sha256": "638973bd45e9f86e6827444e6887f2fdea7e5613dc55cda5a4187fca0ef8c712"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-side-noise-5480.npz": {
+      "bytes": 9808,
+      "sha256": "77eb211434c1a0c8bd883c54acbf9d5c8a5c4b33e0b5179e3a6456decb444f98"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-side-physical.npz": {
+      "bytes": 16381,
+      "sha256": "aea56ec691d97b501173c92cf0c4c11d42310f595e9699518a7bed2f9a9d2a27"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-toward-noise-5478.npz": {
+      "bytes": 10636,
+      "sha256": "4796a108a2796f218f0abcb2a70e4126fe1461ce680ef6f5e4338dca6de1e3f0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-toward-noise-5479.npz": {
+      "bytes": 10499,
+      "sha256": "df6a7305fbb3f98e264ae54ce77b63d1b1eedf956baf53538027a802871f4584"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-toward-noise-5480.npz": {
+      "bytes": 10528,
+      "sha256": "d54d3f366b92e3e9ef4e19938e39dedb2c5d5c424e9a88f41f368809d7d45c33"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T14-toward-physical.npz": {
+      "bytes": 17140,
+      "sha256": "f5864be8382b739ff3b2ff0665a49244df0adea360c65f26f6c2a7deed48878f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-away-noise-5478.npz": {
+      "bytes": 9605,
+      "sha256": "3116bb2b9528006fede7129dfc4b4dc1fe8bd6f6a8c95ca2955c6dcdc6078549"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-away-noise-5479.npz": {
+      "bytes": 9620,
+      "sha256": "634a5e6fb7c456eaaef1bcec1b9903f5ebd46f56ee35adb2fe467f620cab743e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-away-noise-5480.npz": {
+      "bytes": 9656,
+      "sha256": "70a8dac8a84e96e3219de68cd357c99348515f9c841bf1bd9d31003498652867"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-away-physical.npz": {
+      "bytes": 15530,
+      "sha256": "6b96af61c1c4e62bb50092774249ced1e4f74e61c6536abcc208e2bb55c68de5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-hold-noise-5478.npz": {
+      "bytes": 9691,
+      "sha256": "30c8f08f4d644bac61b7b6d67e3712fd54e3309d791f0c01cc72cdee64af89f4"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-hold-noise-5479.npz": {
+      "bytes": 9689,
+      "sha256": "90ff33d2be02c9744e1f8cc76ab8ee415f727c16e93438e54eadfce9df9314c0"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-hold-noise-5480.npz": {
+      "bytes": 9706,
+      "sha256": "db2b9e93976896d83b330d3ca9aa4ab1ff7b70bd532d8a0ddae9832039da8277"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-hold-physical.npz": {
+      "bytes": 15492,
+      "sha256": "bd71bf184cc34a9d4391c53121c61129f91d95212947aced4496e47e860e1800"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-side-noise-5478.npz": {
+      "bytes": 9782,
+      "sha256": "928e4e987139af7deb564c90b0b15c2789bccd6987c4657aecef697ec9eb4d34"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-side-noise-5479.npz": {
+      "bytes": 9960,
+      "sha256": "91852b0f51157d3ffeaeb6756c0cdf6f2705279c46cb004cb3be034c18fa75d9"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-side-noise-5480.npz": {
+      "bytes": 9970,
+      "sha256": "f05671d6cb02602fbfff367d036af894ee1288d0b9915a489b2a250cdd70567b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-side-physical.npz": {
+      "bytes": 15454,
+      "sha256": "b0dabbad59c02f1d2b0362ef890822518ce52bd708caee41adf2f7a67f37f9bf"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-toward-noise-5478.npz": {
+      "bytes": 9715,
+      "sha256": "3d2975b189a3f951a4b93076070999338403211360d62d6aa9c0d69deeabc935"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-toward-noise-5479.npz": {
+      "bytes": 9738,
+      "sha256": "8422c479dcafdb939c9a4ed694a9c3c70aed6750f5c8a06c18320d95f25152f6"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-toward-noise-5480.npz": {
+      "bytes": 9748,
+      "sha256": "e104e81170fd4934e3c36edb1c267de39b519fab13785b6d0fd38b38cc903bbd"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\T15-toward-physical.npz": {
+      "bytes": 16401,
+      "sha256": "0129f7a7730091c01a19fe4754cd566db8329a62c679daa761f4d5c48842d19c"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-00.npz": {
+      "bytes": 2216,
+      "sha256": "6410d994a5ce8079a58f65cd72a822591cbf9d57b6c02fc26a40c7194c24b20a"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-01.npz": {
+      "bytes": 2755,
+      "sha256": "e7cbb4523feb89d51b754bdcde18153be56a410afde48b198e12f6c650907924"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-02.npz": {
+      "bytes": 2773,
+      "sha256": "d89b0966c8b3f2aa12f0049ce1f86bb0054e6a92c01c8c435cdfa58368c1cc2e"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-03.npz": {
+      "bytes": 2175,
+      "sha256": "b4125e946802bf507a489b48c4991e5f3a417e34fc9258a92e18997eec586f24"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-04.npz": {
+      "bytes": 2686,
+      "sha256": "02671dfe783791ec425ab0af8ebc9c0d74072d437b14f7ac7e3ff9321a6aa82b"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-05.npz": {
+      "bytes": 2677,
+      "sha256": "3ee8a64833ce7f6c88c401dced5e378ac30d1303e0630c88859c691f33fcb802"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-06.npz": {
+      "bytes": 2208,
+      "sha256": "c30875abc6ba8b06ef492f7471dca2e8b7764cb637c8f67cc35d133ff5a60cfe"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-07.npz": {
+      "bytes": 2749,
+      "sha256": "fa51f0ec357f9db7bc214162841e358a420cd62e91d03afd2fcf638037566745"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-08.npz": {
+      "bytes": 1941,
+      "sha256": "16e276593805e0b6fc251a73fcea84754239437d58652846abfca3b8a498b2b5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-09.npz": {
+      "bytes": 2264,
+      "sha256": "62ed92120ebe235edc6ad127487e440bdd33b9d1387a01c3981db63927b61dfb"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-10.npz": {
+      "bytes": 2183,
+      "sha256": "b70fe6c2a292e3faffbdd03bd446040a38843e0c62f4f5aeb21b5bf11cd605f9"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-L-11.npz": {
+      "bytes": 2035,
+      "sha256": "dd44d0f814e2c371cdc81a770bffb3248a552d114bd6e7da967682af09cc2d82"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-00.npz": {
+      "bytes": 2189,
+      "sha256": "4e41362f50c64994cd120a5d8f9d6691259d0431cbd2eceaf6ca4d454dfc8318"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-01.npz": {
+      "bytes": 2835,
+      "sha256": "39daef80b2d940a7d996a8436e9bc509cbe14c79f5790c4c36beaffdce317e6f"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-02.npz": {
+      "bytes": 2891,
+      "sha256": "cdf9d0026524fb30bdd10f691c0375dbe52bf21e6a826c87d5f0905e75a77cb1"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-03.npz": {
+      "bytes": 2279,
+      "sha256": "1d1d76f0bda3fede060274c9e427341e5b891dca9d3ac52df991baedf8495c59"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-04.npz": {
+      "bytes": 2883,
+      "sha256": "ea4bb61d016eaafcf900b0984af0aaae37840f8293146184c4b60c7f2a03c290"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-05.npz": {
+      "bytes": 2875,
+      "sha256": "fd2ce8209d7d13224675f07ec696388a26349976e55d99226fffc7229e2a84a8"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-06.npz": {
+      "bytes": 2147,
+      "sha256": "b325484ce0e224f406635b6f3cf80d4a4b2bdd1b33b39dc11a1847b7ff056721"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-07.npz": {
+      "bytes": 2847,
+      "sha256": "c699a89f02883e85391de9fd4a702993ba9df034f91cdf940009ecb92fd68eb5"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-08.npz": {
+      "bytes": 2028,
+      "sha256": "2956a71ac7409a7c5a46f5b2b968c38c72aab8cf2d86f3802ffcd9ee6e6e8400"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-09.npz": {
+      "bytes": 2180,
+      "sha256": "0efe2f6678b005919579f3d3af581f913612dbfb11c7eee94fa2660dfd3ede50"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-10.npz": {
+      "bytes": 2045,
+      "sha256": "af0c0dbdc26b23fd018c36a4fa55377925d9ace1100984b2a112e593d3258ce7"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\cal-T-11.npz": {
+      "bytes": 1989,
+      "sha256": "9afc81b65fd8d8c3915aae199ea6a34da319dbd818f348a8f1575a0779a40316"
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\report.json": {
+      "bytes": 4245312,
+      "sha256": "c7b1e3257468874940ad074d3ffc00c3d3d88f9f6de16531aba6d2c3cc6e3795"
+    }
+  },
+  "kind": "tdyssey.wm_interface_v2_development.v1",
+  "model_inference": 0,
+  "noise_is_independent_physics": false,
+  "operation_counts_scope": "additional operations by this saved-image diagnostic only",
+  "optimizer_updates": 0,
+  "output_bytes_before_summary": 10874778,
+  "output_bytes_scope": "before summary.json and output-manifest.json; exact final bytes appear in output-manifest.json",
+  "policy_optimizer_updates": 0,
+  "policy_sampling": 0,
+  "rank_summary": [
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.005530939634062618,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.004781849966297375,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.005530939634062618,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.004781849966297375,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.007047810254025172,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.020744985426586152,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.007047810254025172,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.020744985426586152,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 12,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 12,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.006258344532133586,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.037621583908739736,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 12,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 12,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.006258344532133586,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.037621583908739736,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.005530939634062618,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.004781849966297375,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.005530939634062618,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.004781849966297375,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.007047810254025172,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.020744985426586152,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.007047810254025172,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.020744985426586152,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 12,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 12,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.006258344532133586,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.037621583908739736,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 12,
+      "actual_complete_anchors": 11,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 12,
+      "expected_anchors": 12,
+      "hold_regret_independent": 0.006258344532133586,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 12,
+      "shape": "L",
+      "uniform_expectation_regret_independent": 0.037621583908739736,
+      "unknown_actual_pairs": 3,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.75,
+      "development_only": true,
+      "eligible_pairs": 3,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.008374968370944341,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 1,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 3,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.014802294544270983,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 3,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.008374968370944341,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.014802294544270983,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 4,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.5555555555555555,
+      "anchor_equal_observed_pair_accuracy": 1.0,
+      "anchor_equal_pair_accuracy": 1.0,
+      "anchors_with_scored_pairs": 2,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.5,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.015037607618423862,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 2,
+      "scored_pairs": 5,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 2,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.03390329585025212,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.015037607618423862,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.03390329585025212,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.5,
+      "anchor_equal_observed_pair_accuracy": 1.0,
+      "anchor_equal_pair_accuracy": 1.0,
+      "anchors_with_scored_pairs": 1,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.5,
+      "development_only": true,
+      "eligible_pairs": 6,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.010069920847151179,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 2,
+      "scored_pairs": 3,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 2,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.04388085445221496,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 6,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 6,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.010069920847151179,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.04388085445221496,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v1"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 0,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": null,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 0,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.0,
+      "horizon": 1,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.0,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.75,
+      "development_only": true,
+      "eligible_pairs": 3,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.008374968370944341,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 1,
+      "scored_pairs": 0,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 3,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.014802294544270983,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 3,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.008374968370944341,
+      "horizon": 2,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.014802294544270983,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 4,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.5555555555555555,
+      "anchor_equal_observed_pair_accuracy": 1.0,
+      "anchor_equal_pair_accuracy": 1.0,
+      "anchors_with_scored_pairs": 2,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.5,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.015037607618423862,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 2,
+      "scored_pairs": 5,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 2,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.03390329585025212,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 9,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 9,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.015037607618423862,
+      "horizon": 3,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.03390329585025212,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 3,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.5,
+      "anchor_equal_observed_pair_accuracy": 1.0,
+      "anchor_equal_pair_accuracy": 1.0,
+      "anchors_with_scored_pairs": 1,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 0.5,
+      "development_only": true,
+      "eligible_pairs": 6,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.010069920847151179,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": 0.0,
+      "prediction_complete_anchors": 2,
+      "scored_pairs": 3,
+      "scoring_mode": "raw_endpoint",
+      "selection_abstentions": 2,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.04388085445221496,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    },
+    {
+      "abstained_pairs": 6,
+      "actual_complete_anchors": 4,
+      "anchor_equal_conservative_pair_accuracy": 0.0,
+      "anchor_equal_observed_pair_accuracy": null,
+      "anchor_equal_pair_accuracy": null,
+      "anchors_with_scored_pairs": 0,
+      "conservative_pair_accuracy_definition": "equal anchor mean of correct/all eligible; abstentions receive no engineering-gate credit, not an observed mistake classification",
+      "conservative_regret_lower": 0.0,
+      "conservative_regret_upper": 1.0,
+      "development_only": true,
+      "eligible_pairs": 6,
+      "expected_anchors": 4,
+      "hold_regret_independent": 0.010069920847151179,
+      "horizon": 4,
+      "incorrect_scored_pairs": 0,
+      "observed_pair_accuracy_definition": "equal anchor mean of correct/scored; anchors with no scored pair are unavailable and counted explicitly",
+      "observed_selected_regret": null,
+      "prediction_complete_anchors": 0,
+      "scored_pairs": 0,
+      "scoring_mode": "stopping_consistent",
+      "selection_abstentions": 4,
+      "shape": "T",
+      "uniform_expectation_regret_independent": 0.04388085445221496,
+      "unknown_actual_pairs": 0,
+      "validates_new_model_or_success": false,
+      "version": "v2"
+    }
+  ],
+  "repeated_rgb_cache_preserves_all_row_denominators": true,
+  "resets": 0,
+  "restores": 0,
+  "source_sha256": {
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\configs\\frozen_wm_decoder_v1.json": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\configs\\wm_image_measurement_v2.json": "ce3f61d5a00bd47f08eb285af41ffb6e4d66983abf80bbbc3aae7ced04795300",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\scripts\\diagnose_wm_interface_v2.py": "10c60c94eb03cd2912304dfcc52dbb160ef378211496823be51e44c977b0a614",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\frozen_wm_decoder.py": "e09d56485ecf6678dad16048aff7c4c525330c19060ef6f5cc3265930ab69904",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_image_measurement_v2.py": "8eb286fa77b5cad2d533a5a4eb4262c8a9ac46ac9f408a312e620a5c097c69a3",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_interface_diagnostics.py": "0348d64e1fbb63fd0e2fd8e7af3785d4497d33872606b1496d5b0304b0e0ca79",
+    "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_measurement_contract.py": "b97bd7a05d567a53e101b8c6f1454b62261e6538831e08d63a9b730954ddcbe7"
+  },
+  "statistics": "measurable subset errors; noises nested inside branch/frame, then anchors weighted equally; all missing denominators retained",
+  "true_renders": 0,
+  "wall_seconds": 282.64099999994505,
+  "world_model_optimizer_updates": 0
+}

@@ -1,0 +1,55 @@
+{
+  "kind": "native-rgb-seen-val-index-policy.v1",
+  "algorithm_version": "seen-val-panels-v1",
+  "algorithm_seed": 2026102903,
+  "split": "seen_val",
+  "letters": "ABCEFHIJLMOPSTUVXY",
+  "history_transitions": 3,
+  "future_transitions": 4,
+  "complete_64_control_anchor_range_inclusive": [3, 60],
+  "legal_window": "Every declared and independently valid transition in [anchor-3,anchor+3]; no cross-trajectory or synthetic padding.",
+  "hash": {
+    "algorithm": "sha256",
+    "encoding": "UTF-8 canonical JSON array; ensure_ascii=true,separators=(',',':'),allow_nan=false",
+    "fields": ["algorithm_version", "algorithm_seed", "domain", "split", "letter", "trajectory_id", "npz_sha256", "metadata_sha256", "anchor"],
+    "domains": ["natural", "extra", "development-natural", "development-extra-moving"],
+    "tie_break": ["trajectory_id", "anchor"]
+  },
+  "natural": {
+    "quota_per_trajectory": 1,
+    "selection": "Minimum natural-domain hash among all H4-legal anchors: uniform pseudorandom ranking over eligible anchors, independently by trajectory.",
+    "missing": "Keep a missing trajectory slot; do not replace."
+  },
+  "extra": {
+    "quota_per_letter": 9,
+    "category_tie_order": ["moving", "rotation", "boundary_moving", "likely_wall_blocked_proxy", "near_static_contact", "near_static_no_contact", "intermediate"],
+    "quotas": {"moving": 3, "rotation": 1, "boundary_moving": 1, "likely_wall_blocked_proxy": 1, "near_static_contact": 1, "near_static_no_contact": 1, "intermediate": 1},
+    "support_universe": "H4-legal candidates for the letter after all natural selections are excluded.",
+    "category_order": "Compute support once before extras; ascending support then category_tie_order. Process all quota slots of a category consecutively; do not recompute rarity.",
+    "candidate_order": "Least total selected windows from that trajectory including natural, then extra-domain fixed hash, then trajectory_id,anchor. Recompute only trajectory load after every selection.",
+    "deduplication": "Every natural/extra (trajectory_id,anchor) is unique; all conditional labels retained even when they cross categories.",
+    "missing": "Preserve each unfilled requested slot and its reason; never substitute a different category or resample physical data."
+  },
+  "truth_labels": {
+    "basis": "Anchor H1 truth only for extra category conditions; H4 endpoint/path labels independently retained.",
+    "moving_translation_world_px_gte": 2.0,
+    "moving_rotation_abs_deg_gte": 1.0,
+    "near_static_translation_world_px_lte": 0.5,
+    "near_static_rotation_abs_rad_lte": 0.005,
+    "rotation_abs_deg_gte": 1.0,
+    "boundary_moving": "H1 moving and minimum actual wall gap over the anchor step's start/end states <=32worldpx, including all negative values.",
+    "wall_gap_bands": ["negative", "0-8", "8-32", "32-64", ">64"],
+    "likely_wall_blocked_proxy": "Frozen native_rgb_motion_statistics.likely_wall_blocked_proxy; no wall force/contact measurement claim.",
+    "near_static_contact": "Anchor H1 near_static and actual object-pusher contact.",
+    "near_static_no_contact": "Anchor H1 near_static and no actual object-pusher contact.",
+    "intermediate": "Anchor H1 neither moving nor near_static."
+  },
+  "development": {
+    "max_windows": 36,
+    "per_letter": "One minimum development-natural hash from selected natural windows plus one minimum development-extra-moving hash from selected extra windows with H1 moving=true, regardless of allocated extra role.",
+    "missing": "Report absent natural or extra-moving support; no fallback."
+  },
+  "temporal_overlap_report": "For same-trajectory selected pairs, count H4 state interval [a-3,a+4], H4 transition interval [a-3,a+3], future transition interval [a,a+3], and H1 state interval [a-3,a+1] overlaps independently.",
+  "prediction_status": "Indices only. Zero model/optimizer/training-iterator calls; future inference deduplicates window_id and uses autoregressive predicted RGB feedback.",
+  "interpretation": "Balanced-scene seen-letter development validation, not a natural real-world-frequency sample or an unbiased final test. Held-out DGKNQRWZ remain sealed."
+}

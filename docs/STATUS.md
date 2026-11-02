@@ -1,5 +1,20 @@
 # Shared project status
 
+## World-model archive integration — 2026-11-03
+
+The [curated world-model bundle](../world-model/README.md) consolidates six
+available source profiles and twelve experiment categories. It includes
+generated-history/region loss studies, high-motion fitting, rollout loss,
+Min-SNR/GDL/FFL, occupancy/transport definitions, saved negative results and the
+owner-selected HMF500 inspection launcher. Private assets, personal runtime
+configuration, command receipts and app logs are excluded. No new training or
+scientific model evaluation accompanies this integration. Source/privacy checks
+and four dependency-free launcher regressions passed locally. Historical worker
+reproduction still requires matching external assets and regenerated bindings;
+no complete O/C/B loss winner or generalization result is claimed.
+
+The earlier main-project status below is retained as historical context.
+
 Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
 reliable world-model rollouts and policy learning remain pending.
 

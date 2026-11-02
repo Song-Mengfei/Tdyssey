@@ -1,0 +1,80 @@
+category	old_value	recommended_value	necessity	evidence	validation_and_failure	user_approval
+原物理	100Hz/.01s/solver10/PD100,20/KINEMATIC/damping0	全部保持；原几何/质量/惯量/摩擦/墙/碰撞不变	隔离训练/采样因素	native_rgb_original_physics.py:15-19,42-44	source/identity不一致即拒绝；禁止v6/投影/清速	保持原值；新运行阶段仍需批准
+非法判据	overlap>1worldpx及nonfinite/实体内部等原判据终止	全部保持，不修状态；保留first illegal/partial	不以采样好看换物理	strict_original_contact_pilot.py:32-45,388-410	不合法即保存本尝试终止；未知工程错误整阶段停	保持原值；阶段另批
+图像/时间	96RGB/10Hz，红十字仅UI	保持；RGB只存一次uint8	匹配模型与时序	gpc_world_model manifest；UI server.py:247-250	索引/0.1s/干净RGB不符则拒绝	保持原值；新接口需批
+请求前伸	push12/entry2 worldpx	保持12/2；不默认24/36扫描	cal2 H16有价值，无增幅必要证据	strict_original_contact_pilot.py:32-45；父审计by_mode	P1配对测事件/时序，不以H1>=2作成功条件	保持数值；策略实现需批
+请求限幅	距24/变化24，目标[23,488]worldpx	保持；P执行时超限只能中断不裁原计划	在线承诺身份可信	strict_original_target_policy_v2.py:102-112	记录计划中断率，不放宽限值救通过	保持数值；P guard新行为需批
+策略组织	V2继承V1继承旧策略+进程内替换	独立event_requested_policy实例，显式注入	避免隐藏继承/临时替换	strict_original_target_policy_v2.py:12-19,127-146	fixture验证无类替换；P1V不能未确认就push	是；仅所列阶段另批
+事件时段	固定0-2/2-28/28-30/30-34/34-36/36-64	真实事件转换与独立超时，intent/actual双记录	计划推动不等于真接触	original_contact_pilot.py:49-50	事件未发生标失败/unknown，不伪造覆盖	是；仅所列阶段另批
+真实历史建立	旧固定phase含头2control approach	独立3真实hold控制取得4帧	20/19契约，分支共同前缀	父PROPOSAL；新设计	3控制计入N，不能复制帧或清速	是；仅所列阶段另批
+初始间隙	旧staging表面距33/18，真实gap18/3；实际分布非固定75/25	gap3占75%、gap18占25%；半径15/clearance.5保持	减少无意义空跑且保留接近	native_rgb_r2b_sampling.py:32-40,122-131	静态可达性先冻结；P1若非法/事件晚不加试	是；仅所列阶段另批
+staging选择	旧策略从候选staging路由并可entry后折返	新近gap3/远gap18对应合法staging；已到<=4px直接ENTER	防止近接触初始化反而先后退	旧V2 entry latch及r2b staging几何	P1比较entry/route实际时序；纯函数路径unknown单列	是；仅所列阶段另批
+SEEK超时	固定phase/旧stalled刷新规则	最多8控制/.8s，一个冻结选点，无递归换点	有限可证伪	V2:41-55；推荐未测	无路/超时保存失败，不增加尝试	是；仅所列阶段另批
+ENTER超时	旧固定phase+V2 entry latch	最多12控制/1.2s；不回staging	解决事件名与真实接触错位	V2:82-99	到期限无确认则entry_timeout	是；仅所列阶段另批
+接触确认	累计>=.05s，最后micro，impulse>1e-8，normal<=45deg/point<=24px	保持；统计AO>0另列	不把pair presence当正冲量	original_contact_pilot.py:407-433	两分母不同，不调确认门槛过关	保持原值；FSM接入需批
+CONTACT_F	旧计划push有route/entry混杂	实际确认后主段16控制；lost连续3控制	H4/8/16事件与真实状态对齐	父审计114entry/213route；旧lost3	记录actual_event而非仅phase	是；仅所列阶段另批
+wall_stall	room<24刷新/旧stall3	真OW+AO且位移<.1imagepx、角<.1deg连续3控制才wall_stall	区分near-wall和实际受阻	旧room24；新候选需验证	几何警示不冒充OW/物理停滞	是；仅所列阶段另批
+STOP	旧固定2控制stop	保持2控制hold绝对目标；不清速度	监督原动力响应	original_contact_pilot.py:49-50	实际速度真值记录，不能声称零速度	保持数量；事件转换需批
+WITHDRAW	旧4控制withdraw/departure[33,48,18]	一般<=8控制，departure距离候选保持；无AO pair连续2且gap>=3px	真实脱离确认	原departure及采样分稿S1/S5	超时失败，不强移推杆/物体	是；仅所列阶段另批
+REACQUIRE	旧2控制固定recontact时段	路径<=4+entry<=8，总<=12，单次新外弧，无reset	连续因果H16链	original_contact_pilot.py:49-50；新设计	未真实接触就不记recontact	是；仅所列阶段另批
+E7紧凑链	旧没有H16事件链支持保障	withdraw<=4+reacquire<=8，真实整链须落某16未来	长程事件需要链而非累计接触	父方案H16任务；新设计	64长度不自动证明链支持；失败不上调时限	是；仅所列阶段另批
+N32事件deadline	旧只N64固定阶段	需16步主段的recipe ready<=N-16；外层deadline优先于局部超时	N32不因路由耗尽后缀还叫主事件成功	20/19数学；推荐未测	event_late终止并保留prefix；不造长窗口	是；仅所列阶段另批
+P/F身份	旧每步真态反馈但无在线承诺区分	anchor_committed/feedback_recorded双流，计划SHA/anchor/prestep记录	防未来真状态规划伪称预知	父PROPOSAL动作契约	承诺后改目标则该P计划无效，不偷换标签	是；仅所列阶段另批
+P计划	无16步预冻结请求	16绝对目标；前8共同u+12d，后8 hold/turn/withdraw；E7专用4/4/8返回/保持撤离点/转向；历史末动作→首目标也验24	有可证伪动作分支	新推荐；原24变化限	第8步前真结果应配对；失配不是模型错误	是；仅所列阶段另批
+P活动期反馈	旧lost/stall/room会重选	只观察事件，安全guard可停，不重规划	保持在线计划条件	V2:41-55；新因果契约	计划中断率决定可行性，不暗改动作	是；仅所列阶段另批
+外部可达覆盖	旧细弧格/部分方向过滤	8等弧外sector+原8worldpx细格；路径unknown单列	明确接触覆盖分母	native_rgb_r2b_sampling.py:79-111,169-174	O/B内孔排除；未知不是不可达也不是成功	是；仅所列阶段另批
+姿态覆盖	原冻结scene计划，无每事件4/2姿态目标	8角度bin，train目标>=4/val>=2，按对称性去重复	独立姿态而非窗口膨胀	新数据覆盖推荐	不适用单列，不能无限补采	是；仅所列阶段另批
+边界场景	初gap18-32/room24，near-wall可无OW	gap保持；center gap>=64；train15%near+10%wall_probe，val取整26%	采集真实受阻/沿墙等不同事件	old select_contact:139-145；新设计	实际OW/AO/严格wall-only分别报告	是；仅所列阶段另批
+H接口	旧H1/H4，strict loader5帧4动作	新20帧19动作；H1/4/8/16共同公共锚点	直接面向四长度任务	r3a_data.py:139-169；eligibility.py:221-275	reset/illegal/缺帧/动作错位拒绝	是；仅所列阶段另批
+H1筛选	H1>=2imagepx或>=5deg才moving；空moving拒绝	新数据连续四H运动/事件分层，全部合法H1可训	小幅长程有价值	r3a_data.py:145-180；父审计	不改旧标签，准入与展示/诊断分箱不同	是；仅所列阶段另批
+合法partial	旧准入常要求完整48/固定库	新manifest明确partial合法区间、H各自支持	不抹掉合法短序列/失败成本	eligibility.py:133-153；新契约	H16缺失不伪造、不跨段	是；仅所列阶段另批
+家族与split	旧manifest每entry独立family/seed	家族内分支同split，共同prefix去重；train18/holdout8保持	动作反事实不能泄漏split	r3a_data.py:103-113；原字母configs	校准/P1全开发，新val新家族	是；仅所列阶段另批
+P1实现范围	没有新独立策略/序列接口	先P1-I code+fixture，0物理/模型/更新	先让方案可审实现	本审批稿	实现权限不自动含实测权限	是；仅所列阶段另批
+P1物理矩阵	旧唯一cal2已结束，不复用其授权	新48家族/120尝试/7680控/256MiB，seed54781031	有限成对机制证伪	新推荐；不执行	工程0违规+B每字母>=3/4 P-H16仅候选，失败停报	是；仅所列阶段另批
+正式本地数据	旧拟360+72未启动；校准36已看过	1500family，200train50val/字母；80%32/20%64另批	事件独立性/多H支持	父PROPOSAL规模备选；附录A配额	8事件实测支持决定是否满足目标，不自动填配额	是；仅所列阶段另批
+正式动作分支	旧无匹配反事实训练subset	每字母2train+1val长家族×3路，额外36run；总1536/59904控	同历史不同已知计划	新推荐	仍1500独立family；重复prefix不算新样本	是；仅所列阶段另批
+P/F配比	旧无固定比例	40%P/60%F为family目标，各事件明列	在线和离线条件都覆盖	附录A配额	真实计划身份决定，不事后重标凑数	是；仅所列阶段另批
+epoch抽样	旧moving pool+23984固定顺序/1499批	全部合法新pool一次，无replacement；分层只排序，family不重复同batch	不让静止主导或窗口伪独立	r3a_data.py:174-180,282-340；新order	尾batch实数归一；实际order冻结后复批attempt	是；仅所列阶段另批
+A0初始化	旧R3B恢复6000模型+Adam/scaler并续游标	7499只model，重置Adam/scaler/RNG/order，新stage计数0	新原域清晰基线	r3b_training.py:318；7499SHA	strict load和全参数/源身份检查；不改旧checkpoint	是；仅所列阶段另批
+可训练参数	已全参数requires_grad true	保持所有named_parameters，包括动作/条件/UNet/norm/输出	不能虚构解除LoRA	r3b_training.py:275-277	逐name/shape/集合SHA+实际梯度，buffers不混入	保持全参数；新stage需批
+AdamW	当前lr1e-5,betas.9/.999,eps1e-8,wd.01	核心保持；单组；amsgrad/maximize/foreach/fused/capturable/differentiable=false显式固定	清楚可复现的优化设置	raw_world_model_training.py:26；R3B:277	新状态初始化需批；不更改norm免decay策略	是；仅所列阶段另批
+scheduler	R3B held1e-5，旧scheduler仅provenance	null，固定1e-5	不出现cosine rebound或隐含热启动	R3B:281,287-289	每step记录lr；变更另批	是；仅所列阶段另批
+batch	micro4/effective16，旧入口硬16	micro4/target16，短batch按m/B，family唯一	序列与尾部不漏样本	R3B:429-446；新data	OOM不自动减batch，actualbatches非只ceil算例	是；仅所列阶段另批
+AMP/clip	FP16 autocast+FP32 residual，scale128，clip1	保持；growth2/backoff.5/interval2000显式推荐	梯度数值与跳步可计费	R3B:278,443-454	nonfinite/OOM停；skip不补抽；连续16skip停	是；仅所列阶段另批
+目标噪声	exp N(-1.2,1.2²)裁.002..20/offset.1/sigma_data.5	保持	隔离数据/课程变化	conditioning.py:143；训练manifest	三RNG分离，FP32loss，绝不把sigma20误作sampler max5	是；仅所列阶段另批
+真历史噪声	50%clean/weak，weak loguniform.002..05，offset0	A0/真实分支保持	现有基线因素	conditioning.py:13-30,143-152	weak noise不是自身生成历史	保持值；新stage需批
+RGB/action	真RGB0..1，action/511*2-1，raw反馈	保持，先M0比对direct d与Q(d)	不靠标注猜range并悄改	UI:66,247-250；实际denoiser:85-96	M0最多54forward/0update失败阻止训练	是；仅所列阶段另批
+sampler	3denoise/.002..5/rho7/order1/churn0/cond0，no_grad/8bit	保持，H16桥按步调用	课程不同时改推理算法	gpc_rank_evaluation diffusion源	no_grad输出不能直接承担梯度；改量化另批	是；仅所列阶段另批
+A0轮数	旧完整1499批仅旧pool一epoch	候选3完整epoch；全H1，示例7965attempt	按覆盖审学习曲线，不300步定生死	父训练目标；数量代数	实际manifest/order后复批，不自动加epoch	是；仅所列阶段另批
+训练seed	旧5478及独立noise streams	5478派生epoch/三RNG；eval5478/5479/5480	可配对再现	现训练种子+推荐	不选best seed，不污染训练RNG	是；仅所列阶段另批
+生成历史	旧只有真历史/弱噪，无生成训练	B4/B8/B16每epoch冻结teacher、raw detach、真未来仅target	匹配部署自身反馈分布	conditioning.py:205-213；sampler no_grad	teacher非实时student，不能称全BPTT	是；仅所列阶段另批
+生成分支noise	旧无生成history分支	generated extra weak=false,sigma_cond=None；truth50/50保持	避免重复给已有生成误差加弱噪	新推荐	新条件数值独立明确审批，不宣称既有	是；仅所列阶段另批
+多步loss	单目标残差MSE	0.25真H1+0.75/H每j残差MSE，uniform中间步	不只盯终帧/防中间碎裂重生	新推荐；附录B公式	逐loss立即backward释放，最后一次optimizer，teacher无grad	是；仅所列阶段另批
+B阶段轮数	无B训练	B4/B8/B16各3完整epoch，逐阶段另批	不能把路线长期预算一次默认释放	新推荐	按实际anchor order定准确attempt，先审上阶段形状	是；仅所列阶段另批
+缓存	无本设计teacher cache	主推荐persistent_cache=0，RAM逐micro；teacher每epoch换SHA	全量float32约40GiB超3GiB	数量代数+附录B	缓存备选须teacher/data/actions等完整key及独立预算	是；仅所列阶段另批
+M1 GPU矩阵	仅旧H1 micro4旧工程峰值约1.887GiB	4模式各4attempt=16；含reload最多1720micro/6880sample-forward	实际测梯度/显存/成本	旧engineering-probe.json:52；新有限矩阵	首OOM/漏梯度/真未来泄漏停，不自动改参	是；仅所列阶段另批
+VRAM限制	3060Ti8GiB；旧H1结果不能证明H16	候选reserved硬上限6GiB，UI并驻另计	保留余量，避免假保证	旧测量+新推荐未实测	不私关用户session/换AMP或batch	是；仅所列阶段另批
+C-gray	无区域loss，普通residualMSE	独立L0+.25*gray-normalized residual MSE，全sigma	测试物体区域监督	附录B完整mask公式；无主因证据	同源同曝光对照，不自动叠其他loss	是；仅所列阶段另批
+C-blue	无独立推杆loss	独立L0+.10*blue-normalized residual MSE，全sigma	避免小蓝杆被忽视的可检验候选	附录B；未证实背景主导	mask空单列，不补模板	是；仅所列阶段另批
+C-edge	无低噪轮廓loss	独立+.05*1[sigma<=.05]*Sobel smoothL1(beta.02)，灰2px带/蓝排除1px	检验H1棱角问题	附录B；新值未验证	有梯度d不走no_grad wrap；拓扑不保证	是；仅所列阶段另批
+评估时点	旧H1/H4首尾/工程节点	A0 E0和每完整epoch；从首次四H，B同规则；真历史H1仅anchor首步复用，整段TF曲线另批	区分H1本体与rollout累积	native_rgb_r3b_evaluation.py:71-132,415-465	不得只喂GT16次叫开环	是；仅所列阶段另批
+评估集合	旧固定小H1/H4选择	300自然family anchor+最多96压力，共396唯一，3seed	独立场景与压力分开	新推荐；附录C	锚点先冻结，空格如实，不看模型挑样本	是；仅所列阶段另批
+基线	旧6000/7499历史原始比较	copy-last/冻结7499/候选同history/actions/seed/context	小H1 copy-last可能很强	7499SHA；附录C	7499跨物理身份披露，动作分支要真反事实	是；仅所列阶段另批
+仪器校准	旧拟合门槛/旧6worldpx/6deg容许	M-E最多36保存图像已知变换case，量实际误差	亚像素增益可能不可分辨	physical_metrics.py:20-31	<=2倍测量误差不可判定，不改模型tol救通过	是；仅所列阶段另批
+模型位置容差	旧H1/H4阈值不适用此任务	P50 .5/1/1.5/2px，P90 1/2/3/4px；蓝1/1.5/2/2.5px	单位明确任务目标	96/512尺度；候选未验证	先审批锁定，绝对通过仍要动作/基线改善	是；仅所列阶段另批
+形状/角容差	旧角点数量只diagnostic	对称角转边缘px；轮廓均距P90<=1px/95%<=2px，角点P90<=1px	分离位姿与圆化	r3b_eval:272-327；附录C	遮挡/对称unknown单列，离线对齐不修图	是；仅所列阶段另批
+孔洞/碎片/蓝杆	旧评估已有unknown/拓扑原则	可见hole>=4px数差0；无关fragment>=4px失败；蓝>=2px消失失败	中间帧不能裂后重长掩盖	附录C	阈值为待批测量方案，不把明显失败unknown化	是；仅所列阶段另批
+时间/边界	near-wall标签和端点图不足	1..16全查；事件帧容差.1s，真micro .01s另报	有限时间分辨率诚实	10Hz契约；附录C	OW/AO/OW无AO pair分别报，不凭图片证明接触	是；仅所列阶段另批
+统计	窗口/行平均不能代表独立样本	family聚合/字母等权；cluster bootstrap2000,seed5478	不夸大重叠窗口样本量	附录C	小家族只探索，95%CI不消除偏差	是；仅所列阶段另批
+相对效果	不能用背景MSE或小H1绝对值宣布好	候选20%相对基线+配对CI正向且>2×仪器误差，无拓扑恶化	提出可审实际效果目标	设计取舍不是已获批旧值	不把任务目标当训练删样本规则	是；仅所列阶段另批
+旋转展示	只H1>=5deg选正例	H4>=5/H8>=10/H16>=15deg可展示，标H和H1幅度	cal2有真实长程旋转	父审计；strict report:407-452	仅展示分类，不改变旧标签/训练准入	是；仅所列阶段另批
+报告身份	旧report/videos/{role}.mp4固定位置	新run/checkpoint/cohort目录，全source/raw/action/model/seedSHA	防覆盖旧证据/错误配对	strict report:575；附录C	没有模型输出不生成预测对比假图	是；仅所列阶段另批
+评估raw保留	不能假定全float32输出可装128MiB	最多12预冻诊断anchor、seed5478、两模型16帧raw≈42.47MB；其余not_retained	全396×两模型约1.4GB/seed	字节代数；附录C	全部指标流式与身份保留；全输出另批空间	是；仅所列阶段另批
+checkpoint保存	旧105438958B完整checkpoint，旧运行目录	新last+previous_epoch≤2×112MiB，quarter去重滚动；可选weights36MiB	完整可恢复与固定保留量	旧文件尺寸；新候选	超过上限停报；不自动挑best或删旧6000/7499	是；仅所列阶段另批
+全局存储	共享3GiB+256MiB atomic；旧占用仍计	保持；P1 256/P2 512/report128/review16/checkpoint224/weights36MiB；仅单活动A0预算，四阶段保留上限4,247,972,117B超限，后续重审	预算覆盖全部新旧	resource snapshot1643309333B；附录C	名义余80.55MB非当前实扫保证；不足不扩额	是；仅所列阶段另批
+服务器规模	尚无新原协议18字母运行释放	4500family/4608记录/179712控聚合备选；新增12字母119808控	量化扩展而非默认执行	本地配额三倍代数	用户手动运行；新设备/数据/训练都另批	是；仅所列阶段另批
+后台/监控	tdyssey已PAUSED	本设计保持PAUSED，不创建父监控	按用户要求启动后由已批任务检查	真实automation-pause-receipt	本轮不恢复；未来运行监控另获批配置	是；仅所列阶段另批
+审批/续跑	旧有限cal2已终止	每阶段独立批准，no auto next/retry/追加epoch	避免盲目改参和实验循环	人类最新要求与阶段表	回传后waiting_user_config_approval，STOP	是；仅所列阶段另批
+后台新阶段适配	旧phase.py:51-89只允许旧root/phase/CLI	拟新event_phase_runtime.py/event_phase_background.py严格新CLI+批准SHA；复用Job/launcher/owned child处理，旧执行源保留	新策略不能热替换旧运行入口或绕过gate	strict-original.../background/phase.py:51-105,128-181	未来批准mock/identity/terminal/owned-child-stop检查失败不启动；当前0进程	是；P1-I实现范围中列明
+生成history输入校验	conditioning._batch把5图全部限制0..1，旧损失不能直接吃raw生成history	新sequence residual签名分history/clean_target；history finite raw detach，target0..1；不改旧校验、不clip；no_grad teacher或退出inference_mode后clone	真实梯度实现可行，保留部署raw反馈契约	conditioning.py:97-111；r2c1r1_training.py:56-93；本地torch grad_mode.py:206-224	M1真实backward/save检查；出现range错误/inference tensor误用即工程失败，不擅改归一化	是；P3-I实现/M1实测分别批准
+线程/reader内存	R3B torch threads2，workers2/prefetch2，frame16MiB/state8MiB	保留数值；新reader total在途2批且cache按每worker；P1单CPU collector	20帧序列不能无界预取，配对先单worker	r3b_training.py:54,271,407,552	M1测loader/CPU与VRAM；触顶/OOM停报，不自动加worker或降配置	是；新阶段精确执行参数

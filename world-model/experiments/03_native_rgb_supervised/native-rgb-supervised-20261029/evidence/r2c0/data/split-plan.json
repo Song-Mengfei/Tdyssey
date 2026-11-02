@@ -1,0 +1,598 @@
+{
+  "kind": "R2C0-frozen-family-split.v1",
+  "policy": {
+    "kind": "R2C0-pre-model-family-split.v1",
+    "seed": 5478,
+    "val_per_letter": 2,
+    "candidate_rule": "distinct families: first has H1translation>=2, second absH1rotation>=5, both have H4legalanchor<=20; remaining TRAIN keeps H1/H4legal translation/rotation and availablepositive/negative>=5deg",
+    "tie_break": "lowest SHA256(domain R2C0-split-v1,seed,letter,translationfamily,rotationfamily)",
+    "near_duplicate": {
+      "initial_area_centroid_distance_world_px_lte": 8.0,
+      "initial_symmetry_angle_deg_lte": 5.0,
+      "initial_pusher_local_distance_world_px_lte": 16.0
+    },
+    "near_policy": "reject a candidate pair if any declared initial near-scene component crosses split",
+    "scope": "seen-shape motion-containing diagnostic split, not unseen-letter or unbiased natural test"
+  },
+  "selections": [
+    {
+      "letter": "T",
+      "translation_family": "R2B-new-02-T-right",
+      "rotation_family": "R2B-new-07-T-left-bottom",
+      "rank_sha256": "02adba9938d07aa6f8f89aae98a1fd0b616602e17068b717cd720cbfd9ccb355",
+      "legal_ordered_candidate_pairs": 18,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    },
+    {
+      "letter": "L",
+      "translation_family": "R2B-new-11-L-right",
+      "rotation_family": "R2B-new-09-L-center",
+      "rank_sha256": "29d70d84a5124ffa8d64b5614039be546c21361369d8c5dfc67c9b0e0d40db4e",
+      "legal_ordered_candidate_pairs": 15,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    },
+    {
+      "letter": "O",
+      "translation_family": "R2B-new-25-O-left-bottom",
+      "rotation_family": "R2B-new-19-O-left",
+      "rank_sha256": "0a13e5d5cd554928a5148c9c2a4570dc375bc0c66569ae109597a5410558efa9",
+      "legal_ordered_candidate_pairs": 19,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    },
+    {
+      "letter": "C",
+      "translation_family": "R2B-new-29-C-right",
+      "rotation_family": "R2B-new-28-C-left",
+      "rank_sha256": "0e4b78d8c3d77d33c8e94a76638207e305ece37f2bbc7487f908c4b60658fac5",
+      "legal_ordered_candidate_pairs": 11,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    },
+    {
+      "letter": "X",
+      "translation_family": "R2B-new-38-X-right",
+      "rotation_family": "R2B-new-43-X-left-bottom",
+      "rank_sha256": "13fa23e685e0b3ec87618f9181d8be0927076556377fdd983b5778febe77a902",
+      "legal_ordered_candidate_pairs": 12,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    },
+    {
+      "letter": "B",
+      "translation_family": "R2B-new-45-B-center",
+      "rotation_family": "R2B-new-48-B-top",
+      "rank_sha256": "1827dce6cf0ab5fb14396f5ea284ae2ac7e47dbf9c0eff299cd0b71fe880bccb",
+      "legal_ordered_candidate_pairs": 10,
+      "train_kept_support": {
+        "translation": true,
+        "rotation": true,
+        "positive": true,
+        "negative": true,
+        "translation_h4eligible": true,
+        "rotation_h4eligible": true
+      }
+    }
+  ],
+  "assignments": {
+    "R2B-new-00-T-center": "train",
+    "R2B-new-27-C-center": "train",
+    "R2B-new-36-X-center": "train",
+    "R2B-new-45-B-center": "seen_val",
+    "R2B-new-09-L-center": "seen_val",
+    "R2B-new-19-O-left": "seen_val",
+    "R2B-new-01-T-left": "train",
+    "R2B-new-02-T-right": "seen_val",
+    "R2B-new-03-T-top": "train",
+    "R2B-new-04-T-bottom": "train",
+    "R2B-new-05-T-left-top": "train",
+    "R2B-new-06-T-right-top": "train",
+    "R2B-new-07-T-left-bottom": "seen_val",
+    "R2B-new-08-T-right-bottom": "train",
+    "R2B-new-10-L-left": "train",
+    "R2B-new-11-L-right": "seen_val",
+    "R2B-new-12-L-top": "train",
+    "R2B-new-13-L-bottom": "train",
+    "R2B-new-14-L-left-top": "train",
+    "R2B-new-15-L-right-top": "train",
+    "R2B-new-16-L-left-bottom": "train",
+    "R2B-new-17-L-right-bottom": "train",
+    "R2B-new-18-O-center": "train",
+    "R2B-new-20-O-right": "train",
+    "R2B-new-21-O-top": "train",
+    "R2B-new-22-O-bottom": "train",
+    "R2B-new-23-O-left-top": "train",
+    "R2B-new-24-O-right-top": "train",
+    "R2B-new-25-O-left-bottom": "seen_val",
+    "R2B-new-26-O-right-bottom": "train",
+    "R2B-new-28-C-left": "seen_val",
+    "R2B-new-29-C-right": "seen_val",
+    "R2B-new-30-C-top": "train",
+    "R2B-new-31-C-bottom": "train",
+    "R2B-new-32-C-left-top": "train",
+    "R2B-new-33-C-right-top": "train",
+    "R2B-new-34-C-left-bottom": "train",
+    "R2B-new-35-C-right-bottom": "train",
+    "R2B-new-37-X-left": "train",
+    "R2B-new-38-X-right": "seen_val",
+    "R2B-new-39-X-top": "train",
+    "R2B-new-40-X-bottom": "train",
+    "R2B-new-42-X-right-top": "train",
+    "R2B-new-43-X-left-bottom": "seen_val",
+    "R2B-new-44-X-right-bottom": "train",
+    "R2B-new-46-B-left": "train",
+    "R2B-new-47-B-right": "train",
+    "R2B-new-48-B-top": "seen_val",
+    "R2B-new-49-B-bottom": "train",
+    "R2B-new-50-B-left-top": "train",
+    "R2B-new-51-B-right-top": "train",
+    "R2B-new-52-B-left-bottom": "train",
+    "R2B-new-53-B-right-bottom": "train"
+  },
+  "counts": {
+    "train": 41,
+    "seen_val": 12
+  },
+  "support": {
+    "R2B-new-00-T-center": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-27-C-center": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-36-X-center": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-45-B-center": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-09-L-center": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-19-O-left": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-01-T-left": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-02-T-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-03-T-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-04-T-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-05-T-left-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-06-T-right-top": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-07-T-left-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-08-T-right-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-10-L-left": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-11-L-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-12-L-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-13-L-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-14-L-left-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-15-L-right-top": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-16-L-left-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-17-L-right-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-18-O-center": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-20-O-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-21-O-top": {
+      "translation": true,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-22-O-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-23-O-left-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-24-O-right-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-25-O-left-bottom": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-26-O-right-bottom": {
+      "translation": false,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-28-C-left": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-29-C-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-30-C-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-31-C-bottom": {
+      "translation": true,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-32-C-left-top": {
+      "translation": false,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-33-C-right-top": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-34-C-left-bottom": {
+      "translation": false,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-35-C-right-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-37-X-left": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-38-X-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-39-X-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-40-X-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-42-X-right-top": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-43-X-left-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-44-X-right-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-46-B-left": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-47-B-right": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-48-B-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-49-B-bottom": {
+      "translation": false,
+      "rotation": true,
+      "positive": false,
+      "negative": true,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-50-B-left-top": {
+      "translation": false,
+      "rotation": true,
+      "positive": true,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": true
+    },
+    "R2B-new-51-B-right-top": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-52-B-left-bottom": {
+      "translation": true,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": true,
+      "rotation_h4eligible": false
+    },
+    "R2B-new-53-B-right-bottom": {
+      "translation": false,
+      "rotation": false,
+      "positive": false,
+      "negative": false,
+      "translation_h4eligible": false,
+      "rotation_h4eligible": false
+    }
+  },
+  "near_duplicate_pairs": [],
+  "exact_signature_matches": [],
+  "cross_split_near_pairs": [],
+  "scope": "family-isolated, seen-shape, deliberately motion-containing diagnostic; no model outputs consulted"
+}

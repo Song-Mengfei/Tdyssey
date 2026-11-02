@@ -1,0 +1,101 @@
+{
+  "kind": "R3A-independent-I/O-halt-recoverability-review.v1",
+  "checked_at_utc": "2026-10-29T16:32:15.713183+00:00",
+  "passed": true,
+  "determination": "Recoverable engineering I/O halt before pending control18 entered env.step; not physics/numerical instability.",
+  "partial_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3a\\trajectories\\R3A-train-L-000-a0.npz",
+  "partial_sha256": "bbe32fe19883886cf3b8271b81caceb9185f13de9cfb1afd59255927e514c627",
+  "partial_facts": {
+    "states_shape": [
+      19,
+      15
+    ],
+    "actions_shape": [
+      18,
+      2
+    ],
+    "attempted_actions_shape": [
+      18,
+      2
+    ],
+    "substep_states_shape": [
+      181,
+      15
+    ],
+    "actual_substeps": 180,
+    "substep_control_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "substeps_per_completed_control": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "RGB_hash_rows": 19,
+    "all_states_finite": true,
+    "states_equal_actual_100Hz_endpoints": true,
+    "max_penetration": 0.8569779992103577,
+    "substep_state_available_all": true
+  },
+  "old_ledger_snapshot": {
+    "charged_controls": 67,
+    "completed_controls": 66,
+    "executed_substeps": 660,
+    "engine_unknown_advance_substeps": 0,
+    "pending_control": {
+      "trajectory_id": "R3A-train-L-000-a0",
+      "control_index": 18,
+      "action": [
+        463.1811216236771,
+        345.14253870611867
+      ]
+    }
+  },
+  "unstarted_reserved_controls": 1,
+  "reservation_must_remain_charged": true,
+  "completed_T_must_not_be_recollected": true,
+  "L_a0_partial_must_remain_immutable": true,
+  "recovery_conditions": [
+    "Archive exact old ledger/index/manifest/claim/halt/partial and source identity first.",
+    "Record explicit manual recovery receipt classifying reserved control18 as not started using traceback and actual substep evidence; do not refund its charged count.",
+    "Repair only Windows durable I/O path with bounded I/O retry and unique temporary files, preserving physics/controller math and all counts.",
+    "Skip already completed T slot; retain failed L a0 and start only its next pre-frozen a1 candidate; never continue incomplete trajectory by teleport/state replay.",
+    "Keep all completed/attempted/charged/unknown-engine counters distinct; next success and any later failures append to retained history."
+  ],
+  "new_physics_steps": 0,
+  "new_model_calls": 0,
+  "checkpoint_loads": 0,
+  "old_full_audit_repeated": false
+}

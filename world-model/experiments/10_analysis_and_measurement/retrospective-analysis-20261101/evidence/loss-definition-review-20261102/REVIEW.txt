@@ -1,0 +1,251 @@
+Tdyssey：重新定义预测错误的文献综述与适配检验
+2026-11-02 | 原文来源；项目适配与原论文结论分开
+当前状态：文献综述与有界GPU适配测试完成，保存结果已独立复算；无候选通过三字母完整支持，等待用户审批。
+
+本轮回答的问题与当前状态
+用户质疑的是错误定义本身，前一轮MinSNR/GDL/FFL筛选未回答核心问题。本轮重新检索与核对29项原文来源，逐项说明阅读深度。两种新错误定义、三臂GPU适配训练及276张定义诊断均已完成；分析聊天独立重算6240行源评分、1485组和4455项均值，配对一致。没有候选获得跨三字母长时支持；仅native+geometry的C短时子条件通过。详细得失与未验证部分见独立结果页，不能将本次局部负结果扩大为所有替代定义无效。
+
+核实的当前损失
+原HMF训练：L_native=mean_BCHW ||F-(y-c_skip*z)/c_out||²，z=y+offset+sigma*epsilon。若D=c_skip*z+c_out*F，则逐sample等价于||D-y||²/c_out²。这里residual是扩散预条件残差，绝不是物体的时间运动残差。源码：artifacts/high-motion-fit-20261101/training_core.py:25；上游gpc_rank_evaluation/diffusion/denoiser.py的conditioners。四个microbatch平均是eff16的H1训练，非4步轨迹loss。缺少显式几何/拓扑量是事实；这本身不能证明MSE是所有失败的原因，也不能断言背景梯度一定占主导。
+
+1. 用占据区域定义错，而非比较整图颜色
+定义m(I)为RGB可微前景量，p=m(D)、g=m(y)。平方Dice G=mean_classes[1-(2Σpg+ε)/(Σp²+Σg²+ε)]。灰色字母与蓝杆单独等权，白背景不增加大量正确项。G=0当p=g，包括抗锯齿soft mask；因此它比较的是物体占据几何。相同重叠率仍可来自不同距离/错误形状；单独Dice不提供刚体或孔数保证。Lovasz是另一IoU替代，不能把它与常见soft-IoU简单混为一个公式。
+
+2. 用轮廓距离定义错
+Kervadec：L_boundary=Σphi_GT(x)*p(x)，phi为GT轮廓的内负外正距离；减去Σphi*g仅是常数平移。Karimi：用mask差乘GT/预测边界距离的幂，或形态学近似，针对大局部误差。它们与RGB梯度幅值GDL不是同一对象。GT距离场可以只从既有RGB派生；预测hard轮廓/DT若detach，就必须公开是替代梯度，不能声称完整可微SDF。本轮先实测响应，未训练这些定义，不能据此否定它们。
+
+3. 用空间质量输运定义错
+令a,b为前景在像素空间的归一化质量。OT比较把质量从错位位置搬回GT的代价，零重叠仍保留距离含义。选用16个固定方向的精确weighted一维W1：Σ|CDF_a-CDF_b|*相邻投影坐标间距；平均后加相对面积差。像素坐标必须保留；颜色直方图Wasserstein对错位可完全失明。归一化会隐藏面积缩小/消失，故单列面积项。它是有限投影sliced-W1适配，未运行完整2D Sinkhorn；有限方向不保证区分所有2D结构。
+
+4. 用拓扑定义错
+TopoLoss匹配持久图中的连通块与孔，直接对应断裂、增块和丢孔；clDice用soft骨架与mask的交集提供便宜GPU近似。O/C/B的可见拓扑会受蓝杆遮挡、裁切及像素化影响，不可把字母身份固定映射成每帧必须有几个孔。Euler数χ=β0-β1会发生错误抵消。拓扑相同仍可能位置、角度、厚度全错；拓扑目标必须补充下一态几何。PH没有在本轮实现，不能用clDice诊断冒称已测PH。
+
+5. 用刚体内部结构定义形变
+概念上可用点对距离保持、GW/FGW，或min_{R,t} d(R*shape_pred+t,shape_GT)衡量刚体之外的形变。但对齐后的形状误差忽略了错位/错转；纯GW甚至对镜像等距结构也可能无差别。它们只能作为shape约束与绝对下一态比较配合，不能代替动力学目标。训练loss内部几何测量不等于把输出改成pose/template或warp修补；本轮禁止后者，也没有把模拟器姿态/隐藏轮廓变成新标签。
+
+6. 运动误差必须是真正的时间定义
+把同一历史RGB相减再平方：||(D-I_t)-(y-I_t)||²=||D-y||²，完全不是新运动损失。同样，用相同前态质心定义下一步位移后相减，会退化为下一态质心误差。真正的多步速度误差可比较(μhat_k-μhat_{k-1})与(μ_k-μ_{k-1})；方向项可在GT运动足够可观测时比较速度方向，静止/对称/遮挡情况须有资格规则。当前单H1短筛不额外构造AR训练图，因此只诊断真实前帧当下一帧的响应，不冒称已训练时序运动loss。RAFT/SE3粒子方法需要额外表示或对应关系，未擅自加入。
+
+7. 特征、任务价值与物理残差
+C-SWM和DINO-WM实质改变被预测的表征，说明不用逐像素重建也能学习世界模型，但移植到现有RGB GPC不是简单换一个公式。Value-aware模型误差侧重决策价值，不能用同一标量覆盖率抵消错误形状。PIDM需要物理场和一致的方程离散化；仅有RGB无法直接计算接触冲量/PDE，opaque渲染还会让mask相交面积为零成为无意义的非穿透证明。不能强加无外力能量守恒，因为本系统有受控推动与接触。
+
+为什么不能只换一个名字：可解析的反例
+理想二色图中，真实物体有a个像素；将相同物体移到完全不相交的任意位置，RGB MSE恒为2a*||c_gray-c_white||²/(3N)，不随移动距离增加。Dice也恒接近1；它解决比较量/前景归一化，却不解决这种距离饱和。保持面积的纯平移δ下，每个一维投影W1为|theta·δ|，因此输运能保留位移大小。另一方面，把整幅正确字母平移后，孔数与刚体对齐shape误差仍可完全正确；只用拓扑/刚体shape loss会接受错误下一态。仅比较质心/协方差，也允许不同轮廓有相同低阶统计。这些是定义的数学blind spot，尚不是本项目模型的实测收益。
+
+8. 本轮如何测试是否可用于我们项目
+第一层是现有train12上最多288张受控错误图、至少8种loss响应/梯度诊断，检查错位、变形、填孔、断裂、增块、消失、蓝杆偏移、背景小误差等；这些构造不进入训练。第二层是原E2与原HMF前128批上三臂：G_ONLY=cG*G，NATIVE_G=L_native+cG*G，NATIVE_T=L_native+cT*T。cG/cT只用首16个train样本的初始参数梯度范数固定一次，非按val选λ；这是单位匹配，仍有局限。纯G_ONLY检验完全替换的风险，其余保留去噪anchor。第三层按原RH/raw AR16、train12/seenval24/old3、逐字母全部原指标验证，而非只看新loss下降。
+
+9. 解释边界与未完成项
+所有新目标都施加在加噪GT得到的连续单次D上；它不是纯噪声sampler产生的样本。原native采样器仍含no_grad与byte量化，本轮未改sampler或用STE。非线性几何约束作用于去噪条件均值可能与分布学习有冲突（PIDM讨论的Jensen gap提供相关依据）；这也是必须保留纯替换/有anchor对照的原因。本轮仅两个新训练误差定义、三个适配臂，一次128步单seed筛选；未验证的定义、长期收敛、T/L/X、接触物理和跨形状泛化都不报成功。
+
+执行、预算与审批
+原实现负责人执行，分析聊天只查原文、定义方案和独立重算保存结果。新模型上限17504图像级forward/384次训练尝试；3744新预测；执行root650MB、共享10GB及既有guard。GPU优先，CPU一个数值进程/单线程/BelowNormal，不触碰另一项目。既有E2/BASE数据只读复用，原物理/采集/划分/精度/推理/验收不变。全部完成后负责人主动统一回传；分析后交用户审批，不自动扩大实验。普通IO故障按既有授权修复，不另设拦住任务的冻结审批。
+
+文献目录：逐项列出阅读深度、原方法和本项目推断（非29篇全部全文精读）
+
+D01 | 扩散目标的兼容性 | Elucidating the Design Space of Diffusion-Based Generative Models (2022)
+https://arxiv.org/abs/2206.00364
+阅读：本轮摘要；上轮预条件公式及作者EDMLoss源码核对
+原方法：预条件去噪网络与噪声尺度加权重建目标。
+项目推断：我们的native残差MSE是有明确去噪含义的目标；它没有直接定义物体拓扑/刚体误差。修改目标后仍用原sampler是否可行需要实测，不能仅凭一个可微公式判断。
+状态：原baseline；本轮只读复用
+
+D02 | 扩散目标的兼容性 | Denoising Diffusion Probabilistic Models (2020)
+https://arxiv.org/abs/2006.11239
+阅读：摘要/目标定位
+原方法：将扩散训练与去噪score matching联系起来。
+项目推断：纯mask损失有许多RGB等价解；不能直接把任何几何回归器视作原扩散概率模型的等价训练。保留native的组合与完全替换分别测试。
+状态：文献评估；未实施
+
+D03 | 占据区域 | V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation (2016)
+https://arxiv.org/pdf/1606.04797
+阅读：方法深读：第3节平方分母Dice及其梯度
+原方法：以2 sum(p*g)/(sum(p²)+sum(g²))定义区域重叠，处理小前景与大背景失衡。
+项目推断：本轮把预测RGB和GT RGB变成相同的可微灰/蓝前景量，等权平均两类Dice误差；采用相同soft GT使完全相同图像有零几何误差。没有新增分割网络。
+状态：定义诊断与G_ONLY/NATIVE_G训练已完成；纯G使验证C长时退化；NATIVE_G仅C短时方向条件通过，长时仍退步。
+
+D04 | 占据区域 | Generalised Dice overlap as a deep learning loss function for highly unbalanced segmentations (2017)
+https://arxiv.org/abs/1707.03237
+阅读：摘要筛选
+原方法：用类别体积相关权重平衡分割类别。
+项目推断：能降低背景主导，但额外类权重不是本轮核心。灰色字母和蓝杆均需准确，先用可解释的两类等权几何定义；不再做一轮权重搜索。
+状态：文献评估；未实施
+
+D05 | 占据区域 | Tversky loss function for image segmentation using 3D fully convolutional deep networks (2017)
+https://arxiv.org/abs/1706.05721
+阅读：摘要筛选
+原方法：用不对称FP/FN代价改变精确率与召回率取舍。
+项目推断：若偏重召回，可能通过增厚/填孔获益；本项目没有授权改成宁可膨胀的目标，不直接选作主配方。
+状态：文献评估；未实施
+
+D06 | 占据区域 | The Lovász-Softmax loss (2018)
+https://arxiv.org/pdf/1705.08790
+阅读：方法深读：Eq11–13、排序求Jaccard扩展、per-image与dataset口径
+原方法：以排序误差和Lovasz扩展构造IoU的分段线性替代目标。
+项目推断：可从RGB派生soft前景后应用，但不是对RGB张量直接套公式；hard GT与抗锯齿soft GT的差异要声明。IoU损失仍不能区分完全无重叠的远近错位。
+状态：文献评估；未实施
+
+D07 | 轮廓/距离场 | Boundary loss for highly unbalanced segmentation (2019)
+https://proceedings.mlr.press/v102/kervadec19a/kervadec19a.pdf
+阅读：方法深读：Eq2–6，有符号GT距离场与常数项
+原方法：以GT有符号距离场phi和预测前景s的积分衡量轮廓变化，通常结合区域损失。
+项目推断：可惩罚离真实轮廓很远的前景。原LB可为负；减去GT常数不改梯度。它不是Hausdorff最大距离，也不是把RGB边缘加权。可训练概率映射、离散距离场定义必须清楚。
+状态：定义响应诊断已完成；未列入本轮训练臂，不能报为训练无效。
+
+D08 | 轮廓/距离场 | Reducing the Hausdorff Distance in Medical Image Segmentation with Convolutional Neural Networks (2019)
+https://arxiv.org/pdf/1904.10030
+阅读：方法深读：Eq4–8及侵蚀/卷积替代路线
+原方法：距离变换型损失以(p-q)²乘GT/预测边界距离幂；另给侵蚀与多半径卷积近似。
+项目推断：强调最坏局部误差，比平均RGB更贴近毛刺/孤块。真正预测DT含离散步骤，不能把detach DT叫作完整可微SDF；只用GT DT则是另一适配公式。
+状态：文献评估；未实施
+
+D09 | 轮廓/距离场 | A Generalized Surface Loss for Reducing the Hausdorff Distance in Medical Imaging Segmentation (2023)
+https://arxiv.org/abs/2302.03868
+阅读：摘要筛选
+原方法：针对区域重叠高而表面距离差的问题，提出数值与类别平衡改进。
+项目推断：支持将轮廓误差单列研究；医学分割的效果不能转述为我们的96px RGB预测有效。
+状态：文献评估；未实施
+
+D10 | 点集/定位距离 | Locating Objects Without Bounding Boxes (2019)
+https://arxiv.org/pdf/1806.07564
+阅读：方法深读：Eq5–7、两项防退化解释
+原方法：weighted Hausdorff以soft位置热图和GT点集比较，不要求预测点数固定；两个方向的项避免全空/全满解。
+项目推断：用于中心定位不能约束完整字母形状；若改成全部轮廓点，监督语义与成本均改变。硬提取预测轮廓点无法直接传RGB梯度。
+状态：文献评估；未实施
+
+D11 | 点集/定位距离 | A Point Set Generation Network for 3D Object Reconstruction From a Single Image (2017)
+https://robotics.stanford.edu/~haosu/papers/SI2PC_arxiv_submit.pdf
+阅读：作者论文方法摘读：Chamfer/EMD公式
+原方法：Chamfer双向最近邻平方距离与一一匹配的EMD用于无序点集。
+项目推断：轮廓Chamfer可表达几何偏差，但最近邻允许多对一，不保证面积、孔或刚体。直接对预测hard边缘采点会切断mask梯度，不是零成本替换。
+状态：文献评估；未实施
+
+D12 | 空间输运 | Sinkhorn Distances: Lightspeed Computation of Optimal Transport (2013)
+https://papers.nips.cc/paper/2013/hash/af21d0c97db2e27e13572cbf59eb343d-Abstract.html
+阅读：原论文摘要与作者方法说明
+原方法：熵正则输运通过矩阵缩放加速求解。
+项目推断：必须将像素坐标作为ground cost；只比颜色直方图会对物体错位失明。全96²支持点的密集两两代价有显存/迭代成本，不能把1D投影实验冒称已测完整Sinkhorn。
+状态：文献评估；未实施
+
+D13 | 空间输运 | Interpolating between Optimal Transport and MMD using Sinkhorn Divergences (2019)
+https://proceedings.mlr.press/v89/feydy19a/feydy19a.pdf
+阅读：方法深读：Eq3、20–27，去偏项、梯度、显存
+原方法：S_eps(a,b)=OT_eps(a,b)-0.5 OT_eps(a,a)-0.5 OT_eps(b,b)，消除熵正则自比较偏置。
+项目推断：比裸正则OT更合适作几何差异候选；质量归一化仍会隐藏物体面积，需单独处理。作者大规模GPU能力不等于我们已安装或验证对应库。
+状态：文献评估；未实施
+
+D14 | 空间输运 | Learning Generative Models with Sinkhorn Divergences (2018)
+https://proceedings.mlr.press/v84/genevay18a.html
+阅读：原论文摘要筛选
+原方法：用可微Sinkhorn比较分布，兼顾不相交支持与计算可行性。
+项目推断：我们需要逐条件、逐样本下一帧空间分布匹配；不能改成全batch生成图集合匹配，否则可能不同动作间互换结果仍低loss。
+状态：文献评估；未实施
+
+D15 | 空间输运 | Sinkhorn Divergences for Unbalanced Optimal Transport (2019)
+https://arxiv.org/abs/1910.12958
+阅读：摘要与作者说明；PDF提取超时，未深读公式
+原方法：将输运与质量产生/消失共同处理，允许总质量不同。
+项目推断：适合同时测错位和物体丢失，但质量销毁代价太小可能允许抹掉难预测物体。当前不用新库/CPU迭代实现；未测，不能宣称不适用。
+状态：文献评估；未实施
+
+D16 | 空间输运 | Generative Modeling using the Sliced Wasserstein Distance (2018)
+https://arxiv.org/pdf/1803.11188
+阅读：方法深读：一维排序输运与投影平均
+原方法：将高维分布投影到一维，平均各投影Wasserstein，避免昂贵高维匹配。
+项目推断：项目改成固定16空间方向的weighted W1，加面积差；原文SW2生成器训练不等于本适配。有限方向不是完整二维距离，仍需原始IoU/拓扑验证。
+状态：定义诊断与NATIVE_T训练已完成；距离响应验证成立，三字母训练支持未通过；零质量梯度敏感。
+
+D17 | 空间输运 | Computational Optimal Transport (2019)
+https://arxiv.org/html/1803.00567
+阅读：专题方法摘读：第2.6节1D CDF/quantile公式；非整本通读
+原方法：一维W1等于两CDF差绝对值的积分；加权离散共同支持可精确累积求和。
+项目推断：本轮坐标排序固定，梯度只经过像素质量，不硬采样预测前景；避免把空间weighted histogram错误实现为等权颜色排序。作为公式基础文献，非新实验论文。
+状态：文献评估；未实施
+
+D18 | 拓扑 | Topology-Preserving Deep Image Segmentation (2019)
+https://www3.cs.stonybrook.edu/~cvl/content/papers/2019/Hu_NeurIPS19.pdf
+阅读：方法深读：持久图、Eq2.2、分维匹配与零loss定理条件
+原方法：匹配预测与GT持久同调图，分别处理连通块与孔，未匹配结构推向对角线。
+项目推断：直接对应B丢孔/O断裂；有资格可见mask才有对应监督。只数Euler数会让块和孔错误抵消；正确拓扑也允许错位/严重变形。现有CPU压力/无新依赖下本轮不跑PH，不把clDice冒称PH复现。
+状态：文献评估；未实施
+
+D19 | 拓扑 | clDice — a Novel Topology-Preserving Loss Function for Tubular Structure Segmentation (2021)
+https://arxiv.org/pdf/2003.07311
+阅读：方法深读：前景/背景骨架条件、soft skeleton；作者PyTorch源码核对
+原方法：用mask与骨架交集的precision/sensitivity及其调和平均表达连通性，soft形态学提供梯度。
+项目推断：GPU可用且无需新网；本轮固定10次侵蚀作响应诊断。二值前景/背景满足条件且clDice=1的定理，不能扩大成有限训练后所有RGB输出保证孔数正确；厚度/角部仍需几何目标。
+状态：定义响应诊断已完成；未列入本轮训练臂，不能报为训练无效。
+
+D20 | 拓扑 | Centerline Boundary Dice Loss for Vascular Segmentation (2024)
+https://arxiv.org/abs/2407.01517
+阅读：原始摘要筛选
+原方法：在中心线比较外加入边界/半径相关因素，关注几何与拓扑。
+项目推断：提示纯骨架比较不足；血管形态与实心字母不同，不能直接声称对O/C/B合适，需要另行精确适配。
+状态：文献评估；未实施
+
+D21 | 形状/刚体结构 | FourierLoss: Shape-Aware Loss Function with Fourier Descriptors (2023)
+https://arxiv.org/abs/2309.12106
+阅读：原始摘要筛选
+原方法：比较分割对象的Fourier轮廓描述子并学习形状细节的重要性。
+项目推断：这和上轮RGB复数频谱FFL不是同一损失。轮廓参数化、起点、旋转归一化会影响是否忽略真实角度错误；本轮不未经核实移植。
+状态：文献评估；未实施
+
+D22 | 形状/刚体结构 | Fused Gromov-Wasserstein Distance for Structured Objects (2020)
+https://www.mdpi.com/1999-4893/13/9/212
+阅读：原文方法摘读：定义8、离散Eq24、非凸求解
+原方法：结合点属性/位置间距离与点对内部距离，比较特征和结构。
+项目推断：内部距离适合刚体形状约束，但纯GW允许等距变换，错位/镜像可不受罚；须另加绝对运动约束。大规模非凸匹配和RGB到点集的可微性未验证。
+状态：文献评估；未实施
+
+D23 | 形状/刚体结构 | SE3-Nets: Learning Rigid Body Motion using Deep Neural Networks (2017)
+https://arxiv.org/abs/1606.02378
+阅读：原始摘要筛选
+原方法：从深度/动作/点关联学习分部SE3变换，以结构限制刚体运动。
+项目推断：属于表示/架构改变，依赖深度和关联，不能当RGB GPC的drop-in loss；本轮不重新引入用户已拒绝的pose/template机制。
+状态：文献评估；未实施
+
+D24 | 运动/时间 | RAFT: Recurrent All-Pairs Field Transforms for Optical Flow (2020)
+https://arxiv.org/abs/2003.12039
+阅读：原始摘要筛选
+原方法：学习逐像素光流，提供运动场估计。
+项目推断：可启发流误差，但RAFT是网络而非现成物理loss。均匀色块内部对应/遮挡不唯一，外部流估计器也会出错；新资产与监督不在本轮。
+状态：文献评估；未实施
+
+D25 | 运动/时间 | Learning to Simulate Complex Physics with Graph Networks (2020)
+https://proceedings.mlr.press/v119/sanchez-gonzalez20a.html
+阅读：本轮摘要；上轮训练方法/补充材料已核对
+原方法：以粒子图预测动力学，用训练噪声改善长时误差积累。
+项目推断：粒子加速度误差是另一种有效定义，但需要粒子状态表示；不能把图像模型变成状态模型后仍称原基线优化。RGB序列速度误差可以另定义，需真实时间对齐与预测历史。
+状态：文献评估；未实施
+
+D26 | 学习表征/任务距离 | Contrastive Learning of Structured World Models (2020)
+https://arxiv.org/abs/1911.12247
+阅读：原始摘要筛选
+原方法：在对象结构latent中以对比目标学习转移，减少对像素重建的依赖。
+项目推断：改变表征和负例目标，需要编码器/对象图与匹配基线；不是只改现有输出loss。对比可区分状态但不直接保证毫米级位置和孔形状。
+状态：文献评估；未实施
+
+D27 | 学习表征/任务距离 | DINO-WM: World Models on Pre-trained Visual Features enable Zero-shot Planning (2025)
+https://arxiv.org/abs/2411.04983
+阅读：原始摘要筛选（v2 2025）
+原方法：在预训练视觉patch特征上预测世界演化、用于规划。
+项目推断：改变所预测的量，比改MSE名字更实质；但目前必须保留RGB输出与原输入/采样，需要额外编码/解码或匹配实验，不擅自改为latent任务。
+状态：文献评估；未实施
+
+D28 | 学习表征/任务距离 | Value-Aware Loss Function for Model-based Reinforcement Learning (2017)
+https://proceedings.mlr.press/v54/farahmand17a/farahmand17a.pdf
+阅读：方法摘读：Eq3的transition对value期望误差及未知V问题
+原方法：依据转移误差对价值函数的影响定义模型误差。
+项目推断：和最终控制相关，但单一覆盖/价值相同不意味着几何和动力学正确；当前缺已验证价值函数，不以它取代用户的形状/运动验收。
+状态：文献评估；未实施
+
+D29 | 物理约束 | Physics-Informed Diffusion Models (2024)
+https://arxiv.org/html/2403.14404v3
+阅读：方法深读：3.2–3.3、mean/sample估计与Jensen gap、残差/离散化一致性
+原方法：将物理方程残差与数据目标结合，讨论在均值去噪图上施加非线性约束与真实采样分布的区别。
+项目推断：RGB不是压力/速度等物理场，不能直接套PDE，也不能强加受驱动推块的能量守恒。该文提醒本轮D(y+noise)的几何损失不等于采样轨迹几何；必须以raw AR评测。
+状态：文献评估；未实施
+
+运行前具体公式和验收：TEST_SPEC.txt
+TEST_SPEC SHA256: d8f0ceb29c1008e97e808872c8b661dda41a9ee0ab1222dccadea7bdf4dd95c0
+结果回传后新增独立结果页；文献不等于项目实验成功。

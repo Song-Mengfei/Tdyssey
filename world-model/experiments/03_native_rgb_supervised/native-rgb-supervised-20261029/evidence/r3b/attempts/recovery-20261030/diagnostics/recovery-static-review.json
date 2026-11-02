@@ -1,0 +1,23 @@
+{
+  "kind": "R3B-loader-recovery-static-review.v1",
+  "passed": true,
+  "helper_source_sha256": "9d3dcb5b5db9fcf0791579f79b757f60a19943e769e59a409318e67f8e00191b",
+  "regression_test_source_sha256": "ccef5b71d8d142e4d4ea06c633f4f2699015287e0fb7f7541adb605b74667c19",
+  "focused_no_process_tests": 2,
+  "subprocess_starts": 0,
+  "model_loads": 0,
+  "GPU_calls": 0,
+  "physics_steps": 0,
+  "Torch_imported": false,
+  "reviewed_interfaces": [
+    "R3AStateDataset(**session.dataset_kwargs)",
+    "FrozenFirstEpochOrder.rows/batches/state_dict",
+    "TrainingSession._ensure_loader",
+    "diagnostic_initializer/batch",
+    "CHILDREN/child_exitcodes",
+    "install_site_hook/install_spawn_observation"
+  ],
+  "static_blockers_found": [],
+  "actual_background_validation_still_required": true,
+  "reference_read_accounting": "Four16-sample batches validate64 distinct target windows; current expected dict comprehension calls reference.__getitem__ twice/window (128 reference accesses) to independently stack image/action; no formal cursor consumption."
+}

@@ -1,0 +1,22 @@
+{
+  "charged_controls": 28282,
+  "finished": false,
+  "halt": {
+    "at_utc": "2026-10-29T17:30:18.484670+00:00",
+    "reason": "System failure stops batch; no blind replacement",
+    "slot_id": "R3A-train-X-074",
+    "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect_v2.py\", line 206, in run\n    ledger['pending_control']=None;save_npz(data,evidence.arrays());persist()\n                                                                    ^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect_v2.py\", line 151, in persist\n    atomic_json(root/'resource-ledger.json',ledger)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_training.py\", line 59, in atomic_json\n    os.replace(temporary, path)\nPermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-raw-tl-portable-main\\\\artifacts\\\\native-rgb-supervised-20261029\\\\r3a\\\\resource-ledger.json.e02c0c5abf3445b799c476d905b779e4.tmp' -> '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-raw-tl-portable-main\\\\artifacts\\\\native-rgb-supervised-20261029\\\\r3a\\\\resource-ledger.json'\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect_v2.py\", line 237, in run\n    if not failure_is_physical(failure):raise RuntimeError('System failure stops batch; no blind replacement') from failure\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: System failure stops batch; no blind replacement\n",
+    "type": "RuntimeError"
+  },
+  "storage": {
+    "atomic_reserve_bytes": 268435456,
+    "future_R3B_reserved_bytes": 150994944,
+    "limit_bytes": 3221225472,
+    "passed": true,
+    "projected_bytes": 1897872838,
+    "shared_bytes": 1478442438,
+    "stage_bytes": 54077959,
+    "stage_limit_bytes": 100663296
+  },
+  "successful_scenes": 587
+}

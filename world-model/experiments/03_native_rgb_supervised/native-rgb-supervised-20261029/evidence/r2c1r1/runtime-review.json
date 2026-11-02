@@ -1,0 +1,282 @@
+{
+  "kind": "R2C1R1-cold-readonly-runtime-review.v1",
+  "passed": true,
+  "issues": [],
+  "checks": {
+    "closed_complete_no_failure": true,
+    "event_clock_monotonic": true,
+    "exact_runtime_counts": true,
+    "runtime_phase_order": true,
+    "attempt_then_four_micro_then_update": true,
+    "actual4800_draws_equal_frozen_prefix": true,
+    "all_state_tensors_initially_finite": true,
+    "all8729827_parameters_trainable": true,
+    "all296_first_grad_norms_finite": true,
+    "all296_parameter_hashes_changed": true,
+    "finite_training_events": true,
+    "all9_method_cohort_metrics_complete": true,
+    "all9_metrics_written_during_model_clock": true,
+    "all72_batch_seeds_match_frozen_seed5478_formula": true,
+    "raw_sink_equals_rollout_history_and_already_normalized_action_hashes": true,
+    "baseline_final_paired_batch_ids_seeds_actions_initial_histories": true,
+    "closed_inventory_all_files_hashmatch": true,
+    "prior_history_preserved": true,
+    "record_only_migration_before_stage_start": true,
+    "active_record_only_no_timecaps": true,
+    "completed_planned300_not_time_stopped": true,
+    "deprecated_prelaunch_snapshots_preserved": true,
+    "original_failed_C1_source_preserved": true,
+    "executed_trainer_matches_reviewed_source": true
+  },
+  "event_counts": {
+    "checkpoint": 2,
+    "native_call_start": 72,
+    "native_cohort": 6,
+    "attempt_reserved_before_draw": 300,
+    "microbatch_backward_complete": 1200,
+    "update_complete": 300,
+    "checkpoint_reload_verified": 1
+  },
+  "execution": {
+    "status": "complete",
+    "failure": null,
+    "attempts": 300,
+    "updates": 300,
+    "window_exposures": 4800,
+    "independent_sample_caveat": "4800 draws are exposures, not 4800 independent trajectories.",
+    "training_forward_calls": 1200,
+    "training_backward_microbatches": 1200,
+    "native_sampler_batch_attempts": 72,
+    "native_sampler_batch_completed": 72,
+    "cleanup_errors": [],
+    "new_physics_controls": 0
+  },
+  "parameter_audit": {
+    "initial_state_tensors": 298,
+    "parameter_tensors": 296,
+    "trainable_parameters": 8729827,
+    "first_grad_tensors": 296,
+    "first_grad_nonzero_tensors": 296,
+    "parameter_hashes_changed": 296,
+    "initial_tensors_sha256": "abae8b62697f2facb1654d02ed0d2c61bebc3e763d390de4f95d6c2816b3d780",
+    "initial_summary_identical_to_failed_C1": true
+  },
+  "checkpoint": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\run\\last.pt",
+    "bytes": 105300718,
+    "sha256": "3c397035857fe98b896ea5083b52f32c129f1787c1be6884d4c740a9e58e5be0",
+    "updates": 300,
+    "reload_verified": true,
+    "verification_scope": "The actual runtime source compares model parameter hashes, optimizer/scaler/scheduler tree digests, all RNG and prepared data state before/after one full reload plus progress equality; checkpoint_reload_verified event occurs only after every comparison passes. This review verifies code branch and cold event, not checkpoint tensor contents by a second load.",
+    "model_reload_comparison_qualification": "The checkpoint stores and strict-loads the full model.state_dict including buffers. The runtime before/after model digest specifically uses named-parameter hashes; buffers do not receive a separate before/after digest. No independent checkpoint deserialization was performed by this review."
+  },
+  "RNG_and_bridge": {
+    "training_seed": 5478,
+    "all72_batch_seed_records_verified": true,
+    "baseline_and_final_pairing_verified": true,
+    "same4_action_prefix_each_step": true,
+    "bridge_input_hashes_equal_rollout_hashes": true,
+    "RNG_scope_in_frozen_source": [
+      "Python",
+      "NumPy",
+      "TorchCPU",
+      "all_initializedCUDA",
+      "dedicated_noise_generator"
+    ],
+    "evaluation_RNG_restore_scope": "evaluate captures all RNG before evaluation and restores them in finally; native sampler additionally fork_rng. No new RNG/model invocation here.",
+    "action_normalization": "Frozen rollout maps absolute float32 /511*2-1 once; predictor receives already normalized actions and passes unchanged copies to native source sampler.",
+    "finite_OOR_policy": "All finite raw OOR values remain unmodified and feed subsequent history. They retain strict hard-failure scoring and do not abort baseline/training. Counts below are saved budgeted metrics, not newly rescored."
+  },
+  "method_cohort_completion": [
+    {
+      "method": "original_GPC",
+      "cohort": "train_visual",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "finite_out_of_range": 10,
+        "ok": 14
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "finite_out_of_range": 25,
+        "ok": 23
+      },
+      "endpoint_hard_failures": 15,
+      "scoring_complete": true,
+      "metrics_sha256": "f90e52e85961f727a2c9887ed2d129affb6df608c0a234bdb0c49c6b86583cbf",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "original_GPC",
+      "cohort": "val_natural",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "finite_out_of_range": 11,
+        "ok": 13
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "finite_out_of_range": 24,
+        "ok": 24
+      },
+      "endpoint_hard_failures": 21,
+      "scoring_complete": true,
+      "metrics_sha256": "b3b7c7de902cec59e1c748b30d2efc889bfd2e86cc236beaec66272f831bf076",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "original_GPC",
+      "cohort": "val_motion",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 11,
+        "finite_out_of_range": 13
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 19,
+        "finite_out_of_range": 29
+      },
+      "endpoint_hard_failures": 20,
+      "scoring_complete": true,
+      "metrics_sha256": "338c8f0e0e8b918e76b7974b95791db46176aa47c34b1c6ecd38cb9a04eb1bd0",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "trained",
+      "cohort": "train_visual",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "1dbb41c03cb73c9e160f0042b72ea58ddc494ab0d393634b468c143ae5f6558a",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "trained",
+      "cohort": "val_natural",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "db7a98b1c258fbaddd72e4f1f54d0ff09e86296505343386540bae6042759dbf",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "trained",
+      "cohort": "val_motion",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "682d8d43702b5bb8b494a16eede5f89aa6ec92acc76137a320edc309d1d6b90e",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "copy_last",
+      "cohort": "train_visual",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "5ce594f59ac30d8afb563bd2cffe4a20883ad8208f7dfbb8c7d85b467748cbca",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "copy_last",
+      "cohort": "val_natural",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "f292db6ec7ab47e080e0942d40d4bcec146776836aaeda9254d956dc0c052eb9",
+      "written_during_active_clock": true
+    },
+    {
+      "method": "copy_last",
+      "cohort": "val_motion",
+      "windows": 12,
+      "endpoint_rows": 24,
+      "endpoint_numeric_status_counts": {
+        "ok": 24
+      },
+      "raw_step_rows": 48,
+      "raw_numeric_status_counts": {
+        "ok": 48
+      },
+      "endpoint_hard_failures": 0,
+      "scoring_complete": true,
+      "metrics_sha256": "87d1a7c9d4e96dc3349a08bddf28ffbb3d5138d85231ead290fe654522f836b0",
+      "written_during_active_clock": true
+    }
+  ],
+  "CPU_score_clock_evidence": {
+    "all9_metrics_written_during_active_model_stage": true,
+    "source": "evaluate_saved_predictions executes inside evaluate(method) before post-operation heartbeat; copy_last CPU scores also run inside baseline evaluate.",
+    "closed_inventory_hashes_verified": 93,
+    "no_cold_rescoring_in_this_review": true
+  },
+  "time_policy": {
+    "version": "record_only_v2",
+    "user_set_model_time_budget": false,
+    "old_supervisor_time_limits_explicitly_corrected": true,
+    "model_math_unchanged": true,
+    "migration_at_utc": "2026-10-29T11:54:29.776736+00:00",
+    "migration_before_stage_start": true,
+    "prior_actual_seconds": 895.8430000000008,
+    "this_stage_actual_seconds": 486.375,
+    "failed_C1_actual_seconds_preserved": 27.35899999999674,
+    "global_actual_attempts": 550,
+    "global_actual_seconds": 1382.2180000000008,
+    "stop_reason": "stage_attempt_target",
+    "batch300_is_diagnostic_scope_not_user_lifetime_budget": true,
+    "deprecated_never_executed_time_capped_snapshot": "deprecated-time-capped-prelaunch/snapshot.json"
+  },
+  "scope": {
+    "Torch_imported": false,
+    "checkpoint_deserializations": 0,
+    "models_constructed": 0,
+    "predictions": 0,
+    "optimizer_attempts": 0,
+    "physics_controls": 0,
+    "source_or_existing_runtime_records_modified": false
+  }
+}

@@ -1,0 +1,284 @@
+Error-definition screen, not another noise-weight screen. G_ONLY replaces native score objective by cG*squaredDice of RGB-derived gray/blue occupancy; NATIVE_G adds it; NATIVE_T adds16 fixed spatial-projection W1 plus relative mass. D is continuous noisy-GT denoising reconstruction from the same forward, not pure-noise rollout training. cG/cT are first16train-only complete-parameter-gradient unit conversions, fixed thereafter. E2 and BASE128 reused read-only. Native data/split/order/noise/precision and3-denoise inference/old evaluation/gates unchanged. A single-seed128step exploratory screen is not convergence/generalization, rigidity/topology, contact or penetration proof. RH gives actual history each single step; AR16 is raw self-feedback without future truth or output repair. Unknown is not pass. G_ONLY may impair color/background/sampling and is not silently anchored by native MSE.
+
+train / real_history
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.978573/0.064641 | 0.975802/0.075841 | 0.969390/0.100143 | 0.975789/0.085400 | 0.973987/0.097646
+O H4 | 0.915156/0.183242 | 0.926897/0.186960 | 0.917981/0.171535 | 0.931390/0.172348 | 0.926897/0.186960
+O H8 | 0.924522/0.179459 | 0.939054/0.109628 | 0.931823/0.135266 | 0.931228/0.130751 | 0.939054/0.109628
+O H16 | 0.944227/0.181871 | 0.943901/0.147780 | 0.948252/0.136415 | 0.943003/0.150575 | 0.943901/0.147780
+C H1 | 0.949082/0.187111 | 0.959630/0.113636 | 0.956321/0.125315 | 0.961861/0.114479 | 0.959630/0.113636
+C H4 | 0.944073/0.174869 | 0.945083/0.202948 | 0.938799/0.172243 | 0.947348/0.206706 | 0.945083/0.202948
+C H8 | 0.960445/0.185338 | 0.955508/0.213624 | 0.954161/0.203092 | 0.954181/0.230376 | 0.955508/0.213624
+C H16 | 0.885714/0.224963 | 0.900976/0.247848 | 0.890377/0.300060 | 0.899884/0.237338 | 0.898629/0.266688
+B H1 | 0.978981/0.081795 | 0.978073/0.067811 | 0.975700/0.052471 | 0.978075/0.074597 | 0.978073/0.067811
+B H4 | 0.940578/0.135644 | 0.942367/0.134547 | 0.939111/0.128077 | 0.942310/0.145364 | 0.943096/0.140871
+B H8 | 0.911736/0.243170 | 0.923146/0.172456 | 0.915459/0.210147 | 0.926159/0.208633 | 0.923146/0.172456
+B H16 | 0.986691/0.054238 | 0.984297/0.059855 | 0.981820/0.078149 | 0.984268/0.072609 | 0.984297/0.059855
+
+train / autoregressive
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.978573/0.064641 | 0.975802/0.075841 | 0.969390/0.100143 | 0.975789/0.085400 | 0.973987/0.097646
+O H4 | 0.733397/1.003403 | 0.756992/0.846202 | 0.724992/1.060728 | 0.755728/0.863538 | 0.754835/0.835843
+O H8 | 0.547632/2.075703 | 0.579605/1.936457 | 0.567363/2.004210 | 0.583364/1.908123 | 0.579707/1.921767
+O H16 | 0.379033/3.657807 | 0.335674/4.120006 | 0.412462/3.580993 | 0.336323/4.052040 | 0.329718/4.178181
+C H1 | 0.949082/0.187111 | 0.959630/0.113636 | 0.956321/0.125315 | 0.961861/0.114479 | 0.959630/0.113636
+C H4 | 0.793980/0.533689 | 0.821679/0.524340 | 0.807141/0.403818 | 0.814596/0.558553 | 0.819190/0.527207
+C H8 | 0.673184/1.209356 | 0.677624/1.244469 | 0.663077/1.307695 | 0.678590/1.225577 | 0.673846/1.280254
+C H16 | 0.195370/6.392374 | 0.264316/4.430930 | 0.179878/6.182505 | 0.270887/4.491641 | 0.260451/4.606508
+B H1 | 0.978981/0.081795 | 0.978073/0.067811 | 0.975700/0.052471 | 0.978075/0.074597 | 0.978073/0.067811
+B H4 | 0.801101/0.561115 | 0.832826/0.494750 | 0.814647/0.541139 | 0.833926/0.494385 | 0.830803/0.509515
+B H8 | 0.548302/2.099368 | 0.594680/1.693062 | 0.577767/1.642207 | 0.590944/1.750981 | 0.591874/1.705706
+B H16 | 0.406972/3.117852 | 0.493603/2.153573 | 0.454145/2.493119 | 0.489690/2.190232 | 0.488957/2.183417
+
+seen_val / real_history
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.995746/0.039797 | 0.990113/0.072272 | 0.983983/0.075535 | 0.989163/0.080230 | 0.990110/0.072226
+O H4 | 0.954097/0.116063 | 0.957628/0.096586 | 0.958345/0.101374 | 0.959432/0.084010 | 0.956727/0.095034
+O H8 | 0.943622/0.155753 | 0.943543/0.165225 | 0.944011/0.171210 | 0.947953/0.161435 | 0.943108/0.165815
+O H16 | 0.942950/0.147911 | 0.948747/0.078513 | 0.945622/0.134621 | 0.946896/0.078661 | 0.948338/0.082030
+C H1 | 0.984084/0.090155 | 0.984674/0.075202 | 0.983433/0.060558 | 0.985257/0.074539 | 0.984067/0.068682
+C H4 | 0.924478/0.199006 | 0.911609/0.231456 | 0.910470/0.255696 | 0.910942/0.209602 | 0.910554/0.231883
+C H8 | 0.926570/0.293565 | 0.928995/0.248618 | 0.924093/0.243076 | 0.930117/0.267012 | 0.928995/0.248618
+C H16 | 0.940310/0.194744 | 0.941596/0.180930 | 0.935453/0.174083 | 0.940945/0.193204 | 0.940981/0.188041
+B H1 | 0.989752/0.050183 | 0.985776/0.056402 | 0.983020/0.071259 | 0.985772/0.049121 | 0.985776/0.056402
+B H4 | 0.944056/0.163407 | 0.944191/0.165767 | 0.944145/0.166087 | 0.946034/0.164054 | 0.944573/0.166625
+B H8 | 0.937412/0.135610 | 0.938617/0.150495 | 0.936298/0.154066 | 0.938284/0.154336 | 0.938995/0.148099
+B H16 | 0.946402/0.131656 | 0.950757/0.174922 | 0.947238/0.152058 | 0.951455/0.169488 | 0.950387/0.173848
+
+seen_val / autoregressive
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.995746/0.039797 | 0.990113/0.072272 | 0.983983/0.075535 | 0.989163/0.080230 | 0.990110/0.072226
+O H4 | 0.852754/0.500406 | 0.854977/0.478686 | 0.840828/0.521879 | 0.855229/0.477358 | 0.853484/0.469461
+O H8 | 0.675611/1.322679 | 0.700833/1.202369 | 0.674561/1.311662 | 0.700074/1.189474 | 0.699240/1.215513
+O H16 | 0.456442/3.042651 | 0.466823/2.919192 | 0.466318/2.856111 | 0.458797/2.937549 | 0.461089/2.936837
+C H1 | 0.984084/0.090155 | 0.984674/0.075202 | 0.983433/0.060558 | 0.985257/0.074539 | 0.984067/0.068682
+C H4 | 0.630272/0.518774 | 0.651441/0.454861 | 0.631599/0.601389 | 0.659662/0.386860 | 0.648449/0.430401
+C H8 | 0.442016/1.045470 | 0.445381/1.160152 | 0.432701/1.337377 | 0.449273/1.181710 | 0.446736/1.170320
+C H16 | 0.253279/3.880715 | 0.249992/3.702187 | 0.204634/4.019568 | 0.244821/3.831008 | 0.249656/3.757154
+B H1 | 0.989752/0.050183 | 0.985776/0.056402 | 0.983020/0.071259 | 0.985772/0.049121 | 0.985776/0.056402
+B H4 | 0.758849/0.923860 | 0.778506/0.826559 | 0.774643/0.861308 | 0.777010/0.827366 | 0.776972/0.825014
+B H8 | 0.633382/1.508409 | 0.647624/1.295695 | 0.635634/1.262619 | 0.649356/1.277986 | 0.644204/1.347760
+B H16 | 0.514797/2.108555 | 0.523932/1.667576 | 0.506821/1.637825 | 0.522678/1.681418 | 0.525916/1.695223
+
+original_failure / real_history
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.977099/0.039751 | 0.980916/0.055183 | 0.977099/0.039751 | 0.980916/0.055183 | 0.980916/0.055183
+O H4 | 0.883803/0.107626 | 0.856643/0.299523 | 0.869718/0.152472 | 0.857143/0.378863 | 0.856643/0.299523
+O H8 | 0.897527/0.325401 | 0.900356/0.318848 | 0.897163/0.351217 | 0.896797/0.350609 | 0.900356/0.318848
+O H16 | 0.992674/0.052639 | 0.992674/0.052639 | 0.992647/0.036776 | 0.992674/0.052639 | 0.992674/0.052639
+C H1 | 0.995050/0.051169 | 0.995050/0.051169 | 0.990099/0.040581 | 0.995050/0.051169 | 0.995050/0.051169
+C H4 | 0.933014/0.285312 | 0.942029/0.268554 | 0.931707/0.068562 | 0.946602/0.298306 | 0.937198/0.236547
+C H8 | 0.950980/0.087514 | 0.935961/0.137226 | 0.931373/0.117192 | 0.950249/0.107698 | 0.945545/0.149398
+C H16 | 0.970588/0.100122 | 0.970443/0.121463 | 0.960591/0.170362 | 0.970443/0.121463 | 0.970443/0.121463
+B H1 | 0.956923/0.027051 | 0.929231/0.237957 | 0.935185/0.214773 | 0.932308/0.233641 | 0.929231/0.237957
+B H4 | 0.924699/0.248629 | 0.935583/0.148595 | 0.926380/0.209954 | 0.938650/0.189556 | 0.935583/0.148595
+B H8 | 0.936170/0.157299 | 0.935780/0.173680 | 0.932722/0.149654 | 0.938650/0.171990 | 0.935780/0.173680
+B H16 | 0.938272/0.137386 | 0.953271/0.124199 | 0.950000/0.117549 | 0.950156/0.156914 | 0.953271/0.124199
+
+original_failure / autoregressive
+letter horizon | E2 | BASE | G_ONLY | NATIVE_G | NATIVE_T
+O H1 | 0.977099/0.039751 | 0.980916/0.055183 | 0.977099/0.039751 | 0.980916/0.055183 | 0.980916/0.055183
+O H4 | 0.639241/1.408446 | 0.670968/1.054002 | 0.651613/1.404133 | 0.667742/1.074804 | 0.661290/1.017956
+O H8 | 0.504178/2.489634 | 0.559078/1.769312 | 0.492877/2.274086 | 0.577259/1.637162 | 0.561960/1.779573
+O H16 | 0.480000/2.547891 | 0.511111/2.166518 | 0.398396/2.955066 | 0.509804/2.050632 | 0.490358/2.153639
+C H1 | 0.995050/0.051169 | 0.995050/0.051169 | 0.990099/0.040581 | 0.995050/0.051169 | 0.995050/0.051169
+C H4 | 0.546154/0.605854 | 0.610442/0.221385 | 0.631148/0.505808 | 0.615385/0.327049 | 0.604000/0.332848
+C H8 | 0.310145/0.703053 | 0.384375/0.520576 | 0.422581/0.799810 | 0.388715/0.498754 | 0.391850/0.527899
+C H16 | 0.129353/5.517083 | 0.139594/4.544727 | 0.145833/4.158340 | 0.137755/4.725456 | 0.140306/4.547933
+B H1 | 0.956923/0.027051 | 0.929231/0.237957 | 0.935185/0.214773 | 0.932308/0.233641 | 0.929231/0.237957
+B H4 | 0.834783/0.238603 | 0.844575/0.127882 | 0.868263/0.081977 | 0.838235/0.040036 | 0.844118/0.172006
+B H8 | 0.692913/0.516525 | 0.680108/1.148926 | 0.682796/1.089380 | 0.690217/0.913230 | 0.677419/1.136874
+B H16 | 0.371849/4.304287 | 0.296137/5.671804 | 0.259494/6.774768 | 0.306843/4.402497 | 0.306843/5.980946
+
+{
+  "executed_arms": [
+    "G_ONLY",
+    "NATIVE_G",
+    "NATIVE_T"
+  ],
+  "skipped": {},
+  "per_arm_support": {
+    "G_ONLY": false,
+    "NATIVE_G": false,
+    "NATIVE_T": false
+  },
+  "original_absolute": {
+    "E2": {
+      "train": false,
+      "seen_val": false,
+      "original_failure": false
+    },
+    "BASE": {
+      "train": false,
+      "seen_val": false,
+      "original_failure": false
+    },
+    "G_ONLY": {
+      "train": false,
+      "seen_val": false,
+      "original_failure": false
+    },
+    "NATIVE_G": {
+      "train": false,
+      "seen_val": false,
+      "original_failure": false
+    },
+    "NATIVE_T": {
+      "train": false,
+      "seen_val": false,
+      "original_failure": false
+    }
+  },
+  "coefficients": {
+    "cG": 0.023378236655937423,
+    "cT": 3.850309057337518e-05,
+    "ratios": {
+      "G": [
+        0.03131372312310549,
+        0.017719488579620215,
+        0.02903698473225463,
+        0.011778819484981119
+      ],
+      "T": [
+        5.713858330569829e-05,
+        3.6245185324771286e-05,
+        4.0760995821979086e-05,
+        3.334323993139629e-05
+      ]
+    },
+    "method": "Ordinary even-sample median(mean of middle2); first4 B4 training microbatches, same native forward, full model FP32 parameter-gradient norms before clipping. No optimizer step or val selection.",
+    "targets": [
+      422,
+      83,
+      505,
+      534,
+      738,
+      201,
+      701,
+      333,
+      181,
+      447,
+      99,
+      678,
+      355,
+      10,
+      703,
+      92
+    ]
+  },
+  "panels": [
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-O-01-25-a3-4699e73600c89832bad99262.png",
+      "sample_id": "HMF-AC-O-01-25-a3",
+      "role": "train",
+      "letter": "O",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-O-01-25-a3-b8a6733f613549eb046ae7a2.png",
+      "sample_id": "HMF-AC-O-01-25-a3",
+      "role": "train",
+      "letter": "O",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-C-03-01-a19-7facef5673a2fda468921f03.png",
+      "sample_id": "HMF-AC-C-03-01-a19",
+      "role": "train",
+      "letter": "C",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-C-03-01-a19-641b8e0ad014670d3f3c74bb.png",
+      "sample_id": "HMF-AC-C-03-01-a19",
+      "role": "train",
+      "letter": "C",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-B-03-27-a3-3682133356bc536e08ea8858.png",
+      "sample_id": "HMF-AC-B-03-27-a3",
+      "role": "train",
+      "letter": "B",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-HMF-AC-B-03-27-a3-996ca00b28c7b5329e485902.png",
+      "sample_id": "HMF-AC-B-03-27-a3",
+      "role": "train",
+      "letter": "B",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-O-01-08_AC-O-01-08_a3_H16-35da4809ea674ade07eafe0c.png",
+      "sample_id": "AC-O-01-08:AC-O-01-08:a3:H16",
+      "role": "original_failure",
+      "letter": "O",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-O-01-08_AC-O-01-08_a3_H16-850b4e866cd5f6bad2a37307.png",
+      "sample_id": "AC-O-01-08:AC-O-01-08:a3:H16",
+      "role": "original_failure",
+      "letter": "O",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-C-01-24_AC-C-01-24_a3_H16-c909eede4df35a7e974e43e0.png",
+      "sample_id": "AC-C-01-24:AC-C-01-24:a3:H16",
+      "role": "original_failure",
+      "letter": "C",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-C-01-24_AC-C-01-24_a3_H16-9c023fe61a33f0d98d5ef545.png",
+      "sample_id": "AC-C-01-24:AC-C-01-24:a3:H16",
+      "role": "original_failure",
+      "letter": "C",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-B-00-08_AC-B-00-08_a19_H1-efbc80fee185c247d2ee46c8.png",
+      "sample_id": "AC-B-00-08:AC-B-00-08:a19:H16",
+      "role": "original_failure",
+      "letter": "B",
+      "mode": "real_history",
+      "width": 900,
+      "height": 1362
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\p-AC-B-00-08_AC-B-00-08_a19_H1-481b8bfa2cd7b6491a86a6b5.png",
+      "sample_id": "AC-B-00-08:AC-B-00-08:a19:H16",
+      "role": "original_failure",
+      "letter": "B",
+      "mode": "autoregressive",
+      "width": 900,
+      "height": 1362
+    }
+  ],
+  "notes": "Error-definition screen, not another noise-weight screen. G_ONLY replaces native score objective by cG*squaredDice of RGB-derived gray/blue occupancy; NATIVE_G adds it; NATIVE_T adds16 fixed spatial-projection W1 plus relative mass. D is continuous noisy-GT denoising reconstruction from the same forward, not pure-noise rollout training. cG/cT are first16train-only complete-parameter-gradient unit conversions, fixed thereafter. E2 and BASE128 reused read-only. Native data/split/order/noise/precision and3-denoise inference/old evaluation/gates unchanged. A single-seed128step exploratory screen is not convergence/generalization, rigidity/topology, contact or penetration proof. RH gives actual history each single step; AR16 is raw self-feedback without future truth or output repair. Unknown is not pass. G_ONLY may impair color/background/sampling and is not silently anchored by native MSE.",
+  "all16_groups": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\grouped-all16.json",
+  "per_case": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\per-case-comparisons.json",
+  "diagnosis": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\diagnosis\\summary.json",
+  "RGB_risks": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\loss-definition-screen-20261102\\report\\RGB-sampling-risks.json"
+}

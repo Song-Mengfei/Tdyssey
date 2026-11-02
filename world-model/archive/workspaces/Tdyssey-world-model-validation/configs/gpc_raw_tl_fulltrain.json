@@ -1,0 +1,96 @@
+{
+  "kind": "tdyssey.gpc_raw_tl_fulltrain.v1",
+  "candidate_id": "gpc-raw-tl-fulltrain-01",
+  "output_dir": "artifacts/gpc-raw-tl-fulltrain-20261026",
+  "data_manifest": "artifacts/gpc-data-stage-a-20261026/adaptation-data.json",
+  "data_manifest_sha256": "2a28136ca9c3b111d202f507ebab16c992b4d26a9c48d388956e390c6b2b069e",
+  "prefix_schedule": {
+    "path": "artifacts/wm-sampling-b-only-20261026/training-schedule.json",
+    "sha256": "f7217a2d09393798529b00e72fcd971e8d7be11cab7a9c769704a9b30ddd004a"
+  },
+  "full_schedule": "artifacts/gpc-raw-tl-fulltrain-preparation-20261026/training-schedule.json",
+  "development": "artifacts/gpc-raw-tl-fulltrain-preparation-20261026/development.json",
+  "image_domain": "official_raw_rgb",
+  "seed": 5478,
+  "train": {
+    "max_updates": 2328,
+    "max_examples": 2328,
+    "batch_size": 1,
+    "phase_seconds": 1200,
+    "checkpoints": [
+      500,
+      2328
+    ],
+    "final_update": 2328,
+    "grad_clip_norm": 1.0,
+    "trainable_prefixes": [
+      "inner_model."
+    ],
+    "objective": "pinned_phase_two_one_step_residual_mse",
+    "optimizer": {
+      "name": "AdamW",
+      "lr": 0.0001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.01,
+      "amsgrad": false
+    }
+  },
+  "evaluation": {
+    "roles": [
+      "initial",
+      "raw500",
+      "raw2328"
+    ],
+    "windows": 16,
+    "windows_per_shape": 8,
+    "loss_examples_per_role": 16,
+    "forecasts_per_role": 16,
+    "seed": 5478,
+    "euler_steps": 3,
+    "sigma_cond": null,
+    "output_clip": true,
+    "pose_and_coverage": "not_measured",
+    "split": "development"
+  },
+  "sources": {
+    "initial": {
+      "path": "artifacts/frozen-wm-assets/denoiser.pth",
+      "bytes": 35043916,
+      "sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892"
+    }
+  },
+  "limits": {
+    "wall_seconds": 1800,
+    "model_loads": 4,
+    "active_gpu_models": 1,
+    "max_updates": 2328,
+    "max_train_examples": 2328,
+    "eval_batches": 48,
+    "eval_examples": 48,
+    "forecasts": 48,
+    "euler_steps": 144,
+    "output_bytes": 1073741824,
+    "metadata_bytes": 16777216,
+    "telemetry_bytes": 67108864,
+    "checkpoint_bytes": 37748736,
+    "cpu_threads": 2,
+    "cuda_allocated_bytes": 536870912,
+    "cuda_reserved_bytes": 1073741824
+  },
+  "resources": {
+    "startup_ram_gib": 4,
+    "startup_commit_gib": 6,
+    "startup_gpu_gib": 4,
+    "startup_disk_gib": 2,
+    "runtime_ram_gib": 1.5,
+    "runtime_commit_gib": 3,
+    "runtime_gpu_gib": 1.5,
+    "process_working_set_gib": 2,
+    "process_private_gib": 3,
+    "native_job_gib": 3
+  }
+}

@@ -1,0 +1,10 @@
+# Saved-label collector/report code review
+
+Scope: read source only; no collector execution, model, GPU, simulator or physical trajectory. The parent requested this limited review alongside the first regression audit. Findings refer to the implementation read before subsequent parent fixes.
+
+1. Confirmed model-input hash omission: the original report hashed four RGB history frames plus actions[start:start+horizon], omitting the three historical actions used by the predictor. `exact_unique_model_inputs` could merge distinct conditions. The parent has since reported a correction to include requested_actions[start-3:start+horizon] and four focused tests; this reviewer did not run those tests and does not claim their result independently.
+2. Confirmed coverage scope ambiguity: `_arc_plots(report, arcs)` originally combined calibration/formal/supplement contacts; arc rows omitted split/phase. Label the plot as all observed phases, or add split/phase and show formal candidate coverage separately. Calibration coverage must not silently count as formal training-candidate coverage. The parent acknowledged this issue and owns the correction.
+3. Actual contacts in the reviewed implementation are post-solve pair presence weighted by recorded dt. Per-microstep arc sets avoid multiplying time by contact-point/arbiter count. Unknown projection remains recorded. No material error was identified in those mechanisms during this bounded review.
+4. Valid H1/H4 windows require valid controls and actual summed duration .1/.4s; candidate windows additionally require a complete formal/supplement trajectory and four real history frames. Partial controls are not marked valid. Net continuous-angle displacement and cumulative actual microstep movement are separate. The review did not run future data or establish that future distributions/coverage will pass.
+
+The physics gate remains required. The first96-case candidate failed28 cases and must not release collection. See AUDIT-v1.json and AUDIT-v1.md for the independent saved-array reconstruction.

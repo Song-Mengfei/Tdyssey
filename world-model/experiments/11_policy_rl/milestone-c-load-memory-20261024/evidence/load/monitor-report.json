@@ -1,0 +1,82 @@
+{
+  "elapsed_seconds": 17.5,
+  "ended_at_utc": "2026-10-23T21:19:57.048577+00:00",
+  "final": {
+    "disk": {
+      "at_utc": "2026-10-23T21:19:57.039574+00:00",
+      "free_bytes": 24588681216,
+      "ok": true,
+      "queried_path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a",
+      "requested_path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a",
+      "source": "Python shutil.disk_usage / Windows GetDiskFreeSpaceExW",
+      "total_bytes": 1023073640448,
+      "used_bytes": 998484959232
+    },
+    "gpu": {
+      "at_utc": "2026-10-23T21:19:56.985577+00:00",
+      "devices": [
+        {
+          "free_bytes": 7246708736,
+          "free_mib": 6911,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3060 Ti",
+          "total_bytes": 8589934592,
+          "total_mib": 8192,
+          "used_bytes": 1168113664,
+          "used_mib": 1114
+        }
+      ],
+      "elapsed_seconds": 0.05400569993071258,
+      "exit_code": 0,
+      "ok": true,
+      "raw_stderr": "",
+      "raw_stdout": "0, NVIDIA GeForce RTX 3060 Ti, 8192, 6911, 1114\n",
+      "source": "installed NVIDIA nvidia-smi; current driver memory, not process allocator peaks",
+      "source_command": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.free,memory.used",
+        "--format=csv,noheader,nounits"
+      ]
+    },
+    "system": {
+      "at_utc": "2026-10-23T21:19:56.984575+00:00",
+      "commit": {
+        "headroom_bytes": 16971829248,
+        "limit_bytes": 34047442944,
+        "page_size_bytes": 4096,
+        "peak_bytes": 39511334912,
+        "raw_pages": {
+          "CommitLimit": 8312364,
+          "CommitPeak": 9646322,
+          "CommitTotal": 4168851
+        },
+        "total_bytes": 17075613696
+      },
+      "elapsed_seconds": 0.0005699999164789915,
+      "ok": true,
+      "physical": {
+        "available_bytes": 5999841280,
+        "load_percent": 64,
+        "total_bytes": 17023721472
+      },
+      "source": "Win32 GlobalMemoryStatusEx and PSAPI GetPerformanceInfo"
+    }
+  },
+  "guard_reason": null,
+  "monitor_error": null,
+  "phase": "load",
+  "pid": 21936,
+  "process_observed_peaks": {
+    "peak_pagefile_bytes": 835584,
+    "peak_working_set_bytes": 4947968,
+    "private_bytes": 835584,
+    "working_set_bytes": 4947968
+  },
+  "returncode": 0,
+  "sampled_minimum_available_bytes": 3308175360,
+  "sampled_minimum_commit_headroom_bytes": 12369674240,
+  "sampled_minimum_gpu_free_bytes": 7245660160,
+  "samples": 85,
+  "schema_version": 1,
+  "status": "exited"
+}

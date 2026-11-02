@@ -1,0 +1,304 @@
+{
+  "by_shape": {
+    "L": {
+      "H4_stratum_counts": {
+        "contact": {
+          "all_three_noise_motion_valid_branches": 0,
+          "missing_model_branches": 9,
+          "physical_anchors": 9,
+          "physical_branches": 9
+        },
+        "noncontact": {
+          "all_three_noise_motion_valid_branches": 1,
+          "missing_model_branches": 37,
+          "physical_anchors": 12,
+          "physical_branches": 38
+        },
+        "rotation_gt_5deg": {
+          "all_three_noise_motion_valid_branches": 0,
+          "missing_model_branches": 3,
+          "physical_anchors": 3,
+          "physical_branches": 3
+        }
+      },
+      "calibration_passed": true,
+      "horizon_measurement_availability": {
+        "H1": {
+          "generated_noise_frames": 141,
+          "planned_noise_frames": 144,
+          "raw_decoder_accepted_noise_frames": 0,
+          "raw_decoder_all_three_noise_candidates": 0,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 0
+        },
+        "H2": {
+          "generated_noise_frames": 141,
+          "planned_noise_frames": 144,
+          "raw_decoder_accepted_noise_frames": 11,
+          "raw_decoder_all_three_noise_candidates": 3,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 0
+        },
+        "H3": {
+          "generated_noise_frames": 141,
+          "planned_noise_frames": 144,
+          "raw_decoder_accepted_noise_frames": 8,
+          "raw_decoder_all_three_noise_candidates": 1,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 0
+        },
+        "H4": {
+          "generated_noise_frames": 141,
+          "planned_noise_frames": 144,
+          "raw_decoder_accepted_noise_frames": 4,
+          "raw_decoder_all_three_noise_candidates": 1,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 0
+        }
+      },
+      "physics": {
+        "aborted_branches": [
+          {
+            "anchor": "L01",
+            "candidate": "hold",
+            "error": "PermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\frozen-wm-ledger-v1\\\\ledger.json.89597877bddd4034b7161d52cd83a2ca.tmp' -> '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\frozen-wm-ledger-v1\\\\ledger.json'"
+          }
+        ],
+        "completed_branches": 47,
+        "missing_truth_branches": 1,
+        "planned_branches": 48
+      },
+      "ranking_evidence": {
+        "anchor_count": 12,
+        "correct_pairs": 0,
+        "distinguishable_anchors": 4,
+        "eligible_pairs": 12,
+        "mean_selected_endpoint_regret_conservative": 1.0,
+        "selection_abstentions": 12,
+        "unknown_actual_pairs": 3
+      },
+      "raw_report_gate_labels": {
+        "contact_motion": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        },
+        "contact_probability": {
+          "reason": "GPC has no direct contact-probability head; geometry proximity is a proxy",
+          "status": "unavailable"
+        },
+        "coverage": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        },
+        "noncontact_drift": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        },
+        "ranking": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        },
+        "rotation": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        }
+      },
+      "recommended_gate_interpretation": {
+        "contact_motion": {
+          "missing_model_branches": 9,
+          "observed_anchors": 9,
+          "observed_branches": 9,
+          "physical_minima_met": true,
+          "physical_minimum_anchors": 6,
+          "physical_minimum_branches": 8,
+          "reason": "Known contact physical coverage is sufficient; the model measurement pipeline abstains on all nine contact branches. Numerical motion superiority cannot be estimated; usability screen fails.",
+          "status": "fail",
+          "unassigned_physical_branches": 1,
+          "valid_three_noise_motion_branches": 0
+        },
+        "coverage": {
+          "missing_physical_branches": 1,
+          "observed_physical_branches": 47,
+          "planned_physical_branches": 48,
+          "reason": "Full-plan endpoint MAE lacks one physical endpoint. Independently, none of the 47 observed candidates has three valid stopping-consistent noise scores.",
+          "scoring_interface_status_on_observed_branches": "fail",
+          "status": "coverage insufficient",
+          "strict_score_complete_candidates": 0
+        },
+        "noncontact_drift": {
+          "missing_model_branches": 37,
+          "observed_only_anchor_equal_mean_pixels": 0.5960040332484847,
+          "observed_physical_branches": 38,
+          "reason": "The observed-only mean from one valid branch cannot validate the drift screen while 37 known noncontact branches lack complete measurements.",
+          "status": "fail",
+          "unassigned_physical_branches": 1,
+          "valid_three_noise_motion_branches": 1
+        },
+        "ranking": {
+          "observed_distinguishable_anchors": 4,
+          "observed_eligible_pairs": 12,
+          "reason": "Anchor minimum is not met even though pair minimum is met. Abstention is not a successful selection, and regret=1 is a conservative bound rather than observed physical regret.",
+          "required_distinguishable_anchors": 6,
+          "required_eligible_pairs": 12,
+          "selection_abstentions": 12,
+          "status": "coverage insufficient",
+          "unknown_actual_pairs": 3
+        },
+        "rotation": {
+          "minimum_anchors": 3,
+          "minimum_branches": 3,
+          "missing_model_branches": 3,
+          "observed_anchors": 3,
+          "observed_branches": 3,
+          "physical_minima_met": true,
+          "reason": "Three observed rotations exceed 5 degrees, meeting both minima. All lack valid three-noise model motion. No rotation MAE or direction accuracy is established.",
+          "status": "fail",
+          "unassigned_physical_branches": 1,
+          "valid_three_noise_motion_branches": 0
+        }
+      },
+      "rotation_labels_degrees": [
+        {
+          "actual_rotation_degrees": 17.1193240342427,
+          "anchor": "L06",
+          "candidate": "toward"
+        },
+        {
+          "actual_rotation_degrees": -14.93016780760713,
+          "anchor": "L07",
+          "candidate": "toward"
+        },
+        {
+          "actual_rotation_degrees": -10.655905832172186,
+          "anchor": "L08",
+          "candidate": "toward"
+        }
+      ]
+    },
+    "T": {
+      "H4_stratum_counts": {
+        "contact": {
+          "all_three_noise_motion_valid_branches": 2,
+          "missing_model_branches": 1,
+          "physical_anchors": 3,
+          "physical_branches": 3
+        },
+        "noncontact": {
+          "all_three_noise_motion_valid_branches": 9,
+          "missing_model_branches": 4,
+          "physical_anchors": 4,
+          "physical_branches": 13
+        },
+        "rotation_gt_5deg": {
+          "all_three_noise_motion_valid_branches": 1,
+          "missing_model_branches": 0,
+          "physical_anchors": 1,
+          "physical_branches": 1
+        }
+      },
+      "calibration_passed": true,
+      "horizon_measurement_availability": {
+        "H1": {
+          "generated_noise_frames": 48,
+          "planned_noise_frames": 48,
+          "raw_decoder_accepted_noise_frames": 6,
+          "raw_decoder_all_three_noise_candidates": 0,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 6
+        },
+        "H2": {
+          "generated_noise_frames": 48,
+          "planned_noise_frames": 48,
+          "raw_decoder_accepted_noise_frames": 29,
+          "raw_decoder_all_three_noise_candidates": 8,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 6
+        },
+        "H3": {
+          "generated_noise_frames": 48,
+          "planned_noise_frames": 48,
+          "raw_decoder_accepted_noise_frames": 34,
+          "raw_decoder_all_three_noise_candidates": 11,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 6
+        },
+        "H4": {
+          "generated_noise_frames": 48,
+          "planned_noise_frames": 48,
+          "raw_decoder_accepted_noise_frames": 34,
+          "raw_decoder_all_three_noise_candidates": 11,
+          "strict_stopping_score_all_three_noise_candidates": 0,
+          "strict_stopping_score_valid_noise_frames": 6
+        }
+      },
+      "physics": {
+        "aborted_branches": [],
+        "completed_branches": 16,
+        "missing_truth_branches": 0,
+        "planned_branches": 16
+      },
+      "ranking_evidence": {
+        "anchor_count": 4,
+        "correct_pairs": 0,
+        "distinguishable_anchors": 2,
+        "eligible_pairs": 6,
+        "mean_selected_endpoint_regret_conservative": 1.0,
+        "selection_abstentions": 4,
+        "unknown_actual_pairs": 0
+      },
+      "raw_report_gate_labels": {
+        "contact_motion": {
+          "missing": 1,
+          "reason": "invalid predictions retained in denominator",
+          "status": "fail"
+        },
+        "contact_probability": {
+          "reason": "GPC has no direct contact-probability head; geometry proximity is a proxy",
+          "status": "unavailable"
+        },
+        "coverage": {
+          "missing": 16,
+          "reason": "invalid predictions retained in denominator",
+          "status": "fail"
+        },
+        "noncontact_drift": {
+          "missing": 4,
+          "reason": "invalid predictions retained in denominator",
+          "status": "fail"
+        },
+        "ranking": {
+          "status": "fail"
+        },
+        "rotation": {
+          "reason": "predeclared physical sample minima not met",
+          "status": "coverage insufficient"
+        }
+      }
+    }
+  },
+  "critical_wording": {
+    "do_not_say": "All H4 generated images are unmeasurable, or every L screen lacked sufficient physical contacts/rotations.",
+    "scientific_limit": "Decoder acceptance is a measurement availability check, not proof that generated geometry or dynamics is correct. These failures support fixing image/measurement and shape dynamics interfaces; they do not establish a numerical rotation error when no valid measurement exists.",
+    "supported_wording": "H4 raw decoder accepted 4/141 generated L frames and 34/48 T frames. Complete three-noise H4 raw measurements exist for 1/47 generated L candidates and 11/16 T candidates. Strict stopping-consistent endpoint scores have zero complete three-noise candidates for either shape; L has 0/141 valid noise scores, T has 6/48. Therefore no anchor supports a complete four-candidate score ranking.",
+    "why_scores_differ_from_raw_decode": "A later raw frame can pass the image decoder while the model-only stopping score remains abstained because an earlier invalid image made prior success crossing unknowable. The code preserves this abstention rather than using physical future truth to repair stopping."
+  },
+  "explanation": "The saved summary made every L physical-stratum sample-sufficiency test depend on zero missing physical branches globally. That extra condition was not one of the predeclared contact/rotation stratum minima. It masks the independently observed model-measurement failures in physically sufficient contact and rotation strata. Keep the missing physical branch explicit; do not relabel known prediction failures as absent physical contact/rotation coverage.",
+  "finding": "classification_bug_from_extra_global_completeness_condition",
+  "kind": "tdyssey.frozen_wm_summary_gate_interpretation_review.v1",
+  "operations": {
+    "decoder_calls": 0,
+    "model_forecasts": 0,
+    "physics_controls": 0,
+    "raw_report_modified": false,
+    "source_code_modified_by_this_review": false
+  },
+  "recommended_offline_change": {
+    "contact_rotation_noncontact": "Evaluate the declared stratum minima independently of global missing-actual count. Keep invalid model measurements as failures. Report the one unassigned physical branch separately and prohibit a whole-plan passing conclusion while it is missing.",
+    "coverage": "Keep whole-plan H4 endpoint MAE classified as coverage insufficient because L has 47/48 physical truth endpoints; separately report scoring-interface failure on all 47 observed branches.",
+    "ranking": "Keep L ranking coverage insufficient because only 4 distinguishable anchors are observed versus the declared minimum 6; the 12 eligible pairs meet only the pair minimum. Unknown pairs remain explicit.",
+    "raw_outputs": "Preserve the original report and original summary. Any corrected summary must be an explicitly versioned offline interpretation of the same saved outputs, with no new inference or physics."
+  },
+  "reviewed_at_utc": "2026-10-24T09:57:25.037852+00:00",
+  "source_report": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024\\report.json",
+  "source_report_sha256": "c7b1e3257468874940ad074d3ffc00c3d3d88f9f6de16531aba6d2c3cc6e3795"
+}

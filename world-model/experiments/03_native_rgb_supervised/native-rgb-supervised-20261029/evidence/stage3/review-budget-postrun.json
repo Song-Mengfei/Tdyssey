@@ -1,0 +1,181 @@
+{
+  "kind": "stage3-postrun-read-only-budget-checkpoint-review.v1",
+  "reviewed_at_utc": "2026-10-29T04:03:20.644856+00:00",
+  "scope": {
+    "new_model_calls": 0,
+    "torch_load_calls": 0,
+    "weights_deserialized": false,
+    "new_physics_controls": 0,
+    "new_tests": 0,
+    "source_changes": false,
+    "written_reports_only": [
+      "review-budget-postrun.json",
+      "review-budget-postrun.md"
+    ]
+  },
+  "verdict": {
+    "budget_accounting_consistent": true,
+    "one_recorded_run": true,
+    "source_and_snapshot_identity_consistent": true,
+    "scientific_status": "not_assessable_pretraining_baseline_output_range_abort",
+    "fit_failed_claim_supported": false,
+    "automatic_retry_permitted": false,
+    "reason": "FloatingPointError: Invalid native RGB retained without repair"
+  },
+  "supervisor_runtime_record": {
+    "session": 67280,
+    "exit_code": 1,
+    "provenance": "Root completion message; command log and final metadata independently agree on failure/zero attempts."
+  },
+  "cost": {
+    "stage_attempt_cap": 200,
+    "stage_seconds_cap": 600,
+    "global_attempt_cap": 3000,
+    "global_seconds_cap": 5400,
+    "charged_attempts": 0,
+    "completed_updates": 0,
+    "training_window_draws": 0,
+    "charged_model_work_seconds": 28.3440000000046,
+    "global_remaining_attempts": 3000,
+    "global_remaining_seconds": 5371.655999999995,
+    "stage_numerically_unused_attempts": 200,
+    "stage_numerically_unused_seconds": 571.6559999999954,
+    "unused_capacity_is_not_retry_authorization": true,
+    "overrun_seconds": 0.0,
+    "ledger_closed": true,
+    "active_stage": null,
+    "closed_stage_count": 1,
+    "historical_native_attempts_separate": 1899,
+    "historical_native_model_seconds_separate": 5352.516,
+    "historical_plus_current_attempts": 1899,
+    "historical_plus_current_model_seconds": 5380.860000000004,
+    "new_physics_controls_this_stage": 0
+  },
+  "timing": {
+    "scope": "load/baseline/fixedloss/updates/finalnative/save/failures/cleanup; one externally owned clock",
+    "single_external_clock": true,
+    "device_query_elapsed_seconds": 2.437000000005355,
+    "initial_t0_save_progress_training_seconds": 26.406000000002678,
+    "first_baseline_batch_seconds": 0.6409999999959837,
+    "first_baseline_batch_elapsed_seconds": 27.875,
+    "error_snapshot_elapsed_seconds": 28.32800000000134,
+    "final_closed_elapsed_seconds": 28.3440000000046,
+    "error_snapshot_to_final_seconds": 0.01600000000325963,
+    "last_heartbeat_to_final_seconds": 0.4690000000045984,
+    "complete_baseline_seconds": null,
+    "time_cap_triggered": false,
+    "initial_tail_reserve_seconds": 180,
+    "latest_new_update_seconds": 420,
+    "phase_limitations": "No complete baseline phase measured; the 26.406s progress field is the last t0-save progress snapshot, not a replacement for final all-model-work accounting. Synchronous calls are checked before/after, not hard preempted."
+  },
+  "optimization_evidence": {
+    "progress_updates": 0,
+    "progress_samples": 0,
+    "validation_rows": 0,
+    "fixed_loss_before_present": false,
+    "fixed_loss_after_present": false,
+    "selected_window_exposures_present": false,
+    "history_log_present": false,
+    "sampling_log_present": false,
+    "initial_parameter_hash_count": 296,
+    "initial_vs_baseline_parameter_hashes_match": true,
+    "no_training_backward_or_optimizer_step": "Supported by zero precharged attempts and frozen source ordering: failing before-hook precedes fixed loss, reserve_update, draws, AMP/backward, scaler.step and training scheduler advancement. AdamW/GradScaler/scheduler were initialized for t0; exception cleanup zero_grad computes no gradients."
+  },
+  "checkpoint": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3\\run\\last.pt",
+    "bytes": 35096361,
+    "sha256": "eb7b8dfc17b1ae157ccc5f477cdcacc400891f1db54709c4ac428234d090c7cc",
+    "updates_recorded_by_error_metadata": 0,
+    "previous_complete_checkpoint_preserved": true,
+    "checkpoint_policy": "last_only",
+    "archive_crc_passed": true,
+    "archive_required_keys": [
+      "config",
+      "identity",
+      "ledger",
+      "model",
+      "optimizer",
+      "order",
+      "progress",
+      "rng",
+      "scaler",
+      "scheduler"
+    ],
+    "archive_all_required_keys_present": true,
+    "best_checkpoint_present": false,
+    "planned_torch_checkpoint_review_reached": false,
+    "source_ordering": "Initial last.pt is saved after model/optimizer/scaler/scheduler/generator/WindowOrder setup and before before_updates hook. Callback failure leaves callback_in_flight set, preserving that complete t0 file.",
+    "limits": "Archive CRC, metadata keys, current file SHA/size and source ordering checked; no post-stop tensor/state deserialization, optimizer-state or exact-resume restoration validation is claimed."
+  },
+  "baseline": {
+    "train_denominator": 18,
+    "actual_sampler_batches": 1,
+    "actual_generated_rows": 4,
+    "statuses": {
+      "out_of_range_native_RGB": 1,
+      "ok": 3,
+      "not_attempted": 14
+    },
+    "failed_window_id": "train-2b-018:11",
+    "failed_letter": "A",
+    "negative_values": 6,
+    "failed_row_total_values": 27648,
+    "failed_row_min": -0.0196077823638916,
+    "failed_row_max": 1.0,
+    "raw_arrays_modified": false,
+    "thresholds_changed": false,
+    "dev_generated_rows": 0,
+    "fitted_generated_rows": 0,
+    "comparison_arrays": {
+      "train18": {
+        "denominator": 18,
+        "frozen_statuses": {
+          "out_of_range_native_RGB": 1,
+          "ok": 3,
+          "not_attempted": 14
+        },
+        "fitted_statuses": {
+          "not_measured_budget_or_failure": 18
+        },
+        "fitted_all_nan": true
+      },
+      "dev36": {
+        "denominator": 36,
+        "frozen_statuses": {
+          "not_measured_budget_or_failure": 36
+        },
+        "fitted_statuses": {
+          "not_measured_budget_or_failure": 36
+        },
+        "fitted_all_nan": true
+      }
+    },
+    "fitting_or_hold_improvement": "Unmeasured. No loss/update/fitted output exists; missing rows remain in fixed denominators.",
+    "baseline_risk_warning_timing": "Root confirms the advisory about baseline range abort arrived after the sole actual execution started; it was not a prelaunch rejection or authorization to change the frozen range policy."
+  },
+  "identity": {
+    "stage_source_file_count": 56,
+    "current_and_frozen_mismatches": [],
+    "runtime_source_file_count": 15,
+    "runtime_current_and_snapshot_mismatches": [],
+    "start_source_identity_matches": true,
+    "runtime_train_indices": 18,
+    "runtime_dev_indices": 36,
+    "init_published_sha256_recorded": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+    "original_weights_read_by_this_review": false
+  },
+  "evidence_sha256": {
+    "model-work.json": "37bb5f8346a5b7cd57ffeb4cd382dfaae99ec7c123a1ac9c4de0829469f1688c",
+    "model-work-error.json": "345069e2fd688be8020c111b68c114b32d9adaf90ccdbc8f879fefb3927aafc7",
+    "MODEL_WORK_STARTED.json": "fc38477726d6fd557b75b525aa046d18647dd50ce115dbc58e8b0639e89c7a68",
+    "run/error.json": "47538b375bdb97f2f986bb140354ae006943adb4fe7f44dad99611e118f059cb",
+    "run/source-snapshot/identity.json": "1fd2b7203ef2ad4fa061fcbfa8843f333b4f9fd20503b0da2fe45ebea4c9463d",
+    "checkpoint-archive-audit.json": "631115fbc53d0b1b799b343ad9d28d4b6e2ef64886e55c167c15d28bc9aedddc",
+    "predictions/frozen-train18.json": "b14748ffc16a8e8c0ac84b8cab43fd8668238e6c88fe217735212920d7c5e9e6",
+    "predictions/frozen-train18.npz": "b586cfd2c878654718dc55cd03a11530a26d8a35a33958dcc9ac595f165a8f2e",
+    "comparison-arrays.json": "994438cbc761598fc7a7bc2a40dcf38fbdd05deb0dd57684748ff31d5fcae2f5",
+    "native-output-range-diagnosis.json": "1bca6824e1aa44f3533989c37d3afd5121802b18c17cacb846c59a61466a23a0",
+    "source-identity.json": "92b079d526c326ed9f89f0908fb05319b454506cb0c0c89253f79090b85b973c"
+  },
+  "ledger_sha256": "e87790cebac3bbf972ff65a26c0206cc6ed985bbed57efc368f13a91d4154728"
+}

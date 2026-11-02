@@ -1,0 +1,30 @@
+{
+  "input_sha256": {
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-evaluation-20261024\\base_training.json": "bc656fc023929841250dcdcfb4ac04381fd4dba7f008f22122f02de29c12d270",
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-evaluation-20261024\\delta_training.json": "6e35c64cc0f3e4f481016dc345ed76870afa4be54c5d67276f8084735715bc61",
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-evaluation-20261024\\paired-comparison.json": "e8f5671501e5e8af3a26974b310533b364fa3ca35220c054e4f835d0ea0a64ba"
+  },
+  "kind": "tdyssey.C.offline_comparison_tables",
+  "limitations": {
+    "case_count_per_method": 20,
+    "case_count_per_shape": 10,
+    "difference_direction": "delta minus baseline",
+    "incomplete_policy": "No imputation; all comparison aggregates withheld until both groups complete",
+    "inference": "Descriptive fixed-scene development comparison only; no independence-based confidence interval or untouched-test claim",
+    "max_controls_per_case": 300,
+    "metric_tolerance": 1e-09,
+    "metric_win_direction": "higher is better",
+    "policy_seeds_per_scene": 2,
+    "scene_count": 5,
+    "statistical_unit": "Five scene blocks; two policy seeds within a scene are correlated, not independent scenes",
+    "success_steps": "Conditional on both methods succeeding; failures and aborts are censored, never assigned step 300"
+  },
+  "metric_tolerance": 1e-09,
+  "rows": {
+    "paired_cases.csv": 20,
+    "scene_blocks.csv": 5,
+    "shape_summary.csv": 2
+  },
+  "status": "completed",
+  "training_steps": 0
+}

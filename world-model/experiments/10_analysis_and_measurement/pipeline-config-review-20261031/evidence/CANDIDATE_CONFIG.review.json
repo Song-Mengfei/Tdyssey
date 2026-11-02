@@ -1,0 +1,446 @@
+{
+  "document_type": "NON_EXECUTABLE_CONFIGURATION_REVIEW",
+  "review_only": true,
+  "execution_authorized": false,
+  "training_authorized": false,
+  "loadable_by_runtime": false,
+  "approval_record": null,
+  "status": "waiting_user_config_approval",
+  "proposed_design": {
+    "fixed_conditions": {
+      "physics_hz": 100,
+      "substep_seconds": 0.01,
+      "solver_iterations": 10,
+      "kp": 100,
+      "kv": 20,
+      "pusher": "KINEMATIC",
+      "space_damping": 0,
+      "image_size": 96,
+      "control_hz": 10,
+      "physical_geometry_materials": "unchanged pinned original",
+      "invalid_penetration_world_px": 1,
+      "privileged_model_inputs": false
+    },
+    "action_contract": {
+      "history_frames": 4,
+      "past_actions": 3,
+      "future_actions": 16,
+      "future_frames": 16,
+      "total_frames": 20,
+      "total_actions": 19,
+      "requested_action_world_px": {
+        "push": 12,
+        "entry": 2,
+        "max_distance": 24,
+        "max_change": 24
+      },
+      "kinds": [
+        "feedback_recorded",
+        "anchor_committed"
+      ],
+      "committed_segment_controls": 16,
+      "committed_switch_after_controls": 8,
+      "policy_inheritance": "none",
+      "monkeypatch": false,
+      "committed_templates": {
+        "ordinary": "8 inward;8 hold/turn/withdraw",
+        "E7": "4 inward;4 withdraw;8 return/hold-away/turn",
+        "previous_action_to_first_plan_target_max_change_world_px": 24
+      }
+    },
+    "first_implementation": {
+      "id": "P1-I",
+      "code_authorized": false,
+      "physics_controls": 0,
+      "model_calls": 0,
+      "optimizer_updates": 0
+    },
+    "first_physics_validation": {
+      "id": "P1-V",
+      "authorized": false,
+      "seed_recommendation": 54781031,
+      "letters": [
+        "T",
+        "L",
+        "O",
+        "C",
+        "X",
+        "B"
+      ],
+      "unique_initial_families": 48,
+      "attempts_max": 120,
+      "controls_per_attempt_max": 64,
+      "controls_max": 7680,
+      "native_substeps_max": 76800,
+      "output_cap_bytes": 268435456,
+      "old_new_pairs": 24,
+      "committed_three_branch_families": 24,
+      "retry": false,
+      "replacement": false,
+      "automatic_next_stage": false,
+      "branch_family_recipes": [
+        "first_contact",
+        "eccentric_push",
+        "E7_depart_recontact",
+        "wall_side"
+      ],
+      "collector_workers": 1
+    },
+    "fsm": {
+      "history_controls": 3,
+      "route_controls_max": 8,
+      "stage_tolerance_world_px": 4,
+      "entry_controls_max": 12,
+      "positive_confirm_impulse_min": 1e-08,
+      "selected_contact_seconds_min": 0.05,
+      "final_microstep_confirm": true,
+      "normal_tolerance_degrees": 45,
+      "contact_point_tolerance_world_px": 24,
+      "contact_run_controls": 16,
+      "lost_controls": 3,
+      "stop_controls": 2,
+      "withdraw_controls_max": 8,
+      "reacquire_route_controls_max": 4,
+      "reacquire_entry_controls_max": 8,
+      "departure_no_pair_controls": 2,
+      "departure_surface_gap_world_px": 3,
+      "tight_recontact_withdraw_max": 4,
+      "tight_recontact_reacquire_max": 8,
+      "primary_ready_deadline": "N-16 for recipes requiring16-control main segment; terminate_event_late rather than extend"
+    },
+    "full_local_candidate": {
+      "authorized": false,
+      "letters": [
+        "T",
+        "L",
+        "O",
+        "C",
+        "X",
+        "B"
+      ],
+      "families": 1500,
+      "train_families_per_letter": 200,
+      "val_families_per_letter": 50,
+      "base_32_control_families": 1200,
+      "base_64_control_families": 300,
+      "extra_branch_runs_64": 36,
+      "stored_trajectories_max": 1536,
+      "controls_max": 59904,
+      "committed_family_ratio_recommendation": 0.4,
+      "training_data_cap_bytes": 536870912,
+      "all_old_calibration_role": "development_only",
+      "actual_manifest_and_counts_pending": true,
+      "branch_subset_selection": "preassigned P families only; perletter E6train1,E7train1,E7val1"
+    },
+    "training_candidates": {
+      "authorized": false,
+      "A0": {
+        "initialization": "7499 model weights only",
+        "initialization_sha256": "23cc0f847fe585f894a7528bd5db1ea3c8541228c6de4396c82f11ce373ce5e7",
+        "reset_optimizer": true,
+        "trainable": "all named parameters",
+        "optimizer_candidate": {
+          "name": "AdamW",
+          "lr": 1e-05,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "eps": 1e-08,
+          "weight_decay": 0.01,
+          "amsgrad": false,
+          "maximize": false,
+          "foreach": false,
+          "fused": false,
+          "capturable": false,
+          "differentiable": false
+        },
+        "scheduler": null,
+        "microbatch": 4,
+        "effective_batch_target": 16,
+        "AMP": "float16",
+        "parameters": "float32",
+        "residual_reduction": "float32",
+        "grad_clip_L2": 1,
+        "epochs_recommendation": 3,
+        "train_seed": 5478,
+        "eval_seeds": [
+          5478,
+          5479,
+          5480
+        ],
+        "truth_history_clean_probability": 0.5,
+        "weak_sigma_cond": [
+          0.002,
+          0.05
+        ],
+        "sigma_target": {
+          "lognormal_mean": -1.2,
+          "lognormal_std": 1.2,
+          "clip": [
+            0.002,
+            20
+          ]
+        },
+        "sigma_offset": 0.1,
+        "scaler_candidate": {
+          "init_scale": 128,
+          "growth_factor": 2,
+          "backoff_factor": 0.5,
+          "growth_interval": 2000
+        },
+        "consecutive_AMP_skips_stop": 16,
+        "default_model_selection": "last_complete_epoch; retain last+previous_epoch, no auto best",
+        "effective_sigma_conditioners": "sqrt(raw_sigma^2+0.1^2)",
+        "loader_candidate": {
+          "torch_threads": 2,
+          "workers": 2,
+          "total_prefetch_batches": 2,
+          "frame_cache_bytes_per_worker": 16777216,
+          "auxiliary_cache_bytes_per_worker": 8388608
+        }
+      },
+      "generated_history": {
+        "stages": [
+          4,
+          8,
+          16
+        ],
+        "epochs_each_recommendation": 3,
+        "each_separately_approved": true,
+        "true_H1_weight": 0.25,
+        "generated_steps_total_weight": 0.75,
+        "per_step": "uniform",
+        "teacher_refresh": "epoch entry",
+        "teacher_gradient": false,
+        "history_detach": true,
+        "cross_step_BPTT": false,
+        "generated_history_extra_noise": false,
+        "persistent_cache_bytes": 0,
+        "model_sampler": {
+          "denoising_steps": 3,
+          "sigma_min": 0.002,
+          "sigma_max": 5,
+          "rho": 7,
+          "order": 1,
+          "s_churn": 0,
+          "s_cond": 0,
+          "original_internal_quantization": true
+        },
+        "input_validation": "history finite raw float32 detached; clean target0..1; do not reuse old _batch0..1 guard"
+      },
+      "preflight": {
+        "range_check_forward_limit": 54,
+        "optimizer_engineering_attempts_max": 16,
+        "engineering_microbatch_forward_limit_including_reload": 1720,
+        "engineering_sample_forward_equivalent_limit": 6880,
+        "CUDA_reserved_cap_bytes": 6442450944,
+        "additional_calls_require_approval": true
+      }
+    },
+    "evaluation_candidate": {
+      "common_horizons": [
+        1,
+        4,
+        8,
+        16
+      ],
+      "rollout_all_intermediate_frames": true,
+      "natural_family_anchors_max": 300,
+      "pressure_anchors_max": 96,
+      "unique_anchors_max": 396,
+      "seeds": [
+        5478,
+        5479,
+        5480
+      ],
+      "bootstrap_replicates": 2000,
+      "bootstrap_seed": 5478,
+      "bootstrap_unit": "family",
+      "retained_diagnostic_anchors_max": 12,
+      "retained_raw_seed": 5478,
+      "unretained_outputs_flag": "not_retained",
+      "full_checkpoint_retention": [
+        "last",
+        "previous_epoch"
+      ],
+      "full_checkpoint_bytes_each_max": 117440512,
+      "weights_export_bytes_max": 37748736,
+      "model_forward_sample_equivalent_per_model_version_max": 57024,
+      "shape_tolerances_review_only": {
+        "object_center_P50_image_px": [
+          0.5,
+          1,
+          1.5,
+          2
+        ],
+        "object_center_P90_image_px": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "pusher_center_P90_image_px": [
+          1,
+          1.5,
+          2,
+          2.5
+        ],
+        "edge_angle_displacement_P90_image_px": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "contour_mean_distance_P90_image_px": 1,
+        "contour_distance_95th_percentile_image_px": 2,
+        "corner_match_P90_image_px": 1,
+        "min_visible_hole_pixels": 4,
+        "min_unrelated_fragment_pixels": 4,
+        "min_visible_blue_pixels": 2,
+        "relative_improvement_candidate": 0.2,
+        "minimum_gain_over_calibration_error_multiplier": 2
+      },
+      "teacher_forced_H1_scope": "anchor first step only; reuse identical AR first step; full TF curve requires separate budget"
+    },
+    "prohibited_automatic_changes": [
+      "physics",
+      "sample amplification",
+      "threshold relaxation",
+      "new retry/replacement",
+      "extra epochs",
+      "LoRA unfreezing claim",
+      "image repair",
+      "monitor reactivation",
+      "server execution"
+    ],
+    "initialization_sampling_candidate": {
+      "surface_gaps_world_px": [
+        3,
+        18
+      ],
+      "near_fraction": 0.75,
+      "center_min_wall_gap_world_px": 64,
+      "near_wall_gap_world_px": [
+        18,
+        32
+      ],
+      "train_near_wall_intent_fraction": 0.15,
+      "train_wall_probe_intent_fraction": 0.1,
+      "train_reachable_pose_bins_min": 4,
+      "val_reachable_pose_bins_min": 2,
+      "pose_bins_total": 8,
+      "exterior_arc_sectors": 8,
+      "closed_inner_holes_required_contact": false
+    },
+    "local_event_quotas_per_letter": [
+      {
+        "event": "E1",
+        "train_families": 15,
+        "val_families": 4,
+        "train_32": 15,
+        "train_64": 0,
+        "val_32": 4,
+        "val_64": 0,
+        "train_committed_families": 15,
+        "val_committed_families": 4
+      },
+      {
+        "event": "E2",
+        "train_families": 25,
+        "val_families": 6,
+        "train_32": 25,
+        "train_64": 0,
+        "val_32": 6,
+        "val_64": 0,
+        "train_committed_families": 10,
+        "val_committed_families": 2
+      },
+      {
+        "event": "E3",
+        "train_families": 35,
+        "val_families": 9,
+        "train_32": 35,
+        "train_64": 0,
+        "val_32": 9,
+        "val_64": 0,
+        "train_committed_families": 10,
+        "val_committed_families": 2
+      },
+      {
+        "event": "E4",
+        "train_families": 40,
+        "val_families": 10,
+        "train_32": 40,
+        "train_64": 0,
+        "val_32": 10,
+        "val_64": 0,
+        "train_committed_families": 10,
+        "val_committed_families": 3
+      },
+      {
+        "event": "E5",
+        "train_families": 25,
+        "val_families": 6,
+        "train_32": 25,
+        "train_64": 0,
+        "val_32": 6,
+        "val_64": 0,
+        "train_committed_families": 5,
+        "val_committed_families": 2
+      },
+      {
+        "event": "E6",
+        "train_families": 20,
+        "val_families": 5,
+        "train_32": 10,
+        "train_64": 10,
+        "val_32": 2,
+        "val_64": 3,
+        "train_committed_families": 10,
+        "val_committed_families": 2
+      },
+      {
+        "event": "E7",
+        "train_families": 20,
+        "val_families": 5,
+        "train_32": 0,
+        "train_64": 20,
+        "val_32": 0,
+        "val_64": 5,
+        "train_committed_families": 10,
+        "val_committed_families": 3
+      },
+      {
+        "event": "E8",
+        "train_families": 20,
+        "val_families": 5,
+        "train_32": 10,
+        "train_64": 10,
+        "val_32": 3,
+        "val_64": 2,
+        "train_committed_families": 10,
+        "val_committed_families": 2
+      }
+    ],
+    "storage_budget_review_only": {
+      "shared_limit_bytes": 3221225472,
+      "old_shared_snapshot_bytes": 1643309333,
+      "review_bytes_max": 16777216,
+      "P1_bytes_max": 268435456,
+      "P2_bytes_max": 536870912,
+      "checkpoint_each_bytes_max": 117440512,
+      "checkpoint_count_max": 2,
+      "weights_export_bytes_max": 37748736,
+      "report_bytes_max": 134217728,
+      "atomic_reserve_bytes": 268435456,
+      "persistent_cache_bytes": 0,
+      "conditional_snapshot_total_bytes": 3140675861,
+      "conditional_snapshot_headroom_bytes": 80549611,
+      "current_filesystem_scan_performed": false,
+      "applies_to": "one active A0 stage only; retained earlier stages are additional at later approval",
+      "four_stage_retained_snapshot_upper_bytes": 4247972117,
+      "four_stage_over_3GiB_bytes": 1026746645
+    }
+  }
+}

@@ -1,0 +1,19 @@
+# Formal validation public interface (CPU preparation only)
+
+`build_validation_plan(dataset,development_windows,paired_batches,real_histories=...)` reads saved entry/state/action metadata only. Dataset exposes entries/windows/trajectory(); it does not render. Frozen36 IDs,split,source NPZ/metadataSHA and anchors are checked. Histories are cached real float RGB[36,4,3,96,96]; action sequence[36,7,2] is raw absolute controls a-3..a+3. Target indices a+1/a+4 are offline metadata.
+
+`autoregressive_batches(predict_batch,histories,actions7,batches,window_ids=...,cached_h1=None,before_call=None,after_call=None)` accepts no truth/labels/geometry. Each callback receives raw history/action only plus batch_seed and allow_generated_history. Stepk uses actions[k-1:k+3] andseed+k-1 modulo2^32. Raw finite predictions shift without clipping,affine mapping orsegmentation. before_call checksbudget; after_call can persist raw output before validation. Result holds all144 raw frames/statuses,call log,raw failures,fatal error and strict evaluation_complete. Nonfinite/shape/OOM stops all later calls; finiteOOR continues and remains a horizon scorefailure.
+
+`native_predictor_factory(context)` is the concrete bridge to unchanged native_sampler_batch_predictor(context.model,context.source),with originalsampler config validation. Its body is not called in4A. `make_validation_callback` calls the explicit execution_guard before thisfactory; a failedguard prevents importingTorch orconstructing anysampler.
+
+`make_validation_callback(plan,predictor_factory=...,truth_provider=...,row_scorer=...,execution_guard=...,raw_writer=...,formal_experiment_id=...,selection_catalog=...,assess_candidate=...)` returns the futuretraining native_validation_callback. It takes context.progress.updates,context.validation_role(scheduled250/500 or early_stop1..499),andcontext.check. Root's outerhook owns eval/inference/RNG restoration.
+
+`truth_provider(horizon,positions,window_ids,context=...,rollout_token=...)` runs only after raw_writer finishes rolloutpersistence. Token statesauthorized/rollout_finished/evaluation_complete/fatal_error/experiment/update/IDs. It returns rgb,horizon,window_ids and optionalfull_object_mask/last_full_mask. Actual H4rendering is deferred to the futureauthorizedruntime bridge; no futureimage enters predictor feedback. Each scoring row also has hold_metrics computed from the original s[a],for bothhorizons.
+
+Return contains H1/H4 each36 originalscore rows,candidate canonical fields(update insidecandidate;formal_update/candidate_role alsoat topforlogging),selection assessment,rawartifactrefs andstop_model_work/fatal_error. **The root consumer must persist partialrecords then stop the wholemodelwork if stop_model_work istrue; incompleteplaceholder72 rows maynotbecome best.** FiniteOOR complete72 remains eligible for ranking withhardfailure penalties.
+
+`load_h1_cache(path,expected_sha256=...,window_ids=...,batches=...)` loads only immutablepublishedH1 raw NPZ; `make_baseline_h4_callback(plan,cached_h1=...,...)` explicitlyreuses it andmakes only3furthersteps/27batches. Itreturns reference_only andnocandidate,never a selectableformalupdate0.
+
+`make_original_scorer()` verifies originalscore9a165/protocol353ba/calibrationcd2ed bytes,originalevaluationdbd7 snapshot,andASTidentity of every metric/constant plus sampler normalization/RNGmath. It records the activeevaluationnewSHA and the narrowgenerated-history interfacechange explicitly. It doesnot falsifyoldfilehashes,changeoldscore.load_protocol,patchprivateglobals or modifyhistoricalreports. The oldstrictscoreCLI targets itsoldsourceidentity; formalvalidation uses thisexplicitmigration wrapper with identicalscorevalues/penalties.
+
+Gallerytemplate uses maincolumns 输入图像/真实下一帧/当前微调模型预测 (H4:真实第4帧). Originalwrong-colorreference has itsownpages andtitle 原始GPC（未微调，错误颜色基线）. No newmodelimage isproducedin4A.

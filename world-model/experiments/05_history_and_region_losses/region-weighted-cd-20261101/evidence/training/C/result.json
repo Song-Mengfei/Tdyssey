@@ -1,0 +1,80 @@
+{
+  "progress": {
+    "arm": "C",
+    "batches_consumed": 1892,
+    "segments_reserved": 7568,
+    "target_frames_reserved": 30272,
+    "segments_exposed": 7568,
+    "target_frames_exposed": 30272,
+    "successful_updates": 1892,
+    "AMP_skips": 0,
+    "lineage_updates": 13259,
+    "complete_optimizer_boundary": true,
+    "pending_attempt": null,
+    "epoch_complete": true,
+    "supervised_batch_forwards": 7568,
+    "backward_calls": 7568,
+    "consecutive_AMP_overflows": 0,
+    "fully_real_history_targets": 30272,
+    "generated_context_targets": 0,
+    "peak_cuda_allocated_bytes": 1796047360,
+    "peak_cuda_reserved_bytes": 2025848832
+  },
+  "checkpoint": {
+    "label": "C",
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\region-weighted-cd-20261101\\training\\C\\final.pt",
+    "sha256": "6d1892d4f3b54841d3cc948a49841a32a0471684840541145a449eb04dde7525",
+    "bytes": 105125582,
+    "cursor": 1892,
+    "target_frames": 30272,
+    "lineage_updates": 13259,
+    "wall_seconds": 0.457065699971281
+  },
+  "timings": {
+    "data_wait_seconds": 3.0018891988438554,
+    "region_mask_CPU_work_seconds": 93.21238000167068,
+    "CPU_normalization_seconds": 5.7394082003156655,
+    "H2D_seconds": 1.7065921034812894,
+    "region_H2D_seconds": 0.406846783787011,
+    "loss_forward_backward_seconds": 959.1412260742193,
+    "optimizer_and_checks_seconds": 162.8013691406248,
+    "loop_wall_seconds": 1178.2302312999964,
+    "checkpoint_seconds": 40.82175980001921
+  },
+  "slices": [
+    {
+      "start_cursor": 0,
+      "end_cursor": 32,
+      "batches": 32,
+      "wall_seconds": 33.19062790001044
+    },
+    {
+      "start_cursor": 32,
+      "end_cursor": 1892,
+      "batches": 1860,
+      "wall_seconds": 1145.039603399986
+    }
+  ],
+  "actual_model_calls": {
+    "supervised_batch_forwards": 7568,
+    "supervised_image_forwards": 30272,
+    "supervised_completed_batch_forwards": 7568,
+    "supervised_completed_image_forwards": 30272
+  },
+  "actual_backward_calls": {
+    "attempted_batch_backwards": 7568,
+    "attempted_target_backwards": 30272,
+    "completed_batch_backwards": 7568,
+    "completed_target_backwards": 30272
+  },
+  "generation_counts": {
+    "batch_calls": 0,
+    "generated_frames": 0,
+    "denoiser_batch_forwards": 0
+  },
+  "supervision_rng_final": {
+    "branch": "068644bd424213ce4c2fc1ac8a4764ec32c410ae0b818a94f3eec6b28a372556",
+    "target": "09185ee83d3aec39b008ca665f3ce53aa930fe5fa8adc06f26422a7af602f75a",
+    "weak": "06869347dc42321f302b36f18ddbe4fd9c026a5729348829a6ed2a4e73c7ef66"
+  }
+}

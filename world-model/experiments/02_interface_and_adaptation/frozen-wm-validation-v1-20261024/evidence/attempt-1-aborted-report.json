@@ -1,0 +1,6003 @@
+{
+  "binding": {
+    "checkpoint_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+    "config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+    "gpc_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\gpc_code",
+    "official_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy",
+    "protocol_sha256": "500489f1c83fd34e78db5773d3c7232f019d04c1a7d1160f826f5492dc1e2257",
+    "source_sha256": {
+      "manifests/gpc_world_model.json": "f6cfb1a78e7d0b73950e8b422e7306e2ce213adcd39756308188d7f9f1b41ca6",
+      "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+      "scripts/guarded_c_child.py": "f7e1c25d7a9806f6871e2b573740478f96df7ef5cd3f683a907450104c449acf",
+      "scripts/run_guarded_frozen_wm.py": "29004059eebb9e29be64300cf4ea35a156f58b1e663e3698f9e9d51fe0f37fb7",
+      "scripts/validate_frozen_wm.py": "7424a9651231ebb6b24d79499ba6febbe5e74746f3c60232c6e57e4b874cca5d",
+      "tdyssey/__init__.py": "ed12f3a1f82e621716e9690b8e0b006c8a24f472cba4ac8e7288c3d9e470a227",
+      "tdyssey/__main__.py": "3b4125e4d9324f34127912961fe3c0bb52717c8883d4098c2e7f26ecc091b775",
+      "tdyssey/appearance.py": "24a2f963828e7346925e6f2e18289abc9fb4e33a14724dc78660ddc110a0becf",
+      "tdyssey/baseline.py": "28780df16dcc6355c54e5c638f673665e46f61319ad3e1513977cc1c1a990516",
+      "tdyssey/collection.py": "f338b1848afa683138e0ecd5252db55eafe0c72de3401b56edb5fa328ada8104",
+      "tdyssey/dataset.py": "43f69738eae17678eae7b7a3c5e878dcd256fefb5e85106d013a915b2830f034",
+      "tdyssey/envs/__init__.py": "d52b053d7330b2f7bee6de8c1143e181bdde3d9730907091405c0e103ef73f1f",
+      "tdyssey/envs/gpc.py": "fd58d4f5625d6b51c64aaac23abe457ce886a4242a561b59a8d6e451fba5861f",
+      "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+      "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+      "tdyssey/frozen_wm_budget.py": "ec8fd6ecd009b29deb05ad6e0beeeae484bf2d253e529334d95b2c31b69efd47",
+      "tdyssey/frozen_wm_decoder.py": "e09d56485ecf6678dad16048aff7c4c525330c19060ef6f5cc3265930ab69904",
+      "tdyssey/frozen_wm_protocol.py": "7f9896f8b8b128bfade33be26dcd5268c7726ebf433ddd71ce4175d3e7a2c4e9",
+      "tdyssey/frozen_wm_summary.py": "c12c74402c87817d0760badd279cb5418b4ca201b5522999d8bd877615f8b938",
+      "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+      "tdyssey/gpc_world_model.py": "7cc0980cca7b1602a896334124a48a8e074ab562b347c7b14cdc25916904741e",
+      "tdyssey/letters.py": "b168ee52db573ee5b626d09640ea475f484f0a74056700ec22f9a5205c7f0a28",
+      "tdyssey/models/__init__.py": "9a4ec49461bb5fac7f945e3312ccda09f3c4f65af6903ff746f6edd0363be943",
+      "tdyssey/models/visual_dynamics.py": "77604cf307ad43a0ca2829dc8f71a64b44c2f71960ba51f452415176931a9778",
+      "tdyssey/official.py": "b39d9571ff7719a16664938b1301eac1eee2908ec7838bf3a246c91e4c8523b5",
+      "tdyssey/official_collection.py": "234f72b1741c03d254c9e5f0f14ffca63174c43756b9c1fb2bdea1739cb7bdb2",
+      "tdyssey/policy.py": "6c7ec08c679453567b87c0222accc6b66cdc650884bb735d470a8d0fd63ebc81",
+      "tdyssey/policy_checkpoint.py": "1843454d17a0d12b4c0a5450e275b27773bfe45a454d794a297c1fd62dba1201",
+      "tdyssey/policy_diagnostics.py": "ecf26c374141100f83f1b26c69fa540cae0baadb37e6c6f93fb7798a9b1f3830",
+      "tdyssey/policy_eval_budget.py": "1686f13d462f4832127f5eb45b102b1e9252385ee1cedcc3384ecfb6c3d2fafc",
+      "tdyssey/policy_eval_comparison.py": "88873342e4d066d9926c6e9ba06472f9b683436a299a6c91b172f30d98f43e4f",
+      "tdyssey/policy_evaluation.py": "b08db46b1504d52f7751755ca4c74b322d85e01860d40995aa533219071559d3",
+      "tdyssey/policy_experiment.py": "2b5c541215c23b40a43039787f5597e8894b420c5bd671f392b6057d4e729ca5",
+      "tdyssey/policy_memory.py": "4f49a3b01653b720ff001a239ef6eae995db47d2c172d62561661237855821a9",
+      "tdyssey/policy_ppo.py": "875fd47f8434197561d9a7cc1beca9deb28cd1ea2ea2fd7fc607bf17f5847ed8",
+      "tdyssey/policy_preflight.py": "c140c0bb0f7d12830381b68bb6b358f84ad7a0b14ad9a7cf3338c8f6add9d65b",
+      "tdyssey/policy_protocol.py": "0bee0f5d764783c0180593278b01d3cc48f45999ba79236d6e758e875201de1b",
+      "tdyssey/policy_reset_probe.py": "2da25b29e5d296809ba82e2b20f79e36bc8373192fd2289cf2a1060176b8665e",
+      "tdyssey/policy_returns.py": "257b7103ea24b342844ab5f56172e611438523babeb1d46365de8bb0670828de",
+      "tdyssey/policy_rl.py": "74fbe7cbaa633691fd9b1aaf2336903a5798d4c32fc34e2966daeb3404a81358",
+      "tdyssey/policy_rollout.py": "fbd6f1dcad7103e322cbce5a435a468adaf7f508615c5992a12540041ce5715e",
+      "tdyssey/policy_stream.py": "1a26a361e2fa1cb4a4205dfe8965e5411b205d8785d5107d8faa5b1fd927f413",
+      "tdyssey/policy_training.py": "409d738bb33633e73a57099c50847331af4e9cc2c412747cb4e657e0d182bae5",
+      "tdyssey/policy_visualization.py": "72530287cbc019ebe31a9d13bc345bb8eaaf3fead5f73760da4e890d2f3e50ec",
+      "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+      "tdyssey/training_data.py": "e3ebc032bb737bbc73edeb9ac41d800bcde7315b99ce7943e1f7c5b85bfae7c5",
+      "tdyssey/trajectories.py": "b5c9854f86b4dfc6b302746fb25ed970470a042e5ec488ea48abe37d0cc97906",
+      "tdyssey/viewer.py": "9c61d854e52c9f01d93587187b23d2987f18ba7019628cfbddcc3752f22a6c73",
+      "tdyssey/world_model_data.py": "9855b1d71b26cd93578597a885cb3ea29b026a2a871f3264021e4ed3beda30f4",
+      "tdyssey/world_model_diagnostics.py": "e4e0933f0f69eb600502093b09c805e60ca561934a7a70aacb87cae91689f99e",
+      "tdyssey/world_model_protocol.py": "6127d167a184cfd039c093f694751e00b1a8dcb633fb6f828ccf453dbdfe469f",
+      "tdyssey/world_model_training.py": "6bed8bc9b576b5dd6fe2d360defbca8a13644408ff2c9fbe08f99c9598c0ed04"
+    }
+  },
+  "branches": [
+    {
+      "actions": [
+        [
+          119.25927171386645,
+          277.3523806378151
+        ],
+        [
+          119.25927171386645,
+          277.3523806378151
+        ],
+        [
+          119.25927171386645,
+          277.3523806378151
+        ],
+        [
+          119.25927171386645,
+          277.3523806378151
+        ]
+      ],
+      "actual": [
+        {
+          "absorbing": false,
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "horizon": 1,
+          "state": {
+            "control_step": 4,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "horizon": 2,
+          "state": {
+            "control_step": 5,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "horizon": 3,
+          "state": {
+            "control_step": 6,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "horizon": 4,
+          "state": {
+            "control_step": 7,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "anchor": "L00",
+      "candidate": "hold",
+      "family": "noncontact",
+      "history": [
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 1,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 2,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 3,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "history_digest": "5ed420d77015e07ac1b9ede47a45ed7d9076390e908daf492a8bfc64f419f9e8",
+      "initial_state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": -0.2617993877991494,
+            "position": [
+              240.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "latest": {
+        "coverage": 0.20041075071684208,
+        "iou": 0.11136471880829082,
+        "pose": {
+          "angle": -0.2617993877991494,
+          "position": [
+            240.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          119.25927171386645,
+          277.3523806378151
+        ]
+      },
+      "predictions": [],
+      "seed": 700000,
+      "shape": "L",
+      "status": "complete"
+    },
+    {
+      "actions": [
+        [
+          130.8503816293353,
+          274.2465520965848
+        ],
+        [
+          142.44149154480408,
+          271.1407235553546
+        ],
+        [
+          154.03260146027293,
+          268.03489501412434
+        ],
+        [
+          165.62371137574172,
+          264.9290664728941
+        ]
+      ],
+      "actual": [
+        {
+          "absorbing": false,
+          "action": [
+            130.8503816293353,
+            274.2465520965848
+          ],
+          "contacts": 0,
+          "horizon": 1,
+          "state": {
+            "control_step": 4,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  122.68643588329212,
+                  276.43407476628863
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                43.36786603364633,
+                -11.620384681176764
+              ]
+            },
+            "pusher_target": [
+              130.8503816293353,
+              274.2465520965848
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              122.68643588329212,
+              276.43407476628863
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            142.44149154480408,
+            271.1407235553546
+          ],
+          "contacts": 0,
+          "horizon": 2,
+          "state": {
+            "control_step": 5,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  129.82552730474507,
+                  274.52116098521833
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                73.62891700972867,
+                -19.728808852334915
+              ]
+            },
+            "pusher_target": [
+              142.44149154480408,
+              271.1407235553546
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              129.82552730474507,
+              274.52116098521833
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            154.03260146027293,
+            268.03489501412434
+          ],
+          "contacts": 0,
+          "horizon": 3,
+          "state": {
+            "control_step": 6,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  139.1867230881007,
+                  272.01283613487857
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                90.08775938980516,
+                -24.138942376427718
+              ]
+            },
+            "pusher_target": [
+              154.03260146027293,
+              268.03489501412434
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              139.1867230881007,
+              272.01283613487857
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            165.62371137574172,
+            264.9290664728941
+          ],
+          "contacts": 0,
+          "horizon": 4,
+          "state": {
+            "control_step": 7,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  149.69988454886908,
+                  269.19584301156766
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                98.32308704265719,
+                -26.345591770415094
+              ]
+            },
+            "pusher_target": [
+              165.62371137574172,
+              264.9290664728941
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              149.69988454886908,
+              269.19584301156766
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "anchor": "L00",
+      "candidate": "toward",
+      "family": "noncontact",
+      "history": [
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 1,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 2,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 3,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "history_digest": "5ed420d77015e07ac1b9ede47a45ed7d9076390e908daf492a8bfc64f419f9e8",
+      "initial_state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": -0.2617993877991494,
+            "position": [
+              240.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "latest": {
+        "coverage": 0.20041075071684208,
+        "iou": 0.11136471880829082,
+        "pose": {
+          "angle": -0.2617993877991494,
+          "position": [
+            240.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          119.25927171386645,
+          277.3523806378151
+        ]
+      },
+      "predictions": [],
+      "seed": 700000,
+      "shape": "L",
+      "status": "complete"
+    },
+    {
+      "actions": [
+        [
+          122.3651002550967,
+          288.94349055328394
+        ],
+        [
+          125.47092879632694,
+          300.5346004687527
+        ],
+        [
+          128.5767573375572,
+          312.1257103842215
+        ],
+        [
+          131.68258587878745,
+          323.71682029969037
+        ]
+      ],
+      "actual": [
+        {
+          "absorbing": false,
+          "action": [
+            122.3651002550967,
+            288.94349055328394
+          ],
+          "contacts": 0,
+          "horizon": 1,
+          "state": {
+            "control_step": 4,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  120.17757758539295,
+                  280.77954480724077
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                11.62038468117661,
+                43.367866033646294
+              ]
+            },
+            "pusher_target": [
+              122.3651002550967,
+              288.94349055328394
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              120.17757758539295,
+              280.77954480724077
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            125.47092879632694,
+            300.5346004687527
+          ],
+          "contacts": 0,
+          "horizon": 2,
+          "state": {
+            "control_step": 5,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  122.09049136646321,
+                  287.91863622869363
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                19.728808852334907,
+                73.62891700972884
+              ]
+            },
+            "pusher_target": [
+              125.47092879632694,
+              300.5346004687527
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              122.09049136646321,
+              287.91863622869363
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            128.5767573375572,
+            312.1257103842215
+          ],
+          "contacts": 0,
+          "horizon": 3,
+          "state": {
+            "control_step": 6,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  124.59881621680297,
+                  297.27983201204916
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                24.138942376427657,
+                90.0877593898056
+              ]
+            },
+            "pusher_target": [
+              128.5767573375572,
+              312.1257103842215
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              124.59881621680297,
+              297.27983201204916
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            131.68258587878745,
+            323.71682029969037
+          ],
+          "contacts": 0,
+          "horizon": 4,
+          "state": {
+            "control_step": 7,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  127.41580934011387,
+                  307.79299347281767
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                26.345591770415005,
+                98.32308704265759
+              ]
+            },
+            "pusher_target": [
+              131.68258587878745,
+              323.71682029969037
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              127.41580934011387,
+              307.79299347281767
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "anchor": "L00",
+      "candidate": "side",
+      "family": "noncontact",
+      "history": [
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 1,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 2,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 3,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "history_digest": "5ed420d77015e07ac1b9ede47a45ed7d9076390e908daf492a8bfc64f419f9e8",
+      "initial_state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": -0.2617993877991494,
+            "position": [
+              240.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "latest": {
+        "coverage": 0.20041075071684208,
+        "iou": 0.11136471880829082,
+        "pose": {
+          "angle": -0.2617993877991494,
+          "position": [
+            240.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          119.25927171386645,
+          277.3523806378151
+        ]
+      },
+      "predictions": [],
+      "seed": 700000,
+      "shape": "L",
+      "status": "complete"
+    },
+    {
+      "actions": [
+        [
+          107.66816179839763,
+          280.45820917904535
+        ],
+        [
+          96.07705188292881,
+          283.56403772027556
+        ],
+        [
+          84.48594196746,
+          286.66986626150583
+        ],
+        [
+          72.89483205199117,
+          289.7756948027361
+        ]
+      ],
+      "actual": [
+        {
+          "absorbing": false,
+          "action": [
+            107.66816179839763,
+            280.45820917904535
+          ],
+          "contacts": 0,
+          "horizon": 1,
+          "state": {
+            "control_step": 4,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  115.83210754444079,
+                  278.27068650934154
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                -43.367866033646266,
+                11.620384681176764
+              ]
+            },
+            "pusher_target": [
+              107.66816179839763,
+              280.45820917904535
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              115.83210754444079,
+              278.27068650934154
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            96.07705188292881,
+            283.56403772027556
+          ],
+          "contacts": 0,
+          "horizon": 2,
+          "state": {
+            "control_step": 5,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  108.69301612298781,
+                  280.18360029041185
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                -73.62891700972868,
+                19.728808852334915
+              ]
+            },
+            "pusher_target": [
+              96.07705188292881,
+              283.56403772027556
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              108.69301612298781,
+              280.18360029041185
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            84.48594196746,
+            286.66986626150583
+          ],
+          "contacts": 0,
+          "horizon": 3,
+          "state": {
+            "control_step": 6,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  99.33182033963222,
+                  282.6919251407516
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                -90.0877593898051,
+                24.138942376427718
+              ]
+            },
+            "pusher_target": [
+              84.48594196746,
+              286.66986626150583
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              99.33182033963222,
+              282.6919251407516
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "absorbing": false,
+          "action": [
+            72.89483205199117,
+            289.7756948027361
+          ],
+          "contacts": 0,
+          "horizon": 4,
+          "state": {
+            "control_step": 7,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  88.81865887886386,
+                  285.5089182640625
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                -98.32308704265733,
+                26.345591770415094
+              ]
+            },
+            "pusher_target": [
+              72.89483205199117,
+              289.7756948027361
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "truth": {
+            "coverage": 0.20041075071684208,
+            "iou": 0.11136471880829082,
+            "pose": {
+              "angle": -0.2617993877991494,
+              "position": [
+                240.0,
+                245.0
+              ]
+            },
+            "pusher": [
+              88.81865887886386,
+              285.5089182640625
+            ]
+          },
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "anchor": "L00",
+      "candidate": "away",
+      "family": "noncontact",
+      "history": [
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 1,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 2,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        },
+        {
+          "action": [
+            119.25927171386645,
+            277.3523806378151
+          ],
+          "contacts": 0,
+          "state": {
+            "control_step": 3,
+            "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+            "goal": {
+              "angle": 0.7853981633974483,
+              "position": [
+                224.18019484660536,
+                287.8198051533946
+              ]
+            },
+            "object_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": -0.2617993877991494,
+                "position": [
+                  240.0,
+                  245.0
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+            "pusher_body": {
+              "angular_velocity": 0.0,
+              "force": [
+                0.0,
+                0.0
+              ],
+              "pose": {
+                "angle": 0.0,
+                "position": [
+                  119.25927171386645,
+                  277.3523806378151
+                ]
+              },
+              "torque": 0.0,
+              "velocity": [
+                0.0,
+                0.0
+              ]
+            },
+            "pusher_target": [
+              119.25927171386645,
+              277.3523806378151
+            ],
+            "schema_version": 1,
+            "shape": "L"
+          },
+          "success": false,
+          "upstream_clipped_reward": 0.21095868496509923
+        }
+      ],
+      "history_digest": "5ed420d77015e07ac1b9ede47a45ed7d9076390e908daf492a8bfc64f419f9e8",
+      "initial_state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": -0.2617993877991494,
+            "position": [
+              240.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              119.25927171386645,
+              277.3523806378151
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "latest": {
+        "coverage": 0.20041075071684208,
+        "iou": 0.11136471880829082,
+        "pose": {
+          "angle": -0.2617993877991494,
+          "position": [
+            240.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          119.25927171386645,
+          277.3523806378151
+        ]
+      },
+      "predictions": [],
+      "seed": 700000,
+      "shape": "L",
+      "status": "complete"
+    },
+    {
+      "actual": [],
+      "anchor": "L01",
+      "candidate": "hold",
+      "error": "PermissionError: [WinError 5] \u62d2\u7edd\u8bbf\u95ee\u3002: '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\frozen-wm-ledger-v1\\\\ledger.json.89597877bddd4034b7161d52cd83a2ca.tmp' -> '__LOCAL_HOME__\\\\Desktop\\\\cs5478\\\\Tdyssey-world-model-validation\\\\artifacts\\\\frozen-wm-ledger-v1\\\\ledger.json'",
+      "family": "noncontact",
+      "history": [],
+      "predictions": [],
+      "seed": 700001,
+      "shape": "L",
+      "status": "aborted"
+    }
+  ],
+  "budget": {
+    "aborted": {
+      "branches": 0,
+      "calibration": 0,
+      "controls": 0,
+      "custom_images": 0,
+      "euler_steps": 0,
+      "forecast_images": 0,
+      "optimizer_updates": 0,
+      "output_bytes": 0,
+      "reset": 0,
+      "restore": 0,
+      "settle": 0,
+      "substeps": 0,
+      "telemetry_bytes": 0
+    },
+    "binding": {
+      "checkpoint_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+      "config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+      "gpc_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\gpc_code",
+      "official_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy",
+      "protocol_sha256": "500489f1c83fd34e78db5773d3c7232f019d04c1a7d1160f826f5492dc1e2257",
+      "source_sha256": {
+        "manifests/gpc_world_model.json": "f6cfb1a78e7d0b73950e8b422e7306e2ce213adcd39756308188d7f9f1b41ca6",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "scripts/guarded_c_child.py": "f7e1c25d7a9806f6871e2b573740478f96df7ef5cd3f683a907450104c449acf",
+        "scripts/run_guarded_frozen_wm.py": "29004059eebb9e29be64300cf4ea35a156f58b1e663e3698f9e9d51fe0f37fb7",
+        "scripts/validate_frozen_wm.py": "7424a9651231ebb6b24d79499ba6febbe5e74746f3c60232c6e57e4b874cca5d",
+        "tdyssey/__init__.py": "ed12f3a1f82e621716e9690b8e0b006c8a24f472cba4ac8e7288c3d9e470a227",
+        "tdyssey/__main__.py": "3b4125e4d9324f34127912961fe3c0bb52717c8883d4098c2e7f26ecc091b775",
+        "tdyssey/appearance.py": "24a2f963828e7346925e6f2e18289abc9fb4e33a14724dc78660ddc110a0becf",
+        "tdyssey/baseline.py": "28780df16dcc6355c54e5c638f673665e46f61319ad3e1513977cc1c1a990516",
+        "tdyssey/collection.py": "f338b1848afa683138e0ecd5252db55eafe0c72de3401b56edb5fa328ada8104",
+        "tdyssey/dataset.py": "43f69738eae17678eae7b7a3c5e878dcd256fefb5e85106d013a915b2830f034",
+        "tdyssey/envs/__init__.py": "d52b053d7330b2f7bee6de8c1143e181bdde3d9730907091405c0e103ef73f1f",
+        "tdyssey/envs/gpc.py": "fd58d4f5625d6b51c64aaac23abe457ce886a4242a561b59a8d6e451fba5861f",
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+        "tdyssey/frozen_wm_budget.py": "ec8fd6ecd009b29deb05ad6e0beeeae484bf2d253e529334d95b2c31b69efd47",
+        "tdyssey/frozen_wm_decoder.py": "e09d56485ecf6678dad16048aff7c4c525330c19060ef6f5cc3265930ab69904",
+        "tdyssey/frozen_wm_protocol.py": "7f9896f8b8b128bfade33be26dcd5268c7726ebf433ddd71ce4175d3e7a2c4e9",
+        "tdyssey/frozen_wm_summary.py": "c12c74402c87817d0760badd279cb5418b4ca201b5522999d8bd877615f8b938",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/gpc_world_model.py": "7cc0980cca7b1602a896334124a48a8e074ab562b347c7b14cdc25916904741e",
+        "tdyssey/letters.py": "b168ee52db573ee5b626d09640ea475f484f0a74056700ec22f9a5205c7f0a28",
+        "tdyssey/models/__init__.py": "9a4ec49461bb5fac7f945e3312ccda09f3c4f65af6903ff746f6edd0363be943",
+        "tdyssey/models/visual_dynamics.py": "77604cf307ad43a0ca2829dc8f71a64b44c2f71960ba51f452415176931a9778",
+        "tdyssey/official.py": "b39d9571ff7719a16664938b1301eac1eee2908ec7838bf3a246c91e4c8523b5",
+        "tdyssey/official_collection.py": "234f72b1741c03d254c9e5f0f14ffca63174c43756b9c1fb2bdea1739cb7bdb2",
+        "tdyssey/policy.py": "6c7ec08c679453567b87c0222accc6b66cdc650884bb735d470a8d0fd63ebc81",
+        "tdyssey/policy_checkpoint.py": "1843454d17a0d12b4c0a5450e275b27773bfe45a454d794a297c1fd62dba1201",
+        "tdyssey/policy_diagnostics.py": "ecf26c374141100f83f1b26c69fa540cae0baadb37e6c6f93fb7798a9b1f3830",
+        "tdyssey/policy_eval_budget.py": "1686f13d462f4832127f5eb45b102b1e9252385ee1cedcc3384ecfb6c3d2fafc",
+        "tdyssey/policy_eval_comparison.py": "88873342e4d066d9926c6e9ba06472f9b683436a299a6c91b172f30d98f43e4f",
+        "tdyssey/policy_evaluation.py": "b08db46b1504d52f7751755ca4c74b322d85e01860d40995aa533219071559d3",
+        "tdyssey/policy_experiment.py": "2b5c541215c23b40a43039787f5597e8894b420c5bd671f392b6057d4e729ca5",
+        "tdyssey/policy_memory.py": "4f49a3b01653b720ff001a239ef6eae995db47d2c172d62561661237855821a9",
+        "tdyssey/policy_ppo.py": "875fd47f8434197561d9a7cc1beca9deb28cd1ea2ea2fd7fc607bf17f5847ed8",
+        "tdyssey/policy_preflight.py": "c140c0bb0f7d12830381b68bb6b358f84ad7a0b14ad9a7cf3338c8f6add9d65b",
+        "tdyssey/policy_protocol.py": "0bee0f5d764783c0180593278b01d3cc48f45999ba79236d6e758e875201de1b",
+        "tdyssey/policy_reset_probe.py": "2da25b29e5d296809ba82e2b20f79e36bc8373192fd2289cf2a1060176b8665e",
+        "tdyssey/policy_returns.py": "257b7103ea24b342844ab5f56172e611438523babeb1d46365de8bb0670828de",
+        "tdyssey/policy_rl.py": "74fbe7cbaa633691fd9b1aaf2336903a5798d4c32fc34e2966daeb3404a81358",
+        "tdyssey/policy_rollout.py": "fbd6f1dcad7103e322cbce5a435a468adaf7f508615c5992a12540041ce5715e",
+        "tdyssey/policy_stream.py": "1a26a361e2fa1cb4a4205dfe8965e5411b205d8785d5107d8faa5b1fd927f413",
+        "tdyssey/policy_training.py": "409d738bb33633e73a57099c50847331af4e9cc2c412747cb4e657e0d182bae5",
+        "tdyssey/policy_visualization.py": "72530287cbc019ebe31a9d13bc345bb8eaaf3fead5f73760da4e890d2f3e50ec",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/training_data.py": "e3ebc032bb737bbc73edeb9ac41d800bcde7315b99ce7943e1f7c5b85bfae7c5",
+        "tdyssey/trajectories.py": "b5c9854f86b4dfc6b302746fb25ed970470a042e5ec488ea48abe37d0cc97906",
+        "tdyssey/viewer.py": "9c61d854e52c9f01d93587187b23d2987f18ba7019628cfbddcc3752f22a6c73",
+        "tdyssey/world_model_data.py": "9855b1d71b26cd93578597a885cb3ea29b026a2a871f3264021e4ed3beda30f4",
+        "tdyssey/world_model_diagnostics.py": "e4e0933f0f69eb600502093b09c805e60ca561934a7a70aacb87cae91689f99e",
+        "tdyssey/world_model_protocol.py": "6127d167a184cfd039c093f694751e00b1a8dcb633fb6f828ccf453dbdfe469f",
+        "tdyssey/world_model_training.py": "6bed8bc9b576b5dd6fe2d360defbca8a13644408ff2c9fbe08f99c9598c0ed04"
+      }
+    },
+    "binding_hash": "015624359e297137f50196ae1962bb1ad465842c318119ef7581dc0d3eabf7e8",
+    "completed": {
+      "branches": 5,
+      "calibration": 24,
+      "controls": 28,
+      "custom_images": 0,
+      "euler_steps": 0,
+      "forecast_images": 0,
+      "optimizer_updates": 0,
+      "output_bytes": 0,
+      "reset": 28,
+      "restore": 28,
+      "settle": 28,
+      "substeps": 280,
+      "telemetry_bytes": 0
+    },
+    "elapsed_seconds": 19.562000036239624,
+    "event_id": 228,
+    "kind": "tdyssey.frozen_world_model_diagnostic.v1",
+    "ledger_dir": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-ledger-v1",
+    "limits": {
+      "branches": 64,
+      "calibration": 24,
+      "controls": 448,
+      "custom_images": 192,
+      "euler_steps": 2304,
+      "forecast_images": 768,
+      "optimizer_updates": 0,
+      "output_bytes": 268435456,
+      "reset": 88,
+      "restore": 88,
+      "settle": 88,
+      "substeps": 4480,
+      "telemetry_bytes": 67108864
+    },
+    "max_observed_time": 1792834490.2376676,
+    "operations": {
+      "1": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "10": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "100": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "101": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "102": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "103": {
+        "costs": {
+          "branches": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "104": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "105": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "106": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "107": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "108": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "109": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "11": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "110": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "111": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "112": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "113": {
+        "costs": {
+          "branches": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "114": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "pending"
+      },
+      "12": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "13": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "14": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "15": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "16": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "17": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "18": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "19": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "2": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "20": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "21": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "22": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "23": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "24": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "25": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "26": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "27": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "28": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "29": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "3": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "30": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "31": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "32": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "33": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "34": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "35": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "36": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "37": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "38": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "39": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "4": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "40": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "41": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "42": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "43": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "44": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "45": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "46": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "47": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "48": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "49": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "5": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "50": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "51": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "52": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "53": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "54": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "55": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "56": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "57": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "58": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "59": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "6": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "60": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "61": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "62": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "63": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "64": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "65": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "66": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "67": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "68": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "69": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "7": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "70": {
+        "costs": {
+          "calibration": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "71": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "72": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "73": {
+        "costs": {
+          "branches": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "74": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "75": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "76": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "77": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "78": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "79": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "8": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "80": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "81": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "82": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "83": {
+        "costs": {
+          "branches": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "84": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "85": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "86": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "87": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "88": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "89": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "9": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "90": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "91": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "92": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "93": {
+        "costs": {
+          "branches": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "94": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "95": {
+        "costs": {
+          "restore": 1
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "96": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "97": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "98": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      },
+      "99": {
+        "costs": {
+          "controls": 1,
+          "substeps": 10
+        },
+        "detail": null,
+        "status": "completed"
+      }
+    },
+    "output_dir": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-validation-v1-20261024",
+    "pending": {
+      "114": {
+        "costs": {
+          "reset": 1,
+          "settle": 1
+        },
+        "detail": null,
+        "status": "pending"
+      }
+    },
+    "policy_optimizer_updates": 0,
+    "registry_claim": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\frozen-wm-diagnostic-registry-v1\\frozen-wm-v1-20261024.json",
+    "reserved": {
+      "branches": 5,
+      "calibration": 24,
+      "controls": 28,
+      "custom_images": 0,
+      "euler_steps": 0,
+      "forecast_images": 0,
+      "optimizer_updates": 0,
+      "output_bytes": 0,
+      "reset": 29,
+      "restore": 28,
+      "settle": 29,
+      "substeps": 280,
+      "telemetry_bytes": 0
+    },
+    "schema_version": 1,
+    "started_at": 1792834470.6756675,
+    "wall_limit_seconds": 1800,
+    "world_model_optimizer_updates": 0
+  },
+  "calibration_gate": {
+    "L": {
+      "angle_p90_degrees": 0.354409090984181,
+      "coverage_mae": 0.008359954486376593,
+      "measurable_fraction": 1.0,
+      "missing": 0,
+      "near_goal_coverage_mae": 0.019890420848346885,
+      "near_goal_valid": 4,
+      "passed": true,
+      "position_p90_pixels": 1.0387771419435992,
+      "pusher_position_p90_pixels": 0.820682821335526,
+      "ranking_available": true,
+      "success_precision_established": false,
+      "total": 12,
+      "valid": 12
+    },
+    "T": {
+      "angle_p90_degrees": 0.6678516322445877,
+      "coverage_mae": 0.005699330630615291,
+      "measurable_fraction": 1.0,
+      "missing": 0,
+      "near_goal_coverage_mae": 0.01554449513442216,
+      "near_goal_valid": 4,
+      "passed": true,
+      "position_p90_pixels": 1.060240988426818,
+      "pusher_position_p90_pixels": 1.1748267980882139,
+      "ranking_available": true,
+      "success_precision_established": false,
+      "total": 12,
+      "valid": 12
+    }
+  },
+  "calibrations": [
+    {
+      "id": "cal-L-00",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9868421052631579,
+        "object_area_ratio": 1.1957201646090534,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": -0.00992016583413905,
+          "position": [
+            169.7958449944362,
+            169.61275077200906
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710000,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              170.0,
+              170.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 0.0,
+          "position": [
+            170.0,
+            170.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-01",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.038892836363030696,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9690265486725663,
+        "object_area_ratio": 1.1851851851851851,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.5288690374798369,
+          "position": [
+            249.65782723086713,
+            169.99768144937812
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710001,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.5235987755982988,
+            "position": [
+              250.0,
+              170.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.03670557744276839,
+        "iou": 0.01869591082266643,
+        "pose": {
+          "angle": 0.5235987755982988,
+          "position": [
+            250.0,
+            170.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-02",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9732142857142857,
+        "object_area_ratio": 1.1799176954732509,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 1.0512226449200517,
+          "position": [
+            329.9087413217984,
+            169.64361910337323
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710002,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 1.0471975511965976,
+            "position": [
+              330.0,
+              170.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 1.0471975511965976,
+          "position": [
+            330.0,
+            170.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-03",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.003635556681408532,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9875518672199171,
+        "object_area_ratio": 1.2694650205761315,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 1.571772055916677,
+          "position": [
+            170.4714294370406,
+            230.29511399072237
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710003,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 1.5707963267948966,
+            "position": [
+              170.0,
+              230.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.002726471438123149,
+        "iou": 0.0013650966675988173,
+        "pose": {
+          "angle": 1.5707963267948966,
+          "position": [
+            170.0,
+            230.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-04",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.10303567738606943,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.96875,
+        "object_area_ratio": 1.1641152263374486,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 2.099804408817887,
+          "position": [
+            249.32737290791255,
+            230.25129744282026
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710004,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 2.0943951023931953,
+            "position": [
+              250.0,
+              230.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.10295830028327045,
+        "iou": 0.05427308229368095,
+        "pose": {
+          "angle": 2.0943951023931953,
+          "position": [
+            250.0,
+            230.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-05",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.04164058905821515,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9864864864864865,
+        "object_area_ratio": 1.1693827160493826,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 2.613181789939184,
+          "position": [
+            329.9578030476519,
+            230.16826986214215
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710005,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 2.6179938779914944,
+            "position": [
+              330.0,
+              230.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.04077014776651965,
+        "iou": 0.02080927243939375,
+        "pose": {
+          "angle": 2.6179938779914944,
+          "position": [
+            330.0,
+            230.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-06",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.14088737189299097,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1957201646090534,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": -3.1353207925962328,
+          "position": [
+            168.774752065314,
+            291.05330785901003
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710006,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 3.141592653589793,
+            "position": [
+              170.0,
+              290.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.1541638631208884,
+        "iou": 0.08351979899014457,
+        "pose": {
+          "angle": 3.141592653589793,
+          "position": [
+            170.0,
+            290.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-07",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.3296372004037302,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9646017699115044,
+        "object_area_ratio": 1.1746502057613168,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": -2.6128445560541196,
+          "position": [
+            249.44957656341893,
+            289.9938209167085
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710007,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 3.6651914291880923,
+            "position": [
+              250.0,
+              290.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.3262000837465382,
+        "iou": 0.1948859481823167,
+        "pose": {
+          "angle": 3.6651914291880923,
+          "position": [
+            250.0,
+            290.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-L-08",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.8940468251419609,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1641152263374486,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7859944298696317,
+          "position": [
+            220.7437859673219,
+            284.82667608874215
+          ]
+        },
+        "pusher": [
+          185.3461538461538,
+          249.34615384615384
+        ],
+        "pusher_area_ratio": 1.046257087624351,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710008,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              221.35176772185918,
+              284.9913780286484
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              185.9964286625318,
+              249.63603896932102
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.9111111111111104,
+        "iou": 0.8367346938775498,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            221.35176772185918,
+            284.9913780286484
+          ]
+        },
+        "pusher": [
+          185.9964286625318,
+          249.63603896932102
+        ]
+      }
+    },
+    {
+      "id": "cal-L-09",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9353524648622126,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.8908296943231441,
+        "object_area_ratio": 1.0851028806584362,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7862490386953154,
+          "position": [
+            222.05968531225136,
+            286.1508403014597
+          ]
+        },
+        "pusher": [
+          186.98717948717947,
+          250.98717948717947
+        ],
+        "pusher_area_ratio": 1.046257087624351,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710009,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              222.76598128423225,
+              286.4055915910215
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              187.41064222490488,
+              251.05025253169413
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.9555555555555563,
+        "iou": 0.9148936170212778,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            222.76598128423225,
+            286.4055915910215
+          ]
+        },
+        "pusher": [
+          187.41064222490488,
+          251.05025253169413
+        ]
+      }
+    },
+    {
+      "id": "cal-L-10",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9303627807189595,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.995475113122172,
+        "object_area_ratio": 1.1588477366255143,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7880201902706708,
+          "position": [
+            226.03537060969836,
+            290.04433792811164
+          ]
+        },
+        "pusher": [
+          189.3181818181818,
+          253.3181818181818
+        ],
+        "pusher_area_ratio": 0.8852944587590662,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710010,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              225.59440840897847,
+              289.2340187157677
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              190.2390693496511,
+              253.87867965644034
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.9555555555555563,
+        "iou": 0.9148936170212778,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            225.59440840897847,
+            289.2340187157677
+          ]
+        },
+        "pusher": [
+          190.2390693496511,
+          253.87867965644034
+        ]
+      }
+    },
+    {
+      "id": "cal-L-11",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.928212643005406,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1641152263374486,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7859944298696252,
+          "position": [
+            226.07711930065514,
+            290.16000942207546
+          ]
+        },
+        "pusher": [
+          191.5,
+          254.47435897435892
+        ],
+        "pusher_area_ratio": 1.046257087624351,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710011,
+      "shape_name": "L",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "1626289f0029bf0f19d67cbe7df6997de3bf106479ee598fdb193e92c1795eaa",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            224.18019484660536,
+            287.8198051533946
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              227.00862197135154,
+              290.6482322781408
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "d56587a8604f2ad54c8b99caa777085db19bef76ad18d7b53fcfec873dd87d10",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              191.65328291202417,
+              255.29289321881345
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "L"
+      },
+      "truth": {
+        "coverage": 0.9111111111111084,
+        "iou": 0.8367346938775465,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            227.00862197135154,
+            290.6482322781408
+          ]
+        },
+        "pusher": [
+          191.65328291202417,
+          255.29289321881345
+        ]
+      }
+    },
+    {
+      "id": "cal-T-00",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9925925925925926,
+        "object_area_ratio": 1.2100176366843032,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": -3.4690858977107193e-18,
+          "position": [
+            170.16666666666666,
+            125.75932718848384
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710012,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              170.0,
+              125.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 0.0,
+          "position": [
+            170.0,
+            125.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-01",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.019534169313572217,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9806949806949807,
+        "object_area_ratio": 1.1603527336860668,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.5275410230921419,
+          "position": [
+            249.49710317064844,
+            125.07885533251071
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710013,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.5235987755982988,
+            "position": [
+              250.0,
+              125.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.022262059133967022,
+        "iou": 0.01125632404271856,
+        "pose": {
+          "angle": 0.5235987755982988,
+          "position": [
+            250.0,
+            125.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-02",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.969811320754717,
+        "object_area_ratio": 1.1964726631393297,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 1.0491729928976954,
+          "position": [
+            329.940831500567,
+            124.94791538209188
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710014,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 1.0471975511965976,
+            "position": [
+              330.0,
+              125.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 1.0471975511965976,
+          "position": [
+            330.0,
+            125.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-03",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9771863117870723,
+        "object_area_ratio": 1.1874426807760141,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 1.583128851080859,
+          "position": [
+            169.0576113029689,
+            184.87038989293933
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710015,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 1.5707963267948966,
+            "position": [
+              170.0,
+              185.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 1.5707963267948966,
+          "position": [
+            170.0,
+            185.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-04",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.046808882632510165,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9619771863117871,
+        "object_area_ratio": 1.1784126984126984,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 2.09590982489287,
+          "position": [
+            249.5213350330428,
+            185.12808243242725
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710016,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 2.0943951023931953,
+            "position": [
+              250.0,
+              185.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.046527169567252426,
+        "iou": 0.023817669149227626,
+        "pose": {
+          "angle": 2.0943951023931953,
+          "position": [
+            250.0,
+            185.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-05",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.0,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9660377358490566,
+        "object_area_ratio": 1.1964726631393297,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 2.61504045886422,
+          "position": [
+            330.1286208738656,
+            184.70637772905
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710017,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 2.6179938779914944,
+            "position": [
+              330.0,
+              185.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.0,
+        "iou": 0.0,
+        "pose": {
+          "angle": 2.6179938779914944,
+          "position": [
+            330.0,
+            185.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-06",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.12498994214635223,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9885931558935361,
+        "object_area_ratio": 1.1874426807760141,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 3.1294224921098497,
+          "position": [
+            170.93199615122316,
+            245.82045399154276
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710018,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 3.141592653589793,
+            "position": [
+              170.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.1220277599769352,
+        "iou": 0.06497846846524019,
+        "pose": {
+          "angle": 3.141592653589793,
+          "position": [
+            170.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-07",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.025488447853847268,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9583333333333334,
+        "object_area_ratio": 1.1829276895943563,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": -2.614015713053971,
+          "position": [
+            249.43901551930225,
+            244.76978192514565
+          ]
+        },
+        "pusher": [
+          59.72222222222222,
+          59.72222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710019,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 3.6651914291880923,
+            "position": [
+              250.0,
+              245.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              60.0,
+              60.0
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.02573064982847254,
+        "iou": 0.013032998676820375,
+        "pose": {
+          "angle": 3.6651914291880923,
+          "position": [
+            250.0,
+            245.0
+          ]
+        },
+        "pusher": [
+          60.0,
+          60.0
+        ]
+      }
+    },
+    {
+      "id": "cal-T-08",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9123764773429791,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1693827160493826,
+        "object_component_fraction": 0.9922779922779923,
+        "pose": {
+          "angle": 0.78539937268943,
+          "position": [
+            252.7402419327909,
+            252.92656142344387
+          ]
+        },
+        "pusher": [
+          153.14102564102564,
+          351.5
+        ],
+        "pusher_area_ratio": 1.046257087624351,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710020,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              253.17157287525382,
+              253.17157287525382
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              154.17662350913716,
+              352.16652224137044
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.9238095238095244,
+        "iou": 0.8584070796460187,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            253.17157287525382,
+            253.17157287525382
+          ]
+        },
+        "pusher": [
+          154.17662350913716,
+          352.16652224137044
+        ]
+      }
+    },
+    {
+      "id": "cal-T-09",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9492550659288584,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 0.9423076923076923,
+        "object_area_ratio": 1.1152028218694885,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7924288090528212,
+          "position": [
+            254.44317903306933,
+            254.74296099614213
+          ]
+        },
+        "pusher": [
+          155.27777777777777,
+          354.1666666666667
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710021,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              254.5857864376269,
+              254.58578643762692
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              155.59083707151024,
+              353.58073580374355
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.9619047619047619,
+        "iou": 0.926605504587156,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            254.5857864376269,
+            254.58578643762692
+          ]
+        },
+        "pusher": [
+          155.59083707151024,
+          353.58073580374355
+        ]
+      }
+    },
+    {
+      "id": "cal-T-10",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9392538715241082,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1603527336860668,
+        "object_component_fraction": 1.0,
+        "pose": {
+          "angle": 0.7853993726894285,
+          "position": [
+            258.0735752661244,
+            258.25989475677727
+          ]
+        },
+        "pusher": [
+          156.83333333333334,
+          355.7222222222222
+        ],
+        "pusher_area_ratio": 0.9657757731917086,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710022,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              257.4142135623731,
+              257.4142135623731
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              158.41926419625645,
+              356.40916292848976
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.9619047619047625,
+        "iou": 0.9266055045871571,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            257.4142135623731,
+            257.4142135623731
+          ]
+        },
+        "pusher": [
+          158.41926419625645,
+          356.40916292848976
+        ]
+      }
+    },
+    {
+      "id": "cal-T-11",
+      "prediction": {
+        "clipped_fraction": 0.0,
+        "contact_proxy": false,
+        "coverage": 0.9392538715241082,
+        "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+        "decoder_version": "frozen-wm-image-decoder-v1",
+        "fit_iou": 1.0,
+        "object_area_ratio": 1.1693827160493826,
+        "object_component_fraction": 0.9922779922779923,
+        "pose": {
+          "angle": 0.7853993726894285,
+          "position": [
+            258.0735752661244,
+            258.25989475677727
+          ]
+        },
+        "pusher": [
+          159.5,
+          357.8589743589743
+        ],
+        "pusher_area_ratio": 1.046257087624351,
+        "pusher_circle_iou": 1.0,
+        "pusher_component_fraction": 1.0,
+        "reason": "ok",
+        "valid": true
+      },
+      "seed": 710023,
+      "shape_name": "T",
+      "state": {
+        "control_step": 0,
+        "geometry_hash": "5d8d383da310cc5786a075e098eba51643dd8e9ef599e30785833cea10514e4e",
+        "goal": {
+          "angle": 0.7853981633974483,
+          "position": [
+            256.0,
+            256.0
+          ]
+        },
+        "object_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.7853981633974483,
+            "position": [
+              258.8284271247462,
+              258.8284271247462
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "physics_hash": "bc29848cb9fe486d3d8f53f5e8e158a92e0447caf7446421841cc19d73bdda5b",
+        "pusher_body": {
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "pose": {
+            "angle": 0.0,
+            "position": [
+              159.83347775862956,
+              357.82337649086287
+            ]
+          },
+          "torque": 0.0,
+          "velocity": [
+            0.0,
+            0.0
+          ]
+        },
+        "pusher_target": null,
+        "schema_version": 1,
+        "shape": "T"
+      },
+      "truth": {
+        "coverage": 0.9238095238095226,
+        "iou": 0.8584070796460157,
+        "pose": {
+          "angle": 0.7853981633974483,
+          "position": [
+            258.8284271247462,
+            258.8284271247462
+          ]
+        },
+        "pusher": [
+          159.83347775862956,
+          357.82337649086287
+        ]
+      }
+    }
+  ],
+  "contact_head": {
+    "reason": "GPC predicts RGB only; no direct contact probability",
+    "status": "unavailable"
+  },
+  "custom_model": {
+    "reason": "historical exact best.pt/catalog not found; no replacement",
+    "status": "unavailable"
+  },
+  "decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+  "error": "BudgetBusy: Diagnostic authority is closed or poisoned after persistence failure",
+  "kind": "tdyssey.frozen_world_model_diagnostic.v1",
+  "model_test_read": false,
+  "palette": "unchanged official RGB; no privileged palette rendering",
+  "policy_optimizer_updates": 0,
+  "schema_version": 1,
+  "source_commit": "11b7cd965213f38e94acc54fb78b109141142475",
+  "started_at": "2026-10-24T09:34:30.683345+00:00",
+  "status": "aborted",
+  "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\scripts\\validate_frozen_wm.py\", line 228, in run\n    budget.check()\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\frozen_wm_budget.py\", line 188, in check\n    self._ensure_open()\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\frozen_wm_budget.py\", line 163, in _ensure_open\n    raise BudgetBusy(\"Diagnostic authority is closed or poisoned after persistence failure\")\ntdyssey.frozen_wm_budget.BudgetBusy: Diagnostic authority is closed or poisoned after persistence failure\n",
+  "wall_seconds": 19.625,
+  "world_model_optimizer_updates": 0
+}

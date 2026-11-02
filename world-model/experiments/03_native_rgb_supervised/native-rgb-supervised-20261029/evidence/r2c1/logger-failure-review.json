@@ -1,0 +1,185 @@
+{
+  "kind": "R2C1-logger-failure-readonly-review.v1",
+  "scope": "Only stdlib AST, existing JSON/JSONL and checkpoint filesystem size; no checkpoint deserialization, Torch import, model, GPU, physics, retry, source or run-record edit.",
+  "source_sha256": "e882799be46ee02f7f1c0ffa5d69c2d3c826f2a06b92ab8cbb546b5feb9c683c",
+  "confirmed_root_cause": {
+    "definition_line": 50,
+    "call_line": 185,
+    "formal_parameters": [
+      "path",
+      "kind"
+    ],
+    "save_info_keys": [
+      "path",
+      "bytes",
+      "sha256",
+      "updates"
+    ],
+    "collision": "event(events, \"checkpoint\", label=label, **info, model_seconds=...) supplies path positionally and by info[path]. Python argument binding raises before logger body."
+  },
+  "actual_order": [
+    {
+      "evidence": "tdyssey/native_rgb_training.py:447-464",
+      "fact": "Checkpoint serializes complete payload, fsyncs temporary file, atomically replaces last.pt, removes temp and returns path/bytes/sha256/updates."
+    },
+    {
+      "evidence": "tdyssey/native_rgb_r2c1_training.py:184-185",
+      "fact": "save_training_checkpoint returned; last_saved_update=0 and result.checkpoint assigned before event call raises."
+    },
+    {
+      "evidence": "run/events.jsonl",
+      "fact": "Only fatal_stop event exists; checkpoint event body never ran; post-event check and evaluate(baseline) never reached."
+    },
+    {
+      "evidence": "run/training-result.json",
+      "fact": "Clean optimizer boundary; zero optimizer attempts, samples, train forwards/backwards and native sampler attempts/completions; no reload."
+    },
+    {
+      "evidence": "run/training-result.json cleanup_errors=[]; model-work.json closed=true",
+      "fact": "Existing finally cleanup recorded no errors; outer CLI closed the one model-work ledger stage."
+    }
+  ],
+  "checkpoint_evidence": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1\\run\\last.pt",
+    "bytes": 35126889,
+    "sha256": "b0442673691e1d87ae9aa266040d3d949bd3c59dd14ccd41e63c548d21bfa14d",
+    "updates": 0,
+    "verification": "SHA copied from existing run result; bytes independently checked by stat; checkpoint contents not loaded or rehashed in this review"
+  },
+  "event_call_sites": [
+    {
+      "line": 185,
+      "event": "checkpoint",
+      "explicit_keys": [
+        "label",
+        "model_seconds"
+      ],
+      "expanded_sources": [
+        "info"
+      ]
+    },
+    {
+      "line": 216,
+      "event": "native_call_start",
+      "explicit_keys": [
+        "method",
+        "model_seconds"
+      ],
+      "expanded_sources": [
+        "context"
+      ]
+    },
+    {
+      "line": 231,
+      "event": "native_cohort",
+      "explicit_keys": [
+        "method",
+        "cohort",
+        "hard_stop",
+        "statuses_h1",
+        "statuses_h4",
+        "calls",
+        "model_seconds"
+      ],
+      "expanded_sources": []
+    },
+    {
+      "line": 273,
+      "event": "attempt_reserved_before_draw",
+      "explicit_keys": [
+        "attempt",
+        "indices",
+        "windows",
+        "model_seconds"
+      ],
+      "expanded_sources": []
+    },
+    {
+      "line": 283,
+      "event": "microbatch_backward_complete",
+      "explicit_keys": [
+        "attempt",
+        "micro_index",
+        "indices",
+        "loss",
+        "model_seconds"
+      ],
+      "expanded_sources": []
+    },
+    {
+      "line": 293,
+      "event": "update_complete",
+      "explicit_keys": [
+        "update",
+        "attempt",
+        "loss",
+        "gradient_norm",
+        "lr",
+        "scaler",
+        "cuda_reserved",
+        "model_seconds"
+      ],
+      "expanded_sources": []
+    },
+    {
+      "line": 304,
+      "event": "checkpoint_reload_verified",
+      "explicit_keys": [
+        "update",
+        "model_seconds"
+      ],
+      "expanded_sources": []
+    },
+    {
+      "line": 309,
+      "event": "fatal_stop",
+      "explicit_keys": [
+        "model_seconds"
+      ],
+      "expanded_sources": [
+        "result['failure']"
+      ]
+    }
+  ],
+  "same_class_static_findings": {
+    "known_colliding_call_sites": [
+      185
+    ],
+    "all_checkpoint_labels_affected": "The same save_checkpoint logger call serves initial_t0, final_complete_boundary and error save; failure is not t0-specific.",
+    "other_known_collisions": [],
+    "expanded_context_keys": [
+      "cohort",
+      "step",
+      "window_ids"
+    ],
+    "expanded_failure_keys": [
+      "type",
+      "reason",
+      "during_optimizer_step",
+      "clean_boundary"
+    ],
+    "explicit_or_known_expanded_kind_collisions": false,
+    "proposed_root_log_path_rename": "Sufficient for all presently known call payloads; no current expanded payload has log_path or kind. This review does not edit or execute the proposed patch.",
+    "generic_future_risk": "Arbitrary future expanded metadata could collide with any named helper parameter or duplicate an explicit keyword. This is not an additional current failing call."
+  },
+  "cpu_contract_blind_spot": {
+    "missed": "Earlier pure normalized bridge/budget/micro-loss/checkpoint-presence contracts did not invoke save_checkpoint logger with the actual metadata-shaped return dict. Import/AST parse and correct checkpoint field contracts do not test Python call binding at this boundary.",
+    "minimal_future_CPU_coverage": "After any separately authorized correction, a stub save returning path/bytes/sha256/updates should exercise the save-success-to-log boundary and all current event payload schemas without importing Torch or loading weights. Root has already preserved the current collision CPU reproduction.",
+    "no_claim": "This is an engineering stop before baseline/training; it supplies no training loss, gradient, learning or generalization result."
+  },
+  "accounting": {
+    "stage_model_seconds": 27.35899999999674,
+    "global_attempts": 250,
+    "global_model_seconds": 895.8430000000008,
+    "stage_reserved_attempts": 0,
+    "no_automatic_retry": true
+  },
+  "source_unchanged": true,
+  "run_records_unchanged": true,
+  "checkpoint_deserializations": 0,
+  "Torch_imported": false,
+  "model_calls_by_review": 0,
+  "optimizer_attempts_by_review": 0,
+  "physics_controls_by_review": 0,
+  "conclusion": "Known failure order confirmed; no second current kwargs collision found across all eight event call sites. Keep frozen source/run evidence unchanged and require parent review before any correction or new execution."
+}

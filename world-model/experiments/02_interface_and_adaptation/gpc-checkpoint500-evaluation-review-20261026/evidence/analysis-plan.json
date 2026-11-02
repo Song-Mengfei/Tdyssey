@@ -1,0 +1,136 @@
+{
+  "kind": "gpc_checkpoint500_evaluation_numeric_analysis_plan.v1",
+  "scope": "Source/schema review only. No partial actual prediction records, images, arrays, weights or live account were opened to construct this plan.",
+  "execution": {
+    "new_model_or_sdk_calls": 0,
+    "new_decoding_or_transform_calls": 0,
+    "new_physics_or_policy_calls": 0,
+    "tracked_files_modified": false,
+    "formal_outputs_modified": false
+  },
+  "closed_run_gate": {
+    "require_before_any_complete_scientific_conclusion": [
+      "guardian/stop-record.json status complete, Job active processes 0, lock released, cleanup errors empty, worker and launcher exits 0",
+      "completion.json status complete and forecast_records 3996",
+      "budget completed_eval_batches 32, spent_eval_examples 32, completed_forecasts 3996, completed_euler_steps 11988",
+      "budget model_load_roles and released_model_roles exactly frozen, adapted; active_models 0; source_logical_steps 500",
+      "budget completed_updates, spent_reserved_updates and spent_train_examples all 0; selection_count 0; checkpoint null",
+      "optimizer_state_restored and training_rng_restored false; old_forecasts_reused 0",
+      "new measurement row identity grid complete and duplicate-free; invalid measurements retained"
+    ],
+    "if_stopped": "Report partial persisted/reserved/completed counts separately, no padding or reuse of the old 333 reservations, no full gate conclusions. Durable file counts are not exact runtime call counts."
+  },
+  "planned_denominators": {
+    "roles": ["frozen", "adapted"],
+    "physical_branches_per_role": 111,
+    "regression_branches": 63,
+    "independent_B2_branches": 48,
+    "noise_seeds": [5478, 5479, 5480],
+    "modes_and_horizons": {"AR": [1, 2, 3, 4], "TF": [2, 4]},
+    "forecasts_per_role": 1998,
+    "forecasts_both_roles": 3996,
+    "per_role_per_mode_horizon_rows": 333,
+    "loss_examples_per_role": 16,
+    "loss_pairs": 16,
+    "rules": [
+      "Derive shape/contact-specific denominators from declared physical cases, retaining regression and independent strata separately.",
+      "Three noise seeds are nested repeats of one physical branch, not three independent physical samples.",
+      "Keep the pre-existing unavailable physical candidate separate from newly missing predictions or measurement abstention; do not reconstruct its data.",
+      "H3 remains in AR history and sequence eligibility even when primary display tables show H1/H2/H4.",
+      "TF H1 is not an independent call or row."
+    ]
+  },
+  "minimum_tables": {
+    "loss_and_accounting": {
+      "source": "completion.json",
+      "fields": ["source_logical_steps", "new_optimizer_updates", "new_training_examples", "model_only_loads", "optimizer_state_restored", "training_rng_restored", "old_forecasts_reused", "loss_rows", "forecast_records", "budget", "progress_publications"],
+      "summaries": ["16 matched loss index/noise pairs", "frozen and adapted mean loss", "paired adapted-minus-frozen loss differences", "all finite and exact matching index/noise identities"],
+      "limitation": "Loss is the fixed independent-validation diagnostic; improvement alone does not establish dynamics, stopping or policy benefit."
+    },
+    "shape_pusher_pose_coverage": {
+      "source": "screens.json cells",
+      "keys": ["role", "stratum", "shape", "mode", "horizon", "contact_by_h4"],
+      "fields": ["total", "anchors", "physical_branches", "valid.object_shape", "valid.pusher", "valid.coverage", "invalid_count", "conditional_errors.position", "conditional_errors.angle", "conditional_errors.pusher", "conditional_errors.coverage", "shape_screen", "pusher_screen", "limited_error_screen", "all_error_labels_present"],
+      "display": "Separate AR H1/H2/H4 and TF H2/H4, with H3 retained as sequence context. Show valid n / planned n and error count, P90 and maximum together.",
+      "rules": [
+        "object_shape is joint valid object pose and shape, not a pure visual shape-class accuracy.",
+        "Pusher validity is local and independent of the object flag. Coverage requires valid object/shape plus a valid coverage estimate.",
+        "Conditional errors must never be described as all-row errors. Unknown and abstention are not zero error.",
+        "Do not average cell P90 values into a pooled P90; either retain contact cells or use closed numeric rows for a clearly labelled pooled calculation.",
+        "Shape screen is joint validity >=90%, pusher screen >=95%; limited measurable-row P90 bounds are position/angle/pusher 5 pixels/degrees and coverage .05.",
+        "Decoder rejection is not itself proof of a physical dynamics error."
+      ]
+    },
+    "T_preservation": {
+      "source": "screens.json paired_retention",
+      "top_fields": ["denominator_source", "noise_protocol_matches", "T.AR", "T.TF", "T.absolute_AR", "T.ranking", "T.overall"],
+      "cell_keys": ["stratum", "shape", "mode", "horizon", "contact_by_h4"],
+      "cell_fields": ["status", "passed", "planned", "planned_physical_branches", "planned_anchors", "completion", "pair_quality", "validity", "errors_on_same_common_subset"],
+      "common_metric_fields": ["common_valid", "planned", "common_fraction", "common_branches", "common_anchors", "frozen_on_common", "adapted_on_common", "paired_error_increase", "difference_of_p90", "new_error_regressions", "numeric_tolerance", "status", "passed"],
+      "rules": [
+        "T overall combines AR relative retention, absolute AR H1/H2/H4 and paired ranking. Relative AR also includes H3. TF is a separate conditioning diagnostic and cannot rescue AR.",
+        "Validity uses the entire declared denominator; any new invalid row remains visible even if other rows gain validity.",
+        "Compare errors only on the exact matched common-valid subset, while showing its coverage and all-anchor support.",
+        "Paired-error-increase P90 differs from difference-of-P90; retain the distinct labels.",
+        "Insufficient support is passed null, never an implicit pass."
+      ]
+    },
+    "L_contact_rotation_noncontact": {
+      "source": "screens.json dynamics",
+      "keys": ["role", "stratum", "shape"],
+      "fields": ["contact_physical_branches", "contact_position_error", "same_valid_subset_persistence_error", "contact_better_than_persistence", "noncontact_drift", "noncontact_drift_screen", "rotation_physical_branches", "rotation_anchors", "rotation_direction_fraction_including_abstentions", "conditional_rotation_angle_error", "rotation_screen"],
+      "rules": [
+        "These dynamics summaries use AR H4 only; TF remains in the separate measurement table.",
+        "Contact comparison needs at least 8 physical branches and all relevant contact rows measurable; compare persistence on the same measurable subset.",
+        "Rotation support needs at least 4 physical branches and 2 anchors. Direction fraction includes abstentions in its denominator; angle-error statistics are conditional.",
+        "Independent B2 has only 4 contact branches and 2 rotation branches per shape. Three noise seeds and the older regression cases cannot increase that independent physical support; support-limited decisions stay null.",
+        "Rotation screen uses its predeclared mean-angle/persistence/direction conditions, distinct from the general measurable-row P90 screen."
+      ]
+    },
+    "H4_AR_ranking": {
+      "source": "screens.json paired_retention.ranking plus screens.json ranking",
+      "keys": ["stratum", "shape"],
+      "fields": ["planned_anchors", "grid_complete", "incomplete_grid_anchors", "planned_rows_per_role", "informative_anchors", "uninformative_anchors", "unknown_truth_anchors", "planned_informative_pairs", "frozen_eligible_anchors", "adapted_eligible_anchors", "new_ineligible_anchors", "common_comparable_anchors", "common_separable_pairs", "frozen_accuracy_on_common", "adapted_accuracy_on_common", "frozen_regret_on_common", "adapted_regret_on_common", "anchors", "status", "passed"],
+      "rules": [
+        "Ranking scores come only from complete AR H1-H4 stopping-consistent sequences, all 3 seeds per candidate and all 4 candidates. A valid raw H4 endpoint cannot rescue earlier unknown history.",
+        "The paired ranking identity/completeness check includes the full planned AR/TF grid; TF does not supply ranking scores.",
+        "Informative anchors/pairs are defined only by declared physical H4 coverage gaps >=.05, never by predictions or validity.",
+        "Complete uninformative anchors remain in the full counts and state retention, neutral rather than ranking successes or failures.",
+        "Show common anchor IDs and comparable-pair denominators; zero comparable pairs gives accuracy null.",
+        "Per-role accuracy_including_abstentions is conservative, not observed-only pair accuracy. Keep tied and abstained pair counts separate.",
+        "Join hold_regret and uniform_expected_regret from per-role anchor records only on the same common anchor subset when comparing against selected regret. Any full-physical baseline is a separately labelled denominator.",
+        "Sparse H4 informative anchors do not establish policy improvement or generalization."
+      ]
+    },
+    "termination": {
+      "source": "screens.json dynamics; closed measurement JSON only if more descriptive counts are needed",
+      "keys": ["role", "stratum", "shape"],
+      "fields": ["interval_success_tp", "interval_success_fp", "interval_success_precision", "interval_unknown", "positive_anchors", "independent_termination_precision_validated", "termination_reason"],
+      "rules": [
+        "Success uses the existing strict coverage threshold >.95 and the unchanged development +/- .03 interval assumption.",
+        "No predicted successes gives precision null. Unknowns remain unknown, not true negatives or automatic errors.",
+        "The current aggregate does not provide full TP/TN/FP/FN counts; never invent them from precision alone.",
+        "Near-threshold descriptive strata or missing positive support cannot certify termination. No new outcome-selected threshold or interval calibration is allowed.",
+        "independent_termination_precision_validated and paired_retention.termination_certified remain false regardless of apparent precision."
+      ]
+    }
+  },
+  "paired_record_identity_audit_after_close_only": {
+    "source": "new measurements/*.json only, no RGB/NPY load or resampling",
+    "identity": ["stratum", "shape", "anchor", "candidate", "seed", "mode", "horizon"],
+    "exact_cross_weight_matches": {
+      "rng_entry_and_rng_exit": "All 1998 paired forecast keys",
+      "action_sha256": "All 1998 paired forecast keys",
+      "input_sha256": "AR H1 and TF H2/H4 only: 999 paired keys from identical real histories"
+    },
+    "intentional_nonrequirements": [
+      "AR H2-H4 input hashes may differ across weights because prior raw predictions feed back; this is intended.",
+      "AR and TF input hashes may differ at H2/H4; their horizon RNG and actions should still match.",
+      "Raw prediction hashes are identities, not required equal across different weights and not evidence of accuracy."
+    ],
+    "record_fields": ["status", "raw_path", "raw_sha256", "raw_min", "raw_max", "input_sha256", "action_sha256", "rng_entry", "rng_exit", "truth", "latest", "contact_by_h4", "measurement"],
+    "important_schema_limit": "Current paired_retention pair_quality checks RNG/truth/contact, not action/input hashes. Report action/input checks separately from saved numeric records after explicit post-exit authorization.",
+    "feedback_source_evidence": "gpc_adaptation.rollout_case applies T1 only to real conditioning frames, feeds back raw AR predictions without clipping or reapplying T1, and uses clipped RGB only for the rgb_mae diagnostic.",
+    "no_old_prefix_reuse": true
+  }
+}

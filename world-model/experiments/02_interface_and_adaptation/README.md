@@ -1,0 +1,84 @@
+# Frozen WM, input compatibility and early adaptation
+
+- [frozen-wm-assets](frozen-wm-assets/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [frozen-wm-diagnostic-registry-v1](frozen-wm-diagnostic-registry-v1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [frozen-wm-ledger-v1](frozen-wm-ledger-v1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [frozen-wm-review-v1-20261024](frozen-wm-review-v1-20261024/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [frozen-wm-review-v1.1-20261024](frozen-wm-review-v1.1-20261024/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [frozen-wm-review-v1.2-20261024](frozen-wm-review-v1.2-20261024/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [frozen-wm-validation-v1-20261024](frozen-wm-validation-v1-20261024/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-checkpoint-evaluation-engineering-20261026](gpc-checkpoint-evaluation-engineering-20261026/README.md) — historical_evidence; consult supplied report (3 source entries).
+- [gpc-checkpoint-evaluation-review-20261026](gpc-checkpoint-evaluation-review-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-checkpoint500-evaluation-20261026](gpc-checkpoint500-evaluation-20261026/README.md) — completion_not_established (0 source entries).
+- [gpc-checkpoint500-evaluation-review-20261026](gpc-checkpoint500-evaluation-review-20261026/README.md) — analysis_or_preparation; not a training result (2 source entries).
+- [gpc-checkpoint500-offline-diagnosis-20261026](gpc-checkpoint500-offline-diagnosis-20261026/README.md) — historical_evidence; consult supplied report (1 source entries).
+- [gpc-checkpoint500-offline-reexport-20261026](gpc-checkpoint500-offline-reexport-20261026/README.md) — historical_evidence; consult supplied report (1 source entries).
+- [gpc-conditioning-contract-diagnostic-20261026](gpc-conditioning-contract-diagnostic-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-conditioning-contract-preparation-20261026](gpc-conditioning-contract-preparation-20261026/README.md) — analysis_or_preparation; not a training result (8 source entries).
+- [gpc-conditioning-contract-preparation02-20261026](gpc-conditioning-contract-preparation02-20261026/README.md) — analysis_or_preparation; not a training result (2 source entries).
+- [gpc-data-stage-20261026-registry](gpc-data-stage-20261026-registry/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-data-stage-a-20261026](gpc-data-stage-a-20261026/README.md) — completion_not_established (0 source entries).
+- [gpc-data-stage-b-20261026](gpc-data-stage-b-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-data-stage-b2-20261026](gpc-data-stage-b2-20261026/README.md) — completion_not_established (0 source entries).
+- [gpc-data-stage-engineering-20261026](gpc-data-stage-engineering-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-foundation-repair-20261026](gpc-foundation-repair-20261026/README.md) — historical_evidence; consult supplied report (18 source entries).
+- [gpc-gradient-lifetime-review-20261026](gpc-gradient-lifetime-review-20261026/README.md) — analysis_or_preparation; not a training result (2 source entries).
+- [gpc-raw-tl-fulltrain-20261026](gpc-raw-tl-fulltrain-20261026/README.md) — completion_not_established (0 source entries).
+- [gpc-raw-tl-fulltrain-preparation-20261026](gpc-raw-tl-fulltrain-preparation-20261026/README.md) — analysis_or_preparation; not a training result (3 source entries).
+- [gpc-root-review-bf5283e-20261026](gpc-root-review-bf5283e-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-conditioning02-20261026](gpc-root-review-conditioning02-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-eval-a461829-20261026](gpc-root-review-eval-a461829-20261026/README.md) — analysis_or_preparation; not a training result (1 source entries).
+- [gpc-root-review-eval-engineering-042f718-20261026](gpc-root-review-eval-engineering-042f718-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-fb1bb20-20261026](gpc-root-review-fb1bb20-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-gradient-07616f9-20261026](gpc-root-review-gradient-07616f9-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-offline-639995a-20261026](gpc-root-review-offline-639995a-20261026/README.md) — analysis_or_preparation; not a training result (1 source entries).
+- [gpc-root-review-pilot02-3974e84-20261026](gpc-root-review-pilot02-3974e84-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-pilot03-f9287e8-20261026](gpc-root-review-pilot03-f9287e8-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-raw-tl-fulltrain-20261026](gpc-root-review-raw-tl-fulltrain-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-reexport-cbb87ef-20261026](gpc-root-review-reexport-cbb87ef-20261026/README.md) — analysis_or_preparation; not a training result (1 source entries).
+- [gpc-root-review-sdk-846344f-20261026](gpc-root-review-sdk-846344f-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-root-review-status-d96caf0-20261026](gpc-root-review-status-d96caf0-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-sdk-startup-diagnostic-20261026](gpc-sdk-startup-diagnostic-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-sdk-startup-engineering-20261026](gpc-sdk-startup-engineering-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-sdk-startup-review-20261026](gpc-sdk-startup-review-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-status-publication-review-20261026](gpc-status-publication-review-20261026/README.md) — analysis_or_preparation; not a training result (7 source entries).
+- [gpc-supervised-adaptation-pilot-20261025](gpc-supervised-adaptation-pilot-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-supervised-adaptation-pilot02-20261026](gpc-supervised-adaptation-pilot02-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-supervised-adaptation-pilot03-20261026](gpc-supervised-adaptation-pilot03-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [gpc-supervised-pilot-review-20261026](gpc-supervised-pilot-review-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-supervised-pilot02-review-20261026](gpc-supervised-pilot02-review-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [gpc-supervised-pilot03-review-20261026](gpc-supervised-pilot03-review-20261026/README.md) — analysis_or_preparation; not a training result (1 source entries).
+- [manual-official-world-model](manual-official-world-model/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [manual-ui-refresh-20261026](manual-ui-refresh-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [manual-world-model](manual-world-model/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [manual-world-model-verification-20261026](manual-world-model-verification-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [official-raw-alignment-20261026](official-raw-alignment-20261026/README.md) — historical_evidence; consult supplied report (2 source entries).
+- [official-raw-world-model-engineering-20261026](official-raw-world-model-engineering-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [raw-tl-overlap-diagnosis-20261027](raw-tl-overlap-diagnosis-20261027/README.md) — historical_evidence; consult supplied report (1 source entries).
+- [raw-tl-overlap-root-review-20261027](raw-tl-overlap-root-review-20261027/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [wm-data-preparation-20261026](wm-data-preparation-20261026/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [wm-input-compat-engineering-20261025](wm-input-compat-engineering-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v1-20261025](wm-input-compat-eval-v1-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v1-ledger-20261025](wm-input-compat-eval-v1-ledger-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v1-registry](wm-input-compat-eval-v1-registry/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v2-20261025](wm-input-compat-eval-v2-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v2-audit-20261025](wm-input-compat-eval-v2-audit-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v2-ledger-20261025](wm-input-compat-eval-v2-ledger-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v2-registry](wm-input-compat-eval-v2-registry/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v3-20261025](wm-input-compat-eval-v3-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v3-audit-20261025](wm-input-compat-eval-v3-audit-20261025/README.md) — historical_evidence; consult supplied report (2 source entries).
+- [wm-input-compat-eval-v3-ledger-20261025](wm-input-compat-eval-v3-ledger-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-eval-v3-registry](wm-input-compat-eval-v3-registry/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-incremental-engineering-20261025](wm-input-compat-incremental-engineering-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-partial-stats-20261025](wm-input-compat-partial-stats-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-input-compat-race-engineering-20261025](wm-input-compat-race-engineering-20261025/README.md) — historical_evidence; consult supplied report (1 source entries).
+- [wm-input-compat-run-audit-20261025](wm-input-compat-run-audit-20261025/README.md) — historical_evidence; consult supplied report (2 source entries).
+- [wm-input-compatibility-audit-v1](wm-input-compatibility-audit-v1/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-interface-v2-audit](wm-interface-v2-audit/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-interface-v2-development](wm-interface-v2-development/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-interface-v2-review](wm-interface-v2-review/README.md) — analysis_or_preparation; not a training result (4 source entries).
+- [wm-l-adaptation-preparation-20261025](wm-l-adaptation-preparation-20261025/README.md) — analysis_or_preparation; not a training result (0 source entries).
+- [wm-l-adaptation-ranking-support-repair-20261026](wm-l-adaptation-ranking-support-repair-20261026/README.md) — historical_evidence; consult supplied report (1 source entries).
+- [wm-l-adaptation-retention-repair-20261025](wm-l-adaptation-retention-repair-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-l-dynamics-diagnosis-20261025](wm-l-dynamics-diagnosis-20261025/README.md) — historical_evidence; consult supplied report (0 source entries).
+- [wm-sampling-b-only-20261026](wm-sampling-b-only-20261026/README.md) — historical_evidence; consult supplied report (0 source entries).

@@ -1,0 +1,33 @@
+{
+  "kind": "R3A-offline-motion-contact-report-CPU-contracts.v1",
+  "passed": true,
+  "tests": 3,
+  "test_body_seconds": 0.257,
+  "command_exit_code": 0,
+  "actual_output": "test_actual_substep_contact_gate_excludes_wall_and_precontact_arcs (tests.test_native_rgb_r3a_report.ReportContracts.test_actual_substep_contact_gate_excludes_wall_and_precontact_arcs) ... ok\r\ntest_offset_origin_pure_rotation_has_zero_area_center_translation (tests.test_native_rgb_r3a_report.ReportContracts.test_offset_origin_pure_rotation_has_zero_area_center_translation) ... ok\r\ntest_signed_unwrapped_rotation_is_not_folded_by_shape_symmetry (tests.test_native_rgb_r3a_report.ReportContracts.test_signed_unwrapped_rotation_is_not_folded_by_shape_symmetry) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 3 tests in 0.257s\r\n\r\nOK\r\n",
+  "sources": [
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_report.py",
+      "sha256": "367ce67262483fb4b9959e80d9fff283e5c48e49d95919ad8f076e4cce088d0e",
+      "bytes": 19242
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tests\\test_native_rgb_r3a_report.py",
+      "sha256": "1ddf76386920dc1fe6f6a3f1aa77fb4988c13f099446094d57e0bd9210b1f71a",
+      "bytes": 6976
+    }
+  ],
+  "physics_steps": 0,
+  "environment_constructions": 0,
+  "model_constructions": 0,
+  "checkpoint_loads": 0,
+  "new_model_scores": 0,
+  "fixtures_are_synthetic_arrays_not_collected_data": true,
+  "verified": [
+    "Nonzero local centroid rotates around fixed world area center: origin moves but reported translation stays zero",
+    "Signed unwrapped +/-120deg H1 and +/-480deg H4 for symmetric O never fold sign or period;49 saved states produce45H1/42H4 legal anchors",
+    "Actual contact-tag kind/phase filter retains postAOarc7, excludes preAO and wall arcs, distinguishes wall-only contact runs, normal lever and object-wall contact",
+    "Postcontact yaw at35deg uses substep_states[si+1] bin1; executed target delta uses prestep pusher120, not postpusher200, and named normal/tangent projections136"
+  ],
+  "revisions": "Synthetic fixture explicitly overrides an offset centroid because existing centered L/O do not provide one; fixture updated to actual 5-column contact tags,11-column values,m+1 state schema. Tests detected producer motion_summary(list) TypeError, fixed by root with numpy conversion; final all three pass."
+}

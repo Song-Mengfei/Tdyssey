@@ -1,0 +1,4556 @@
+{
+  "schema_version": 1,
+  "kind": "independent_D_teacher_replay_audit",
+  "training": false,
+  "checkpoint_loaded": false,
+  "torch_loaded": false,
+  "all_passed": true,
+  "provenance": {
+    "script": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\audit_and_video.py",
+    "script_sha256": "e7d8c0f68cfa400a3d0209b4c757e03cc653e4291c0147b1ef993167cb42ef65",
+    "python": "3.12.3 (main, Apr 15 2024, 17:48:16) [MSC v.1929 64 bit (AMD64)]",
+    "argv": [
+      "artifacts/d-teacher-20261021/audit_and_video.py",
+      "--report",
+      "artifacts/d-search-initial-20261021-r1/report.json",
+      "--report",
+      "artifacts/d-search-resume-20261021-r1/report.json",
+      "--report",
+      "artifacts/td-baseline-300-20261021/report.json",
+      "--output",
+      "artifacts/d-teacher-20261021/helper-validation-r2"
+    ],
+    "commit": "eb527ea6b73441aa1c735c07771441af3b9b0db7",
+    "packages": {
+      "numpy": "1.26.4",
+      "opencv-python-headless": "4.10.0.84",
+      "pygame": "2.6.1",
+      "pymunk": "6.9.0",
+      "shapely": "2.0.6"
+    }
+  },
+  "route_diversity_by_exact_search_start": {
+    "9babec97317f0a635b65f96ece81bd40224cb44c3f924113122cad641ebecfb2": {
+      "reports": 2,
+      "successful_routes": [],
+      "all_routes": [
+        "east",
+        "northeast/east/northwest/north/southwest/southwest/southwest/southwest"
+      ],
+      "unique_observed_route_signatures": 2,
+      "unique_successful_route_signatures": 0
+    },
+    "a0a5a0347d10a8c70babd1558a0efed9b9146b70f7df3717488a023d5f06d4ea": {
+      "reports": 1,
+      "successful_routes": [],
+      "all_routes": [
+        ""
+      ],
+      "unique_observed_route_signatures": 1,
+      "unique_successful_route_signatures": 0
+    }
+  },
+  "reports": [
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-search-initial-20261021-r1\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 0,
+        "source_controls": 72,
+        "replayed_control_physics_substeps": 720
+      },
+      "source_report_sha256": "0b2073e631dd49153668dc609995503d7f57bf15557d787fd133ab3804b984a3",
+      "source_status": "running",
+      "source_stop_reason": "control_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-search-initial-20261021-r1\\report.json": "0b2073e631dd49153668dc609995503d7f57bf15557d787fd133ab3804b984a3"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "9babec97317f0a635b65f96ece81bd40224cb44c3f924113122cad641ebecfb2",
+      "source_counts": {
+        "control_steps": 72,
+        "control_physics_substeps": 720,
+        "reset_physics_substeps": 2,
+        "resume_replay_controls": 0
+      },
+      "source_search_counts": null,
+      "result": "INTERRUPTED SNAPSHOT (report still marked running)",
+      "current_source_sha256": {
+        "scripts/evaluate_simulator_search.py": "2f0add6a4d5ea7f748de9b0bad91979656a8e41fe7918cc5a6b693cb465f41e5",
+        "tdyssey/simulator_search.py": "49318a57bdb6d0b96e98030621ca764c031d13fa1d8f18e801a6bdf749cadd64",
+        "tdyssey/simulator_planning.py": "2f4c5288b669f53b1d8785955d1dd2186ff8701b47a93f4986458ec4c72fe6bf",
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "pyproject.toml": "c41f94734bc1c591ba4c87e7b0cc7e6e8335e4e5873fca239724b8638cf2bece",
+        "uv.lock": "30954ae72f9ff2fff77fa1d274bef08dc8d392aed53c44e71ac021f1f11aa88c"
+      },
+      "source_files_changed_since_run": [
+        "tdyssey/simulator_search.py"
+      ],
+      "initial_metrics": {
+        "coverage": 0.0,
+        "iou": 0.0
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              259.570052424288,
+              251.30517846826342
+            ],
+            "angle": -0.7072754110649566
+          },
+          "velocity": [
+            -44.78965911533247,
+            38.286300737517934
+          ],
+          "angular_velocity": 0.12999168354038923,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              314.2191448125669,
+              212.1462329575163
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            -37.45460919327253,
+            48.01623059971699
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 72,
+        "pusher_target": [
+          308.2432473709096,
+          219.80724093827456
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.17411859702376697,
+        "iou": 0.09536139463381865
+      },
+      "final_control": 72,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 17,
+        "contact_bearing_counts": {
+          "east": 17
+        },
+        "contact_runs": [
+          {
+            "start_control": 56,
+            "end_control": 72,
+            "controls": 17,
+            "bearing_counts": {
+              "east": 17
+            },
+            "translation": [
+              -75.42994757571199,
+              78.30517846826342
+            ],
+            "angle_change": 0.19765201735996807,
+            "dominant_bearing": "east"
+          }
+        ],
+        "route_signature": "east",
+        "object_translation": [
+          -75.42994757571199,
+          78.30517846826342
+        ],
+        "object_translation_distance": 108.72616045010163,
+        "object_translation_path": 108.87861123011626,
+        "object_angle_change": 0.19765201735996807,
+        "object_absolute_angle_path": 0.19765201735996807
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\helper-validation-r2\\00-d-search-initial-20261021-r1\\actual-controls-paused.mp4",
+        "sha256": "9fb76f7bfd871484e3f4cede96ebba4753aacfc352c5301d1e23948185b9e9e4",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 246,
+        "duration_seconds": 24.6,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.506600856781006,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 0,
+            "phase": "episode initial",
+            "state_sha256": "9babec97317f0a635b65f96ece81bd40224cb44c3f924113122cad641ebecfb2",
+            "uncompressed_display_bgr_sha256": "a90e444f8a135cab53cc3fa86ce1ad2b3964af00c510bc77ab80116fc0f49f70"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 1,
+            "phase": "recorded actual",
+            "state_sha256": "c9903120ca715e7a358f4f52949890a44d380c894407bf64b864a2bd616ef370",
+            "uncompressed_display_bgr_sha256": "c812a06514a21c0947c4a392cb9b11c7d52d276dff6aaa923f40880a3cd2fd89"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 2,
+            "phase": "recorded actual",
+            "state_sha256": "82efc52ccaa2e83d2b43309da2ca24f8ca4ef232f2b2eb48a75f0539f30f94cb",
+            "uncompressed_display_bgr_sha256": "43c3598f43f7245b5191739bc2e19af1d824926cab6d1fc7269921e29ff62466"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 3,
+            "phase": "recorded actual",
+            "state_sha256": "fa79b269d5344553cac7830da6ebd8f70d1945eb7fe231f4544efa02ec5a7a44",
+            "uncompressed_display_bgr_sha256": "42c1e93dad433af3a247492c239026f5263869be59e005217417838d98461e4a"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 4,
+            "phase": "recorded actual",
+            "state_sha256": "cb25d469596e6dd627fe48dba8f8d9dd43c0cfc9c8c83f4a624bc5fcdb5d8a4d",
+            "uncompressed_display_bgr_sha256": "cdd8fd06100d9fb5c49301400403b5b8b10a07b0d76b88be46f4849112c9231f"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 5,
+            "phase": "recorded actual",
+            "state_sha256": "7b0898682f42d9ef0d681c645a82e67bdd51a724c18705d128a410c14a37259a",
+            "uncompressed_display_bgr_sha256": "a08db12675bb69e6a1c05755514a465df6c2ee4ccea696ea5a2612e6bcb09b81"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 6,
+            "phase": "recorded actual",
+            "state_sha256": "a85fcec22644222246ac693fd51fcc4923b082af09912967a2e27de15a5b12d1",
+            "uncompressed_display_bgr_sha256": "9e8aef26a46631a05f697d65b5056c4fe4c3fad7b7b6647fb8dcac92958d3196"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 7,
+            "phase": "recorded actual",
+            "state_sha256": "840e31203de47f3211e62678f81ad183cf37aa779a21836ff91fedf5e653e466",
+            "uncompressed_display_bgr_sha256": "a2283da3c6a801bdef7e5a26d6971deb5d2a70e0a52a48b1cd33abdd5b0a1361"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 8,
+            "phase": "recorded actual",
+            "state_sha256": "27ba26e8d4d284f2fb95512080dd85370bd19d6cfc4137edb23d3d8681aaccbc",
+            "uncompressed_display_bgr_sha256": "698508408545c6ca0378c853e78ec7870d18608d8e728eef0aa7604d7771f93d"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 9,
+            "phase": "recorded actual",
+            "state_sha256": "32c6718d4c732613d72705141144d1129a210a0ad57e02d3ea22a7c5263d72dc",
+            "uncompressed_display_bgr_sha256": "d7ef8b1ef7cd1398284303a0ce49f3c9c21a8fdd1f34570bb1f3d55e5d4c6053"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 10,
+            "phase": "recorded actual",
+            "state_sha256": "5713e2f003eab48cfb503a1f495f3f154789a8d9e4653d0768a724d843a3e1ff",
+            "uncompressed_display_bgr_sha256": "4927742364c6e487de53af78fd072d279b18cbaa9ccb921249febe85010c31e7"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 11,
+            "phase": "recorded actual",
+            "state_sha256": "f1ab854fdff4219260033a7f3ecbd9c0d0cdd72b9adde10c62f1351b378e4a0e",
+            "uncompressed_display_bgr_sha256": "69982b0716a5c67aaac9f3ffe30dcff17e166d733f71fe0ca998b979e80b2290"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 12,
+            "phase": "recorded actual",
+            "state_sha256": "bcf5f0dee1a318affb2d2f31657c53950194112bc4bff149eb38f50d1a5c4023",
+            "uncompressed_display_bgr_sha256": "ebdc5c07f224e809d63dc2eea26fee93791fb2f7b456aeb155af3dd2de6f4cec"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 13,
+            "phase": "recorded actual",
+            "state_sha256": "c8830c4cd36df59be47623465ad45063e7ab07f986f85dcb829bad45530433bc",
+            "uncompressed_display_bgr_sha256": "4db6b4d0d237bd22bfa0303373be45fd82c242d9d1e6e21435bf837983ee1c62"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 14,
+            "phase": "recorded actual",
+            "state_sha256": "f51b0b1f8a25393700554dbc4ce84f2dfb6c692fe1ebdb00fdac552237665235",
+            "uncompressed_display_bgr_sha256": "96e03e2120ab5f6d7c531a0c53c28f790c60d4464cfdf7afabad80f747fc9d40"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 15,
+            "phase": "recorded actual",
+            "state_sha256": "258d1e45e46cbcc092372fb79fc775872368da0454b9ba5dfc0ff2a72ca3bd19",
+            "uncompressed_display_bgr_sha256": "1ee7a5a6de85b7d196abb5587f7a417f836bb5694e7557cfdd6ae02c95203bb4"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 16,
+            "phase": "recorded actual",
+            "state_sha256": "4737e3da4b526ec58c7674168f31062a3bd9c6b1e88888362e62ef8a5bce7b87",
+            "uncompressed_display_bgr_sha256": "b2bd0ad31fc8798f04767d903fb25ed0d8a2275788d03ebbd8f2800aaaf63717"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 17,
+            "phase": "recorded actual",
+            "state_sha256": "aa6e0ac3b327cfcc76065f350fdd52f8d1d2797b18d144fd46b3573b0f41e7ef",
+            "uncompressed_display_bgr_sha256": "b020740e225db57ec3965d8cf41417dde13166b7c60354b5013f3efaf2af4955"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 18,
+            "phase": "recorded actual",
+            "state_sha256": "280e8ac8dbdd11e01321c5c10aa2ab02df7fc19f990b3619865d67b766325f6f",
+            "uncompressed_display_bgr_sha256": "2b5d3a2b354a8b29fc20007dc352a9182e81619a634662e2c91c8077027c04b9"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 19,
+            "phase": "recorded actual",
+            "state_sha256": "df326c2702cecf74c2b1a24cdf5a6feab962afa6f61ae390ba1ccfa24cac9705",
+            "uncompressed_display_bgr_sha256": "ede79a5699a0e24d6af7ff756bc9835516fd42622726247a5e632b65e540cf75"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 20,
+            "phase": "recorded actual",
+            "state_sha256": "a8d780d8297e83e6c681f2c6ae02b367ba9e9a8fa3fdd0e359906c5f61861039",
+            "uncompressed_display_bgr_sha256": "eec920a3aabb40c6652a9c6b6b4c803e8e2eb92b3cad5c570923dc734fddb23f"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 21,
+            "phase": "recorded actual",
+            "state_sha256": "937697457babe84d634c0a9e8f7665fe2c77188bb4d24663c5fb6b77258ad26f",
+            "uncompressed_display_bgr_sha256": "243f001988e04f28ffad4b43e924ed319082fe7295f527238a2a0ab9a6a1bccf"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 22,
+            "phase": "recorded actual",
+            "state_sha256": "e2285dde0ff0a32673837f444c898b57367c48b5e23f4da262f58e2e891880fa",
+            "uncompressed_display_bgr_sha256": "590dca471b43c2538ae1a2b08f588e6bae53bf345bc552c7a788ab854fb6250e"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 23,
+            "phase": "recorded actual",
+            "state_sha256": "925f4507a9db1a3cb9cb89cee13e742cb5026d20c1734dc718fc207fb6dd8f01",
+            "uncompressed_display_bgr_sha256": "28ceed245ae5126f86f91d1aa7c5debb00114d1276257096ed53e85a4400fa4d"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 24,
+            "phase": "recorded actual",
+            "state_sha256": "67754f0c6f6bedc584884235626e59262fe07ee4374be8b30483e4fdc0928c78",
+            "uncompressed_display_bgr_sha256": "a678191435596d58a2d6af39af7bde69fce860bfcd7e917e92be06592d55650e"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 25,
+            "phase": "recorded actual",
+            "state_sha256": "b4d703acfd4c94ce0d6672543fb80b95dff1a04af796a0d3e0d3acc199ac87b3",
+            "uncompressed_display_bgr_sha256": "7f3addda2236fb28742c7c4d64b37b2d3e5caa1ce688b90f03d83ace5993b8b1"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 26,
+            "phase": "recorded actual",
+            "state_sha256": "b2b84da910c577ef1cedf2a36b832d5c580f3131345b37548a6992302b08ecc4",
+            "uncompressed_display_bgr_sha256": "3172f8a1ec873caf098125874208cbb0f950a14e0b3ab18f70bc54b9d1a0444d"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 27,
+            "phase": "recorded actual",
+            "state_sha256": "0241abda446eae5f5ba169d218b12ba16e2a1cb87f28c1a6ae5bcf7d708b3d18",
+            "uncompressed_display_bgr_sha256": "5d3bc5035fda1b658f79bffd4b6fce33c839945b8070b4973334d83f8b115eca"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 28,
+            "phase": "recorded actual",
+            "state_sha256": "fe0359dea917132fb37602f79f39fe5ca880bffa2f3b9e4981fbbc1fc60e7ebd",
+            "uncompressed_display_bgr_sha256": "29760a46b1ee53d9f2fc3b4727217b88da919e73dffd17cf29ef9c29fd0ef413"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 29,
+            "phase": "recorded actual",
+            "state_sha256": "62eb983170e78ff9b158293e3ed18479d69484120565140eb7851fa35892cff2",
+            "uncompressed_display_bgr_sha256": "a5a02da696466cb1d8c3ca92941964e7bdfc9280c8ef8dce0bb04a9ecabae7b2"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 30,
+            "phase": "recorded actual",
+            "state_sha256": "ecd436398653be4ecd7d046b430e46bc590ce302fbb1c342427ffe09c5cd14a2",
+            "uncompressed_display_bgr_sha256": "59692c885f203aeccb0910583c1f61301f176a880a8cbe7f0568b1e7929da93b"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 31,
+            "phase": "recorded actual",
+            "state_sha256": "eba734dd9252f68a6bb47f3ddb78e9346a192bee9d68973b16e8c7b304808fac",
+            "uncompressed_display_bgr_sha256": "f26d12df20f350f98ad0ef4b33af41af0e6389b0b9888194d867aee214dc9148"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 32,
+            "phase": "recorded actual",
+            "state_sha256": "313127e4299570c228a8aaddd3ef5f4be84b07077299c7808bbcc9f3237f7a97",
+            "uncompressed_display_bgr_sha256": "4059711b70af3ec6f2b083257cd63b8aaa641350bd444d6cbcce8516c3172eb2"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 33,
+            "phase": "recorded actual",
+            "state_sha256": "153606d148cf936edb57367df1680bb5f1150f1ef108a22c94d11cc4cc5d2f60",
+            "uncompressed_display_bgr_sha256": "403f89c1adfeee2b7959b7a289b6a54067cd8731af299e2f0c1b76c977106b2b"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 34,
+            "phase": "recorded actual",
+            "state_sha256": "61735e734df93329d55cfed1c056b0bfa980792d1d25a448d8c0b84cdef7d954",
+            "uncompressed_display_bgr_sha256": "f763fac94d21359a4ec45bfbccad7723b427c886f75bbba15e5fa97c53ab9270"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 35,
+            "phase": "recorded actual",
+            "state_sha256": "3899c87e7deb2fd4ac3e70475d25a1eda7f4badd1c4b4ca2da34ea35689949ef",
+            "uncompressed_display_bgr_sha256": "ca8a6c22a9972f8c4b8bf9177076a6004232c1321ca917f8a10e68e81c9e2d12"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 36,
+            "phase": "recorded actual",
+            "state_sha256": "8aa119b999b8870e593ce0a397bea85d3221f9086189def2600f430ab98c9cab",
+            "uncompressed_display_bgr_sha256": "1b76dc51809b6ee964112268e8b5dae176232cabede11e48fcddc3364b904fd1"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 37,
+            "phase": "recorded actual",
+            "state_sha256": "785fb016b99b44e34ea74da628b0dda8e4c152b18ab237cb96649a7463a8abc1",
+            "uncompressed_display_bgr_sha256": "77789570f9a6a921675c6726b96ef6b462619d687c9703a1af544e55ab6eb4d2"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 38,
+            "phase": "recorded actual",
+            "state_sha256": "6c3e4c3d4f17664386089519f30770f3b2038387d1621731ece18cf826114cfe",
+            "uncompressed_display_bgr_sha256": "78efaeaeacbedd15830a252ff83745b4cb94c74ca60461fb9b7f4978b0261486"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 39,
+            "phase": "recorded actual",
+            "state_sha256": "9116740d51d4b38c417a872eb95be060b6bde89cc67d329c2edf43e523f51800",
+            "uncompressed_display_bgr_sha256": "e255ac080d28e8314911e8f5a2034fdc36c9e34e4710915ae2abb53d27237426"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 40,
+            "phase": "recorded actual",
+            "state_sha256": "7474a3fca2e2758809939e4e7b0c3c2c6743aa48631cbc905f0e414a0ccc4fe9",
+            "uncompressed_display_bgr_sha256": "dc627e3cf17d59184e36a4062801bf1957aacd790f95897b357e735da27b9e85"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 41,
+            "phase": "recorded actual",
+            "state_sha256": "363a2b28a63cc77a082969391ea056bfafa8bf33ec3524cdf8720214e6b9fe6d",
+            "uncompressed_display_bgr_sha256": "dffb37cea6c96db5b526b264b40756f5b8b279d6c48113769c258636ff1e6ee3"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 42,
+            "phase": "recorded actual",
+            "state_sha256": "8d667884fd188bf986293b81f94e4b65fd963c1e390b9c554ed447dd6e9af908",
+            "uncompressed_display_bgr_sha256": "80ff19e5b8bf3a2e8e42661bc94600f4f0b6abc993a2d95bde4256f0f1097391"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 43,
+            "phase": "recorded actual",
+            "state_sha256": "40957b400531fd45ebf844ba705922b6493f195062f47c29a246791d1574a165",
+            "uncompressed_display_bgr_sha256": "c6236891bd8ff9f2e5f36615f8de681b2bbc5475ec3c4176f5306bede7492c31"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 44,
+            "phase": "recorded actual",
+            "state_sha256": "8938bcc35256814782a1d4884f496c891c91056cd5d4d8198018c388b8d63cdc",
+            "uncompressed_display_bgr_sha256": "d55d935ce591f628e537915a7e7f41e171524a4c10f4bc6fc478080a1ba794f9"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 45,
+            "phase": "recorded actual",
+            "state_sha256": "102bcbd477ac63335b940b16c0ad1266dc5cb109e98127abb2ff2d870dfc9a76",
+            "uncompressed_display_bgr_sha256": "6d46aefc52a26bd4f06e18a6ac764ca8ba48d04adc8806501152d7a7812d7a0d"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 46,
+            "phase": "recorded actual",
+            "state_sha256": "283c1338c24954cfed30b082d4b30f50a075560bd292e18dae73fcae4cb95563",
+            "uncompressed_display_bgr_sha256": "c25eae25fb4d6ed376a509b9872abd5b986ac9434f36b81b12787b183446c718"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 47,
+            "phase": "recorded actual",
+            "state_sha256": "f78b22d01457ab6134b8345dbea83f382d44e55b7ddd73bb2769ae3679f7af40",
+            "uncompressed_display_bgr_sha256": "cb134846bf46e3b55ced58dce7ba8f81819f7de1412d341a803e4133c72d3dd3"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 48,
+            "phase": "recorded actual",
+            "state_sha256": "7830a8b4e7fd4d759c1672b60fbe9411ff4173c466c3be6cd54b51137c3e1af3",
+            "uncompressed_display_bgr_sha256": "1e175e9ec0e164d8e62b3904fe7f3c1ed7f4fa94bcdedf75685cf47c8970d8ea"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 49,
+            "phase": "recorded actual",
+            "state_sha256": "32598ec991984ed2d317d652fc003faa95fb2e827a705b567d9be998895137ae",
+            "uncompressed_display_bgr_sha256": "9fbe49ff1d633a55cc0f51631b5e87a31a38dda3335a92fd4ef34f90e5b1a36b"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 50,
+            "phase": "recorded actual",
+            "state_sha256": "e162c87e185cf72fea626b8c0391e0307f59277dccd5bf6ab2dea1761fb760bd",
+            "uncompressed_display_bgr_sha256": "2ffe4655c2a78dd7c8210c1e2203a0b573405862674d20bc6981ac2a184eb8be"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 51,
+            "phase": "recorded actual",
+            "state_sha256": "9ec52b8e1c0ccc8191e84de5c21e63055254e8598c8eccf65ba269e9edf16368",
+            "uncompressed_display_bgr_sha256": "e185902358dbd459da96b8ed6f7bda4def3d31d21f4a4ea1fd6b80983d3320aa"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 52,
+            "phase": "recorded actual",
+            "state_sha256": "2aee051301aafd09f2569e0167c6d637ff4f6e4f1e91d0691f65478204336ca8",
+            "uncompressed_display_bgr_sha256": "d5f49683247ad468d9d6f279cb2a56de20ba9723cdc02fa73c2b5d7ab4865aae"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 53,
+            "phase": "recorded actual",
+            "state_sha256": "81da39b382b0fdb58f7ba50007d9f9e048c9b8206d9024da6f7e168ea785e46d",
+            "uncompressed_display_bgr_sha256": "4a7e3742472a986176d40c7eab2c178212b8a8907c7c8e3c61ab604ad0758c03"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 54,
+            "phase": "recorded actual",
+            "state_sha256": "9a53236dece61142c4f4c863b00527035709fb8a3bd400bfc526daa7aeaa2e0d",
+            "uncompressed_display_bgr_sha256": "ed1724b921fc5fde6e8057dc54f9a2b6db34b90541eba4ed79a3b94efd77d642"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 55,
+            "phase": "recorded actual",
+            "state_sha256": "b7598b9033dc5b47e823f96dfe66832cbaac54ecaa9abae7893db10dfbce212c",
+            "uncompressed_display_bgr_sha256": "28bc7837bda9d744c21ac0708c8665b8b47aabc12e3236e772dbf1f23a1b652d"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 56,
+            "phase": "recorded actual",
+            "state_sha256": "1bdc25955519463122c3aac9b4cfc038ce3cedb52cfeed49a12fb8af9d836a96",
+            "uncompressed_display_bgr_sha256": "4a86e2e218a828283be26ddec555e29899db5cc0f1775ef9581afc6008eb47cd"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 57,
+            "phase": "recorded actual",
+            "state_sha256": "21280d3d2722b0dbbaee758753656ff2ee3b925944824a7e5ca77618f501cb47",
+            "uncompressed_display_bgr_sha256": "c5a0c82edf4c13fc535d052404bfc7699ec1d2d05b3929841a4fde6c10098eb3"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 58,
+            "phase": "recorded actual",
+            "state_sha256": "836425bb388d7c955c68a6d443312aad05b3a0159b6996a764c9347af36ad9c7",
+            "uncompressed_display_bgr_sha256": "b7623b64dbc32eaa446df8d8cc581ff9864620c2d2ddf10d869afa1cb0bf9b2e"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 59,
+            "phase": "recorded actual",
+            "state_sha256": "4aad5fb5eceae32c880554ca4dfcbf4e774d75e7ccebb0586c14e0ce4e845d9f",
+            "uncompressed_display_bgr_sha256": "16293fce61d3a14950c32be59d06cf94c72e46506cd6cfeaf5ee5ac9d9416be6"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 60,
+            "phase": "recorded actual",
+            "state_sha256": "dd013916596a3ab1c32b3b7453b4a59a22228851fbfbe5c017596df57d404719",
+            "uncompressed_display_bgr_sha256": "02d0f0a3816d90b7d8074ac5e37c5df1afec5d66da9803cf3e561cbe397fedc0"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 61,
+            "phase": "recorded actual",
+            "state_sha256": "cf78b5ab11ed9b7fc00860c103fb78084c93691d5a5e2df9c47163d2996835ae",
+            "uncompressed_display_bgr_sha256": "faf305f03c59d146c6ea850d0955e1c267e513b2a69ca55234de00e5eb195737"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 62,
+            "phase": "recorded actual",
+            "state_sha256": "f68d3d9ec10d4ae7ea5781b581dc63106eb095952b28dd58cbdbac1875d68a86",
+            "uncompressed_display_bgr_sha256": "70d0cfb85e8ef763c8e21342c16cfaabced3ecc05c9b43a0a536b17495bad65a"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 63,
+            "phase": "recorded actual",
+            "state_sha256": "90a088f4166349b2a97ffa4db39107834142b9de48277eafd46236e5021ca473",
+            "uncompressed_display_bgr_sha256": "ccab040db98bdcb6433a00fa85ac2060a7642dd0048a531afe0d4c4e25cdebbf"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 64,
+            "phase": "recorded actual",
+            "state_sha256": "286710292e46801e28cd664209dcf2c1ff60610c834b443d31278c9a7265b914",
+            "uncompressed_display_bgr_sha256": "651e6c31ca0cb6c6d17bd9fef78e580544e4ae13215bd6437a53a0c9d1c1b07a"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 65,
+            "phase": "recorded actual",
+            "state_sha256": "6b60a115d5cb182d53370010b55ac08b78451735c9e0a081090410c5baaee821",
+            "uncompressed_display_bgr_sha256": "db21f9ad0240304f76c4ad4875308658ee818bb17c55b9968bd68eaff3e7bf59"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 66,
+            "phase": "recorded actual",
+            "state_sha256": "a3bed91c03d567014ff404946b9769704f30f20463070113ac04a702b59a9b30",
+            "uncompressed_display_bgr_sha256": "7fa4e2502653af08e8259ace3e44538b019731267364d15e12f5bb1f17fe11d9"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 67,
+            "phase": "recorded actual",
+            "state_sha256": "263f6a127ca68f869a450ec14fdf27445f1bf8a9667b977285377492b03a26a7",
+            "uncompressed_display_bgr_sha256": "faa6295885a5efb44f85738ac33e9eeb893f6bf005cb477030f59895fdeb5591"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 68,
+            "phase": "recorded actual",
+            "state_sha256": "95cfbf15329912e84981c48a4aed984a46b690e0bd23158ad3556c2cbc1f8620",
+            "uncompressed_display_bgr_sha256": "a86b66e1c195639208d4e3d7d82ec70efbc4be7b8c832b777570b70f0e0f944c"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 69,
+            "phase": "recorded actual",
+            "state_sha256": "f85045ea9805a161eb32ff4f5ef270c2ab443cb88d0f6251b10c1625f7fe36e9",
+            "uncompressed_display_bgr_sha256": "daa91bc22b9b57e9b99dc97eb9b6eca0008525c63e757d27e73e8798eba209e1"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 70,
+            "phase": "recorded actual",
+            "state_sha256": "864c9b7889a0f5b0377c0545f0aeea9e69f0cbe4235dff53a3a54c3ef0c761c4",
+            "uncompressed_display_bgr_sha256": "7eaf44d773ddd3eb26a1b4873d68d23d1e6333a8b7ca9ea4e4d9a0d269495f78"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 71,
+            "phase": "recorded actual",
+            "state_sha256": "18a0b6260638ec1934fb73331eaa6b6430fa26a770cab1206b62b2d78f4f00f0",
+            "uncompressed_display_bgr_sha256": "2cbff57d7da55040ea67d4a9db7363c96984bb9285e58478deb08705b01f3943"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 72,
+            "phase": "recorded actual",
+            "state_sha256": "0d3c0d9e65b745ab0986848a724723808775d1187754d1a02fddec58e28ca884",
+            "uncompressed_display_bgr_sha256": "a981334063f31d6e58e171053a14c40876b3c23730a4b434d67388a10e16d647"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 20,
+            "control": 72,
+            "phase": "final result",
+            "state_sha256": "0d3c0d9e65b745ab0986848a724723808775d1187754d1a02fddec58e28ca884",
+            "uncompressed_display_bgr_sha256": "55135489e4580f3e342dde009aab76fe15888fc5218f1da4a50bc4857fcef4c7"
+          }
+        ]
+      },
+      "elapsed_seconds": 2.1410000000032596,
+      "torch_loaded": false
+    },
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-search-resume-20261021-r1\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 176,
+        "source_controls": 72,
+        "replayed_control_physics_substeps": 2480
+      },
+      "source_report_sha256": "a0558e8befa2ce6c1060b3053356b2fd1895f966e4f6bb63b89ba6ef7de9679b",
+      "source_status": "running",
+      "source_stop_reason": "control_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-search-resume-20261021-r1\\report.json": "a0558e8befa2ce6c1060b3053356b2fd1895f966e4f6bb63b89ba6ef7de9679b",
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\td-baseline-300-20261021\\report.json": "bc04856cf5a7d14c607ac29ef7a55508cb5417df1638b49b4bf21eb1be9f52cc"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              181.02987684298932,
+              339.1455229332395
+            ],
+            "angle": 0.8128218070713138
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              113.91578818964014,
+              307.663385045095
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            -70.58641043385448,
+            -16.854345270705224
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 176,
+        "pusher_target": [
+          101.17691802978516,
+          304.508056640625
+        ],
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "a0a5a0347d10a8c70babd1558a0efed9b9146b70f7df3717488a023d5f06d4ea",
+      "source_counts": {
+        "control_steps": 72,
+        "control_physics_substeps": 720,
+        "reset_physics_substeps": 1,
+        "resume_replay_controls": 176
+      },
+      "source_search_counts": null,
+      "result": "INTERRUPTED SNAPSHOT (report still marked running)",
+      "current_source_sha256": {},
+      "source_files_changed_since_run": [],
+      "initial_metrics": {
+        "coverage": 0.0,
+        "iou": 0.0
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              181.02987684298932,
+              339.1455229332395
+            ],
+            "angle": 0.8128218070713138
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              135.4238447685052,
+              436.72278187462416
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            1.558182297102523,
+            -22.77399148835199
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 248,
+        "pusher_target": [
+          135.62361147830524,
+          433.0403408475478
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.2210727058899528,
+        "iou": 0.12427304174932562
+      },
+      "final_control": 248,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 0,
+        "contact_bearing_counts": {},
+        "contact_runs": [],
+        "route_signature": "",
+        "object_translation": [
+          0.0,
+          0.0
+        ],
+        "object_translation_distance": 0.0,
+        "object_translation_path": 0.0,
+        "object_angle_change": 0.0,
+        "object_absolute_angle_path": 0.0
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\helper-validation-r2\\01-d-search-resume-20261021-r1\\actual-controls-paused.mp4",
+        "sha256": "09c31d8d21ae2215af1a0686500379eccdcb6d6c0ebf7942b2fdc50a42f143aa",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 246,
+        "duration_seconds": 24.6,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.5151095390319824,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 176,
+            "phase": "search initial",
+            "state_sha256": "a0a5a0347d10a8c70babd1558a0efed9b9146b70f7df3717488a023d5f06d4ea",
+            "uncompressed_display_bgr_sha256": "9527c25abd1fbe37a8d73afa293fc380e5a16d1820497221e225f2f46e76594a"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 177,
+            "phase": "recorded teacher",
+            "state_sha256": "3665f9354ce6c4238fd31a8babba4154fb8b01c11b4cb7c2f541e09f620263ae",
+            "uncompressed_display_bgr_sha256": "ffd0e4f6cec9e52023b004fa975a72f9a6643578571e35911f352c2e8dbec69c"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 178,
+            "phase": "recorded teacher",
+            "state_sha256": "df78fba255f65d8716fdceaf02efecfb035f66e5a09cffab7d6a505d47a7bddf",
+            "uncompressed_display_bgr_sha256": "dbb336ca716b61e76fe6234de7f48649d7b6e6e588ef94e6aa96e2a330d57e8e"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 179,
+            "phase": "recorded teacher",
+            "state_sha256": "0a4ac53cd9a3008ce66665e8bd1423d0753c5c9bec7569b9b494d629987c7fb4",
+            "uncompressed_display_bgr_sha256": "dc0110b5f3c21703751e8c1089886de67ffbd9f8bf7ae436cde83f94dadf4e04"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 180,
+            "phase": "recorded teacher",
+            "state_sha256": "ff250903d091d0e457049d774f941ff83cb0fd08796f2cf9eba2d7c9c05de163",
+            "uncompressed_display_bgr_sha256": "3a4e147bdc360073c36073a14d2884cbe9e4af1a81d0743a10e4eff9d2314f41"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 181,
+            "phase": "recorded teacher",
+            "state_sha256": "adf7497f644607b1aba3cbfe7f41a3017532f16fc32e1c93581e5a01486dfb01",
+            "uncompressed_display_bgr_sha256": "51d1176de317ec31fcf07490511ae6373d3b8d6e444ef18404e2a52bc5e1f2b6"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 182,
+            "phase": "recorded teacher",
+            "state_sha256": "769722b2c75c23f008ad6743d43e3d11228fe7931cc59c0708a7e8adabdf8642",
+            "uncompressed_display_bgr_sha256": "abacbe9814eb1df608e1edad0e7b761ccf7afaaa5d0f35d98ff2fbe2ae2e7b13"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 183,
+            "phase": "recorded teacher",
+            "state_sha256": "ffc7fbd8df9ee517332499f624d445624043002b63cdcb364008c0f53cbe1fcd",
+            "uncompressed_display_bgr_sha256": "52e10796b90d535286c6741ae199d1272ded709edf60cb5b6fb66964dec1805d"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 184,
+            "phase": "recorded teacher",
+            "state_sha256": "351ac36b67628941183fe548f4a6c216c3419cb393628c17e4a62e35f87ba1ca",
+            "uncompressed_display_bgr_sha256": "802a46e453794127c600c35cbb6e4e7969e05a0907af5497ab3cc3326525768a"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 185,
+            "phase": "recorded teacher",
+            "state_sha256": "89f1087116a70d9d3cf35852cc48b2d4be2f1489719fe98993152323f74370bc",
+            "uncompressed_display_bgr_sha256": "6dfc3f44e65b2c27dbb5148e02cc4bc9270d20b332f717f2f90ce841d867aa88"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 186,
+            "phase": "recorded teacher",
+            "state_sha256": "263772ea8e3c79edc00e55baf16ab82315d8def430cf8fb9a78d87a033287bfc",
+            "uncompressed_display_bgr_sha256": "49da0dba106f372cd814b32e00396d94a245cb113c67710abceaddb5fe209131"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 187,
+            "phase": "recorded teacher",
+            "state_sha256": "097273ab15bf6ee247fa97ba57edcae1b088c49433a7c6e79d34dd730b86a23d",
+            "uncompressed_display_bgr_sha256": "b4c1da5dabb021a9e6bfc289d699734cd5d9c30e8b53c37e77352893633f0da0"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 188,
+            "phase": "recorded teacher",
+            "state_sha256": "44ad425d6e50cf92e1b32952893fa610acccb017240f42973f8a5d52730ae092",
+            "uncompressed_display_bgr_sha256": "48c6002cdd3fe1934aff4ed15e721443930514bffaae9edbbda2097b6797771c"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 189,
+            "phase": "recorded teacher",
+            "state_sha256": "0704331ea48f97f08bcee78bdce20a4e084d42cbae2d2ec3b4aab4129bb3d994",
+            "uncompressed_display_bgr_sha256": "5f894dda05bb2a11224f731c79329c5f0ffb182c080714ef1514f854713cb3d8"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 190,
+            "phase": "recorded teacher",
+            "state_sha256": "279fa4a5f9db6c2c60303a5e788523b3aa4492b954a044fbad7fbcfbe4e2259c",
+            "uncompressed_display_bgr_sha256": "11165c74513869484ee158d2e796892ad8ea291cef96c16b13da6dbda9bb384e"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 191,
+            "phase": "recorded teacher",
+            "state_sha256": "93706854c82e28209ecf6bcdb675481082319baeb06b40c8c87df6b3f536031e",
+            "uncompressed_display_bgr_sha256": "90dc024abb80b65e81dabeb2e47b8019638745ba29de81b80232810ae1f6e481"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 192,
+            "phase": "recorded teacher",
+            "state_sha256": "d780d4b2d38774793b3aadc0e966698b2bdf3201b7c62c0e4dbe8c0aa8071fae",
+            "uncompressed_display_bgr_sha256": "8e6175080e7ed33f0e895b974fb67ce16c0d89fce50ecd88451cdf6a8acb8b35"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 193,
+            "phase": "recorded teacher",
+            "state_sha256": "04b64d4b3f5b67075891c2e54590628b771f73f911f09c5400e0343e9bdeced4",
+            "uncompressed_display_bgr_sha256": "d31b0e00557094a269d6d628eee3b7a8587057d686a28a086240496ed8c0465d"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 194,
+            "phase": "recorded teacher",
+            "state_sha256": "1cfa4204a31013875517e8e20041352f07cd92faa1c07dd681d162313763f969",
+            "uncompressed_display_bgr_sha256": "73b44c8dd8d2736bcdfe6b1fa9b778af1cf89be80e9b5147277549a677a5233c"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 195,
+            "phase": "recorded teacher",
+            "state_sha256": "06a60264ede36bde8de0b6a915557bead8f1931f4869a6fc0828a1bc779ff6d1",
+            "uncompressed_display_bgr_sha256": "f3e1def7b015d85135a3c8ade35124902ad35a6df30a4433826d608bf8c42806"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 196,
+            "phase": "recorded teacher",
+            "state_sha256": "d89739f2c14dda98a512d0c58fe40352d20125fb79fed9d35a8fa27f1c08c79a",
+            "uncompressed_display_bgr_sha256": "ff63b858a6cca1e57ad74396adb664c4d98046856f33468ca6c7894ef815c5b7"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 197,
+            "phase": "recorded teacher",
+            "state_sha256": "8814ebfa93ebc3a4a2d00cf237ce1c43cb768305485d6a8a40b1a595108f2776",
+            "uncompressed_display_bgr_sha256": "ed3da5be7ea2406d59e32c6e6e4794e3b9fad5e17054f94e251730502118012e"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 198,
+            "phase": "recorded teacher",
+            "state_sha256": "0116eb8f1912cf57af83fe00c09c739849fe88bf130f3dbd91c2729f5a8365b2",
+            "uncompressed_display_bgr_sha256": "7997a1b5a7dadd875b0937ff11f835ae2f6882dee75986a1e65cf7b606444c05"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 199,
+            "phase": "recorded teacher",
+            "state_sha256": "35f1180970403a3c9ff71cf280f4eb22a15ec069d0c4dff4780654a5e059f3fb",
+            "uncompressed_display_bgr_sha256": "d80f40da81d57361564fe6bf8f5da12275b7aa95d0a2a8f699bba5182373bb8b"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 200,
+            "phase": "recorded teacher",
+            "state_sha256": "2245f17db1cc1e6a68e655cd8bdf83f7e4d392dce24e360fb057aff61620bb75",
+            "uncompressed_display_bgr_sha256": "3036e0f343571cc95e6dda25da9c07f8380bd64ea9650dd3464a720502d704c7"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 201,
+            "phase": "recorded teacher",
+            "state_sha256": "20558e61e2947a9d5e516a140a682e615b932e90428831c0975a07d9b2ffec89",
+            "uncompressed_display_bgr_sha256": "3c6c6af90685abe0521d2d1b9698a00dc7ca0dc0f949b1bddab182d66bcd7622"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 202,
+            "phase": "recorded teacher",
+            "state_sha256": "7b83c812cc38e9ffb56cdea6ea2c3eac23d6658ae491c7b167dfb30de048c261",
+            "uncompressed_display_bgr_sha256": "35e9f7d9ce64206d40e3a40784c774c9657dc54dabeb91fa1bacbabe9bb24b46"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 203,
+            "phase": "recorded teacher",
+            "state_sha256": "279bf8dc9676ee0db9432b81b74ecb351990563248b7d55939559c0fb52b61ea",
+            "uncompressed_display_bgr_sha256": "8c468e66230136c808a56102870e9e6e8b7f81e08772cb0b845bb4dda8bfd13a"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 204,
+            "phase": "recorded teacher",
+            "state_sha256": "91aec1b22d764ce2d73a6077a4dee76c08b7f28cf11f6e74182feba6a850a0b9",
+            "uncompressed_display_bgr_sha256": "56a2f99dbcd7915b3b38a53ce702786302a8e61c268a66f5cb547382836d8c27"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 205,
+            "phase": "recorded teacher",
+            "state_sha256": "f719606bc6dfeff43918102bfe2cfb26d961ecbd63513956421cd4246d14ff8c",
+            "uncompressed_display_bgr_sha256": "1910f90d267c4847689811bdc1b66506fc7b582e36cf1c32c61732e1ffd72489"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 206,
+            "phase": "recorded teacher",
+            "state_sha256": "6f11002ac5ed898a5f0c2ce0fe01c1a2107112f1c7cc9d74447e60218c3f880b",
+            "uncompressed_display_bgr_sha256": "bdf131e2b740589fcc202186d4235053ebfffb15edadeb9b7557ffc2525a714c"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 207,
+            "phase": "recorded teacher",
+            "state_sha256": "1b7db1f652c7bb1bddea2ba019fcef4321489f6bbad7ee14739cfeb6778d8857",
+            "uncompressed_display_bgr_sha256": "442952111f0f16a431dec9b9ef94571e92336972bc4cf6969a26b3519e1fdb98"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 208,
+            "phase": "recorded teacher",
+            "state_sha256": "3dea4fefdede10ee65c1ee6ea62bebb010eba94d4f8d749dd7e473efff515512",
+            "uncompressed_display_bgr_sha256": "9ec1e95bd9281dc9c4c6a70d260a4ffe9154513202d923ff8f9d08c5bfd585cd"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 209,
+            "phase": "recorded teacher",
+            "state_sha256": "8e13c253b565785f4d47b370da4e0adeee6ef3b5bd7668e4ac0ff74c10309b84",
+            "uncompressed_display_bgr_sha256": "27433c8ccce5e2909b079ea17f430106e4393492d5566a6b4c184260eb2b1a02"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 210,
+            "phase": "recorded teacher",
+            "state_sha256": "d61c55977c02ccd079540eec4c8150a565640fe62f9a72527a75e6d8b8e13fc5",
+            "uncompressed_display_bgr_sha256": "82949046fdc08171c5d66ef778882a313af7fde60e2421812a2556c1fd92fcc5"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 211,
+            "phase": "recorded teacher",
+            "state_sha256": "f17661fddfc53e5079ed094408f98b97bc993ffce0724335253e14258af76585",
+            "uncompressed_display_bgr_sha256": "b02d7efea18e536a46ad4f3f9d4c6c4edfee8c547a5eddcfe11487b16f53e161"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 212,
+            "phase": "recorded teacher",
+            "state_sha256": "da0b4f103e703c1981f61f665fd0ef4e4d2d81c892d112b787391d237fec5b4e",
+            "uncompressed_display_bgr_sha256": "0ba8864d94bc16e7c45f97dd839ce8cca767a8cb2fa3f8c80116b6a080fc4102"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 213,
+            "phase": "recorded teacher",
+            "state_sha256": "5e68edb4cdbac240d585788b0619ece9bcbcab180da780095f62417e4c933221",
+            "uncompressed_display_bgr_sha256": "0eb6d17e203881adfe552e16cc174a9c2669f6cfcd703b99732e2355a7aeed5d"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 214,
+            "phase": "recorded teacher",
+            "state_sha256": "ff4ff1ae4d3578c821beb62d6552040358e10f1ee2fa3818c23f66b4cacaa502",
+            "uncompressed_display_bgr_sha256": "090037e536a92fba644483398a80d661238e72a99ba26d6d0dd88eff1285526f"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 215,
+            "phase": "recorded teacher",
+            "state_sha256": "bfe3cda92b7b929806c7a12ffa32e8a2aa4b63f076cf98262000750f89ae3de9",
+            "uncompressed_display_bgr_sha256": "e48efdc2ffab21e9b725ee6047ec95db9d46cbd0c958f4bfd3e999a56baf5f48"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 216,
+            "phase": "recorded teacher",
+            "state_sha256": "7b119c228683c8e2be62abd2c0a4d811567dc1271fc4e57f5cea02f888c4f185",
+            "uncompressed_display_bgr_sha256": "fd3aa025d337789add2d4dfc3187abaabbb47ebcd7cc56737b99b3a1c5c62478"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 217,
+            "phase": "recorded teacher",
+            "state_sha256": "7f8f961cfd195ecc54993956cd6ba785a0d78bb40bcbb5e1bcb8f4648d1cdb14",
+            "uncompressed_display_bgr_sha256": "cabf73151975cf1bfebf67c15a8d3a3faab5d53a773b4102ae4d8754b040fac8"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 218,
+            "phase": "recorded teacher",
+            "state_sha256": "8a0bcc3138cbf8c672bd2f2965c9d9e98f93af871aa75c2b4d205d23c12fba6c",
+            "uncompressed_display_bgr_sha256": "872cb9645fb0cb4224fe126dd08dd2704ef236a6ab844b16b8d6102e95c11f0c"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 219,
+            "phase": "recorded teacher",
+            "state_sha256": "d9597d97a8d77b7f3c4b4450902f374a1b6e6dc9ebe0859f12e54f40a214251b",
+            "uncompressed_display_bgr_sha256": "d6d14e340d82200c1ccd5f973dd1276084070c5acfc6026badbb2a825e66d7f5"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 220,
+            "phase": "recorded teacher",
+            "state_sha256": "ea91325359563cb963f8ebc5d8b13cd2c077c35d389665f2a0c9324a3b94345a",
+            "uncompressed_display_bgr_sha256": "1e533273bd7adb0e64b271065cbafbb27c0d4f75651623c704848815768da23b"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 221,
+            "phase": "recorded teacher",
+            "state_sha256": "13ba25950241bedd9403eb14f6cf97d8a25c10174a8ce86a6068ea507f7147cd",
+            "uncompressed_display_bgr_sha256": "bb7e5f16ae8f536debd5b23f517f53817dc093b8bfce02814922e0a37c4e7080"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 222,
+            "phase": "recorded teacher",
+            "state_sha256": "36ddfacef7eadfb1d530a08f691127aa8c7cb3e244c6a80e27d557ccf8e0cb18",
+            "uncompressed_display_bgr_sha256": "b21d25911b7cbede289fd4d9f8a8ca9d4162cc439dc400ee7c4c4e38620de9eb"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 223,
+            "phase": "recorded teacher",
+            "state_sha256": "e986056f02227930c96b276962b2586738cbe3e374b1387e5764fccd25abb5c6",
+            "uncompressed_display_bgr_sha256": "751fe4c95958483fb1b19e1d39c4301e93e6fa462db2a0c56c1d2cbcfe2f36d8"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 224,
+            "phase": "recorded teacher",
+            "state_sha256": "fc0caff9360338e3ef7d725bd78805b8aa9ce8d8816473efc234574c41bf4416",
+            "uncompressed_display_bgr_sha256": "62ed3bc2617fd0c195546c60c23d9e5eb29126744b16251e29810d57ad2eb470"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 225,
+            "phase": "recorded teacher",
+            "state_sha256": "e95bf74b54c6587c8c7aa459226f7b93c087628b93a70cccce67421d28f625e5",
+            "uncompressed_display_bgr_sha256": "e019d99f2abcfdb87af4d94b0fe7e0694db5855018da5ce0393a77a893af954c"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 226,
+            "phase": "recorded teacher",
+            "state_sha256": "700b6eafc69547a413ea934f7ce44da0b868cfb170e28fe7abedb3f6170750a7",
+            "uncompressed_display_bgr_sha256": "2d41058aa546d74fd86c9a31befa38afcec8e10b9e0b7ddf83b0e970e81fc14a"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 227,
+            "phase": "recorded teacher",
+            "state_sha256": "9ca08d77113c1d3bc00217e041483c81c174b8222e556dc9e8823fc1418c6412",
+            "uncompressed_display_bgr_sha256": "8bca85afaae6ae263808de7839dd0a1abff35435eac4f8bc2915dfb3f2f789f9"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 228,
+            "phase": "recorded teacher",
+            "state_sha256": "22a4de49ca4396a6e4ba29d8361d47f52edf7eb5bea6ebb8d0da99c3d2e2cde5",
+            "uncompressed_display_bgr_sha256": "94faa908723ab69fb7bf9a6cfd0d4a5b0b61872de2b2bc212a69b00938cc8010"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 229,
+            "phase": "recorded teacher",
+            "state_sha256": "5a85053025c8174e9425c20843c49468e3292aa1c7b6558b71ed412d77dd3de0",
+            "uncompressed_display_bgr_sha256": "ff23748d314e1efaac1c0bc8c5564a52e4ef0771f51b0d595d3859a5ced34ce0"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 230,
+            "phase": "recorded teacher",
+            "state_sha256": "595fdc15af06b9414c68227da6d18786c674c1195a1500a8c8cbd86bce8f934a",
+            "uncompressed_display_bgr_sha256": "008c567b9c893a9b4bd5144a1ade2ff249c55990f20abbae9762b1dfe7562eda"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 231,
+            "phase": "recorded teacher",
+            "state_sha256": "907be2a1c9d5b7e089a479680ae1d33cc641deaafaa40646f0db0b50e663849d",
+            "uncompressed_display_bgr_sha256": "7e48c75d4f12f4b01d6195c4d9cbdc516352347f4e760e4e24e7cb4552549efc"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 232,
+            "phase": "recorded teacher",
+            "state_sha256": "6cee467c9f24c8b3de4694d8f467f55db9b3370d94df7cdc1d9c04f6973c4ab8",
+            "uncompressed_display_bgr_sha256": "ce7b1e82fd04f1a5ab730703c29b0529bdbee1d3552433bd45ce7170b18c0041"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 233,
+            "phase": "recorded teacher",
+            "state_sha256": "7cf99d46047fed3f1152e240aef24b54b4678d93b4284138446a35d383b1cc10",
+            "uncompressed_display_bgr_sha256": "cc9fc2fe33ab972c53e839a3c54ed02ea95245aeae009c1ce02d7cd5e4529213"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 234,
+            "phase": "recorded teacher",
+            "state_sha256": "daf7a90a0c5abfd3419a01a55fff23bfbe7a22651c675db5f65d1908741e04b5",
+            "uncompressed_display_bgr_sha256": "6893595bdbbbbd6ffdaa6b1a91f81c83a921bf564f270a0237fdaf33468ad8b7"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 235,
+            "phase": "recorded teacher",
+            "state_sha256": "431c70b5ce0ae5e78bcc7ded1c5cf060e3ba7042e5c6647f0ef33dd5f40a273e",
+            "uncompressed_display_bgr_sha256": "6c18421611776f335bcab6567bef1e745bdf11255fa1ee0b3126d68972a7c10f"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 236,
+            "phase": "recorded teacher",
+            "state_sha256": "047de56530f8b4a6327244c2b507f7943cda19cd4845da958e2580a4702579b5",
+            "uncompressed_display_bgr_sha256": "672c48a869863181a510759b75a6cfbae88b73486d26aa0ac61c98a87c3d467f"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 237,
+            "phase": "recorded teacher",
+            "state_sha256": "3357ffd563db32d5393bbfe1f75621d1515ee94535dcd5b53787f5f21a6ecd62",
+            "uncompressed_display_bgr_sha256": "3e4ae38381e6cad0f2d1429440bbcedba89e3d376d6275425212651373923c2c"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 238,
+            "phase": "recorded teacher",
+            "state_sha256": "5e270712ee70922dbf45040a112384ae72838c7e9608c5463c521ce8ab182b76",
+            "uncompressed_display_bgr_sha256": "04fdd5e6ebf385e9e790e0c344c3038c14214cc7a2d1128f9835a7c64c381eef"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 239,
+            "phase": "recorded teacher",
+            "state_sha256": "b8e9b1edbe35952f50103361b9a6913e2fc432058ea55a626ed525f40dbbaae6",
+            "uncompressed_display_bgr_sha256": "bd6202a42ea518e95f06cba2897c1f9404038aad9cf47a7d3a369c14b74aa52d"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 240,
+            "phase": "recorded teacher",
+            "state_sha256": "41d7eaa9b0b59b79a3680f0d16ae8bb20b82cd06611296e757d80da90f6fa4fd",
+            "uncompressed_display_bgr_sha256": "a7fe032151e8db8db82d2d13be3d799ac12f04fd0221142e0bcc7f1fd95580e8"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 241,
+            "phase": "recorded teacher",
+            "state_sha256": "43a92195dfb04379684e11f0e723833faf7b17bae9dabbb446cbe72bf4fb7b3c",
+            "uncompressed_display_bgr_sha256": "587771edc8ef46b730f6170f25420105637c7b5995053e2da7e504d7acda3fdc"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 242,
+            "phase": "recorded teacher",
+            "state_sha256": "67d1bfbc827ccfb37ac99059a3ff85161b801c910cd14fbbef6fc8e78157653d",
+            "uncompressed_display_bgr_sha256": "af0bfd3569a5a2ad5ca95ff933b3923078cd169ed9278434f5d21f122ed0b70e"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 243,
+            "phase": "recorded teacher",
+            "state_sha256": "d82df8162e1f337044b9ec10b0f0d7660d131ce74b976fe52ca3897e0ef80aba",
+            "uncompressed_display_bgr_sha256": "55adea4863517ebb635c2b089e69f1920266c05b1e401a7923864293a58a0c1c"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 244,
+            "phase": "recorded teacher",
+            "state_sha256": "ac0ebe5dba14646748e09f74808021a8f9e95d2ae94baa63c47f8f5ae3059d57",
+            "uncompressed_display_bgr_sha256": "3674985c4fb959faff3b88152c8b1e1c56f604e0616cdbd1c9cc0edb5a8c2701"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 245,
+            "phase": "recorded teacher",
+            "state_sha256": "4c23ddad942f7f43fb8a38d7c147e207122efb2e604902e76e6dc9f16378671b",
+            "uncompressed_display_bgr_sha256": "f7a161652ce74799839e55a70e3d40137c372ef8c6d3afff6464b7f05397375a"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 246,
+            "phase": "recorded teacher",
+            "state_sha256": "032a2bada7023fc0107611c125a542a89aadd0cc9dc092f0a8dec983d8655cd1",
+            "uncompressed_display_bgr_sha256": "754ca9638709b111d25ccdf43d534bd173d3f94f852dcc494bed45e8d5f38aae"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 247,
+            "phase": "recorded teacher",
+            "state_sha256": "5698d455cf54310fed7e1ed12dc009e4d1234d03d02ae08337b03d403256acaa",
+            "uncompressed_display_bgr_sha256": "bc676bd6449ac57462ac3cf94e7baf9937fb899876dfe31085c998be8f91e693"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 248,
+            "phase": "recorded teacher",
+            "state_sha256": "7dcc0331a3e3022f23ff5d6a84a27d1146e978896d25583312ff749273f35130",
+            "uncompressed_display_bgr_sha256": "e59d9dfba8d867425788abed7f01942adbb5b7e4d808048c2e7085ed4c2d34bd"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 20,
+            "control": 248,
+            "phase": "final result",
+            "state_sha256": "7dcc0331a3e3022f23ff5d6a84a27d1146e978896d25583312ff749273f35130",
+            "uncompressed_display_bgr_sha256": "d0341a487396b510fa17e16942e6971e867c192cdd87e845d0d84fb8b707bbc4"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.0,
+      "torch_loaded": false
+    },
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\td-baseline-300-20261021\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 0,
+        "source_controls": 300,
+        "replayed_control_physics_substeps": 3000
+      },
+      "source_report_sha256": "bc04856cf5a7d14c607ac29ef7a55508cb5417df1638b49b4bf21eb1be9f52cc",
+      "source_status": "complete",
+      "source_stop_reason": "control_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\td-baseline-300-20261021\\report.json": "bc04856cf5a7d14c607ac29ef7a55508cb5417df1638b49b4bf21eb1be9f52cc"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "9babec97317f0a635b65f96ece81bd40224cb44c3f924113122cad641ebecfb2",
+      "source_counts": {
+        "control_steps": 428,
+        "control_physics_substeps": 4280,
+        "reset_physics_substeps": 2,
+        "planning_calls": 54,
+        "denoising_steps": 5400,
+        "candidate_sequences": 54,
+        "denoising_sample_steps": 5400
+      },
+      "source_search_counts": null,
+      "result": "CONTROL BUDGET / NO NATIVE SUCCESS",
+      "current_source_sha256": {
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/official.py": "9fb95bfd481bea1009ecdfa382866a2f65a9419e8653595b105928549c95af8e",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/collection.py": "f338b1848afa683138e0ecd5252db55eafe0c72de3401b56edb5fa328ada8104",
+        "tdyssey/letters.py": "b168ee52db573ee5b626d09640ea475f484f0a74056700ec22f9a5205c7f0a28",
+        "scripts/evaluate_shapes.py": "f5b177faa0667587622d5771ce2c69c5e560b5a2cd6f58e5fd20974ef203e87e",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "pyproject.toml": "c41f94734bc1c591ba4c87e7b0cc7e6e8335e4e5873fca239724b8638cf2bece",
+        "uv.lock": "30954ae72f9ff2fff77fa1d274bef08dc8d392aed53c44e71ac021f1f11aa88c"
+      },
+      "source_files_changed_since_run": [],
+      "initial_metrics": {
+        "coverage": 0.0,
+        "iou": 0.0
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              242.26605323177665,
+              314.1424988704674
+            ],
+            "angle": 1.5509295481359093
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              143.83405063881122,
+              428.90216221185153
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            145.47751201970763,
+            54.65949156383565
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 300,
+        "pusher_target": [
+          167.93728637695312,
+          437.02740478515625
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.24962068637702817,
+        "iou": 0.14260948151881325
+      },
+      "final_control": 300,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 136,
+        "contact_bearing_counts": {
+          "northeast": 3,
+          "east": 27,
+          "southeast": 4,
+          "northwest": 50,
+          "north": 9,
+          "southwest": 33,
+          "west": 2,
+          "south": 8
+        },
+        "contact_runs": [
+          {
+            "start_control": 6,
+            "end_control": 8,
+            "controls": 3,
+            "bearing_counts": {
+              "northeast": 3
+            },
+            "translation": [
+              2.3978359588844,
+              8.446821266337082
+            ],
+            "angle_change": 0.06696766011638233,
+            "dominant_bearing": "northeast"
+          },
+          {
+            "start_control": 11,
+            "end_control": 39,
+            "controls": 29,
+            "bearing_counts": {
+              "east": 27,
+              "southeast": 2
+            },
+            "translation": [
+              -132.2096679187212,
+              54.28098176372126
+            ],
+            "angle_change": 1.0547962009236254,
+            "dominant_bearing": "east"
+          },
+          {
+            "start_control": 64,
+            "end_control": 104,
+            "controls": 41,
+            "bearing_counts": {
+              "northwest": 41
+            },
+            "translation": [
+              40.00969963932829,
+              103.52777885778619
+            ],
+            "angle_change": 1.9747886714980716,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 115,
+            "end_control": 132,
+            "controls": 18,
+            "bearing_counts": {
+              "north": 9,
+              "northwest": 9
+            },
+            "translation": [
+              -84.60426287242129,
+              -37.42883329926758
+            ],
+            "angle_change": -0.807742420105851,
+            "dominant_bearing": "north"
+          },
+          {
+            "start_control": 157,
+            "end_control": 174,
+            "controls": 18,
+            "bearing_counts": {
+              "southwest": 16,
+              "west": 2
+            },
+            "translation": [
+              20.471942361809482,
+              37.2155405645035
+            ],
+            "angle_change": -0.5680887437921942,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 199,
+            "end_control": 201,
+            "controls": 3,
+            "bearing_counts": {
+              "southwest": 3
+            },
+            "translation": [
+              6.2697827307069645,
+              -3.2646804715282656
+            ],
+            "angle_change": 0.09128574077142582,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 232,
+            "end_control": 236,
+            "controls": 5,
+            "bearing_counts": {
+              "southwest": 5
+            },
+            "translation": [
+              10.657125560011337,
+              -5.699590856030284
+            ],
+            "angle_change": 0.18222843472670114,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 267,
+            "end_control": 285,
+            "controls": 19,
+            "bearing_counts": {
+              "southeast": 2,
+              "south": 8,
+              "southwest": 9
+            },
+            "translation": [
+              44.18055076182597,
+              -16.035911969883443
+            ],
+            "angle_change": 0.4623941305749759,
+            "dominant_bearing": "southwest"
+          }
+        ],
+        "route_signature": "northeast/east/northwest/north/southwest/southwest/southwest/southwest",
+        "object_translation": [
+          -92.73394676822335,
+          141.14249887046742
+        ],
+        "object_translation_distance": 168.88099321892793,
+        "object_translation_path": 495.27192655618603,
+        "object_angle_change": 2.455856976560834,
+        "object_absolute_angle_path": 5.429545963216446
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\helper-validation-r2\\02-td-baseline-300-20261021\\actual-controls-paused.mp4",
+        "sha256": "5603cdc87fb45c543314be199ea0b7c6ba4c5e309cb1e2df7b0d4338e6f3d33a",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 930,
+        "duration_seconds": 93.0,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.5093495845794678,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 0,
+            "phase": "episode initial",
+            "state_sha256": "9babec97317f0a635b65f96ece81bd40224cb44c3f924113122cad641ebecfb2",
+            "uncompressed_display_bgr_sha256": "30f16f05f49ef36fb85ae6e0d604c94adbfdb438e367af738aa49d213243eba9"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 1,
+            "phase": "recorded actual",
+            "state_sha256": "830620fc4646d71cf26944ebca671d288fe229cf69f461fb569139bae54b89c3",
+            "uncompressed_display_bgr_sha256": "87d50fc1740784043ee739d67c09111955cd9a42f2f1dea4ac9be5e5b2f06923"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 2,
+            "phase": "recorded actual",
+            "state_sha256": "7b32aba450c796956e02ad760b284f98653d280795357cd65c36564c6a88f41e",
+            "uncompressed_display_bgr_sha256": "e88e83da47507921dc555fc2964834ea802600ebccb0044b6d0022ae9f0bed5b"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 3,
+            "phase": "recorded actual",
+            "state_sha256": "a069b83a1a140d369c2f1f5c8218c442f78d00168a1f531fd83ff139af9adc6f",
+            "uncompressed_display_bgr_sha256": "597ba376d7791e503bcc3b4795d3f04302eb8524655c4f9ec579a85c9903006d"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 4,
+            "phase": "recorded actual",
+            "state_sha256": "5aebd79061176551cd5c8df46e806c2943ef74660123405011ab9804c8b94049",
+            "uncompressed_display_bgr_sha256": "2f5e6de5f15f7995d12979005d1b260b865d2993fc6b4bc4b9ed4a5538654e64"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 5,
+            "phase": "recorded actual",
+            "state_sha256": "c5356d570b217134ef1680f32352cced05440282a5bd7f66d08fb93d21385b05",
+            "uncompressed_display_bgr_sha256": "7f187757e7ac3f5e10a1f9b146bfe10212ddcbc1cd33ba89f4ad623f443c7ff0"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 6,
+            "phase": "recorded actual",
+            "state_sha256": "f368b94b4462c84dfab9a72d6f0155a11fced71e06017fe445c552c07723e6cc",
+            "uncompressed_display_bgr_sha256": "3b1385240c18c3499a8f26fad27cb31904bdbeebf6ad725fe4ec06738d605004"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 7,
+            "phase": "recorded actual",
+            "state_sha256": "1dac8f9a2d999076286bbb753f6015c68e23e94517721ec7b227392d184ccd01",
+            "uncompressed_display_bgr_sha256": "76699fd283898c09e4ef9b49c9aad72f32ff75b9450c2c06391a48a6f3ef71dc"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 8,
+            "phase": "recorded actual",
+            "state_sha256": "d9d89ac2255516be4cf9fb4d5242e5c21aed35a3a985c776d8f5717a354d492e",
+            "uncompressed_display_bgr_sha256": "0d9da49376950334d2babd9ec4887fd06225ef155842c8d1e932b444fa504d67"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 9,
+            "phase": "recorded actual",
+            "state_sha256": "3ae38d169c7e35c8fa288127c4e27e46ce270cd6bd693aa427168e3c78586b0b",
+            "uncompressed_display_bgr_sha256": "0493058bed786ec343377eed23b3713680634d886f9a1a08b1a8e4d3e9189519"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 10,
+            "phase": "recorded actual",
+            "state_sha256": "32cb5ec5eb1afd0ec228978896e6b556820b07c98808b0f6a0a0bb6754583a57",
+            "uncompressed_display_bgr_sha256": "5aafc21692248b090116fb53858c43b75f8986327379177f1801aec5e41fac5e"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 11,
+            "phase": "recorded actual",
+            "state_sha256": "dacb9338c7e3ce175943c2848317ac5745c6feae17a1b1b734bc39506a53ded5",
+            "uncompressed_display_bgr_sha256": "64d6880d5fe59b9ed274b81087645f8106b49010cf90956eb4e664dd70ea71aa"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 12,
+            "phase": "recorded actual",
+            "state_sha256": "4f97fb9d15b181fc1f36415c8d9aafd109c248737c48e60632be6d2942dbc3e6",
+            "uncompressed_display_bgr_sha256": "856580be0d3aa1be4928be8a82fae827ae03629f26eba47f80ec193c716cf04d"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 13,
+            "phase": "recorded actual",
+            "state_sha256": "fec06897082b9a0344d4bfc003b60e112a625c19290de19b8a445ab6b690b14c",
+            "uncompressed_display_bgr_sha256": "eb3319903cdaa2ec2ff69429a3a79de43309c446583ef885bb479e24a3a73ce4"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 14,
+            "phase": "recorded actual",
+            "state_sha256": "d2783d397e161ba3eb2bce958b8047d4fc4aa76f5f9db36f6f1b85f402749d18",
+            "uncompressed_display_bgr_sha256": "397ca27703cf0c86ee26a946528087357db743fef27a6707b6833d133cd7f549"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 15,
+            "phase": "recorded actual",
+            "state_sha256": "51de4ff1a36e9b6d1cd6d38ef064698499afcd65d83e2a2f2ceca451ca7435a0",
+            "uncompressed_display_bgr_sha256": "48d21726fd73b4dd814dfcd500bc335c1774964198b727b1f4103f08dec38191"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 16,
+            "phase": "recorded actual",
+            "state_sha256": "b6ae807d244e491c0ae85423aa81ad25dc2bdb20e78729365d8dbd6f4a7c8ad1",
+            "uncompressed_display_bgr_sha256": "c8adadb326911c71daee06772a2ec66867df994b57d724a925ff33ed4bee335e"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 17,
+            "phase": "recorded actual",
+            "state_sha256": "ce2a714d0587f32db8b4fcd7fd5d7ee8744dbb50afa4ae1afd4a8a20f791b94d",
+            "uncompressed_display_bgr_sha256": "185397e7f1cee71c1a06350d7a315371143f5a3bdebb56ec96b1abaa1b008cd9"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 18,
+            "phase": "recorded actual",
+            "state_sha256": "5f4de0b474c93e2f8cd68bfafe3f7441e210e1ff4681824164fa326a9692b997",
+            "uncompressed_display_bgr_sha256": "ced8082040002fb30f2f74684b995e9b520cffbc39753034912e7495a775e7ed"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 19,
+            "phase": "recorded actual",
+            "state_sha256": "b3fe8ce1a56fd52aca0c3f2e8f3ad5d17ca6ef3a6024226ec68e4efb91d0f10b",
+            "uncompressed_display_bgr_sha256": "3300dc026c76b338b24a7cac320b2b558f04e36ffde3f7db1e7b1a419637207b"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 20,
+            "phase": "recorded actual",
+            "state_sha256": "aee1f4e49ffab2efa1f8ac70a97e049910b8d3d53448a5e2fef56093d5f55945",
+            "uncompressed_display_bgr_sha256": "03ca0fb84e687df624b2e32d397f751e580e801d4410635f2700a0494d605e69"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 21,
+            "phase": "recorded actual",
+            "state_sha256": "f18458b96ab986a1358b2fee8605d21ef7df0d082d0338beb23b64e267c4b07d",
+            "uncompressed_display_bgr_sha256": "0dfc6f89e0c61b5e36fe9b784c056ea069aa0a72df3fab7b6adb45552ccc9a84"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 22,
+            "phase": "recorded actual",
+            "state_sha256": "b0b0e50445f8e72ea9704107235743c1817eb47888aca569cb5baf96583add31",
+            "uncompressed_display_bgr_sha256": "bb797e7fba2dfc42ca71f41311956e868c245903d0f136bbbf8a8766b1960b39"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 23,
+            "phase": "recorded actual",
+            "state_sha256": "cc675377336065ebf5b71255a0e4713403ba8c6a91d6226134094f561ed46812",
+            "uncompressed_display_bgr_sha256": "de6e58b90e7a2888359b61d60fe66a941ed7bc8c41f58fd3367f7342268891e8"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 24,
+            "phase": "recorded actual",
+            "state_sha256": "d2e89f8f851e16006b2d57120b68f4b20ae484689c4b76e6f06dd2793313a63b",
+            "uncompressed_display_bgr_sha256": "b8f7a829acac679ca2fc896e52d8584f1a90ad99c83c3caca77a237ff03e866f"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 25,
+            "phase": "recorded actual",
+            "state_sha256": "ac6d081dda3b2b7521b41c6df0cc6c85def139f382197b4b33c9627d22f006c2",
+            "uncompressed_display_bgr_sha256": "03a19dc68fe358bddd11c416b1fa54d959ce4aab897ce42bd4262b8c6875890f"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 26,
+            "phase": "recorded actual",
+            "state_sha256": "9ca9e62cf5f6f38a1687261b7d5fd46ec9e4256dbb22bdf7d5e341fdb3c0592b",
+            "uncompressed_display_bgr_sha256": "7778ab5b480ed2ace86bb58e358a811b58093ec5bc56488e353192ee8b4eb040"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 27,
+            "phase": "recorded actual",
+            "state_sha256": "0b5b6d6823818a67a8037787a880e9d356e05fe53a1ebd7d8f49e5a4e4b98d83",
+            "uncompressed_display_bgr_sha256": "5d893c3eca3b637245799b82992646e1a11f3aa9c62cbc96ff5498df77ba4c97"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 28,
+            "phase": "recorded actual",
+            "state_sha256": "d1f51ed75a986878152eb8c238c13992d848f7a470a792d99e72d2fe4e29f6dc",
+            "uncompressed_display_bgr_sha256": "25275171b45cdf10aa881082aa30b81e4c0d67cacaa6d68a58ca316aad29275e"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 29,
+            "phase": "recorded actual",
+            "state_sha256": "8e426badf3e73f50461ad1b09687addf6828c875bf31125280ec4afde4251add",
+            "uncompressed_display_bgr_sha256": "79fc2852a72d964ae232569fb874bd297ca06f4f3b330003b58b1a3a22cb7c30"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 30,
+            "phase": "recorded actual",
+            "state_sha256": "0b5d56bdf104caf5447e13604eb39a8829a3f977a9e2ceea207cbd5d49481bc1",
+            "uncompressed_display_bgr_sha256": "733f9b27120caf639dec9b4d671f3ea45833d5297123afca55d9ee3c4c3b2b3d"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 31,
+            "phase": "recorded actual",
+            "state_sha256": "93426193aa31e8aebf987c0025eb82c37efd0cbd57dac9c19de140b20df48af7",
+            "uncompressed_display_bgr_sha256": "936dfed6b79894254b8d68007f7ad331c50bb64d99d2f07615391455441cdad3"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 32,
+            "phase": "recorded actual",
+            "state_sha256": "e39ad11a2dc650e2e1236ecd0671c1247eca8a2375fc8bfbe41024da3c00ca50",
+            "uncompressed_display_bgr_sha256": "4f85b2a784ba8e01abded811fd93c2172c76570cb24940f0c7a418198d8b2742"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 33,
+            "phase": "recorded actual",
+            "state_sha256": "3a473d6ea58fa45b48a3dae8c4c97b95cfdee1d6633ba817ce16d204306b41c6",
+            "uncompressed_display_bgr_sha256": "733ef65dec8cd01f98091b8ea0ef5d3a55f3e751340f913938aa2bf7d778c4b6"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 34,
+            "phase": "recorded actual",
+            "state_sha256": "58ff745ed57e61eb775e50926723bfb2ce54755518edc73ca6578c2f9600aa64",
+            "uncompressed_display_bgr_sha256": "a9351d2b9952cdf02ba0c68e04bfc75d008cb916fdd5fdaee6258ed49443479b"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 35,
+            "phase": "recorded actual",
+            "state_sha256": "715927b3036d124993c9e1fe9a5a6bdec3e4982dd6e2bb78086fdf5f5f740131",
+            "uncompressed_display_bgr_sha256": "51d9218c4ebaf6511b2974af6f824d4c70e6cc621d76a008c9a5957f9203baf9"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 36,
+            "phase": "recorded actual",
+            "state_sha256": "d4c6d402c1f66fedc1253a33958017e22dd8749a62a48f63234fdb5922af3938",
+            "uncompressed_display_bgr_sha256": "c05157e1d05ed4686d5625b1f4c2e1d675d96c8ad5b705eb6e2557620f8e2ce1"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 37,
+            "phase": "recorded actual",
+            "state_sha256": "5a12147059be56f2dd9518ec0d07aaac14bdf91f65a2439576fd0b9ce09e85be",
+            "uncompressed_display_bgr_sha256": "2d1ec226ae06b892a6892da89fd5acc92605e3cc7243c5b1b29d57513b500478"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 38,
+            "phase": "recorded actual",
+            "state_sha256": "598e588cfd5b5c0148439970b11bd164ead28a8a53a6edffb646884f1a4eed7f",
+            "uncompressed_display_bgr_sha256": "e7b54142718ffe0a2611b363e829f965e278ccf2c570184145f5d0cd1bf0e4b5"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 39,
+            "phase": "recorded actual",
+            "state_sha256": "cdd608a59290e003c4c20cfe1d0241c8eac522c3ec8b4948cec7d40a25077e31",
+            "uncompressed_display_bgr_sha256": "e7a18d055f2eebd12d49c32dcbf19a8ae2468a616ef70707578b5e237752da85"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 40,
+            "phase": "recorded actual",
+            "state_sha256": "6422825d9abc848ffa6f12207aacc664253c676a03fd0e3fefae4cb9ee8cf9c1",
+            "uncompressed_display_bgr_sha256": "6c06fa9269575d90f2cedafb528681b05611f075f4aca6874e747a1dbc1d86e3"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 41,
+            "phase": "recorded actual",
+            "state_sha256": "cd2957c068c5c8af39b4eb2a18008ce155257944b09cbdd247b13cc826906b13",
+            "uncompressed_display_bgr_sha256": "8887fb57848a5b3ba95e9630eb28d9d397155752a7e60f9a635148bb346a07e3"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 42,
+            "phase": "recorded actual",
+            "state_sha256": "df2b70203f07e340da9d38670c3060e8f92b21e9c22bbcfc81a92e976e5f48be",
+            "uncompressed_display_bgr_sha256": "dee633f493005fb883bb6d5e526193b2ab1dd58a9fb1b6ad9f2b6f28c021cc2e"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 43,
+            "phase": "recorded actual",
+            "state_sha256": "9219703c1f4db3e17ed07e680b3a278ab9adc1d3e21c275f88606262c40cb622",
+            "uncompressed_display_bgr_sha256": "8f1e11f1073c10814302f52a85ffc8a255f1b65979aff25f4b52cbf5ca68eaa5"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 44,
+            "phase": "recorded actual",
+            "state_sha256": "6aef29c8b89cce605b5cc16ec8d1a9eb838bc1d5aee1b9f45f8f30b39b8c2046",
+            "uncompressed_display_bgr_sha256": "f8eb348530183bdc28304618934bc5a6b0381a919908e4addf9ef6f92e44ca21"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 45,
+            "phase": "recorded actual",
+            "state_sha256": "ea9681b5e03d548189a656996448a86f12976e15b1c4c504cfdf4645da48efd7",
+            "uncompressed_display_bgr_sha256": "943ad9e7ee6961b0b99f056808a13bb36fa3b2d7473fcd285db4fe2bb4210fd9"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 46,
+            "phase": "recorded actual",
+            "state_sha256": "47bfb3d0df49160732f9f7b0757d3445e187703cb381881f38577010f087892e",
+            "uncompressed_display_bgr_sha256": "8eec63ceb9c35251a36a5f2dadddd395f16df9991a4e83dfb3af7af9988b6f94"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 47,
+            "phase": "recorded actual",
+            "state_sha256": "8e5fd90a2d27618a7bbb5cb09d2d5e0aad934f072c606b50b985d8e47404e226",
+            "uncompressed_display_bgr_sha256": "e6bb1a7b6d3ab6fb7393ddf691c69229cb3374edb90df789914caf1eea4c5341"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 48,
+            "phase": "recorded actual",
+            "state_sha256": "959ff01b2333dd46c90e5d4d91e0c256b8c7808802c69c9ebc5cfb1f44e6b3f1",
+            "uncompressed_display_bgr_sha256": "bb71f4d7e7c1e0f762894a996269b61e9fbfd9f59a29197766dbb889ed5607cd"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 49,
+            "phase": "recorded actual",
+            "state_sha256": "133d761ffaafdefc9924510a495bc52b4d9dc43ba56305bb8949ec79d9195abd",
+            "uncompressed_display_bgr_sha256": "de29718e20fbc4dcc6801705b3fe58dcc760e9259c84f785caba112123502ab4"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 50,
+            "phase": "recorded actual",
+            "state_sha256": "0ac9c3752f023eb8efd46fad214762ce1697494bde46b3fcd30819d603c945d8",
+            "uncompressed_display_bgr_sha256": "65c3c7bdca11dfc6bfcf4285894c00326b5f17d6b3b1e9901429b0a286d65f1f"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 51,
+            "phase": "recorded actual",
+            "state_sha256": "f911c62188955a415d3ee55138a41b15ff84dc50b6930ca55bc81027d0800259",
+            "uncompressed_display_bgr_sha256": "fd20d5904b935cf9364f0b60972e70e728c1e4f04b511f126963873453878a2c"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 52,
+            "phase": "recorded actual",
+            "state_sha256": "13e0e09fade085f7ce6efa62b994398e125aac9e74c2ae8bdda488b940fa9202",
+            "uncompressed_display_bgr_sha256": "f08f04320ef61717a351247b34e1e65a1b9ff88eb23d1806f39da4874c7ad4e2"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 53,
+            "phase": "recorded actual",
+            "state_sha256": "2c398f101874742d3325de72517e01557a17130564902b516585dc9e37ce53b9",
+            "uncompressed_display_bgr_sha256": "99a9a224874219bed276926e6c659f87bc8b1477895da54b1c4d5498e66fa0f1"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 54,
+            "phase": "recorded actual",
+            "state_sha256": "5ad11fb6c6397fb4f1c06864e6cc50309186bcba7f6bae46b05944db4fb87704",
+            "uncompressed_display_bgr_sha256": "900e5954bdd166ac60c01f4c73aad0b604bcf2a8f34e55e4c3e9fee068da0717"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 55,
+            "phase": "recorded actual",
+            "state_sha256": "eebd34b43276588eceaaa0b6a4003066812ee46942d2cf9f296478c714eabd0e",
+            "uncompressed_display_bgr_sha256": "e89c488baf390c28cd602dbbbb2d897429c81d8453e9ae5a87129892ec1bf901"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 56,
+            "phase": "recorded actual",
+            "state_sha256": "f5a7157667bf5f758164c0863641fbc524f2cd4c87da5ccde0c663af31cbd8c5",
+            "uncompressed_display_bgr_sha256": "755ebb4196b577fdea24aa95731a86a432acc508e2190b1f04c6e67043f25b9c"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 57,
+            "phase": "recorded actual",
+            "state_sha256": "9cf530ca27eb3d35f30937d416e6341a5d803c6a2aa33ca007404c5fd4e1cccb",
+            "uncompressed_display_bgr_sha256": "c7dc48e846d36ef31a1ac7b48260d0d9865453cde0ffe658cf768e9ae7dbc31d"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 58,
+            "phase": "recorded actual",
+            "state_sha256": "0dc4d390e7e72472ea35809797e9276ad45305b289ecbce6421fb05cf4191ff6",
+            "uncompressed_display_bgr_sha256": "65e53b25c1c01e2751f4b72d1e461b3fc8cff85ab24aab6fdae3799fc16fa5f3"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 59,
+            "phase": "recorded actual",
+            "state_sha256": "fd4c597f3ded44c2c7a801d1222379912ac3e3311d1672e2c9a16a43a586df65",
+            "uncompressed_display_bgr_sha256": "06a10fb71ff650781682eba00fbe62f2bc4dce8d05bc8380594779f3ada0b9c7"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 60,
+            "phase": "recorded actual",
+            "state_sha256": "7612d48ad7ea5c29ec70fb9a6fd0ce7c2c4d2f5ce111811c6606678f659b1b2c",
+            "uncompressed_display_bgr_sha256": "642e6b14586bd74837a680fd450790a4efee9215e031547bfd24a74cad3ed11e"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 61,
+            "phase": "recorded actual",
+            "state_sha256": "f5eae7857edae474ed7debf55a2598eaaca4fa70a94359e6aab738d8db46cf7c",
+            "uncompressed_display_bgr_sha256": "9eec5fbaafd86e76c1913ad561fa8b79d13e83d04e92e7340366b9afa95743c0"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 62,
+            "phase": "recorded actual",
+            "state_sha256": "8c2eb6a2bb0a7657f72f645213fa4052d10b6690e696abe92281b1ad346d4d94",
+            "uncompressed_display_bgr_sha256": "63f897a9ba09ffcde93fe51f092c2e366ea31c82d57345ccbbc2e4905d8a8370"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 63,
+            "phase": "recorded actual",
+            "state_sha256": "b45c0005cbccfb39dd2431ad2f304448add7894b515e5e7a9dee969263ee6412",
+            "uncompressed_display_bgr_sha256": "22a415518ce71c4cbb073881f8d9fa1e6e9ef45ac59a83affd431b2d450f4dbe"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 64,
+            "phase": "recorded actual",
+            "state_sha256": "ae2d1b33639d55b4d49cc88c1130cba0348e34c4202a9becc76c96203f67dffc",
+            "uncompressed_display_bgr_sha256": "c6f544ca77343aa8010091070c50da95429e2f60040d6b161108701dc3c7b4f6"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 65,
+            "phase": "recorded actual",
+            "state_sha256": "aeba1dcc6fd2b94320b43a94ac9f739eb5bc63c5e6a325c7f297f5c4e157478d",
+            "uncompressed_display_bgr_sha256": "67df2fb0e117e6cafc8e2f0af5a7e5251a3585cf348037dfdcc3509092cdc82a"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 66,
+            "phase": "recorded actual",
+            "state_sha256": "49d92faa471c2eabd5cc7b42662bc16d9b1b5218127fa009e2c397bc06547273",
+            "uncompressed_display_bgr_sha256": "e012fc44303fbae3cc4a6cdac42dea7c058bfb2dc944cb9fd84d7c3077991056"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 67,
+            "phase": "recorded actual",
+            "state_sha256": "e2cd1a4b375503b37382fbdfc034548802ad049cc707e4e8e3a29057b057ae65",
+            "uncompressed_display_bgr_sha256": "6749f089fcc769d5c2b3178dba61369731686c8251bc42c4d742a2bccf53ba95"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 68,
+            "phase": "recorded actual",
+            "state_sha256": "487cde94f145e12883f8fc4195a15f7f3bfc626a733a3dcf51e46ed7b838698d",
+            "uncompressed_display_bgr_sha256": "80a1d1da9eaff083276a9cfe67b3652c3adafa5d8eaa2a086ee9893e18252ed0"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 69,
+            "phase": "recorded actual",
+            "state_sha256": "1ab32f74a2609b72da1b62e4a1c10ea8491ef578e0503eeab89292aa1f7025a7",
+            "uncompressed_display_bgr_sha256": "3b582f6341a23a8c89dbcfe9de99911adb6f75f0a1352bc6e7141ab82daf03f2"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 70,
+            "phase": "recorded actual",
+            "state_sha256": "fec3400df1cd37d8984e77710b13a3b0e7fc9c9922206e6d623d9991b83a2015",
+            "uncompressed_display_bgr_sha256": "1714c9ac02d1376df218a12809e946a7986696e497e7ffc469258caee190dba1"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 71,
+            "phase": "recorded actual",
+            "state_sha256": "40d221d6e21bc425135f9854c5176174c6f6cc69544bba032f817d4cf62bfb0d",
+            "uncompressed_display_bgr_sha256": "0687b018152c8e07e9df2262030a4c472719da7b089caeb87156ee04f3d839e4"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 72,
+            "phase": "recorded actual",
+            "state_sha256": "d273d1051a3bd5903b05920123eaa2ed81f3598f5cff02c9c2d94b1e9f21c067",
+            "uncompressed_display_bgr_sha256": "0812029776bfa017b4a1598f9ad516a2a4b178a93a367794a91f33a1f6ebe4b3"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 3,
+            "control": 73,
+            "phase": "recorded actual",
+            "state_sha256": "d9850bf4534e64c98b256f357eb94c71881bc6a58c7864cb7d4bd8e18a81b355",
+            "uncompressed_display_bgr_sha256": "d7b39f9bac980b6941ed7ec3fa2b23441c727e940d6423a543f072ba5bd1d8a0"
+          },
+          {
+            "first_frame": 229,
+            "frame_count": 3,
+            "control": 74,
+            "phase": "recorded actual",
+            "state_sha256": "207b4e9063ed1995ca225898a0086c751d6db2477a939d3ab0051ce8a06c5f95",
+            "uncompressed_display_bgr_sha256": "53699be6b4dbc31e239caebdea9e68a4af33b667ef045d1df986af473bbba0c4"
+          },
+          {
+            "first_frame": 232,
+            "frame_count": 3,
+            "control": 75,
+            "phase": "recorded actual",
+            "state_sha256": "db982a82e77d77b6285020b0a4772288adee0e5e592b3108ee56076e7fd36ebb",
+            "uncompressed_display_bgr_sha256": "984a6382c6f5b89a90e4fa8bff807e387d5da86a9e02fe3c6d7c76ff4fb76227"
+          },
+          {
+            "first_frame": 235,
+            "frame_count": 3,
+            "control": 76,
+            "phase": "recorded actual",
+            "state_sha256": "ee7f2d049cd5c6f8493452345d30b73aab56b3e22e0acb278f56e7a728d302ec",
+            "uncompressed_display_bgr_sha256": "40e2feea874c40d76f9b6b5ab2fcefaa68694d5ef16b824db8aa3d76c5975555"
+          },
+          {
+            "first_frame": 238,
+            "frame_count": 3,
+            "control": 77,
+            "phase": "recorded actual",
+            "state_sha256": "62e4d92066d58f890af7b5a4e5ea1de0db3983531fe6b07a5e5977ea29a5a9c0",
+            "uncompressed_display_bgr_sha256": "37eeeb4eaa1b56b99a1f7751b411fd031b5e15dcafc036d7786ede9821c8b704"
+          },
+          {
+            "first_frame": 241,
+            "frame_count": 3,
+            "control": 78,
+            "phase": "recorded actual",
+            "state_sha256": "e1f0eac4b0b1348d64be992136792099981df63277b63a891a6664a650c38d3b",
+            "uncompressed_display_bgr_sha256": "58606c67db7dea3d103fa30e63085f3a43b631e7069fd2fe5048e11753e7722f"
+          },
+          {
+            "first_frame": 244,
+            "frame_count": 3,
+            "control": 79,
+            "phase": "recorded actual",
+            "state_sha256": "c658c15c0aa6040215b43a64cda7acd6bf7fbdb4fc76d279f851b5cd70474b97",
+            "uncompressed_display_bgr_sha256": "603f17a857c5a2d765d4bea3e3787010f32c2a3d8ad7424f1f05134e2ea44f43"
+          },
+          {
+            "first_frame": 247,
+            "frame_count": 3,
+            "control": 80,
+            "phase": "recorded actual",
+            "state_sha256": "ee0c44e9f5ed9de8203e5071775f3f6d10b04996075983ae80e6eef53293f4f8",
+            "uncompressed_display_bgr_sha256": "bbee304c03fc4a69426e206ee72108c70a500b55b2f01df32a420ecc839a302b"
+          },
+          {
+            "first_frame": 250,
+            "frame_count": 3,
+            "control": 81,
+            "phase": "recorded actual",
+            "state_sha256": "452062df0505a62c5864d3b0270e7a818f9f9b6cc4023addce452dd8bcd2f51b",
+            "uncompressed_display_bgr_sha256": "d6b1c638d42b343a39ad03183bdb53949c463dafa16f475518136fa49b869732"
+          },
+          {
+            "first_frame": 253,
+            "frame_count": 3,
+            "control": 82,
+            "phase": "recorded actual",
+            "state_sha256": "87ab48e6f6f2c1c8ecbb16f25679d167c8887d7217b7c6ba39c1495fa384401f",
+            "uncompressed_display_bgr_sha256": "1e5fad5f458aedaa0d66df214dda76d58a39d4e124954e60080c37c5b5ec8302"
+          },
+          {
+            "first_frame": 256,
+            "frame_count": 3,
+            "control": 83,
+            "phase": "recorded actual",
+            "state_sha256": "975e6a8c6172ac570043fb2141e917f7ec573a19c0830934b1eb43ef51e5182c",
+            "uncompressed_display_bgr_sha256": "1769fe7f9d81bc990b0975424dfd27b00e5ec324c64b61a292abe170699d1779"
+          },
+          {
+            "first_frame": 259,
+            "frame_count": 3,
+            "control": 84,
+            "phase": "recorded actual",
+            "state_sha256": "7ccf34e90a4f2a728fe875231ebd0541b302b8ff0c5459e3072acc6ab667585b",
+            "uncompressed_display_bgr_sha256": "406bafddafd6acb1c059e4588e6d3e9a3a8e0e34417e0d42e7d87d7c274b4404"
+          },
+          {
+            "first_frame": 262,
+            "frame_count": 3,
+            "control": 85,
+            "phase": "recorded actual",
+            "state_sha256": "8a3471ce184f5b315a7411711d2c273dcf2316fc2ae4e317e45a9bba5a7faf38",
+            "uncompressed_display_bgr_sha256": "ca47e29c89594b528cca23a1935f03236f8146a20bb89a8adc2bcb2b52197a6d"
+          },
+          {
+            "first_frame": 265,
+            "frame_count": 3,
+            "control": 86,
+            "phase": "recorded actual",
+            "state_sha256": "7486bf681754997d77c69210849c2aded53a498e179c1edd8ccf54520fd56b7a",
+            "uncompressed_display_bgr_sha256": "7bfe152a8e2cf01715e6f072d2a71a8dd1c03ee0dbbc5274c0aa8edae576e5a6"
+          },
+          {
+            "first_frame": 268,
+            "frame_count": 3,
+            "control": 87,
+            "phase": "recorded actual",
+            "state_sha256": "bdf057c7c40a61506b2e6d9d156e45d9d7ff657ce9331bd4ecc9b850c0282337",
+            "uncompressed_display_bgr_sha256": "a6c56b67da4142814e18ac64065345e1a0b028189aa6f6644bb54b84dc3aaa52"
+          },
+          {
+            "first_frame": 271,
+            "frame_count": 3,
+            "control": 88,
+            "phase": "recorded actual",
+            "state_sha256": "d7a02cc46e76cb5f77ad410f814ad31225166c59645150a2f0431fc225196504",
+            "uncompressed_display_bgr_sha256": "a90ceffe65a7b1cbf0a310434964c8134e47ce179822e09c9a037d906609752f"
+          },
+          {
+            "first_frame": 274,
+            "frame_count": 3,
+            "control": 89,
+            "phase": "recorded actual",
+            "state_sha256": "813f8f80d1ccee97ba32476941d8faca8ab95b2763cf417b18e38be4bea01020",
+            "uncompressed_display_bgr_sha256": "bdbfea3bf1c28c06feec5333cf03b0384b81c95a8beb95ddfdef1c01ece4031a"
+          },
+          {
+            "first_frame": 277,
+            "frame_count": 3,
+            "control": 90,
+            "phase": "recorded actual",
+            "state_sha256": "357cb7d35fdd07f1cfedc1b9c5ec4dbfa4a309994d356114d74420ba08e2a8a2",
+            "uncompressed_display_bgr_sha256": "f48764601f9a437937498f6c80a3f3900a71a10410a84579f191a54b7925e464"
+          },
+          {
+            "first_frame": 280,
+            "frame_count": 3,
+            "control": 91,
+            "phase": "recorded actual",
+            "state_sha256": "8ef7dc9b60921daaf1e04c1b6ab9b63a9753683531f72d8e781e1f3eb7013a3b",
+            "uncompressed_display_bgr_sha256": "6729208d7e69dab87d6cee7b893e4727ce082da73a4d2e7df7e812f525d46a60"
+          },
+          {
+            "first_frame": 283,
+            "frame_count": 3,
+            "control": 92,
+            "phase": "recorded actual",
+            "state_sha256": "c9e894f37ef184e59f5d87d95797e5329d299facfe39b76e5de028c4158c4b9e",
+            "uncompressed_display_bgr_sha256": "996cd52ebab5852f20de551c6b56791913b4a6281f062ced527e975c2cf90c60"
+          },
+          {
+            "first_frame": 286,
+            "frame_count": 3,
+            "control": 93,
+            "phase": "recorded actual",
+            "state_sha256": "d372726eda68cdf202946f45510b1e05a819b751ff9bd69d659e35a48535710c",
+            "uncompressed_display_bgr_sha256": "286110e656c10b80b05ec5ea19da046a12bb94c56e4f9b5a125e9137d7405920"
+          },
+          {
+            "first_frame": 289,
+            "frame_count": 3,
+            "control": 94,
+            "phase": "recorded actual",
+            "state_sha256": "1a89de11135184914b136a34a7a07a7a6458819c2a5ea8c13619cb579902ea0d",
+            "uncompressed_display_bgr_sha256": "aefeab24db5cb0a13615ea978a162ca05f7405048b3a26cd0352c315d80f74f2"
+          },
+          {
+            "first_frame": 292,
+            "frame_count": 3,
+            "control": 95,
+            "phase": "recorded actual",
+            "state_sha256": "197d501f98f514c20f102f78a5be86970cf939ab1309c8c0d1e7e01644c861a1",
+            "uncompressed_display_bgr_sha256": "9ae47c4ba553fc4b72802c38533ac4c879f584a74a8d9d5cd917b0996cf04a0a"
+          },
+          {
+            "first_frame": 295,
+            "frame_count": 3,
+            "control": 96,
+            "phase": "recorded actual",
+            "state_sha256": "3aa38df76b103687a155a976daf081e0222a5d9840bc482b7dba07f6d1d8cef2",
+            "uncompressed_display_bgr_sha256": "385f14fc7dc569d3eaab5794e8d5f25b82f5022855bfe5e85cf5b43b0aad578b"
+          },
+          {
+            "first_frame": 298,
+            "frame_count": 3,
+            "control": 97,
+            "phase": "recorded actual",
+            "state_sha256": "6f30451f5df584c75f94538208810fe519543ac3368611ba9da0ec04a1cd990f",
+            "uncompressed_display_bgr_sha256": "ce6e28f6a1be027903a7c663f8ccef927718f871b663f816c58af722541b7c36"
+          },
+          {
+            "first_frame": 301,
+            "frame_count": 3,
+            "control": 98,
+            "phase": "recorded actual",
+            "state_sha256": "ba42c044e63282c482017b98dec433a822a4fae9ebe78dc05c035d65dc97c8a6",
+            "uncompressed_display_bgr_sha256": "db646044b8971c9d0f061057c03a44f2441fcc2f3c32326091d29f5d6abd086d"
+          },
+          {
+            "first_frame": 304,
+            "frame_count": 3,
+            "control": 99,
+            "phase": "recorded actual",
+            "state_sha256": "a696ae0a0bbc9ee08dc9b7033432d1d1a9a819dc3057bc98e58f8042534f7e76",
+            "uncompressed_display_bgr_sha256": "60f8637c6d55b84b4bfc0e75f67aacd13189ba9544664f0ee4efb54aba6282ca"
+          },
+          {
+            "first_frame": 307,
+            "frame_count": 3,
+            "control": 100,
+            "phase": "recorded actual",
+            "state_sha256": "5362796ee9da58cdb7f0087c15a38d08302853ae0adf6c15db6003c7dc597095",
+            "uncompressed_display_bgr_sha256": "ed9035262bb42ceac2286bc2d62a0bcc5fde7bed0930990a537280be450903f0"
+          },
+          {
+            "first_frame": 310,
+            "frame_count": 3,
+            "control": 101,
+            "phase": "recorded actual",
+            "state_sha256": "b4193ce33aa2193dd21653456439226adfcf1558a755bac850b82fc833fdc394",
+            "uncompressed_display_bgr_sha256": "d5bb6242ccfffb72ab8355805808260cfb9a6c9d735e5d62bb1e4540940e5dea"
+          },
+          {
+            "first_frame": 313,
+            "frame_count": 3,
+            "control": 102,
+            "phase": "recorded actual",
+            "state_sha256": "6823bff17aec3f981f3b401b024870edd57d6ebe1b55b601aec7d4b717d161f7",
+            "uncompressed_display_bgr_sha256": "dbe381fd098c9381f814961e0227ebc0eed87f32a71a7076326452b7c33597fb"
+          },
+          {
+            "first_frame": 316,
+            "frame_count": 3,
+            "control": 103,
+            "phase": "recorded actual",
+            "state_sha256": "2cfdf57c474a4e73b1c296c572cb0accad93901010b097a9053cbd33d46443c9",
+            "uncompressed_display_bgr_sha256": "963cab766fbc77b27e6439106dee2d0370f5663251a66c40b3b8c5c39821a13a"
+          },
+          {
+            "first_frame": 319,
+            "frame_count": 3,
+            "control": 104,
+            "phase": "recorded actual",
+            "state_sha256": "ee8fa9001f9d5095fd07cb43492b87681978066f9a4a3262752460f4e3fac5aa",
+            "uncompressed_display_bgr_sha256": "b07412f080a1b403e7ce1da1d4051938cc7cde6f81c5396d76fb68ee227ecfdd"
+          },
+          {
+            "first_frame": 322,
+            "frame_count": 3,
+            "control": 105,
+            "phase": "recorded actual",
+            "state_sha256": "ee9e83e2973b13dd786d8f32c26a5386300d7c076b17671907c9090f72c79660",
+            "uncompressed_display_bgr_sha256": "5ee9bd1fa127e9ad482b3f1e527e80d3074a625bbe77cafb75bb9ee426e29da5"
+          },
+          {
+            "first_frame": 325,
+            "frame_count": 3,
+            "control": 106,
+            "phase": "recorded actual",
+            "state_sha256": "1d39de2b078ff55476598f5cea2200b85b9655ee0929051cd47249fe75e463f1",
+            "uncompressed_display_bgr_sha256": "9b4cd7e96fdbe3ab03329fac889dfa885083243c06b63b89961a41b4e2eb9cd9"
+          },
+          {
+            "first_frame": 328,
+            "frame_count": 3,
+            "control": 107,
+            "phase": "recorded actual",
+            "state_sha256": "70d6a789cb5d88e2570085a12a58634f089cae079fc33207efbfe82aea1ab444",
+            "uncompressed_display_bgr_sha256": "fabd43f5baa8930c66c79104ec238bef2c0f30969ebb322f76e24bff1656a988"
+          },
+          {
+            "first_frame": 331,
+            "frame_count": 3,
+            "control": 108,
+            "phase": "recorded actual",
+            "state_sha256": "1111fdccddbe3aaa739bcaac512ea94af7c8adfb8a599b90fd5cfda99ec5f361",
+            "uncompressed_display_bgr_sha256": "c609df91275edd56edc2f8aa503d9535d68cd1b2da0a77057f96fbdb3ac4f13d"
+          },
+          {
+            "first_frame": 334,
+            "frame_count": 3,
+            "control": 109,
+            "phase": "recorded actual",
+            "state_sha256": "38f0fcd0b2a3199b7faced3614727dc4cceac2407911c8f38c63ef241e9c6776",
+            "uncompressed_display_bgr_sha256": "c6394e4ff9e830984da15878bef5efdbc236c3a02fbe0a9e0160cdf3486bf1db"
+          },
+          {
+            "first_frame": 337,
+            "frame_count": 3,
+            "control": 110,
+            "phase": "recorded actual",
+            "state_sha256": "a456e3f024ad425d3ad2f232b80911d9d6e0ea39e72b2bc918405e0d52c6dcc7",
+            "uncompressed_display_bgr_sha256": "67641e87cecb1ea52f4996f53e7c8e7f103e334ac5fa64acc2e081b37f620114"
+          },
+          {
+            "first_frame": 340,
+            "frame_count": 3,
+            "control": 111,
+            "phase": "recorded actual",
+            "state_sha256": "df78bbd049b0631ca97f7c6b6288cc4f55f088481001979992018e45118625fc",
+            "uncompressed_display_bgr_sha256": "b2d476a276bcf45c097fbf5d3638aeb838e9d06b9d9a419cc5e1e32319dc36ce"
+          },
+          {
+            "first_frame": 343,
+            "frame_count": 3,
+            "control": 112,
+            "phase": "recorded actual",
+            "state_sha256": "cd87581ad911fb97d1da86e079294e697a1f4f363cc5081ab8f3b9daf92598ab",
+            "uncompressed_display_bgr_sha256": "ebc39d9b11649bee66872f8b5159713ebff669e4b8cee0f644a27b8f48917434"
+          },
+          {
+            "first_frame": 346,
+            "frame_count": 3,
+            "control": 113,
+            "phase": "recorded actual",
+            "state_sha256": "e253ed799ae7a3a84cddf0b833fdea0012af85510a0f268366dc81e195eeea18",
+            "uncompressed_display_bgr_sha256": "7f61dfcc3a4fb993697c19cfdd2cec8ce181b07550df45a5e1c41e55a819465a"
+          },
+          {
+            "first_frame": 349,
+            "frame_count": 3,
+            "control": 114,
+            "phase": "recorded actual",
+            "state_sha256": "43fa6a165ad12325306b042db59287c5c71c8fd7bc66534193b195ed4f51d912",
+            "uncompressed_display_bgr_sha256": "dbf1eac33164bf78b29e3c31cfa4c84831563a9b304d51192df2a6a8c4f70261"
+          },
+          {
+            "first_frame": 352,
+            "frame_count": 3,
+            "control": 115,
+            "phase": "recorded actual",
+            "state_sha256": "b492f8ee7c1548d0605a540daa4499fe25dfbdec092ccf9e30b98dfafc1116c8",
+            "uncompressed_display_bgr_sha256": "dd3818504fd15522d9b9a42767c29302ed308e8b4c263d74d0ea4d472f1dd030"
+          },
+          {
+            "first_frame": 355,
+            "frame_count": 3,
+            "control": 116,
+            "phase": "recorded actual",
+            "state_sha256": "99b7add54b9016ee8ca9ba551e1ed57d39cd6766db7a8f1eb7333c3c9eb20979",
+            "uncompressed_display_bgr_sha256": "6e0235289039615144b1d3cf3be505a0563023c1b6bff3e39e51339b2940db0a"
+          },
+          {
+            "first_frame": 358,
+            "frame_count": 3,
+            "control": 117,
+            "phase": "recorded actual",
+            "state_sha256": "a74f8cf5e2e1b2f03e70f643dd93cc822f4b5e41c992f8b49d415957e18c4b94",
+            "uncompressed_display_bgr_sha256": "b9c1a99c77fd6a503c84c264b5148a21da6e3f4c8613fe3f8ceba4327f98c199"
+          },
+          {
+            "first_frame": 361,
+            "frame_count": 3,
+            "control": 118,
+            "phase": "recorded actual",
+            "state_sha256": "099cc91099adf7aa6caaabd0a53cd96a49ede01b7ae70cd2c00cb806c96fa79d",
+            "uncompressed_display_bgr_sha256": "e6007ccf5b36c86b979f959a9402d2427860735c1a557968ac09c9bd86fcb627"
+          },
+          {
+            "first_frame": 364,
+            "frame_count": 3,
+            "control": 119,
+            "phase": "recorded actual",
+            "state_sha256": "7b9bf6ec8e18c0dd6d41961e96838e41b90148a684a090b0eb0eea1feae295d7",
+            "uncompressed_display_bgr_sha256": "276dbac118345c27f245fb717c627f2fe3a1f4d9e822fe12f01ac528eb82b234"
+          },
+          {
+            "first_frame": 367,
+            "frame_count": 3,
+            "control": 120,
+            "phase": "recorded actual",
+            "state_sha256": "8ecb04b373fbbd6bc25da9b318dd17f78fbf45c89e667c98aa6f4a0342ef9b77",
+            "uncompressed_display_bgr_sha256": "909203bf45f026614c05a96ee5d78e7853659954618535801e0444de1376ac7a"
+          },
+          {
+            "first_frame": 370,
+            "frame_count": 3,
+            "control": 121,
+            "phase": "recorded actual",
+            "state_sha256": "873e38d3e3818a106642001b4ca68cfcea99299192243bb171da47ae14df0c0d",
+            "uncompressed_display_bgr_sha256": "da551649b21ed98fbac5aac16d45f975d1ca9c6099f4460747ffcfd10c05342c"
+          },
+          {
+            "first_frame": 373,
+            "frame_count": 3,
+            "control": 122,
+            "phase": "recorded actual",
+            "state_sha256": "1c7140b0e24a9b032a736eedc3d6a2537c8a02db302ae04c4a35e4ec481efe1a",
+            "uncompressed_display_bgr_sha256": "67adfd4af4fdc3ae3a3e3e3e5b92063bfc5cacf5e729cd8b48436b42bda3ba04"
+          },
+          {
+            "first_frame": 376,
+            "frame_count": 3,
+            "control": 123,
+            "phase": "recorded actual",
+            "state_sha256": "fc5017dc15d9178819fbadf65372ebf69265524662af68f7f04cfb8e5feccdeb",
+            "uncompressed_display_bgr_sha256": "78f817ae6dbe375fd2f8ce2204067d541781f152ceafb5239a85b966d455ff1b"
+          },
+          {
+            "first_frame": 379,
+            "frame_count": 3,
+            "control": 124,
+            "phase": "recorded actual",
+            "state_sha256": "97ee38215a506ecb7bff528c97edf89d65db42b59c628fe5adcfcd35ba23bc65",
+            "uncompressed_display_bgr_sha256": "12cc216083419f60ec3df7a1d592ce464751ce2df1e73bddfdcd9b238c08e27d"
+          },
+          {
+            "first_frame": 382,
+            "frame_count": 3,
+            "control": 125,
+            "phase": "recorded actual",
+            "state_sha256": "51fbd3449233596bd1c78ce02a9419f5142a6fde88c9b79b1fd3021daab6196a",
+            "uncompressed_display_bgr_sha256": "8a1574bbf9b4567e09c4005bb31c5bd08761951191eeedc493ad93cf953d42e3"
+          },
+          {
+            "first_frame": 385,
+            "frame_count": 3,
+            "control": 126,
+            "phase": "recorded actual",
+            "state_sha256": "48a3d124fbc30135ab7b1a6a08a84f1224e21ded7bb8dc08b11a09c1b659e3e5",
+            "uncompressed_display_bgr_sha256": "0be2925ef2a47026924ac453e54feba52fe7395c8e8ccbe8feb72208b2fc3e86"
+          },
+          {
+            "first_frame": 388,
+            "frame_count": 3,
+            "control": 127,
+            "phase": "recorded actual",
+            "state_sha256": "930883d2acfe36f1cecd71c730203377628b6706244d74154d3aad50cf95e7d0",
+            "uncompressed_display_bgr_sha256": "6b06da9423b7cbeb14f6de90535fee7589567c33e605621d7da3fc146a6f58b8"
+          },
+          {
+            "first_frame": 391,
+            "frame_count": 3,
+            "control": 128,
+            "phase": "recorded actual",
+            "state_sha256": "fd90b1929161a605a5f567b24e0ba013e4b6bb742af58d73820afe6ef762b824",
+            "uncompressed_display_bgr_sha256": "c9022ddfaaac52ae94d256df7d7039408b5d4644489807bc39858a47aa31c655"
+          },
+          {
+            "first_frame": 394,
+            "frame_count": 3,
+            "control": 129,
+            "phase": "recorded actual",
+            "state_sha256": "6d1d686978a4109a14b20b1087959b7b5c4a0a6000802306cee2b8d427f2a7d6",
+            "uncompressed_display_bgr_sha256": "07acc002b4542d4b88c0ff34d2e96429552fbddc13029084ec5fbcb023c99bba"
+          },
+          {
+            "first_frame": 397,
+            "frame_count": 3,
+            "control": 130,
+            "phase": "recorded actual",
+            "state_sha256": "52a54111ecabcdc6cce088e0c6a05564bf19a89d6e278b0370ecdeb552b85463",
+            "uncompressed_display_bgr_sha256": "c1dcd1177e32e08c24638ec332115b9ef6ff57cbad89718e15e51749b7ccf15c"
+          },
+          {
+            "first_frame": 400,
+            "frame_count": 3,
+            "control": 131,
+            "phase": "recorded actual",
+            "state_sha256": "7f5a223b2986c94204663c6a216704b90eefd4a97613b76b488f62721bb4b877",
+            "uncompressed_display_bgr_sha256": "0ed5461f140ab774662aabfa6d06008573801a047244b51c89bbe46bfead0f50"
+          },
+          {
+            "first_frame": 403,
+            "frame_count": 3,
+            "control": 132,
+            "phase": "recorded actual",
+            "state_sha256": "6787600829ed33b1ca0460d15b6d124f6c92bd5377075d2b93bda435203171cc",
+            "uncompressed_display_bgr_sha256": "4bb322483d1fd5bcccfb17456d82de8816285b2ac3d94d57537a3d7e53b7b4e0"
+          },
+          {
+            "first_frame": 406,
+            "frame_count": 3,
+            "control": 133,
+            "phase": "recorded actual",
+            "state_sha256": "acc94d6a23fc7fcea89b64b569c0a65015ed479c2b85a96bbd281c061d45d71a",
+            "uncompressed_display_bgr_sha256": "403392989b8b9eed8b935dd36fae00916efb91564a8125c63e2d075e0de78a18"
+          },
+          {
+            "first_frame": 409,
+            "frame_count": 3,
+            "control": 134,
+            "phase": "recorded actual",
+            "state_sha256": "f126fbc5143778201516a746803c627bd755e50e9aba212260afd1fc0d5650cb",
+            "uncompressed_display_bgr_sha256": "9d0ab2b2736a9d79916c1d2555c072a249af73fbdd43eaadf9138febbb3ec1fb"
+          },
+          {
+            "first_frame": 412,
+            "frame_count": 3,
+            "control": 135,
+            "phase": "recorded actual",
+            "state_sha256": "0d9ca74eb4939c3c85c5991db45cfd8576c41e4c3d168ba9c7b9837d5eb12847",
+            "uncompressed_display_bgr_sha256": "3b834e20782ff34a5b7f934673a0902f1509d1f79c4880fe8587c3eb8c579b4d"
+          },
+          {
+            "first_frame": 415,
+            "frame_count": 3,
+            "control": 136,
+            "phase": "recorded actual",
+            "state_sha256": "1687f13595057fe967c998e0b899a1e86317cd610ae76b80657ab7379be19f1e",
+            "uncompressed_display_bgr_sha256": "7f8c315d33f0f6d0e90f03690b42dc4c5d5777bf941c30a8734b1c792e4e0ff8"
+          },
+          {
+            "first_frame": 418,
+            "frame_count": 3,
+            "control": 137,
+            "phase": "recorded actual",
+            "state_sha256": "e981f027d3cdaf2b48fb1910c24b81c4c54d1b359a268fccb112e694aeb29fd5",
+            "uncompressed_display_bgr_sha256": "88e46326d714dfff2047ed21e113db1fd5bcb3e2f93dcae7dbecb1e7e917941f"
+          },
+          {
+            "first_frame": 421,
+            "frame_count": 3,
+            "control": 138,
+            "phase": "recorded actual",
+            "state_sha256": "c337e2132871ebe739acb0ce027110320d3e827b409f9de7e78f0301abc5194d",
+            "uncompressed_display_bgr_sha256": "0d5705b3b94f93ed971ace6995ac47f416f77bfcf1b9df6ffe43401f7e538879"
+          },
+          {
+            "first_frame": 424,
+            "frame_count": 3,
+            "control": 139,
+            "phase": "recorded actual",
+            "state_sha256": "83e377554fbd2e72b8986cb63ec87eb29f36a51cf4f2279549a155917a3ac711",
+            "uncompressed_display_bgr_sha256": "2da87b1c0037b57ed8445bf56c4c85d733533faa62b3803bd32d22252019f3ad"
+          },
+          {
+            "first_frame": 427,
+            "frame_count": 3,
+            "control": 140,
+            "phase": "recorded actual",
+            "state_sha256": "0f65c2dc0e2861b1e68da8206894e6713ea827665d84fb1f652b9b9fb89cf2a7",
+            "uncompressed_display_bgr_sha256": "f5b45c7be563dcf4e98d589fdfdc05e77cdae8bf5c6778cfc404500c8ad62d80"
+          },
+          {
+            "first_frame": 430,
+            "frame_count": 3,
+            "control": 141,
+            "phase": "recorded actual",
+            "state_sha256": "cc5b6a194ea0999e61aa56aa74da2e83101a6d12e784e8f029f35e6264f2d367",
+            "uncompressed_display_bgr_sha256": "5e1df703e68bf885458637f4f52a9a624c9efacae649f4872fc03a9440260ae0"
+          },
+          {
+            "first_frame": 433,
+            "frame_count": 3,
+            "control": 142,
+            "phase": "recorded actual",
+            "state_sha256": "e1783c7ed7f0065f658048239f6c17514e3b209e69803c07c93363a6a25bfc83",
+            "uncompressed_display_bgr_sha256": "c61e3e0d897e83bb6b6f89c4ad144e686390068e3f1b9e2ab2004621a90420e6"
+          },
+          {
+            "first_frame": 436,
+            "frame_count": 3,
+            "control": 143,
+            "phase": "recorded actual",
+            "state_sha256": "f9c5b5ba9411376b5534db31f55470cc9339ad6fbf1befabc29b0553aeb8fa2e",
+            "uncompressed_display_bgr_sha256": "b41cc61faae528cc32d7253145272cbbdff4477bd5070407e03192e7295859d7"
+          },
+          {
+            "first_frame": 439,
+            "frame_count": 3,
+            "control": 144,
+            "phase": "recorded actual",
+            "state_sha256": "936473f7e0a9868d00628c100c163b9cc33ffdbc51dedad59a6f689287e4d70f",
+            "uncompressed_display_bgr_sha256": "f528aab84dc5f118522f85d9ef515f47fafd2bf061f341a615291d58bae3813f"
+          },
+          {
+            "first_frame": 442,
+            "frame_count": 3,
+            "control": 145,
+            "phase": "recorded actual",
+            "state_sha256": "8608c0014e67455d9752f275f8254a767390cbf8f91c3cc7a9487abedf9d5aaf",
+            "uncompressed_display_bgr_sha256": "0f1162531ba922fde6f0cc4dbe17a3e1e071c582c1f29f9cee010577aeb35365"
+          },
+          {
+            "first_frame": 445,
+            "frame_count": 3,
+            "control": 146,
+            "phase": "recorded actual",
+            "state_sha256": "22a14d7f5c00df4b9fa689c8c60e76d16cbbff03a4a435309619897515f77c14",
+            "uncompressed_display_bgr_sha256": "bc7ab947efb7808192db4cacb57f8990d032cdad55a4e6a91e703e5a80d554e2"
+          },
+          {
+            "first_frame": 448,
+            "frame_count": 3,
+            "control": 147,
+            "phase": "recorded actual",
+            "state_sha256": "82c3321486f5121d7f777a5fbc266b1f6d4426ddde5ef49d57e020fbe60e42e9",
+            "uncompressed_display_bgr_sha256": "8499154494287970637a64c427f503348bf8a7dc326e38ce1a2be7c68bc5e86a"
+          },
+          {
+            "first_frame": 451,
+            "frame_count": 3,
+            "control": 148,
+            "phase": "recorded actual",
+            "state_sha256": "928c150e05780f30461c0579bdd96b5d2356d29cf4eb93867d6b3c1ebea30094",
+            "uncompressed_display_bgr_sha256": "24111bb4e9389a7cd9504b1bbd63871bd2899fee59acea024ff2bf2a32f362bc"
+          },
+          {
+            "first_frame": 454,
+            "frame_count": 3,
+            "control": 149,
+            "phase": "recorded actual",
+            "state_sha256": "015c952817ec0e901c890303c2cd88e111169d2db27697fa3d6833d2dad9c953",
+            "uncompressed_display_bgr_sha256": "0ab55cf90ff9959a2e54898c12fceb1a8b0d5b50ebf051db29fc4d16cff280ed"
+          },
+          {
+            "first_frame": 457,
+            "frame_count": 3,
+            "control": 150,
+            "phase": "recorded actual",
+            "state_sha256": "653052e64e9308972d669dcabf03fb47e6ddb955a27dfdecdd7d89e8f1f6a85b",
+            "uncompressed_display_bgr_sha256": "7398b4440527111981ea26b4ba2c04449edce60ac5a70f38aa04a6b92250868b"
+          },
+          {
+            "first_frame": 460,
+            "frame_count": 3,
+            "control": 151,
+            "phase": "recorded actual",
+            "state_sha256": "7b7b1d804f8d9c23f1ee6e84a38e5fce11da3c29dc91dcbf9eb50185d98d549e",
+            "uncompressed_display_bgr_sha256": "cd8404ca3046b9d784ec7a1f27627322a62b7efdb6693efa184c3424a63d26a1"
+          },
+          {
+            "first_frame": 463,
+            "frame_count": 3,
+            "control": 152,
+            "phase": "recorded actual",
+            "state_sha256": "340c4b4bba01e48df32ab4004ef8cf74ef4ffcba0c78bc847e23045245982ba4",
+            "uncompressed_display_bgr_sha256": "3b28e459f1a15d25b813532d1d5a78a7194b10bca00416141c2f803c6dcdba11"
+          },
+          {
+            "first_frame": 466,
+            "frame_count": 3,
+            "control": 153,
+            "phase": "recorded actual",
+            "state_sha256": "2aa2e4655055a7a896532c7344ca18fcd1e2c7af6ec82aa07950c7919bc7d50a",
+            "uncompressed_display_bgr_sha256": "9fcd3d9afa46d61c6aecc2529829c85c559da472366050771d18798bfb31a6b7"
+          },
+          {
+            "first_frame": 469,
+            "frame_count": 3,
+            "control": 154,
+            "phase": "recorded actual",
+            "state_sha256": "6e4abf24879bd0781cde7b20a0d141c58619c1c9708e8f1d4026d3125c3452db",
+            "uncompressed_display_bgr_sha256": "f48d73b990003c982f4331dcba55904738db8ef378986a2d455933b29493e5e3"
+          },
+          {
+            "first_frame": 472,
+            "frame_count": 3,
+            "control": 155,
+            "phase": "recorded actual",
+            "state_sha256": "0f4d0f671182390ee7b806499e4de0179097d6acd5449c552dcd009d88655d0e",
+            "uncompressed_display_bgr_sha256": "587b9b22f10e3a70ab94c407b84f57d4a644978739ceeb843f335c1db04dd202"
+          },
+          {
+            "first_frame": 475,
+            "frame_count": 3,
+            "control": 156,
+            "phase": "recorded actual",
+            "state_sha256": "22ccbbd61f9a3ca978327568af3d7c2b2925dce4570bd496f93eabf884b51614",
+            "uncompressed_display_bgr_sha256": "e5bf3990efcc7217fb84a627add2d61b9095c95a97d997082a0baff3edf858f5"
+          },
+          {
+            "first_frame": 478,
+            "frame_count": 3,
+            "control": 157,
+            "phase": "recorded actual",
+            "state_sha256": "12e394c0d639b4787c70e33d9a43c30d0930733e7a70a7d6f35061d492d64f50",
+            "uncompressed_display_bgr_sha256": "5fa431b52cac75672b56e079a936b43cdae24d3df74519ec377f181bb48e7cf4"
+          },
+          {
+            "first_frame": 481,
+            "frame_count": 3,
+            "control": 158,
+            "phase": "recorded actual",
+            "state_sha256": "39720fd4506aa334c5404ed3172fbc24ab9e2c940e3ef9493c04efe8576dfe02",
+            "uncompressed_display_bgr_sha256": "97fd098b7e99c4b31e0f49bf5eff5f9d6b3a6cf5cbac9219e98ea73c08f61862"
+          },
+          {
+            "first_frame": 484,
+            "frame_count": 3,
+            "control": 159,
+            "phase": "recorded actual",
+            "state_sha256": "dceb6bbcd7ab56e8953d84ef6a3ecf92b3d3a661f42e43cfd8cf62f7fd4f0c22",
+            "uncompressed_display_bgr_sha256": "740667b6b8bae9453152f7aab7d215611b5c4f007d8750cd920bd438c7bb1dd0"
+          },
+          {
+            "first_frame": 487,
+            "frame_count": 3,
+            "control": 160,
+            "phase": "recorded actual",
+            "state_sha256": "c96f89158614855b9d448815a9e81019149df134583f64415ce7ca2d676c46f2",
+            "uncompressed_display_bgr_sha256": "640733f89c4a0c31de606d16165b76fe229586b0917eae82f9856ef66b2ef138"
+          },
+          {
+            "first_frame": 490,
+            "frame_count": 3,
+            "control": 161,
+            "phase": "recorded actual",
+            "state_sha256": "1d1959068832d3922d9a1ddb8bbaaac63cb270b335c724f79dac6191f4089931",
+            "uncompressed_display_bgr_sha256": "ae5ec1866fb72cad102854210f0d8969772a978bc4c67691adb30e518bbfb729"
+          },
+          {
+            "first_frame": 493,
+            "frame_count": 3,
+            "control": 162,
+            "phase": "recorded actual",
+            "state_sha256": "3d15972ac7938447517a4359c4c2b465bafa1cfc112bc1f463c0d9a95053cd83",
+            "uncompressed_display_bgr_sha256": "055df39abfe698094b02eb6066416b56b19c965c845d9aeb30adb6efce7b74a5"
+          },
+          {
+            "first_frame": 496,
+            "frame_count": 3,
+            "control": 163,
+            "phase": "recorded actual",
+            "state_sha256": "6f40c181ec1fc3254ac7b3ceb792a573186a216231b0f0f0e80787ee46e2a471",
+            "uncompressed_display_bgr_sha256": "427cf12c7aecbee9bc144f59ac96eca74d74babff0f59cae1575d9f704c17153"
+          },
+          {
+            "first_frame": 499,
+            "frame_count": 3,
+            "control": 164,
+            "phase": "recorded actual",
+            "state_sha256": "ca342bb2a08e6484fc85fda26c8c42e2dad8eb7d6d6260853bd8fb85fe94d752",
+            "uncompressed_display_bgr_sha256": "742659ed3b58a0a8624481239800b3eec5ad1252bf2c7f7d9610ab7b2d1dbb7c"
+          },
+          {
+            "first_frame": 502,
+            "frame_count": 3,
+            "control": 165,
+            "phase": "recorded actual",
+            "state_sha256": "4bd71e8bca5121a82138e62c56dca8ee57ddbbb8034153d80a60568a42c5d8ec",
+            "uncompressed_display_bgr_sha256": "de6bb221461b3a2623797dc4e4eb2d7d7044810865c922577ec52b1680dab988"
+          },
+          {
+            "first_frame": 505,
+            "frame_count": 3,
+            "control": 166,
+            "phase": "recorded actual",
+            "state_sha256": "c34997c6ebdee45d8686237a6de2703c4a5431fe51630ca8e5ee7f66b4bc5d06",
+            "uncompressed_display_bgr_sha256": "24562f442acfac31d903ac79d022f32f406b4ffb38fc7a885c0e215f8f5b69cd"
+          },
+          {
+            "first_frame": 508,
+            "frame_count": 3,
+            "control": 167,
+            "phase": "recorded actual",
+            "state_sha256": "874058a00c37993149982cb0715c82d6f20021607280bb5db91ec9df5bcbd488",
+            "uncompressed_display_bgr_sha256": "725dfd3d6ae5230eda7f21acbaef69c1837902bb51fc9264e1dcfa92cba271b6"
+          },
+          {
+            "first_frame": 511,
+            "frame_count": 3,
+            "control": 168,
+            "phase": "recorded actual",
+            "state_sha256": "3af798cf8f10131ad3a9b6bb5ad878858b23a0d1998d41ec8dac4388243cf6a6",
+            "uncompressed_display_bgr_sha256": "01e0f3a0742a7cb197bfa53b22483add89f8dc0ac91a7b20e90890addbbd47a8"
+          },
+          {
+            "first_frame": 514,
+            "frame_count": 3,
+            "control": 169,
+            "phase": "recorded actual",
+            "state_sha256": "014797f743af585ab615339600553dce0759d5b11d4b02c7d1f62f3173e27793",
+            "uncompressed_display_bgr_sha256": "7ed6059b353898a89adb059e73e517d32ef8341fa644fbc6204911d47acf2d12"
+          },
+          {
+            "first_frame": 517,
+            "frame_count": 3,
+            "control": 170,
+            "phase": "recorded actual",
+            "state_sha256": "e7e59de00775ba8b132b48e715131e7a1a61d1aba4f6dd40ca69fd2c1243db64",
+            "uncompressed_display_bgr_sha256": "f60a5e15933ba26f1099f6fe1e2a5c9e9cbeebc9d697c4f8adf1f5b0bc083454"
+          },
+          {
+            "first_frame": 520,
+            "frame_count": 3,
+            "control": 171,
+            "phase": "recorded actual",
+            "state_sha256": "e09f11cf3175b9e2ba4f47687790e627e9d794582c78ff0b255f1d81847cf964",
+            "uncompressed_display_bgr_sha256": "2278ef6a194680d1fc02b991e8e4bc82411895a9d0808aa3c9c2a7bf7e80c5a5"
+          },
+          {
+            "first_frame": 523,
+            "frame_count": 3,
+            "control": 172,
+            "phase": "recorded actual",
+            "state_sha256": "0d885f9d57a41d413381877a73f41a8fed944e7adc5813c57df8f2fe7d1c1789",
+            "uncompressed_display_bgr_sha256": "bdcb1ab369fa4e0c19bd08aa3a99eff1a2e521ba47d1ea25d5dc4994ea702ef2"
+          },
+          {
+            "first_frame": 526,
+            "frame_count": 3,
+            "control": 173,
+            "phase": "recorded actual",
+            "state_sha256": "75a9cb8fb2dbc9b2f8d5b2926baa613dff0f6b561006935bcb99c7c9d2c5fa42",
+            "uncompressed_display_bgr_sha256": "cf00c5d5a5cff76dfcfd1190971277c3038a1f1f10a657f49020f99d818a9124"
+          },
+          {
+            "first_frame": 529,
+            "frame_count": 3,
+            "control": 174,
+            "phase": "recorded actual",
+            "state_sha256": "a400f0b669636d1fbe693cd4b4fb707dc3036c7c373d644276eff47d412329cd",
+            "uncompressed_display_bgr_sha256": "60d1ed4f1661fcea94b3f8c123c72ae6113ee0319fa315b0aeddf8f5afecaebf"
+          },
+          {
+            "first_frame": 532,
+            "frame_count": 3,
+            "control": 175,
+            "phase": "recorded actual",
+            "state_sha256": "8f03f482b06eb75c4e1f7504be13f1efec343b8356e2c31bcfac8cbe5408b634",
+            "uncompressed_display_bgr_sha256": "22f6a061a6050ed56e5a5312d8e6f0515c9dc6d0fbf026a57c461b125c92fa35"
+          },
+          {
+            "first_frame": 535,
+            "frame_count": 3,
+            "control": 176,
+            "phase": "recorded actual",
+            "state_sha256": "a0a5a0347d10a8c70babd1558a0efed9b9146b70f7df3717488a023d5f06d4ea",
+            "uncompressed_display_bgr_sha256": "344573dd61c4bb90dc2147df9b220e18bfb6ba1786d60f1749c4493963c109dc"
+          },
+          {
+            "first_frame": 538,
+            "frame_count": 3,
+            "control": 177,
+            "phase": "recorded actual",
+            "state_sha256": "d3aa60e7e15192a5ba93f005e6fdce8f0a877ccaf9fc30fe152d779e60ed28e0",
+            "uncompressed_display_bgr_sha256": "22ad49670131d5c075a60af0d0885bb86b363001fc4e6ebe83c5483017ef9d1f"
+          },
+          {
+            "first_frame": 541,
+            "frame_count": 3,
+            "control": 178,
+            "phase": "recorded actual",
+            "state_sha256": "bd11077f84a6a5fa98cdec0070dc3ceb0b5976979f2744487ae7a2970a1e129b",
+            "uncompressed_display_bgr_sha256": "e58c3e950c0a2524a9d0a8ec74d9c3e63748cc20574aeab8a4cde18e5d99d296"
+          },
+          {
+            "first_frame": 544,
+            "frame_count": 3,
+            "control": 179,
+            "phase": "recorded actual",
+            "state_sha256": "cd2b3adee321fbe1d2d6277da49eed8662b196042ed1c17ce0dbda6dcf56f704",
+            "uncompressed_display_bgr_sha256": "94e7bf2ec47d53e24f1b48181d15374f3d9b2037338bce786341dc0770322b59"
+          },
+          {
+            "first_frame": 547,
+            "frame_count": 3,
+            "control": 180,
+            "phase": "recorded actual",
+            "state_sha256": "44c492de2273504784f293af609e4cd4a8fe95b398fbbca93e0635be94d4295d",
+            "uncompressed_display_bgr_sha256": "c72d51c5451fac88ebe0a4a266c5f53d342158f593f02ec3066ab14685921a12"
+          },
+          {
+            "first_frame": 550,
+            "frame_count": 3,
+            "control": 181,
+            "phase": "recorded actual",
+            "state_sha256": "3864ee653056b659a4005fbaea38dc9dd9e25dce1abb3c8013e6e89b682a4a9a",
+            "uncompressed_display_bgr_sha256": "2db1b1ecb9fa74ddc372658ffaed7163fe7065c3ac71443e6ad23e06c2220799"
+          },
+          {
+            "first_frame": 553,
+            "frame_count": 3,
+            "control": 182,
+            "phase": "recorded actual",
+            "state_sha256": "4b58061a138089fa8723e35f06b9995a6019d3667d3084a45d643c827ff58d6e",
+            "uncompressed_display_bgr_sha256": "22a76f749bbc4a7700a07ca1ea5d62d1bee40ce942124468850af57640719275"
+          },
+          {
+            "first_frame": 556,
+            "frame_count": 3,
+            "control": 183,
+            "phase": "recorded actual",
+            "state_sha256": "bbbb04ef7d0fe07458532776b48d04dc61eacfb0b798bce4419ae351a56ab609",
+            "uncompressed_display_bgr_sha256": "19b8ee60d0fcf9e5354f50622edf3ca191992d95eb5ac16a5c2796652b1bc52b"
+          },
+          {
+            "first_frame": 559,
+            "frame_count": 3,
+            "control": 184,
+            "phase": "recorded actual",
+            "state_sha256": "078cdd69664f5e5f8f3f6f7c032eca4c3fa4bdf78a0563779a604ea1f7b62b83",
+            "uncompressed_display_bgr_sha256": "500305285c1145099094ac3e6f2bcbc6b45562a5f021d9d62b4ae06d5af7b42d"
+          },
+          {
+            "first_frame": 562,
+            "frame_count": 3,
+            "control": 185,
+            "phase": "recorded actual",
+            "state_sha256": "4755c6b30f110f181850785e8ed7fe4db57c69884a3a3c8467842a4fc37b455a",
+            "uncompressed_display_bgr_sha256": "13eb1997866d1ff5f894b8c306078e9bb4ba962f4e98e045d46e7160387525f0"
+          },
+          {
+            "first_frame": 565,
+            "frame_count": 3,
+            "control": 186,
+            "phase": "recorded actual",
+            "state_sha256": "88b1cb18794feac2c8fcbd0e19a563ea3d71aa82007e726138226515ec5e3bb5",
+            "uncompressed_display_bgr_sha256": "6a45e82082a50293f81295fd1502c2b991bf4d759b8049160edfe3cefae068a2"
+          },
+          {
+            "first_frame": 568,
+            "frame_count": 3,
+            "control": 187,
+            "phase": "recorded actual",
+            "state_sha256": "c45ceb042e9f719dc87b13689be876039cf2494165b421db67546c6049d6b8f2",
+            "uncompressed_display_bgr_sha256": "978d6404195d7f30c5d3f052e5094a7a5b51e96aa12dc615f592c8101c63ec53"
+          },
+          {
+            "first_frame": 571,
+            "frame_count": 3,
+            "control": 188,
+            "phase": "recorded actual",
+            "state_sha256": "28f0f81059d53e1f7912f4264c596c3395b5f474d0ab376d71d9bbf7b9123ab7",
+            "uncompressed_display_bgr_sha256": "29f4819eab3671306f5d148aa9684d920ec28abf9c2d7dc6555d2cf592714df7"
+          },
+          {
+            "first_frame": 574,
+            "frame_count": 3,
+            "control": 189,
+            "phase": "recorded actual",
+            "state_sha256": "59c5ae4965a9d3051ea32f469ba1c85ab2e17584d8fc1dac9ef0e19d042b674b",
+            "uncompressed_display_bgr_sha256": "fbfb8a97741a676fbc1843042a807b94fa797a1d25a35741c791d943b1be6d5a"
+          },
+          {
+            "first_frame": 577,
+            "frame_count": 3,
+            "control": 190,
+            "phase": "recorded actual",
+            "state_sha256": "5361be8c149d1b8104b1f7c488732e2be8664702e8771f1e0bfd4b615f07f8ed",
+            "uncompressed_display_bgr_sha256": "7c27dcc64efdeab1c95929cb0ea1e308921ee12fd72d2f139bf1c0e44df44667"
+          },
+          {
+            "first_frame": 580,
+            "frame_count": 3,
+            "control": 191,
+            "phase": "recorded actual",
+            "state_sha256": "34d709cdc6018686a24b40245cfcb3f595317fa0d7a8a94aecb2ab68bd4bef68",
+            "uncompressed_display_bgr_sha256": "362f31b0bd829192ee55ebae6e63b04015a2cbdac9e4b9e26cd07723ee70a0ee"
+          },
+          {
+            "first_frame": 583,
+            "frame_count": 3,
+            "control": 192,
+            "phase": "recorded actual",
+            "state_sha256": "874a60375b623c7fbfe5698d1bd21f8e3ed280500b0684a4c7725eabda69856b",
+            "uncompressed_display_bgr_sha256": "7bec46f530d8bfd603301016feba3786b22de95bf3bf9b7e44b491fbc4a44ff4"
+          },
+          {
+            "first_frame": 586,
+            "frame_count": 3,
+            "control": 193,
+            "phase": "recorded actual",
+            "state_sha256": "7db7259eb04511075ecd9661abdc3f02869c97ffcb5c4c53e6215039ae5fe432",
+            "uncompressed_display_bgr_sha256": "f1d74bc1f9a2bb687a76b83ff5b9143c112e0eed1c0f6019e10d53bf790153ee"
+          },
+          {
+            "first_frame": 589,
+            "frame_count": 3,
+            "control": 194,
+            "phase": "recorded actual",
+            "state_sha256": "00dc308b5e5f3f3144d400e5a07497e9bed9fcff306b746fcab6f66074722791",
+            "uncompressed_display_bgr_sha256": "08454a18efc9f7e036021b8f4c4aa9e77ae83bf002b7675b34843a18c3eb7512"
+          },
+          {
+            "first_frame": 592,
+            "frame_count": 3,
+            "control": 195,
+            "phase": "recorded actual",
+            "state_sha256": "b0dc91ffa790094743ff28282a63ed7b9ebf9ceb062c735d95d89f25b3a678f1",
+            "uncompressed_display_bgr_sha256": "aa5f727b574ecd72a279685ff590911ba421cf74160ea2ad394ca848a9da5bba"
+          },
+          {
+            "first_frame": 595,
+            "frame_count": 3,
+            "control": 196,
+            "phase": "recorded actual",
+            "state_sha256": "24a256757d7bdb06e1fc8141793e075dfc16bbbc90b517ac1331d2fbce8966d7",
+            "uncompressed_display_bgr_sha256": "05cc6b8b7c1d0365025f21878ee0446d124d88127ae7a44ace797f18742d8012"
+          },
+          {
+            "first_frame": 598,
+            "frame_count": 3,
+            "control": 197,
+            "phase": "recorded actual",
+            "state_sha256": "7a291584faca4b0ecb340c074c53316add4529a9791947de0c50df2634c6bbac",
+            "uncompressed_display_bgr_sha256": "11a6734039fe1126009ba6b16dfe36539b5202218f0431b2f8f32d1fd8770ba5"
+          },
+          {
+            "first_frame": 601,
+            "frame_count": 3,
+            "control": 198,
+            "phase": "recorded actual",
+            "state_sha256": "4a1b453d654637dacb61cda77eec85e5c03bc343944b65cf5f9535cb8fa467ab",
+            "uncompressed_display_bgr_sha256": "7830f1e1ede6f239f730d3f66398b0656dc659265e346604a4405c5a95c77452"
+          },
+          {
+            "first_frame": 604,
+            "frame_count": 3,
+            "control": 199,
+            "phase": "recorded actual",
+            "state_sha256": "f31aa212a3dda15e747e8840360e42580e1e5826f5e55845cbb3819342479278",
+            "uncompressed_display_bgr_sha256": "8889d07ec0225c484d54416c13db1533ee9345d3e9004908da148706ae9c3d9e"
+          },
+          {
+            "first_frame": 607,
+            "frame_count": 3,
+            "control": 200,
+            "phase": "recorded actual",
+            "state_sha256": "43472138d698aa7404e23d28470c569c899c8e661e500872bc1b606c0e9c93ca",
+            "uncompressed_display_bgr_sha256": "e1ad076735ce04e87812aa11352f9f305efdc0a6a9149321bcd20326f6e647a0"
+          },
+          {
+            "first_frame": 610,
+            "frame_count": 3,
+            "control": 201,
+            "phase": "recorded actual",
+            "state_sha256": "1e32aa8b323e7ff2621b6edb3079c4a558bdd65cae57a34c68b926110fb4b776",
+            "uncompressed_display_bgr_sha256": "847ecc9ff31168ad3859d5d945f19fcd841e23a690e49dde5738b587b4383508"
+          },
+          {
+            "first_frame": 613,
+            "frame_count": 3,
+            "control": 202,
+            "phase": "recorded actual",
+            "state_sha256": "54ada67008937dec333894da2db8e2243eb69460cf378a13343237ab3fdf6932",
+            "uncompressed_display_bgr_sha256": "67de98594ff0279e2ea6539c9bd1fbe249fa58f1980bcfea55d5a73c867e472f"
+          },
+          {
+            "first_frame": 616,
+            "frame_count": 3,
+            "control": 203,
+            "phase": "recorded actual",
+            "state_sha256": "34b83f3ab4f203e70517e084be8f2121acf27e704ae438fba5b7a9e8842c97f7",
+            "uncompressed_display_bgr_sha256": "f5374072a048431953929e19fa5e62f0f2b30de5eb7af03abeae465d4f3ce5d6"
+          },
+          {
+            "first_frame": 619,
+            "frame_count": 3,
+            "control": 204,
+            "phase": "recorded actual",
+            "state_sha256": "efb35e524f229965d05858fac78e6a39f71d73ddf0962aa39d5845b8b4d4ddea",
+            "uncompressed_display_bgr_sha256": "942ab0d6e157c758e825828badbc0aee2a86edbb34fe558520d61cf0e01a79ef"
+          },
+          {
+            "first_frame": 622,
+            "frame_count": 3,
+            "control": 205,
+            "phase": "recorded actual",
+            "state_sha256": "52ed6364aaf46dd9668728c2c8ec2200cb484abb215a78ea1cb97ec82221038a",
+            "uncompressed_display_bgr_sha256": "993f10400e30cc9abe3a5df3aea4593798bacf26021f0a720e1f0485e955a2a4"
+          },
+          {
+            "first_frame": 625,
+            "frame_count": 3,
+            "control": 206,
+            "phase": "recorded actual",
+            "state_sha256": "a774329b240f37f87526e174f44fa0f99ba13e840c9a25240f50ea519183bd5a",
+            "uncompressed_display_bgr_sha256": "314585a93f2030c7a2ec596e29f8ce3a9dc526186497058dc4b12ae707ce6c51"
+          },
+          {
+            "first_frame": 628,
+            "frame_count": 3,
+            "control": 207,
+            "phase": "recorded actual",
+            "state_sha256": "6785848cecfee037220fd06b28ff53ffbc61aedadc88957fd44903a6d9508042",
+            "uncompressed_display_bgr_sha256": "5b7f4f6cfd627d6df5ed413204bfcc26c8294b32fd0a1818b15e6d38cb2eab23"
+          },
+          {
+            "first_frame": 631,
+            "frame_count": 3,
+            "control": 208,
+            "phase": "recorded actual",
+            "state_sha256": "e821707b371aed927c1d12007ece90ec06c7cd6cc023062d11295070f2ded164",
+            "uncompressed_display_bgr_sha256": "5397fc5cc6bfb3b458836f983b89fb52799f7097e6e04171a82a4195c0e075a2"
+          },
+          {
+            "first_frame": 634,
+            "frame_count": 3,
+            "control": 209,
+            "phase": "recorded actual",
+            "state_sha256": "65c8071227de9db362e9da6624841242b8c102302dfb3e393f6403b756a535e3",
+            "uncompressed_display_bgr_sha256": "3e648919cf743641cbb9dbf95417279230e075987cb4381e8c3315d3a820defa"
+          },
+          {
+            "first_frame": 637,
+            "frame_count": 3,
+            "control": 210,
+            "phase": "recorded actual",
+            "state_sha256": "f65faf8ece7cd46f7fa47ed6ce5cd658ca97996ddee392316ace0bdb496889ba",
+            "uncompressed_display_bgr_sha256": "d8ba47777610c526bab84b79bab6102412dcf78f99d9f14d9c18b9edccc16318"
+          },
+          {
+            "first_frame": 640,
+            "frame_count": 3,
+            "control": 211,
+            "phase": "recorded actual",
+            "state_sha256": "ccd578e220bf5cd7abe70101d5eef5145af84423f6784f448359a1e11f15387f",
+            "uncompressed_display_bgr_sha256": "3ca512a5f13403d53340ddf8338fba38fc38b6ac87f617c6f7c747425208d6bc"
+          },
+          {
+            "first_frame": 643,
+            "frame_count": 3,
+            "control": 212,
+            "phase": "recorded actual",
+            "state_sha256": "5c801c1180920868dda7718744ff76a25488dc154ca53b7f457f54a17b0e3529",
+            "uncompressed_display_bgr_sha256": "558b092c434007213c4c00967ec195b6ae88dc06c6220b251423170171502a18"
+          },
+          {
+            "first_frame": 646,
+            "frame_count": 3,
+            "control": 213,
+            "phase": "recorded actual",
+            "state_sha256": "b97c7892b5abab52ae0646826f8e2e5ea1869f69cb0dd264822863c301d2258c",
+            "uncompressed_display_bgr_sha256": "5b68a7f114b68d64bfd207457390587f1c5db620fd12761c58c1ed282cd07f9d"
+          },
+          {
+            "first_frame": 649,
+            "frame_count": 3,
+            "control": 214,
+            "phase": "recorded actual",
+            "state_sha256": "d92f1609de73beadc9948776c50ee579b580ae29aeaca8ebbce98f0249ab6787",
+            "uncompressed_display_bgr_sha256": "11337a24435f062a51a3d8699d6fb22e5865c44c24321778f384115c06a18c3f"
+          },
+          {
+            "first_frame": 652,
+            "frame_count": 3,
+            "control": 215,
+            "phase": "recorded actual",
+            "state_sha256": "b207f8fdde1f9376a4e55b9b6fc597d500dcb98a24beae14b120fe29966e9e49",
+            "uncompressed_display_bgr_sha256": "232f783d413000cb182d76b9a4e6f7efaa0faa297210b515c51221cedac5a2f0"
+          },
+          {
+            "first_frame": 655,
+            "frame_count": 3,
+            "control": 216,
+            "phase": "recorded actual",
+            "state_sha256": "d6a0bddaac203f165d568c626cfebf50633a017ae3af909d1cbec491af369f89",
+            "uncompressed_display_bgr_sha256": "2d90a548deeecd04e3274b94ffed38921fb8b495ab03c642071b7ecf4226846a"
+          },
+          {
+            "first_frame": 658,
+            "frame_count": 3,
+            "control": 217,
+            "phase": "recorded actual",
+            "state_sha256": "cc8ecc9fcd4132101e9b1dacbac30408b8d863bf74cf051fb56b070fdfb24e09",
+            "uncompressed_display_bgr_sha256": "5086a033b6f8db904ec750fd3c63fd9c87a27904f1eaed9ce564fc1b15201b92"
+          },
+          {
+            "first_frame": 661,
+            "frame_count": 3,
+            "control": 218,
+            "phase": "recorded actual",
+            "state_sha256": "123a8bc3796347a57e536ddf149ba9341ab23d5b9f7bdde6ee77581e953a40ea",
+            "uncompressed_display_bgr_sha256": "02f7c912ea5b62e3d5ace27f2171037c1fc04fe256ae6b516313f86b69b07f0a"
+          },
+          {
+            "first_frame": 664,
+            "frame_count": 3,
+            "control": 219,
+            "phase": "recorded actual",
+            "state_sha256": "2527df56d280a8ac1e8648f850fa6043d382c7cd03558dcd7c01dfd4dac9f809",
+            "uncompressed_display_bgr_sha256": "ca1b6c64b3e7ad41d7baeec54dbc43264e2d6c223e516ca4f0cb485d63fc68d9"
+          },
+          {
+            "first_frame": 667,
+            "frame_count": 3,
+            "control": 220,
+            "phase": "recorded actual",
+            "state_sha256": "1f949cc18a0c3e48a27c35c80353bcdff9b3ba1148ef04f5cb6b51982469ed9d",
+            "uncompressed_display_bgr_sha256": "f33c1a803e81c68c20d8a47b8fb6a9086a7c7a358161bbe793b9b106a11d42d4"
+          },
+          {
+            "first_frame": 670,
+            "frame_count": 3,
+            "control": 221,
+            "phase": "recorded actual",
+            "state_sha256": "1e3bf2a2e329158a88fea71b298a6e9c4fbf02d530d3b7c463ef1e0948be370e",
+            "uncompressed_display_bgr_sha256": "6e853033090eb23a18704048aceaca6a7a9f4cbc7d0b42a2f5689aa8f67da142"
+          },
+          {
+            "first_frame": 673,
+            "frame_count": 3,
+            "control": 222,
+            "phase": "recorded actual",
+            "state_sha256": "f7bc20d5b4ea1e0dce521b8efe32f9193c5f418cc307ff55452d2c8f3261c838",
+            "uncompressed_display_bgr_sha256": "80d26716376ebee306f3907a3b3ab7eb5063cc3f79666fa72c554d7e1311bd8f"
+          },
+          {
+            "first_frame": 676,
+            "frame_count": 3,
+            "control": 223,
+            "phase": "recorded actual",
+            "state_sha256": "d8b2d1ddb3b54473612e819a5a99273f0e83c0d3395d0f6b3c9222915c5c461a",
+            "uncompressed_display_bgr_sha256": "ecfefa11bd86432fb81f2bb5226a52cff2329f280f8f6965f1ff0d62a33764b7"
+          },
+          {
+            "first_frame": 679,
+            "frame_count": 3,
+            "control": 224,
+            "phase": "recorded actual",
+            "state_sha256": "12f118b9d184c6025ef3e59713ae0a2724f4684ae3f921d3437dc9cd5147575c",
+            "uncompressed_display_bgr_sha256": "ed608f8834052dc45a8a1358e9ccd88beff8f65f438ca6e3ff762f30a7597d8f"
+          },
+          {
+            "first_frame": 682,
+            "frame_count": 3,
+            "control": 225,
+            "phase": "recorded actual",
+            "state_sha256": "6fc0c9d5d863f624c0f83a17b945c387511bd533d0a344ae8add09fef9be3d3e",
+            "uncompressed_display_bgr_sha256": "03d64af90e2f5ed0c5a1b05e688cf08cb2bf104d2cb0dbe6799668bc431e564c"
+          },
+          {
+            "first_frame": 685,
+            "frame_count": 3,
+            "control": 226,
+            "phase": "recorded actual",
+            "state_sha256": "a5cb3a7b385c92533fd5b19a274956aba5390f05a51c96dd5eb0a1f39e9476f1",
+            "uncompressed_display_bgr_sha256": "de371dfadecb1135f2003e8dcac024e675726b8563caadf3a659968f2ea90908"
+          },
+          {
+            "first_frame": 688,
+            "frame_count": 3,
+            "control": 227,
+            "phase": "recorded actual",
+            "state_sha256": "b5a52eba57f1c784db3e7418cbca0d7f93829b743474614d97498b1b659bc7c2",
+            "uncompressed_display_bgr_sha256": "f8ef036eb2da27386a76217b665ab3211998a3bda6aaa019837172701dc86532"
+          },
+          {
+            "first_frame": 691,
+            "frame_count": 3,
+            "control": 228,
+            "phase": "recorded actual",
+            "state_sha256": "36033060ba23b83954cf464a4145722b5104ae1775f2340f4339f3313b13c7c5",
+            "uncompressed_display_bgr_sha256": "9bbff385029972ba57ff28162944b086b6889798f1e501cccff5a8f7d0560d07"
+          },
+          {
+            "first_frame": 694,
+            "frame_count": 3,
+            "control": 229,
+            "phase": "recorded actual",
+            "state_sha256": "5b8169bf0b4000baf7654a7cec1431d80de9a9aaf994672990a98eaf550ae3b3",
+            "uncompressed_display_bgr_sha256": "477eddda90346f0642bbc38238bb36e69c8e3e25d136eefa21e1f7cb747d05cd"
+          },
+          {
+            "first_frame": 697,
+            "frame_count": 3,
+            "control": 230,
+            "phase": "recorded actual",
+            "state_sha256": "a8b50e4b72d3df00ef0166694439a78040397d309ef0ac0c8096897f5cb9c7e2",
+            "uncompressed_display_bgr_sha256": "f148c9943cf4d5893e67cdf11182da3002b3abd81650306ff2e7a29a9223835e"
+          },
+          {
+            "first_frame": 700,
+            "frame_count": 3,
+            "control": 231,
+            "phase": "recorded actual",
+            "state_sha256": "3411e903e773d4978df8d528fbb449285434bedcd40b3968c9139e2b1f611a4c",
+            "uncompressed_display_bgr_sha256": "c441860373018f78efe8e43fbf2008603f5fe4f4305e8a0ac7ff1fd7d9cc7330"
+          },
+          {
+            "first_frame": 703,
+            "frame_count": 3,
+            "control": 232,
+            "phase": "recorded actual",
+            "state_sha256": "4583a64290cd17c96d989c7f4cccbd67074f7cb534e82511bcf14d4f964ae375",
+            "uncompressed_display_bgr_sha256": "bd3bf469c5b0d6856d900b1ad737a4863ffe9004e52845175e2c11a23869520f"
+          },
+          {
+            "first_frame": 706,
+            "frame_count": 3,
+            "control": 233,
+            "phase": "recorded actual",
+            "state_sha256": "f6612a9dcf5d002ebb305a2e6b992de196bc29d37902814eab0c8981d2e7b922",
+            "uncompressed_display_bgr_sha256": "1024186bf4874bc613284f2a32678a7d609863397072041f337ab4d8c14475bc"
+          },
+          {
+            "first_frame": 709,
+            "frame_count": 3,
+            "control": 234,
+            "phase": "recorded actual",
+            "state_sha256": "f82a4d5da3b2fdc2a46f88d873f973ffb6d3d81b3ebc87444afa9d5079bba3c7",
+            "uncompressed_display_bgr_sha256": "40b5bdfbfdcd5b36b6d7db0b0df4da7845517151cded86fc08910178fee1dd88"
+          },
+          {
+            "first_frame": 712,
+            "frame_count": 3,
+            "control": 235,
+            "phase": "recorded actual",
+            "state_sha256": "d5c3d7c044fb6f249b43488b5dde67445df52f0d45a664a87040d924baa11718",
+            "uncompressed_display_bgr_sha256": "06b82bd093f882944ee59eda29388015a2a082dcca42cc4ab02219bd05bfd1f4"
+          },
+          {
+            "first_frame": 715,
+            "frame_count": 3,
+            "control": 236,
+            "phase": "recorded actual",
+            "state_sha256": "48eca4f6dc7f804b869e705ac67a31c08cdcf572f266ae55743ed4e1f3f517b9",
+            "uncompressed_display_bgr_sha256": "72396ce1a1c456e17912254aeedb59f798cbd5333c492a62ffcfc17dfde63bef"
+          },
+          {
+            "first_frame": 718,
+            "frame_count": 3,
+            "control": 237,
+            "phase": "recorded actual",
+            "state_sha256": "d1bcd9fd53304067d471759cea39834bf39b7857e41db80327c5c9e02e28090a",
+            "uncompressed_display_bgr_sha256": "ea8d8bb068f19c2e62d51a63388e65383bdcff850cb10b4b669b5874da9faab4"
+          },
+          {
+            "first_frame": 721,
+            "frame_count": 3,
+            "control": 238,
+            "phase": "recorded actual",
+            "state_sha256": "029afe98ab02bce35daba2ee4337cbc3dd85f596cd5be0e8a92c239304f46d50",
+            "uncompressed_display_bgr_sha256": "d5374f49f66bd4905424fb5d2c77100b60d2df6d8ed0454cdaacd57f90425464"
+          },
+          {
+            "first_frame": 724,
+            "frame_count": 3,
+            "control": 239,
+            "phase": "recorded actual",
+            "state_sha256": "f1aba17ca5de79c031739fdec80222bf00e38e3d8cd16a59f187130ae77594cd",
+            "uncompressed_display_bgr_sha256": "56a6cf7c4b8f8e16f0b9a399cad0500bba4c088de23e7f461f5be57f92fd549f"
+          },
+          {
+            "first_frame": 727,
+            "frame_count": 3,
+            "control": 240,
+            "phase": "recorded actual",
+            "state_sha256": "05e98c0eb753fe890e1c27567d8e32aac7eece17b3429416ba005a70965d096c",
+            "uncompressed_display_bgr_sha256": "525138c20c57296b70ee386e964ad8f8fa980005819b823b0886d33f7bad84b3"
+          },
+          {
+            "first_frame": 730,
+            "frame_count": 3,
+            "control": 241,
+            "phase": "recorded actual",
+            "state_sha256": "95296d2e7754a7393b10b3ab302bbeff9523800662ce0083a949bc8485e019b6",
+            "uncompressed_display_bgr_sha256": "1647f8f95b4ff58a4af57c69170b1f4b8eb1403ba75d237947473962f7d27e2f"
+          },
+          {
+            "first_frame": 733,
+            "frame_count": 3,
+            "control": 242,
+            "phase": "recorded actual",
+            "state_sha256": "a4df7e3d81b92c7904b34b2228aa4b1a5144a153c98b5b31358a0a1473743d1b",
+            "uncompressed_display_bgr_sha256": "bda1b1939ed23f50dbf03aeba18eb354b9f8d103039d171ee4714ab30201c2fe"
+          },
+          {
+            "first_frame": 736,
+            "frame_count": 3,
+            "control": 243,
+            "phase": "recorded actual",
+            "state_sha256": "b96d53d861192cd6571cde36ea6b2910b23af0a1d980d6aacc15808930b682b1",
+            "uncompressed_display_bgr_sha256": "4aa0d4ca5fa73c456c2205b527280cc29303a8f8b2d094490865210fbab53d97"
+          },
+          {
+            "first_frame": 739,
+            "frame_count": 3,
+            "control": 244,
+            "phase": "recorded actual",
+            "state_sha256": "7c6b6a4fa29ee4f344c9c457c0810f7f49ed1efdae4a248f0da6a1dc01650bed",
+            "uncompressed_display_bgr_sha256": "9867f6afad3f9166952b5f051dbca03fcc701633cc9bd382d6ae354f7becd317"
+          },
+          {
+            "first_frame": 742,
+            "frame_count": 3,
+            "control": 245,
+            "phase": "recorded actual",
+            "state_sha256": "b45072968229b84d443e28cf928135bae53b8a51bbadb6e30483e9b31918c1fa",
+            "uncompressed_display_bgr_sha256": "0439019480d868f86201383075419e92eacbdfdd06b562814f8d3a1e5586febd"
+          },
+          {
+            "first_frame": 745,
+            "frame_count": 3,
+            "control": 246,
+            "phase": "recorded actual",
+            "state_sha256": "f4b13f85038a4080bbfcb147d9f197ec8d2d7fa1deca9e635ed977743cf6944b",
+            "uncompressed_display_bgr_sha256": "bcca517afc03f51646c608a07caf76eb0a0a7ecdf6c293822ceee13c740c89d2"
+          },
+          {
+            "first_frame": 748,
+            "frame_count": 3,
+            "control": 247,
+            "phase": "recorded actual",
+            "state_sha256": "7c547299af76a774e9471f6289b09a0c7dbd02bca3a0c45aa066aa79f16c959c",
+            "uncompressed_display_bgr_sha256": "74a1cf8c90f18025d8d71111bf7b8d1a9e5288d4303e0e02a66f7b8135f2ca9f"
+          },
+          {
+            "first_frame": 751,
+            "frame_count": 3,
+            "control": 248,
+            "phase": "recorded actual",
+            "state_sha256": "6d5c2e901f36889c1f0bde02acfcc0ae70340378b1b1f3e32a678b47bf62ac31",
+            "uncompressed_display_bgr_sha256": "79ebf1428ff9c0000935e62f93b740f5ab1f98b2fd48c7d02ba5de6525d8ed55"
+          },
+          {
+            "first_frame": 754,
+            "frame_count": 3,
+            "control": 249,
+            "phase": "recorded actual",
+            "state_sha256": "0655e3c2b44cff90b3435ec0a9a0592e278ada61c141de03e1abcca316cb6073",
+            "uncompressed_display_bgr_sha256": "bdc48816c14d6ab8788b4315c5b47efdc67f8d0665149677d3ec4786f67d43e6"
+          },
+          {
+            "first_frame": 757,
+            "frame_count": 3,
+            "control": 250,
+            "phase": "recorded actual",
+            "state_sha256": "40b0fa005b3d586b33c313272321da89b0733e035475b48c5dddd707d9343af5",
+            "uncompressed_display_bgr_sha256": "6e2bc668b34fe782a741f1c238bc34fddb359b54668eed46f86702d7b19e959a"
+          },
+          {
+            "first_frame": 760,
+            "frame_count": 3,
+            "control": 251,
+            "phase": "recorded actual",
+            "state_sha256": "02dc99028fd6bdf6c3b55008d5ef383a11223890d9c9fc0647a8450ca079c7eb",
+            "uncompressed_display_bgr_sha256": "103bb18dab654742ee326577d82e74eb885b1a322012ad54e221dd4a97a4029b"
+          },
+          {
+            "first_frame": 763,
+            "frame_count": 3,
+            "control": 252,
+            "phase": "recorded actual",
+            "state_sha256": "f5d3ca0e95e32f5ef8498b2668bd72e6e4ad1027c3f96440dec81cc6a0ea8802",
+            "uncompressed_display_bgr_sha256": "12ebd2bd7e048a02c65de4a1d1380c06df3034f1d084a83d4fa71e37c5ff1252"
+          },
+          {
+            "first_frame": 766,
+            "frame_count": 3,
+            "control": 253,
+            "phase": "recorded actual",
+            "state_sha256": "d30154827aaf9897643464564ff38fe902f8cf47fcaeb75a33554ba5b0232e23",
+            "uncompressed_display_bgr_sha256": "f9bb5f6e3ce3c6ee7e484e43dc10d22ba61cc87ea1fff09e012f45ce4f25769e"
+          },
+          {
+            "first_frame": 769,
+            "frame_count": 3,
+            "control": 254,
+            "phase": "recorded actual",
+            "state_sha256": "a47d372bce435466275a7ed789c085d5e59ad7d30e6928a125f9e2f21dba22f4",
+            "uncompressed_display_bgr_sha256": "9e385a003c6273f6c227a6398b0407dea102778846ca608125671919a3623cd8"
+          },
+          {
+            "first_frame": 772,
+            "frame_count": 3,
+            "control": 255,
+            "phase": "recorded actual",
+            "state_sha256": "c103ef4004b5ca3628de6bf5a8ca66303a92b5164e76d35bfd61b19754bf09c4",
+            "uncompressed_display_bgr_sha256": "03107479f5707ee4611ef0bfe40cb5e2e92b015e17294aaa9d320d12da500668"
+          },
+          {
+            "first_frame": 775,
+            "frame_count": 3,
+            "control": 256,
+            "phase": "recorded actual",
+            "state_sha256": "783d05a1a0b5559c4a650ee05e1c0344371da9ab5316f9a8433e933aa21250d9",
+            "uncompressed_display_bgr_sha256": "6ee9bb9611f2e56ba01d198187302070c8fcaa3912b0fc791149d02790f055e3"
+          },
+          {
+            "first_frame": 778,
+            "frame_count": 3,
+            "control": 257,
+            "phase": "recorded actual",
+            "state_sha256": "bbfd8c84794fc83969a7f20f919be3b62923babfd7a39c83f009ed80f22e0d30",
+            "uncompressed_display_bgr_sha256": "59ada94770e2765360d01080f875951b02a538567db2a657314ab5057ac153b3"
+          },
+          {
+            "first_frame": 781,
+            "frame_count": 3,
+            "control": 258,
+            "phase": "recorded actual",
+            "state_sha256": "33dfb7ffb3e1454a796a8e7a6cbb1c34ab75630278b1cb7db65d8bb31d13a46f",
+            "uncompressed_display_bgr_sha256": "7633bf469a37aded9c1abc9f7014da26ac269197c8ba31c8d7231edcd5d8a1f2"
+          },
+          {
+            "first_frame": 784,
+            "frame_count": 3,
+            "control": 259,
+            "phase": "recorded actual",
+            "state_sha256": "f7a7867deb4f074353b66f985fbf227fe53cfbe55564e28d97daef5785155a84",
+            "uncompressed_display_bgr_sha256": "26c41b2a2e3d3b9e27f0ee3edce6f14d1eb5b756884b61fce2ca83a49b6cc622"
+          },
+          {
+            "first_frame": 787,
+            "frame_count": 3,
+            "control": 260,
+            "phase": "recorded actual",
+            "state_sha256": "96737157c16aab626829323f8d7542be85327e93aa5f2edc4b54a5ce720bd691",
+            "uncompressed_display_bgr_sha256": "bf6f64e8efa6bd9548fce34897681bc93bb7438e4db4979c2ed625d29de5b8c3"
+          },
+          {
+            "first_frame": 790,
+            "frame_count": 3,
+            "control": 261,
+            "phase": "recorded actual",
+            "state_sha256": "548884dc78a0ce34d1f1aaa07badc8f321d867320d62598be735c01a9af1dbe3",
+            "uncompressed_display_bgr_sha256": "1ffbb54321a7eb1a00a59e83fb935ad7b9befe5d5c5171378e782a999b918730"
+          },
+          {
+            "first_frame": 793,
+            "frame_count": 3,
+            "control": 262,
+            "phase": "recorded actual",
+            "state_sha256": "33512adc4f965b1d62ad18e3c5fcf17f5f0beea94dda308e431500fd78f01be8",
+            "uncompressed_display_bgr_sha256": "5502534dc4cf070749429655a95176f627924f100e2fecdc22401d277574aef1"
+          },
+          {
+            "first_frame": 796,
+            "frame_count": 3,
+            "control": 263,
+            "phase": "recorded actual",
+            "state_sha256": "b9b5383227dcf59f82321e9afac76fc7015264c4a4c4ec0bb7e853d53575265b",
+            "uncompressed_display_bgr_sha256": "a3466b45787ca6736fc0bdbca6eefa2952053403f50e2226678a74ad6974aa0c"
+          },
+          {
+            "first_frame": 799,
+            "frame_count": 3,
+            "control": 264,
+            "phase": "recorded actual",
+            "state_sha256": "b7f820f01aa2894bad9c26fb9acb4cc7eb74789ae51992788270a4415e1a33d2",
+            "uncompressed_display_bgr_sha256": "a2de29b1c1b2ed92dc22d95859b702f0b5c2f206f1d4431afc7360288174faf8"
+          },
+          {
+            "first_frame": 802,
+            "frame_count": 3,
+            "control": 265,
+            "phase": "recorded actual",
+            "state_sha256": "4428f2f2ef9e458d15d5b047c9ae87f129977b2454aab485d7a0822a60a5ed41",
+            "uncompressed_display_bgr_sha256": "3328601fa91fb86730d6abbb2d1f47117325c710d6c382978db54d9c1f628b96"
+          },
+          {
+            "first_frame": 805,
+            "frame_count": 3,
+            "control": 266,
+            "phase": "recorded actual",
+            "state_sha256": "c792a5d672b27d3c49a9c29696067a087b1498bb0ea0b6e8f2cd8a2bebe83f14",
+            "uncompressed_display_bgr_sha256": "b7a978f00d7ba9f370e60326e323305a32b86b23709ea96fd5266779aa0e412d"
+          },
+          {
+            "first_frame": 808,
+            "frame_count": 3,
+            "control": 267,
+            "phase": "recorded actual",
+            "state_sha256": "efba22be0da31f5745143b9383bdd8c6ff53ed38a6580098496120269ecffae2",
+            "uncompressed_display_bgr_sha256": "04571d6cd2aa899e57bf7be755609975852c315e2e7fb4602f2f5a3d6e719c9f"
+          },
+          {
+            "first_frame": 811,
+            "frame_count": 3,
+            "control": 268,
+            "phase": "recorded actual",
+            "state_sha256": "af1b889f89878c092ca7d7ba5b9cfd19e198da2d1c1771131aa9be27d0849ac7",
+            "uncompressed_display_bgr_sha256": "b19ee4da593adcb00a94b210a7b761205e728794a572571f20909b379399d9e7"
+          },
+          {
+            "first_frame": 814,
+            "frame_count": 3,
+            "control": 269,
+            "phase": "recorded actual",
+            "state_sha256": "8df4b8586c9abc1cc570e4ef9150a2bfcf2580afcc942fac7313965616bc7bbd",
+            "uncompressed_display_bgr_sha256": "e65fb321e1fffe38151e97bfd46452bc4a7699b5d114b21993f543393834c685"
+          },
+          {
+            "first_frame": 817,
+            "frame_count": 3,
+            "control": 270,
+            "phase": "recorded actual",
+            "state_sha256": "1eeb16c17013c2f606cb60cec41ea80e4623aa55d690d88c9fef6b92ecc26389",
+            "uncompressed_display_bgr_sha256": "ba7fd2c1265868252eca91a62cb11e0c95e8ef9c957587203cc9a7bc86c3deb8"
+          },
+          {
+            "first_frame": 820,
+            "frame_count": 3,
+            "control": 271,
+            "phase": "recorded actual",
+            "state_sha256": "a5ff8646048792e9bc9647e3901ae89ff571d7da0ec3ae0773a1b7a35d2174a0",
+            "uncompressed_display_bgr_sha256": "8b84e1e4aaaf09bccd9d9f874ab457a83aea6462ce71ca942857a641f5741940"
+          },
+          {
+            "first_frame": 823,
+            "frame_count": 3,
+            "control": 272,
+            "phase": "recorded actual",
+            "state_sha256": "5aabd99de2858d9f8ac5531832a3fe7655a69bd777c0cfb9d885ea4f8bbcfbe1",
+            "uncompressed_display_bgr_sha256": "530dff84d03309db94f3b4356f6ccd066394627d661ff5323db85d3ca9f96cc7"
+          },
+          {
+            "first_frame": 826,
+            "frame_count": 3,
+            "control": 273,
+            "phase": "recorded actual",
+            "state_sha256": "df64adbff180267758897fb1d4de6e75072a59ea2431cd950c04f2f2495b0d45",
+            "uncompressed_display_bgr_sha256": "bf2046191f20901f821450880172f80a9dd649a2143a37654ac7a2fe7a557ea9"
+          },
+          {
+            "first_frame": 829,
+            "frame_count": 3,
+            "control": 274,
+            "phase": "recorded actual",
+            "state_sha256": "7310ab35c27903683cbadd313bf84b1dc24a4ce394992c8d68be8f792139538a",
+            "uncompressed_display_bgr_sha256": "29ff74626bdfb15585d85558f48f9c3e12620142c8bbd6ae702e340538ce060d"
+          },
+          {
+            "first_frame": 832,
+            "frame_count": 3,
+            "control": 275,
+            "phase": "recorded actual",
+            "state_sha256": "5d936f9b38d07ce5a2ea901cfc8542f0796b50b38d1041660d4c7edbd0794a09",
+            "uncompressed_display_bgr_sha256": "eba2f58bde5327e2027c7a71430667b5fbbaec592b293d90b344a5ca32e8ab66"
+          },
+          {
+            "first_frame": 835,
+            "frame_count": 3,
+            "control": 276,
+            "phase": "recorded actual",
+            "state_sha256": "f083f1fc968497630cc93de89245065a59f4f4c739d1463038c02693c3872c1b",
+            "uncompressed_display_bgr_sha256": "63f6f0dc0ebfc32f1e14c526382e825684404c8089d60e8275c86b6952376bbb"
+          },
+          {
+            "first_frame": 838,
+            "frame_count": 3,
+            "control": 277,
+            "phase": "recorded actual",
+            "state_sha256": "761dd4be0743ff7509d4be0552f36643a3fa9c2474f2fd9e25e5c1096bd66e05",
+            "uncompressed_display_bgr_sha256": "adaa7e37e34ab95e9d2867336fabf2f85ab5fe9ce6dac5d31c595715d70bffad"
+          },
+          {
+            "first_frame": 841,
+            "frame_count": 3,
+            "control": 278,
+            "phase": "recorded actual",
+            "state_sha256": "d8b1ae7efba1f8f42e78fca847ffc18db0fd8864d2cb9378d4956b64872357b6",
+            "uncompressed_display_bgr_sha256": "73c1eadea88312ba69c3759d9ca562507528cd0a02cdca1b432824851e7876e0"
+          },
+          {
+            "first_frame": 844,
+            "frame_count": 3,
+            "control": 279,
+            "phase": "recorded actual",
+            "state_sha256": "a96fd537d15f6338ef81c06559ba552336cad28fcc06cbbef1d623b81bd471f8",
+            "uncompressed_display_bgr_sha256": "617c8f5cf09ebcd7f2d6b24e3fe6f937e99fe36ad57ae3b98ca6c961df97706c"
+          },
+          {
+            "first_frame": 847,
+            "frame_count": 3,
+            "control": 280,
+            "phase": "recorded actual",
+            "state_sha256": "a41993f0916e48df8ad483f3fc3e4e5b9f37801795e1866ef97f2ae53d1d1dff",
+            "uncompressed_display_bgr_sha256": "0119e51d255de233e1ad965d764ad0c4fdfce457ff36e4f76e38a136faf8c330"
+          },
+          {
+            "first_frame": 850,
+            "frame_count": 3,
+            "control": 281,
+            "phase": "recorded actual",
+            "state_sha256": "ad20ca4af256e81f30605b9f32e301d79fe9231d6d8279f9d6f3b928ac804506",
+            "uncompressed_display_bgr_sha256": "a959fbf7482a9c03e88fe731a1bedaab7a9ba24e9c04a4d68f001119a1c60451"
+          },
+          {
+            "first_frame": 853,
+            "frame_count": 3,
+            "control": 282,
+            "phase": "recorded actual",
+            "state_sha256": "72b4e7afbb5e129a4027b0bfac832da5f00b1aec00f6f95dbbcb5731e00ead66",
+            "uncompressed_display_bgr_sha256": "d37f04d6bd77a151e7fb6348ab0e12c612a1c74db499f6104a27c9f163584564"
+          },
+          {
+            "first_frame": 856,
+            "frame_count": 3,
+            "control": 283,
+            "phase": "recorded actual",
+            "state_sha256": "e07ae66e48e7c98735ea681f5ed0e1c87678fb1a8dc765afc23f029eef51b6b7",
+            "uncompressed_display_bgr_sha256": "4d59c48050d7120c637c5d0752696f1b24373c3a6fc54df7ed48f876975ecb50"
+          },
+          {
+            "first_frame": 859,
+            "frame_count": 3,
+            "control": 284,
+            "phase": "recorded actual",
+            "state_sha256": "1aeb0ca4cc72efacd5576920f70b6dbbb20220c7ad13ff45b3f55cd4689a0601",
+            "uncompressed_display_bgr_sha256": "5a726cc6710565912f5868c4539870ab988981194517ba5e48a10556c849e93b"
+          },
+          {
+            "first_frame": 862,
+            "frame_count": 3,
+            "control": 285,
+            "phase": "recorded actual",
+            "state_sha256": "dbc28fd3ce63d66018a167247f29121438c6206f1426c647227fb99d41d1d411",
+            "uncompressed_display_bgr_sha256": "4cb80dbcc771e453a32a90f5a9fac518a3882af788ae85576550602e7417201e"
+          },
+          {
+            "first_frame": 865,
+            "frame_count": 3,
+            "control": 286,
+            "phase": "recorded actual",
+            "state_sha256": "568d812b0d616c3d0ea6321fa0d68a4bbc8803de00a9d0738c0054f5271e525f",
+            "uncompressed_display_bgr_sha256": "8dc47821e58e3eade2a4cdbcc5de1cefabed463b0f752f4d64899441d2aa13cb"
+          },
+          {
+            "first_frame": 868,
+            "frame_count": 3,
+            "control": 287,
+            "phase": "recorded actual",
+            "state_sha256": "a9a7c629f7902e4d76894f7742de30d0fa11a1fe17bc1d813a4b00e8196a19f2",
+            "uncompressed_display_bgr_sha256": "fe9d014b9e358a55213ce58c0b1b171a75891fc986aff43862664a25c0f3da99"
+          },
+          {
+            "first_frame": 871,
+            "frame_count": 3,
+            "control": 288,
+            "phase": "recorded actual",
+            "state_sha256": "30bcf8850b12ad71294b5a0d760082bd9c3a4cda54b2aa3ea14b78eac7db46c3",
+            "uncompressed_display_bgr_sha256": "88ecd3f4aef3cc1e5421700519ea813fd8e2d24412649525246af0b1160c4b47"
+          },
+          {
+            "first_frame": 874,
+            "frame_count": 3,
+            "control": 289,
+            "phase": "recorded actual",
+            "state_sha256": "2a696b96a894a0f7c76f8c5ef6131d015fd9dde3758c61f6e5b0bc74bcdf36d4",
+            "uncompressed_display_bgr_sha256": "ecdab01962be78685bbd12e759272919d5786468198808047703e6db6366f13a"
+          },
+          {
+            "first_frame": 877,
+            "frame_count": 3,
+            "control": 290,
+            "phase": "recorded actual",
+            "state_sha256": "22e93603a1e316c5b36fcdbd2e26d8fa6149327b8e3858dd370c00cbbe55448b",
+            "uncompressed_display_bgr_sha256": "115900e223412120bdc6353bab78ca3e71363ac9445557679dded3dea379b6eb"
+          },
+          {
+            "first_frame": 880,
+            "frame_count": 3,
+            "control": 291,
+            "phase": "recorded actual",
+            "state_sha256": "d15b22e652dae16354524d113b79a8baad5ffe9fafa649955a206d27ab37c6a0",
+            "uncompressed_display_bgr_sha256": "0d96e9c6bb42bd43903ec6b6918a17534b7b335487564acfd30bf96c31152083"
+          },
+          {
+            "first_frame": 883,
+            "frame_count": 3,
+            "control": 292,
+            "phase": "recorded actual",
+            "state_sha256": "a7cf97e8611c7017e2129f2a5a00621fd31297779ebed81a6dc36ad805078820",
+            "uncompressed_display_bgr_sha256": "44487fa1e54ea8cbc60f286def81f3500705b9d6b9718ca8cba2b45db27154ad"
+          },
+          {
+            "first_frame": 886,
+            "frame_count": 3,
+            "control": 293,
+            "phase": "recorded actual",
+            "state_sha256": "8b1bbb72b5031325db409cb5dbf8ed7bd749d553c23497066e617546bc207197",
+            "uncompressed_display_bgr_sha256": "505ebb09c77ea8fb1a21d7a9d0bbfce5c6ddd80ab45481404a370c04100417cd"
+          },
+          {
+            "first_frame": 889,
+            "frame_count": 3,
+            "control": 294,
+            "phase": "recorded actual",
+            "state_sha256": "1a61fe2bf332cc29991ab0bd4ffded73c5096e7481426f8f813a6ec1fc5e1c53",
+            "uncompressed_display_bgr_sha256": "b55abe89beb72608a537155a6057919c18b48726cb20dd6411a0e94f83d1e726"
+          },
+          {
+            "first_frame": 892,
+            "frame_count": 3,
+            "control": 295,
+            "phase": "recorded actual",
+            "state_sha256": "6e2e37bf234bcf0c6038558ccde559aeae5480a4071a9dae5155ea55b9f73845",
+            "uncompressed_display_bgr_sha256": "990e48911740fab03a594d6c0f7dc54f03e3a47800b86cba1e2f5fe4839988d5"
+          },
+          {
+            "first_frame": 895,
+            "frame_count": 3,
+            "control": 296,
+            "phase": "recorded actual",
+            "state_sha256": "ed298ca877a23e2b4aec73dc25055783a4afffea49ac2a0b3fad49453437699e",
+            "uncompressed_display_bgr_sha256": "a8bf0a92224b1b4d7efb2218c476c417211e60cdc785afbda57d6bb959728a15"
+          },
+          {
+            "first_frame": 898,
+            "frame_count": 3,
+            "control": 297,
+            "phase": "recorded actual",
+            "state_sha256": "a63ce2a54eccad441a20d21df836a53c218d83fd41135b20efad5b89f81f2848",
+            "uncompressed_display_bgr_sha256": "718d4047acc7cac79dccf90e17b57d34e10be3753df77fea8c914b6714b92f28"
+          },
+          {
+            "first_frame": 901,
+            "frame_count": 3,
+            "control": 298,
+            "phase": "recorded actual",
+            "state_sha256": "7864c6ad412c04c8992cf3266202c09de8b729ff6411027eb4db252a76561f5b",
+            "uncompressed_display_bgr_sha256": "a2185fd0db4ebb9a7190ddb72cd42145750ad4c31ceb0603756b8b5ee7c5de10"
+          },
+          {
+            "first_frame": 904,
+            "frame_count": 3,
+            "control": 299,
+            "phase": "recorded actual",
+            "state_sha256": "925f4751b4b7597515e16361b07c088acae1a728becc25da9ecdff3a4c911430",
+            "uncompressed_display_bgr_sha256": "f5ea1b88ef524634b04fd2b4779f6a3b232c87f8db5eafeede151b69dc170d26"
+          },
+          {
+            "first_frame": 907,
+            "frame_count": 3,
+            "control": 300,
+            "phase": "recorded actual",
+            "state_sha256": "feb7c6bd03a80fc03bdef11ac34df6c12e560b38c91d3af38b4b1a80954368a1",
+            "uncompressed_display_bgr_sha256": "75a5c63bb0f1f1560eb72b27ad99134bfa4cefeaf332d2272557d08cbc4bf9ec"
+          },
+          {
+            "first_frame": 910,
+            "frame_count": 20,
+            "control": 300,
+            "phase": "final result",
+            "state_sha256": "feb7c6bd03a80fc03bdef11ac34df6c12e560b38c91d3af38b4b1a80954368a1",
+            "uncompressed_display_bgr_sha256": "5a8b2ca632f380a923ee918089a9554bc2338cc2ea33250ba4dc42717319fa56"
+          }
+        ]
+      },
+      "elapsed_seconds": 9.0,
+      "torch_loaded": false
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "version": "frozen-wm-image-decoder-v1",
+  "frozen_before": "any real calibration render or model forecast",
+  "input": {"rgb_height": 96, "rgb_width": 96, "world_extent": 512, "float_range": [0, 1]},
+  "priors": ["official L/T rectangle geometry", "fixed object gray or red palette", "blue radius-15 pusher", "fixed supplied goal"],
+  "forbidden_inputs": ["true object pose", "true pusher position", "true contact", "true future ROI", "future outcome"],
+  "object_gray": {"r": [60, 220], "g": [70, 235], "b": [80, 245], "b_minus_r": [8, 80], "b_minus_g": [4, 55]},
+  "object_red": {"r_min": 100, "r_minus_g_min": 50, "r_minus_b_min": 35},
+  "pusher_blue": {"b_min": 110, "b_minus_r_min": 45, "b_minus_g_min": 20},
+  "mask": {"object_area_ratio": [0.72, 1.35], "largest_component_fraction_min": 0.95, "fit_iou_min": 0.85, "pusher_area_ratio": [0.48, 1.60], "pusher_circle_iou_min": 0.60},
+  "fit": {"angle_coarse_degrees": 3, "coarse_survivors": 4, "soft_edge_world_pixels": 1.5, "template_outline_world_pixels": 2, "outline_source": "pinned official pusht/pymunk_override.py draw_polygon hardcodes radius=2; used only for silhouette fitting, never coverage geometry", "powell_max_iterations": 60, "position_bound_world_pixels": 12, "angle_refine_bound_degrees": 6, "x_tolerance": 0.01, "function_tolerance": 0.0000001},
+  "pixel_coordinates": "OpenCV resize pixel centers: (index+0.5)*512/96-0.5; pygame vertices rounded to world pixels",
+  "contact_proxy": {"pusher_radius_world_pixels": 15, "extra_proximity_world_pixels": 2, "meaning": "estimated geometry proximity only; never solver contact"},
+  "calibration_gate": {"per_shape": true, "measurable_fraction_min": 0.95, "position_p90_world_pixels_max": 5, "pusher_position_p90_world_pixels_max": 5, "angle_p90_degrees_max": 5, "coverage_mae_max": 0.03},
+  "abstention": "Invalid input, missing components, area/shape/circle mismatch or partial scene clipping returns valid=false and no coverage. Never fill from truth or discard missing rows.",
+  "tuning": "Configuration and algorithm fixed before real renders; calibration failures are reported without tuning. Synthetic-only implementation tests do not consume physics."
+}

@@ -1,0 +1,168 @@
+{
+  "planned_slots": 54,
+  "planned_controls": 1296,
+  "dispatchable_slots": 53,
+  "first_six": [
+    {
+      "request_id": "R2B-new-00-T-center",
+      "role": "rotation_positive",
+      "dispatchable": true
+    },
+    {
+      "request_id": "R2B-new-27-C-center",
+      "role": "translation_1",
+      "dispatchable": true
+    },
+    {
+      "request_id": "R2B-new-36-X-center",
+      "role": "translation_1",
+      "dispatchable": true
+    },
+    {
+      "request_id": "R2B-new-45-B-center",
+      "role": "translation_1",
+      "dispatchable": true
+    },
+    {
+      "request_id": "R2B-new-09-L-center",
+      "role": "rotation_negative",
+      "dispatchable": true
+    },
+    {
+      "request_id": "R2B-new-19-O-left",
+      "role": "wall_along",
+      "dispatchable": true
+    }
+  ],
+  "per_letter_support": {
+    "T": {
+      "dispatchable": 9,
+      "translation_intent_distinct_arcs": [
+        12,
+        30,
+        39
+      ],
+      "positive_rotation_intents": 2,
+      "negative_rotation_intents": 1,
+      "oblique_or_wall_intents": 3,
+      "planned_minima_met": true
+    },
+    "L": {
+      "dispatchable": 9,
+      "translation_intent_distinct_arcs": [
+        0,
+        11,
+        24
+      ],
+      "positive_rotation_intents": 1,
+      "negative_rotation_intents": 2,
+      "oblique_or_wall_intents": 3,
+      "planned_minima_met": true
+    },
+    "O": {
+      "dispatchable": 9,
+      "translation_intent_distinct_arcs": [
+        7,
+        25,
+        55
+      ],
+      "positive_rotation_intents": 1,
+      "negative_rotation_intents": 1,
+      "oblique_or_wall_intents": 4,
+      "planned_minima_met": true
+    },
+    "C": {
+      "dispatchable": 9,
+      "translation_intent_distinct_arcs": [
+        4,
+        32,
+        33,
+        47
+      ],
+      "positive_rotation_intents": 1,
+      "negative_rotation_intents": 1,
+      "oblique_or_wall_intents": 3,
+      "planned_minima_met": true
+    },
+    "X": {
+      "dispatchable": 8,
+      "translation_intent_distinct_arcs": [
+        7,
+        24,
+        32,
+        75
+      ],
+      "positive_rotation_intents": 1,
+      "negative_rotation_intents": 1,
+      "oblique_or_wall_intents": 2,
+      "planned_minima_met": true
+    },
+    "B": {
+      "dispatchable": 9,
+      "translation_intent_distinct_arcs": [
+        4,
+        5,
+        17,
+        18
+      ],
+      "positive_rotation_intents": 1,
+      "negative_rotation_intents": 1,
+      "oblique_or_wall_intents": 3,
+      "planned_minima_met": true
+    }
+  },
+  "finite_rejection_counts": {
+    "positive_lever_under12": 1929,
+    "radius15_normal_staging_or_wall_blocked_unconfirmed": 16469,
+    "translation_room_under24": 1026,
+    "requested_translation_resultant_lever_not_supported": 4951,
+    "leave_direction_not_supported": 1342,
+    "rotation_drive_room_under8": 326,
+    "negative_lever_under12": 1849,
+    "along_direction_not_supported": 4042,
+    "closed_hole_not_exterior": 7500
+  },
+  "old_four_static_gap_cases": [
+    {
+      "source_family_id": "R2B-F06-T-right-top",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "translation_2",
+      "new_dispatchable": true,
+      "resolution": "new finite pose/gap/arc proves this fixed new role, not achievement of old dynamics"
+    },
+    {
+      "source_family_id": "R2B-F17-L-right-bottom",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "wall_along",
+      "new_dispatchable": true,
+      "resolution": "new finite pose/gap/arc proves this fixed new role, not achievement of old dynamics"
+    },
+    {
+      "source_family_id": "R2B-F41-X-left-top",
+      "old_missing": [
+        "requested_process_direction"
+      ],
+      "new_role": "mixed_positive",
+      "new_dispatchable": false,
+      "resolution": "unresolved; preserve slot unexecuted, no replacement"
+    },
+    {
+      "source_family_id": "R2B-F44-X-right-bottom",
+      "old_missing": [
+        "requested_lever_bin"
+      ],
+      "new_role": "wall_along",
+      "new_dispatchable": true,
+      "resolution": "new finite pose/gap/arc proves this fixed new role, not achievement of old dynamics"
+    }
+  ],
+  "new_physics_steps": 0,
+  "new_environment_instances": 0,
+  "new_renderer_calls": 0,
+  "new_model_calls": 0,
+  "scope": "geometric feasibility and intent only; no claim of actual motion/contact/boundary achieved"
+}

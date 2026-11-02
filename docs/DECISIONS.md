@@ -470,3 +470,16 @@ with explicit success/time-limit handling. Keep raw upstream rewards and origina
 success in reports; sustained completion is a separate task. Freeze dynamics
 during policy phases, derive imagined rewards from predictions and test learned
 policies physically. Include all model-data collection in end-to-end costs.
+
+## D028 — Preserve the world-model archive as an independent bundle (2026-11-03)
+
+Keep the organized source release in `world-model/` rather than merging
+conflicting historical modules into the root package. Preserve each profile's
+source/environment identity, experimental controls, failures and missing-asset
+qualifications. The root policy/environment entrypoints remain separate.
+
+Publish only audited source, bounded scientific evidence and manifests; external
+weights/data, personal configuration and local execution/resource receipts stay
+outside the commit. Add source/privacy checks for this bundle without running
+training or simulator/model tests in CI. The owner selected HMF500 for current
+H1/AR4 inspection use; this is not a complete physics/rigidity acceptance claim.

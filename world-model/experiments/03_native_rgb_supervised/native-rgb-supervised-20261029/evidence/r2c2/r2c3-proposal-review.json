@@ -1,0 +1,72 @@
+{
+  "kind": "R2C3-proposal-independent-space-and-curve-review.v1",
+  "checked_at_utc": "2026-10-29T12:59:43.778934+00:00",
+  "passed": true,
+  "issues": [],
+  "proposal_config": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\configs\\native_rgb_r2c3_proposed.json",
+  "proposal_sha256": "1eacb83cf6cfc2cfa7ce3b93a67d03fe59778694dffff1e17545e94738351364",
+  "proposal_markdown": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c2\\R2C3_PROPOSAL.md",
+  "proposal_markdown_sha256": "a4cea8c5c43230ca92711706c93c56f92ce16b2885d18bc888982f5a44f42505",
+  "review_scope": "Proposal arithmetic, restore/continuation/curve constraints only; no C3 runtime/implementation acceptance claimed.",
+  "new_model_calls": 0,
+  "checkpoint_loads": 0,
+  "new_scores": 0,
+  "physics_controls": 0,
+  "storage": {
+    "existing_shared_measured_reference": 2456891776,
+    "stage_cap": 419430400,
+    "atomic_reserve": 268435456,
+    "nonstage_growth_reserve": 1048576,
+    "conservative_total": 3145806208,
+    "shared_cap": 3221225472,
+    "headroom": 75419264,
+    "maximum_existing_baseline": 2532311040,
+    "raw_float32_bytes": 95551488,
+    "duplicate_float64_endpoint_bytes_avoided": 95551488,
+    "raw_reference_loader_equivalence_required": true,
+    "category_caps_sum_verified": true,
+    "refresh_actual_footprint_before_launch_required": true
+  },
+  "plan": {
+    "restore_complete_R1_state_not_reinitialize": true,
+    "lineage_checkpoints": [
+      1000,
+      3000,
+      6000
+    ],
+    "new_complete_updates": 5700,
+    "new_draws": 91200,
+    "global_complete_if_no_failures": 6250,
+    "new_sampler_batch_calls": 216,
+    "new_denoiser_forwards_expected": 2052,
+    "new_raw_float32_frames": 864,
+    "new_endpoint_rows": 432,
+    "time_policy": "record_only_v2",
+    "time_limits": null
+  },
+  "required_implementation_checks": [
+    "Restore exact model/optimizer/scaler/scheduler and all RNG/PreparedInputs/progress at complete300 boundary; version explicit successor identity rather than bypass old config checks.",
+    "Public versioned R2C0 stream continuation preserves original4800 prefix and cursor/slot order/per-queue RNG; next draw4801, total96000; never replay first4800.",
+    "Restore lr state300, advance original cosine only through successful3000, then hold eta_min1e-5 without rebound; log applied-update lr separately from post-step lr.",
+    "Explicit5700-complete C3 scope replaces old global3000 supervisor guard, preserves550 existing cost and all stage history; no user lifetime/time budget implied.",
+    "Raw-reference endpoint loader exactly preserves numeric values and metrics_input_identity before launch; no duplicate float64 endpoint images.",
+    "Compact logs reference frozen861-window catalogue; do not repeat16 full metadata records per5700 attempts.",
+    "Save safely before each observation new evaluation; serialize large atomic writes, keep old full until replace succeeds, generate galleries cold; temporary physical peak and persistent caps checked separately.",
+    "Final actual complete reload verifies all state; model-only1000/3000 snapshots cannot be used as full resumable states."
+  ],
+  "science_limits": [
+    "Fixed300 C2 only diagnoses sampler sensitivity, not adequate training or a capacity ceiling.",
+    "Compare same sampler across training points and same training point across3/16 separately; retain nearstatic failures, shape unknown and all denominator rows.",
+    "Repeated draws remain861 unique windows/41 families; more exposure is not new data or unseen-letter evidence.",
+    "Six-thousand is an observation point; improvement or plateau does not establish convergence or final project completion."
+  ],
+  "latest_human_override_reported_by_root": {
+    "actual_more_training_authorized": true,
+    "no_more_300_evaluations": true,
+    "historical_proposal_fixed_loss300_clause_superseded": true,
+    "actual_successor_config_must_exclude_new_fixed_loss_at300": true,
+    "existing_R1_C2_predictions_and_scores_reused": true,
+    "fixed_loss_curve_should_start1000_if_no_comparable_fixed300_exists": true
+  },
+  "implementation_not_reviewed_yet": true
+}

@@ -1,0 +1,55 @@
+{
+  "cohorts": {
+    "train_visual": "12 unique TRAIN, translation then rotation per letter; minhash among frozenfirst480-exposed fullH4legal windows, prior role excluded",
+    "val_motion": "at most1 H1obvious-motion H4legal anchor pervaltrajectory after natural exclusion; missing support retained",
+    "val_natural": "1 minhash H4legal anchor per frozenvaltrajectory, no motion filter; trajectories deliberately contain motion, so not unbiased natural test"
+  },
+  "display": "truth preview only from saveduint8RGB; white/gray/blue unaltered, action charts/text outside image panels; no predictions created",
+  "domains": {
+    "train_visual": "r2c0.train-visual-v1",
+    "val_motion": "r2c0.val-motion-v1",
+    "val_natural": "r2c0.val-natural-v1"
+  },
+  "h1_reuses_first_h4_call": true,
+  "kind": "R2C0-same-window-native-RGB-evaluation.v1",
+  "methods": [
+    "copy_last",
+    "original_published_GPC",
+    "trained_final"
+  ],
+  "methods_currently_executed": [],
+  "model_callback": {
+    "actions_shape": "[N,4,2] already normalized",
+    "entry": "tdyssey.native_rgb_r2c0_evaluation.rollout_raw",
+    "feedback": "original generated rawRGB only; finite out-of-range unchanged; no future truth/state/pose/template/environment render/repair",
+    "hard_stop": "nonfinite/wrongshape/callback failure stopscohort, preserves rawfailure and every frozen denominator; no retries",
+    "history_shape": "[N,4,3,96,96]",
+    "normalization": "absolute.astype(float32)/511*2-1 exactly once; callback goes directly to normalized native sampler, NEVER old absolute-action wrapper or inverse/renormalize",
+    "pairing": "same cohort/order/batchshape and domain-separated perbatch+step seed for original/final; no claim of independent perwindow diffusion noise"
+  },
+  "obvious_motion": "H1 area-centroid displacement>=2 image96px OR abs raw unwrapped rotation>=5deg; small_or_static is only a historical variable name for the complement, display near-static/small motion, never exact static; no old2worldpx main criterion",
+  "scope": "preparation only; zero current model/inference/training authorization",
+  "score": {
+    "acceptance": "no new pass target declared here; paired errors/wins/hardfail/unknown per cohort and horizon, TRAIN fit is not unseen-shape transfer",
+    "calibration_file": "artifacts\\native-rgb-20261028\\frozen-renderer-calibration.json",
+    "calibration_file_sha256": "fae795cd325ca4b88aa23faa127f9e84036f06bec485b169d12b902887c45609",
+    "entry": "tdyssey.native_rgb_r2c0_evaluation.score_endpoints",
+    "hard_failures": "status/missing/wrongshape/nonfinite/out-of-range/emptygray/emptyblue retain denominator and existing penalties; rawvalues saved unmodified",
+    "legacy_evaluation_source_sha256": "7a655f5ca40754ddac4b6cf5b4b989e808f241a716fdb86d247372686fad6627",
+    "metrics_source": "scripts/native_rgb_stage3_score.py",
+    "metrics_source_sha256": "9a165c71befa83d190d29311c265e2795ae24205464310d26fd0e64100ff49d6",
+    "object": "unaligned visible-gray 1-IoU,gray fixedLAST|TRUE ROI RGBMAE,raw contour distance; blue pusher metrics separate",
+    "shape": "occlusion/border/unassessable remains unknown; failFalse alone is never a shape/rigidity guarantee",
+    "small_or_static": "report gray prediction-vs-LAST drift separately for H1non-obvious windows, with actual truth amplitudes; not a requirement to beat zero-error copylast"
+  },
+  "seed": 5478,
+  "timeline": {
+    "h1_actions": "actual a-3..a,4 actions",
+    "h1_truth": "storedRGB[a+1]",
+    "h4_audit_action_prefix": "a-3..a+3,7 actual actions for audit, NEVER all7 in one GPC call",
+    "h4_truth": "storedRGB[a+4]",
+    "history": "states/images a-3..a,4 real observed RGB",
+    "validity": "all7 history/future transitions valid; no cross-trajectory windows"
+  },
+  "training_result_available": false
+}

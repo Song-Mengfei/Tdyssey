@@ -1,0 +1,82 @@
+{
+  "kind": "R3B-two-worker-loader-diagnostic.v1",
+  "run_id": "R3B-recovery-5eb6db5fde034de9bd51d9499cd566f1",
+  "phase": "data",
+  "started_at_utc": "2026-10-30T09:49:02.162813+00:00",
+  "passed": false,
+  "parent_identity": {
+    "pid": 12416,
+    "ppid": 34656,
+    "actual_process_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+    "executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+    "base_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+    "prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+    "base_prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+    "cwd": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+    "sys_path": [
+      "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+      "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python312.zip",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\DLLs",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+      "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Lib\\site-packages"
+    ],
+    "job": {
+      "supported": true,
+      "is_in_job": false
+    },
+    "torch_imported": false,
+    "python_configuration": {
+      "__PYVENV_LAUNCHER__": null,
+      "PYTHONHOME": null,
+      "PYTHONPATH": null,
+      "PYTHONEXECUTABLE": null
+    }
+  },
+  "workers": 2,
+  "prefetch_batches": 2,
+  "model_loaded": false,
+  "cuda_initialized": false,
+  "verified_batches": 0,
+  "verified_worker_pids": [],
+  "new_physics_controls": 0,
+  "launcher_exited_before_progress": true,
+  "batches": [],
+  "failure": {
+    "type": "BrokenProcessPool",
+    "reason": "A process in the process pool was terminated abruptly while the future was running or pending.",
+    "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3b_loader_diagnostic.py\", line 67, in run\n    for number,batch in enumerate(loader.iterate(order.batches[:args.batches])):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_data.py\", line 393, in iterate\n    self.maximum_in_flight=max(self.maximum_in_flight,len(pending));result=pending.popleft().result()\n                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib\\concurrent\\futures\\_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib\\concurrent\\futures\\_base.py\", line 401, in __get_result\n    raise self._exception\nconcurrent.futures.process.BrokenProcessPool: A process in the process pool was terminated abruptly while the future was running or pending.\n"
+  },
+  "site_hook": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag01-default\\site-hook\\sitecustomize.py",
+    "source_sha256": "c0e8d0cf00cd44f37805a815ed65f853c59b2446b78754477f565426e354fd26",
+    "role": "Diagnostic logging only; no executable selection/data/renderer changes"
+  },
+  "data_manifest_sha256": "0e91e1412f937c7d8f39473243a27a3720317a07474e730a510e628d040c0a19",
+  "loader_source_sha256": "e8bc9e0f23795d1438ab1e0421476a5d999a0bc7df9df791b60507e3f1faaf21",
+  "dataset_contract": {
+    "physics_source_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy",
+    "frame_cache_bytes": 16777216,
+    "state_cache_bytes": 8388608
+  },
+  "exitcode_records": [
+    {
+      "pid": 33472,
+      "name": "SpawnProcess-1",
+      "exitcode": 1,
+      "alive": false
+    },
+    {
+      "pid": 18744,
+      "name": "SpawnProcess-2",
+      "exitcode": -15,
+      "alive": false
+    }
+  ],
+  "finished_at_utc": "2026-10-30T09:49:07.428225+00:00",
+  "wall_seconds": 5.26600000000326,
+  "torch_imported": false,
+  "completed": true
+}

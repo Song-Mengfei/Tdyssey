@@ -1,0 +1,77 @@
+{
+  "automatic_retry": false,
+  "base_commit": "07616f9ced9f51f9b2ee4459290418fa8316e1d7",
+  "binding": {
+    "authorization_id": "20261026-user-autonomous-gpc-supervised-pilot-03",
+    "benchmark_sha256": "dde6b5b8c31c8aac17f341d08f8f12eef78fe0e8ca4ebfe88e289c6289e759ea",
+    "candidate_id": "gpc-tl-supervised-one-step-03",
+    "config_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\configs\\gpc_supervised_adaptation_pilot03.json",
+    "config_sha256": "5bc6c88efd4023dc27c3718f57655791e0271a4bc8ae8241069fef98352e4937",
+    "data_sha256": "2a28136ca9c3b111d202f507ebab16c992b4d26a9c48d388956e390c6b2b069e",
+    "output_dir": "artifacts/gpc-supervised-adaptation-pilot03-20261026",
+    "source_commit": "e6b03416cbe4aa50acc95ed9fe8c62efabf1f2b6",
+    "training_schedule_order_sha256": "54edfd533df01652b3208996f80bf88e9f19f9806bb01ddcde93adbcaafc170d",
+    "training_schedule_rule_sha256": "909d35e2816e317ec0766291632b91cef5e0bc1545bc7da176572176637a84bc",
+    "training_schedule_sha256": "f7217a2d09393798529b00e72fcd971e8d7be11cab7a9c769704a9b30ddd004a"
+  },
+  "checkpoint": {
+    "bytes": 35043916,
+    "filename": "denoiser.pth",
+    "format": "pytorch_state_dict",
+    "path": "world_model_checkpoint/phase_two_checkpoint/denoiser.pth",
+    "repo_id": "han2019/gpc_checkpoints",
+    "revision": "c16a467ec176af19bba5136564a81d8d61d72af9",
+    "sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892"
+  },
+  "kind": "pilot03_frozen_launch_plan.v1",
+  "limits": {
+    "active_gpu_models": 1,
+    "checkpoint_bytes": 167772160,
+    "cpu_threads": 2,
+    "cuda_allocated_bytes": 536870912,
+    "cuda_reserved_bytes": 1073741824,
+    "euler_steps": 11988,
+    "eval_batches": 32,
+    "eval_examples": 32,
+    "forecasts": 3996,
+    "metadata_bytes": 16777216,
+    "model_loads": 3,
+    "output_bytes": 1073741824,
+    "telemetry_bytes": 67108864,
+    "wall_seconds": 3600
+  },
+  "model_or_sdk_operations": 0,
+  "new_output_absent": true,
+  "old_pilot01_pilot02_refused": true,
+  "physics": 0,
+  "preflight_passed": true,
+  "real_attempts_authorized": 1,
+  "resources": {
+    "native_job_gib": 3,
+    "process_private_gib": 3,
+    "process_working_set_gib": 2,
+    "runtime_commit_gib": 3,
+    "runtime_gpu_gib": 1.5,
+    "runtime_ram_gib": 1.5,
+    "startup_commit_gib": 6,
+    "startup_disk_gib": 2,
+    "startup_gpu_gib": 4,
+    "startup_ram_gib": 4
+  },
+  "source_gpc_commit": "a96146e568826ef46134f73c22fdf59a675e7264",
+  "train": {
+    "batch_size": 1,
+    "checkpoint_every": 50,
+    "grad_clip_norm": 1.0,
+    "max_examples": 500,
+    "max_updates": 500,
+    "order": "frozen_train_schedule_v1",
+    "phase_seconds": 900,
+    "seed": 5478,
+    "selected_update": 500,
+    "shape_ratio": [
+      1,
+      1
+    ]
+  }
+}

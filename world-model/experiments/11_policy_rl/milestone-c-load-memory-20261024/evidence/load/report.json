@@ -1,0 +1,290 @@
+{
+  "actor_shares_official_network": true,
+  "base_checkpoint": "__LOCAL_WORKSPACE__\\Tdyssey\\checkpoints\\official-dp\\ema_policy.pt",
+  "checkpoint_sha256": "37d661ce6a487905fa4ff81ab7d65bf1b56b1c06adf480a961f65338fa0e38a0",
+  "config": {
+    "base": {
+      "bytes": 1095708090,
+      "sha256": "37d661ce6a487905fa4ff81ab7d65bf1b56b1c06adf480a961f65338fa0e38a0"
+    },
+    "budgets": {
+      "development": {
+        "control": 24000,
+        "plan": 3040,
+        "reset": 160
+      },
+      "diagnostic": {
+        "control": 0,
+        "plan": 0,
+        "reset": 0
+      },
+      "global": {
+        "actor_step": 72,
+        "batch": 24,
+        "critic_step": 72
+      },
+      "max_checkpoints": 2,
+      "storage_bytes": 536870912,
+      "train": {
+        "control": 2048,
+        "plan": 384,
+        "reset": 384
+      },
+      "wall_time_seconds": 7200
+    },
+    "evaluation": {
+      "episode_controls": 300,
+      "max_groups": 4,
+      "new_development_scenes": [
+        100003,
+        100004
+      ],
+      "policy_seeds": [
+        5478,
+        5479
+      ],
+      "scenes": [
+        100000,
+        100001,
+        100002,
+        100003,
+        100004
+      ],
+      "untouched_test": false
+    },
+    "optimization": {
+      "actor_lr": 1e-05,
+      "beta": 1.0,
+      "clip": 0.2,
+      "critic_lr": 0.0003,
+      "denoising_discount": 1.0,
+      "first_batch_passes": 1,
+      "gae_lambda": 0.95,
+      "gamma": 0.99,
+      "max_grad_norm": 1.0,
+      "max_passes": 3,
+      "plan_microbatch": 1,
+      "std_floor": 0.01,
+      "step_microbatch": 1,
+      "subset": "output",
+      "target_kl": 0.02
+    },
+    "runtime": {
+      "device": "cuda",
+      "precision": "fp32",
+      "threads": 4
+    },
+    "scenes": {
+      "excluded_evaluation": [
+        100000,
+        100001,
+        100002,
+        100003,
+        100004
+      ],
+      "training": {
+        "L": [
+          500000,
+          500001,
+          500032,
+          500003,
+          500004,
+          500005,
+          500006,
+          500007,
+          500008,
+          500009,
+          500033,
+          500034,
+          500012,
+          500013,
+          500014,
+          500036,
+          500016,
+          500017,
+          500037,
+          500019,
+          500020,
+          500021,
+          500022,
+          500023,
+          500024,
+          500038,
+          500026,
+          500027,
+          500028,
+          500029,
+          500039,
+          500031
+        ],
+        "T": [
+          400032,
+          400001,
+          400002,
+          400003,
+          400004,
+          400005,
+          400006,
+          400033,
+          400008,
+          400009,
+          400034,
+          400011,
+          400012,
+          400013,
+          400014,
+          400015,
+          400016,
+          400017,
+          400018,
+          400019,
+          400020,
+          400021,
+          400022,
+          400023,
+          400024,
+          400025,
+          400026,
+          400027,
+          400035,
+          400029,
+          400030,
+          400031
+        ]
+      }
+    },
+    "schema_version": 1,
+    "shapes": [
+      "T",
+      "L"
+    ],
+    "status": "proposed_not_executed",
+    "train_seed": 5478,
+    "training": {
+      "batch_controls": 128,
+      "batch_plans": 16,
+      "episode_controls": 300
+    }
+  },
+  "config_hash": "0c682afbaf03360dc7af77c3c0917c3cfd120d5e7a8da10532c1d3d5251a8db3",
+  "counts": {
+    "control_steps": 0,
+    "evaluation_episodes": 0,
+    "forward_calls": 0,
+    "official_model_constructions": 1,
+    "optimizer_steps": 0,
+    "policy_samples": 0,
+    "resets": 0
+  },
+  "elapsed_seconds": 16.57114720006939,
+  "formal_C_clock_started": false,
+  "formal_C_experiment_initialized": false,
+  "kind": "tdyssey.C.load_only_probe",
+  "limits": {
+    "minimum_available_ram_bytes": 1073741824,
+    "minimum_commit_headroom_bytes": 2147483648,
+    "stage_bytes": 262144,
+    "wall_seconds": 180
+  },
+  "loader_sha256": "b39d9571ff7719a16664938b1301eac1eee2908ec7838bf3a246c91e4c8523b5",
+  "ready": {
+    "actor_buffer_bytes": 76,
+    "actor_parameter_bytes": 1050836224,
+    "actor_parameters": 262709056,
+    "at_utc": "2026-10-23T21:19:56.229515+00:00",
+    "config_hash": "0c682afbaf03360dc7af77c3c0917c3cfd120d5e7a8da10532c1d3d5251a8db3",
+    "critic_parameters": 17153,
+    "cuda": {
+      "allocated_bytes": 1055474688,
+      "initialized": true,
+      "peak_allocated_bytes": 1055474688,
+      "peak_reserved_bytes": 1080033280,
+      "reserved_bytes": 1080033280
+    },
+    "elapsed_seconds": 16.5184428000357,
+    "gpu": {
+      "at_utc": "2026-10-23T21:19:56.230517+00:00",
+      "devices": [
+        {
+          "free_bytes": 6043992064,
+          "free_mib": 5764,
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 3060 Ti",
+          "total_bytes": 8589934592,
+          "total_mib": 8192,
+          "used_bytes": 2370830336,
+          "used_mib": 2261
+        }
+      ],
+      "elapsed_seconds": 0.05043359997216612,
+      "exit_code": 0,
+      "ok": true,
+      "raw_stderr": "",
+      "raw_stdout": "0, NVIDIA GeForce RTX 3060 Ti, 8192, 5764, 2261\n",
+      "source": "installed NVIDIA nvidia-smi; current driver memory, not process allocator peaks",
+      "source_command": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.free,memory.used",
+        "--format=csv,noheader,nounits"
+      ]
+    },
+    "guard_reason": null,
+    "loader_sha256": "b39d9571ff7719a16664938b1301eac1eee2908ec7838bf3a246c91e4c8523b5",
+    "optimizer_state_entries": {
+      "actor": 0,
+      "critic": 0
+    },
+    "pid": 12284,
+    "process": {
+      "at_utc": "2026-10-23T21:19:56.230517+00:00",
+      "elapsed_seconds": 7.579999510198832e-05,
+      "ok": true,
+      "page_fault_count": 978158,
+      "pagefile_bytes": 3586760704,
+      "peak_pagefile_bytes": 4684144640,
+      "peak_working_set_bytes": 2798817280,
+      "pid": 12284,
+      "private_bytes": 3586760704,
+      "source": "Win32 OpenProcess and PSAPI GetProcessMemoryInfo",
+      "working_set_bytes": 1670189056
+    },
+    "selected_parameters": 1313282,
+    "stage": "critic_optimizer_ready",
+    "system": {
+      "at_utc": "2026-10-23T21:19:56.229515+00:00",
+      "commit": {
+        "headroom_bytes": 13415985152,
+        "limit_bytes": 34047442944,
+        "page_size_bytes": 4096,
+        "peak_bytes": 39511334912,
+        "raw_pages": {
+          "CommitLimit": 8312364,
+          "CommitPeak": 9646322,
+          "CommitTotal": 5036977
+        },
+        "total_bytes": 20631457792
+      },
+      "elapsed_seconds": 0.00034950010012835264,
+      "ok": true,
+      "physical": {
+        "available_bytes": 4431085568,
+        "load_percent": 73,
+        "total_bytes": 17023721472
+      },
+      "source": "Win32 GlobalMemoryStatusEx and PSAPI GetPerformanceInfo"
+    }
+  },
+  "scope": "load/migration and empty optimizer shells; no inference or PPO activation measurement",
+  "source_root": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy",
+  "stages": [
+    "before_import",
+    "after_runtime",
+    "mmap_done",
+    "model_constructed",
+    "strict_load_done",
+    "cuda_transfer_done",
+    "actor_ready",
+    "critic_optimizer_ready"
+  ],
+  "status": "complete"
+}

@@ -1,0 +1,263 @@
+{
+  "kind": "R3B-detached-loader-root-cause-and-repair-summary.v1",
+  "root_cause_confirmed": true,
+  "category": "venv_redirector_wrong_handle_target",
+  "run_id": "R3B-recovery-5eb6db5fde034de9bd51d9499cd566f1",
+  "original_failed_model_attempt": {
+    "run_id": "R3B-firstepoch-0c0e39d5b67940799c2211eca058017f",
+    "recorded_model_seconds": 33.047,
+    "optimizer_attempts": 0,
+    "forward_backward_calls": 0
+  },
+  "diagnostics": [
+    {
+      "name": "diag01-default",
+      "passed": false,
+      "run_id": "R3B-recovery-5eb6db5fde034de9bd51d9499cd566f1",
+      "wall_seconds": 5.26600000000326,
+      "parent_pid": 12416,
+      "launcher_exited_before_progress": true,
+      "created_process_pids": [
+        33472,
+        18744
+      ],
+      "initialized_actual_python_pids": [
+        34056
+      ],
+      "created_and_actual_pid_sets_equal": false,
+      "actual_worker_identities": {
+        "34056": {
+          "pid": 34056,
+          "ppid": 33472,
+          "actual_process_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+          "base_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+          "base_prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+          "cwd": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+          "sys_path": [
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python312.zip",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\DLLs",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Lib\\site-packages"
+          ],
+          "job": {
+            "supported": true,
+            "is_in_job": true
+          },
+          "torch_imported": false,
+          "python_configuration": {
+            "__PYVENV_LAUNCHER__": null,
+            "PYTHONHOME": null,
+            "PYTHONPATH": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag01-default\\site-hook;__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "PYTHONEXECUTABLE": null
+          }
+        },
+        "34772": {
+          "pid": 34772,
+          "ppid": 18744,
+          "actual_process_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+          "base_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+          "base_prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+          "cwd": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+          "sys_path": [
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python312.zip",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\DLLs",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Lib\\site-packages"
+          ],
+          "job": {
+            "supported": true,
+            "is_in_job": true
+          },
+          "torch_imported": false,
+          "python_configuration": {
+            "__PYVENV_LAUNCHER__": null,
+            "PYTHONHOME": null,
+            "PYTHONPATH": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag01-default\\site-hook;__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "PYTHONEXECUTABLE": null
+          }
+        }
+      },
+      "exitcode_records": [
+        {
+          "pid": 33472,
+          "name": "SpawnProcess-1",
+          "exitcode": 1,
+          "alive": false
+        },
+        {
+          "pid": 18744,
+          "name": "SpawnProcess-2",
+          "exitcode": -15,
+          "alive": false
+        }
+      ],
+      "verified_batches": 0,
+      "completed_worker_window_fetches": 0,
+      "selected_distinct_windows": 0,
+      "distinct_families": 0,
+      "reference_window_fetches": 0,
+      "worker_rendered_frames": 0,
+      "reference_rendered_frames": 0,
+      "maximum_in_flight": null,
+      "all_RGB_action_exact": null,
+      "Torch_imported": false,
+      "CUDA_initialized": false,
+      "model_forward_calls": 0,
+      "optimizer_attempts": 0,
+      "formal_draws": 0,
+      "physics_controls": 0,
+      "completion_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag01-default\\completion.json",
+      "completion_sha256": "8e860812371aca90ca66fc347640d29ad0f48f61e55269925ed982a1dbcfa29c",
+      "early_actual_python_pids": [
+        34056,
+        34772
+      ],
+      "all_created_and_early_actual_pid_sets_equal": false
+    },
+    {
+      "name": "diag02-repaired",
+      "passed": true,
+      "run_id": "R3B-recovery-5eb6db5fde034de9bd51d9499cd566f1",
+      "wall_seconds": 4.610000000015134,
+      "parent_pid": 23420,
+      "launcher_exited_before_progress": true,
+      "created_process_pids": [
+        33696,
+        31700
+      ],
+      "initialized_actual_python_pids": [
+        31700,
+        33696
+      ],
+      "created_and_actual_pid_sets_equal": true,
+      "actual_worker_identities": {
+        "31700": {
+          "pid": 31700,
+          "ppid": 23420,
+          "actual_process_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+          "base_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+          "base_prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+          "cwd": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+          "sys_path": [
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python312.zip",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\DLLs",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Lib\\site-packages"
+          ],
+          "job": {
+            "supported": true,
+            "is_in_job": false
+          },
+          "torch_imported": false,
+          "python_configuration": {
+            "__PYVENV_LAUNCHER__": null,
+            "PYTHONHOME": null,
+            "PYTHONPATH": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag02-repaired\\site-hook;__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "PYTHONEXECUTABLE": null
+          }
+        },
+        "33696": {
+          "pid": 33696,
+          "ppid": 23420,
+          "actual_process_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Scripts\\python.exe",
+          "base_executable": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python.exe",
+          "prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+          "base_prefix": "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+          "cwd": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+          "sys_path": [
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\python312.zip",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\DLLs",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none\\Lib",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.tools\\python\\cpython-3.12.3-windows-x86_64-none",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv",
+            "__LOCAL_WORKSPACE__\\Tdyssey\\.venv\\Lib\\site-packages"
+          ],
+          "job": {
+            "supported": true,
+            "is_in_job": false
+          },
+          "torch_imported": false,
+          "python_configuration": {
+            "__PYVENV_LAUNCHER__": null,
+            "PYTHONHOME": null,
+            "PYTHONPATH": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag02-repaired\\site-hook;__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+            "PYTHONEXECUTABLE": null
+          }
+        }
+      },
+      "exitcode_records": [
+        {
+          "pid": 33696,
+          "name": "SpawnProcess-1",
+          "exitcode": 0,
+          "alive": false
+        },
+        {
+          "pid": 31700,
+          "name": "SpawnProcess-2",
+          "exitcode": 0,
+          "alive": false
+        }
+      ],
+      "verified_batches": 4,
+      "completed_worker_window_fetches": 64,
+      "selected_distinct_windows": 64,
+      "distinct_families": 64,
+      "reference_window_fetches": 128,
+      "worker_rendered_frames": 320,
+      "reference_rendered_frames": 320,
+      "maximum_in_flight": 2,
+      "all_RGB_action_exact": true,
+      "Torch_imported": false,
+      "CUDA_initialized": false,
+      "model_forward_calls": 0,
+      "optimizer_attempts": 0,
+      "formal_draws": 0,
+      "physics_controls": 0,
+      "completion_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\diag02-repaired\\completion.json",
+      "completion_sha256": "42f1352da8a9056128b31a96c7d6b2e7cf1b055d7bd968fcd38c4c6afbc6737b",
+      "early_actual_python_pids": [
+        31700,
+        33696
+      ],
+      "all_created_and_early_actual_pid_sets_equal": true
+    }
+  ],
+  "total_detached_CPU_diagnostic_seconds": 9.876000000018394,
+  "total_completed_worker_window_fetches": 64,
+  "total_reference_window_fetches": 128,
+  "formal_model_exposure_from_CPU_diagnostics": 0,
+  "focused_regressions": {
+    "passed": 2,
+    "core_CPU_test_seconds": 0.456,
+    "real_spawn_in_these_tests": false,
+    "meaning": "Preserve original Win32 CreateProcess arguments; preserve original initializer errors and traceback."
+  },
+  "root_cause": "The detached parent has actual base Python PE but both executable aliases point at the venv redirector. stdlib WINENV=False starts that shim; handles are duplicated to shim PID, whereas actual Python runs under a second PID. Initializer/import succeeds; queue SemLock release raises WinError6 invalid handle.",
+  "repair": "Public multiprocessing.set_executable(actual_base_PE), plus inherited __PYVENV_LAUNCHER__=existing_venv_python. Two CPU workers, production dataset/renderer/order, prefetch2, state8MiB/frame16MiB caches unchanged.",
+  "repair_source_sha256": "9d3dcb5b5db9fcf0791579f79b757f60a19943e769e59a409318e67f8e00191b",
+  "root_cause_evidence_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r3b\\attempts\\recovery-20261030\\diagnostics\\root-cause.json",
+  "root_cause_evidence_sha256": "9859fda05a3246915f86724a31585534f1027c6101ffa9de4348538d750aa5d8",
+  "limits": "No Torch/CUDA/model calls in either CPU diagnostic. This proves the detached loader boundary and exact inputs, not GPU-resident integration, gradient/checkpoint correctness, completion of1499formal batches, or model quality. Those remain the full worker gates."
+}

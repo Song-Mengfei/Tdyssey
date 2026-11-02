@@ -1,0 +1,22 @@
+{
+  "kind": "cd-visible-direction-protocol.v1",
+  "clockwise_positive_image_y_down": true,
+  "axis_ratio_min": 1.2,
+  "truth_axis_calibration_max_deg": 5.0,
+  "axis_jump_max_deg": 45.0,
+  "gray_hole_delta_agreement_max_deg": 10.0,
+  "resolved_rotation_floor_deg": 5.0,
+  "calibration_margin_deg": 1.0,
+  "hole_min_pixels": 2,
+  "fragment_min_pixels": 3,
+  "fragment_fraction_max": 0.05,
+  "gray_foreground_connectivity": 8,
+  "white_background_connectivity": 4,
+  "definition": "PCA gray and single enclosed-hole axes, modulo180 continuity. Both must agree. Real-history uses previous REAL frame to independent prediction; AR reports local and cumulative separately.",
+  "frozen_before_new_predictions": true,
+  "limits": [
+    "Conservative new visible-axis appendix, not calibrated rigid pose or a change to old formal unknown.",
+    "Tiny true or predicted changes, near-circular masks, axis jumps, hole occlusion, clipping, fragmentation and failed true-image calibration remain unknown.",
+    "Hole count/area and topology candidates do not establish correct shape, rigidity, collision or the physical cause of a lost hole."
+  ]
+}

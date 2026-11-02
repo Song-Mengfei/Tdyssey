@@ -1,0 +1,25 @@
+{
+  "kind": "stage2c-predeclared-direct-cpu-samples.v1",
+  "status": "prepared_not_executed",
+  "source_rule": "First frozen2A trajectory at3, first frozen2B at60, first frozen seen_val request at3, last at60; no observed validation outcome or model selection",
+  "train_view_sha256": "23865f38e19eb3b3fddf14b17c96f06586468bd04516e2403aa743f42c557d7e",
+  "validation_requests_sha256": "54c9db7acc8188ded9130b98e42ac818a8576904ca7e2771b566b7dda9345925",
+  "collector_source_identity_sha256": "a41947a63077fd687f5ce437f903239f4952c692100cdf90eaa8c552d8c220b1",
+  "runtime_sources": {
+    "tdyssey/native_rgb_reference.py": "b9179bd84ddc51015907d0b9637600c19c860d78b805e7f67892363ff6f8d06b",
+    "tdyssey/native_rgb_data.py": "fb57cf288cc75eefe499217315c1bb425b9eebf54f15f828dfb075e180688bf3",
+    "tdyssey/native_rgb_training.py": "5209c9c269fc15e98c752032c1998b92bf95ee5cff43e100ff4a166f279e883d"
+  },
+  "selections": [
+    {"split": "train", "trajectory_id": "train-2a-000", "anchor": 3},
+    {"split": "train", "trajectory_id": "train-2b-000", "anchor": 60},
+    {"split": "seen_val", "trajectory_id": "seen-val-2c-000", "anchor": 3},
+    {"split": "seen_val", "trajectory_id": "seen-val-2c-161", "anchor": 60}
+  ],
+  "limits": {"samples": 4, "uint8_cache_bytes_per_dataset": 1048576, "physics_steps": 0, "model_calls": 0, "optimizer_updates": 0, "training_iterators": 0, "index_draws": 0},
+  "expected_split_trajectories": {"train": 396, "seen_val": 162, "unseen_test": 0},
+  "expected_h1_catalogs": {"train": 24156, "seen_val": 9882},
+  "expected_h4_catalogs": {"train": 22968, "seen_val": 9396},
+  "expected_cpu_batch_images": [2, 5, 3, 96, 96],
+  "expected_cpu_batch_actions": [2, 4, 2]
+}

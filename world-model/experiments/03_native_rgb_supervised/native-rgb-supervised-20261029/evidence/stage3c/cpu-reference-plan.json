@@ -1,0 +1,155 @@
+{
+  "calibration": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-20261028\\frozen-renderer-calibration.json",
+    "sha256": "fae795cd325ca4b88aa23faa127f9e84036f06bec485b169d12b902887c45609"
+  },
+  "checkpoint_identity_from_closed_parent_metadata_only": true,
+  "comparison_plan": "Read existing3B score for129; read final original-protocol score. Paired per-window rows and original metric summaries for hold/frozen/update129/final, same full18/36 denominators. Only final-vs-hold20percent+12wins is the registered fit target.",
+  "expected_max_final_updates": 250,
+  "expected_parent_order_cursor": 2064,
+  "expected_parent_updates": 129,
+  "gallery": {
+    "cohort": "train",
+    "columns": [
+      "true",
+      "hold(last)",
+      "frozen",
+      "update129",
+      "final"
+    ],
+    "display_scale": 2,
+    "invalid": "Explicit placeholder for invalid/unavailable raw RGB; original arrays retained without clipping",
+    "order": "Original frozen18 order; all windows, never outcome-ranked",
+    "pages": 3,
+    "resize": "nearest-neighbor display only",
+    "rows_per_page": 6,
+    "windows": 18
+  },
+  "kind": "stage3c-CPU-reused-input-and-score-plan.v1",
+  "local_attempt_cap": 121,
+  "model_calls": 0,
+  "models_or_Torch_loaded": false,
+  "old_files_modified": false,
+  "parent_checkpoint": {
+    "bytes": 105247534,
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\run\\last.pt",
+    "sha256": "e94f9349e1affb8372aacc4613bd57ade496704a50b63d257f77cb4c5ad3626a",
+    "updates": 129
+  },
+  "physics_controls": 0,
+  "protocol": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\configs\\native_rgb_stage3_score.json",
+    "sha256": "353ba2e644842a7006d3b4b2e4fe913167a41e08a9f16e7cfbb92d767ae64428"
+  },
+  "references": [
+    {
+      "byte_identical": true,
+      "bytes": 189956,
+      "private_copy": "cpu-reference-copies/frozen-windows.json",
+      "role": "frozen-windows.json",
+      "sha256": "dd5aaf17af1afc7e91fa2db9f0f1d5670999e75d6797aaf14e4934835fad7cab",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\frozen-windows.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 22828,
+      "private_copy": "cpu-reference-copies/train18-windows.json",
+      "role": "train18-windows.json",
+      "sha256": "fbcec905d228bc0731197db1ca415f95ac3214b8951653e0a3c61ba41022d68f",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\train18-windows.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 157150,
+      "private_copy": "cpu-reference-copies/dev36-windows.json",
+      "role": "dev36-windows.json",
+      "sha256": "8f3e13bf7a76fb7b77da430ff11c82f5f5ac7f0f80ee3d219059f1547c3156de",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\dev36-windows.json"
+    },
+    {
+      "byte_identical": true,
+      "bytes": 5148,
+      "private_copy": "cpu-reference-copies/paired-batches.json",
+      "role": "paired-batches.json",
+      "sha256": "cf4553fd2001a7878f8c423e969b8c0b4f799e5ccca901fc918d6d0058666843",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\paired-batches.json"
+    },
+    {
+      "bytes": 267413,
+      "reference_only": true,
+      "role": "truth/train18.npz",
+      "sha256": "a5af2f5dbae3fac9fd26e90b55e960a0ae310513f17895e5112d766b8e421e8e",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\truth\\train18.npz"
+    },
+    {
+      "bytes": 529473,
+      "reference_only": true,
+      "role": "truth/dev36.npz",
+      "sha256": "13cb15e4f8652d070d793cb44713c4279fb08c2acb7d566b89efbedbe5b6be8c",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\truth\\dev36.npz"
+    },
+    {
+      "bytes": 51762,
+      "reference_only": true,
+      "role": "predictions/frozen-train18.npz",
+      "sha256": "f0aed8b45d8c09840877d712817ec2a55394df4e461e98d699984f63fcded1e1",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\frozen-train18.npz"
+    },
+    {
+      "bytes": 101990,
+      "reference_only": true,
+      "role": "predictions/frozen-dev36.npz",
+      "sha256": "60e337188ea1a1aaee6897164f44aac2019c83e035aa5f4b1878d68df44c91b2",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\frozen-dev36.npz"
+    },
+    {
+      "bytes": 52850,
+      "reference_only": true,
+      "role": "predictions/fitted-train18.npz",
+      "sha256": "db303821c669dd76fe0d93c4beab127d630003da77167b7dfa6264d1a08c3466",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\fitted-train18.npz"
+    },
+    {
+      "bytes": 105120,
+      "reference_only": true,
+      "role": "predictions/fitted-dev36.npz",
+      "sha256": "4010fe96b0dc8a926e3a00e5b457de8d92b5b1e2888df5fff6215ba8f056c148",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\fitted-dev36.npz"
+    },
+    {
+      "bytes": 230823,
+      "reference_only": true,
+      "role": "predictions/train18.npz",
+      "sha256": "738556920c170e2cfea5cf2e7b60fbe9b8da83656a0b3cd7ae304357f49f53db",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\train18.npz"
+    },
+    {
+      "bytes": 459356,
+      "reference_only": true,
+      "role": "predictions/dev36.npz",
+      "sha256": "10341f8bf197056c96884ec6d16e2a0629af401253914def8a4e299dc22991b8",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\predictions\\dev36.npz"
+    },
+    {
+      "bytes": 1205552,
+      "reference_only": true,
+      "role": "score/score-report.json",
+      "sha256": "4b17415fe0226adb5f3932f150c5a83c825b5afdb323114413770fb8c133f98b",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\score\\score-report.json"
+    },
+    {
+      "bytes": 101074,
+      "reference_only": true,
+      "role": "model-work.json",
+      "sha256": "9bed9d77fe467606a9be5be6ba23472329f44ec088dac0ee7cdd79135f6268f2",
+      "source": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b\\model-work.json"
+    }
+  ],
+  "score_plan": "After root cold completion: run original score CLI exactly once for final18TRAIN/36DEV. New composed NPZ reuses original3B frozen arrays/truth; no baseline or update129 inference.",
+  "score_source": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_stage3_score.py",
+    "sha256": "9a165c71befa83d190d29311c265e2795ae24205464310d26fd0e64100ff49d6"
+  },
+  "source_script_sha256": "f86215a230480bbb2f257fbe67460c00c4098326df0324c4705765ef616aefa9",
+  "weights_read_or_loaded": false
+}

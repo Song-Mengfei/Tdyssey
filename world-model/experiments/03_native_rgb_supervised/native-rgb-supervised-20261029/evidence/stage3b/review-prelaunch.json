@@ -1,0 +1,54 @@
+{
+  "kind": "stage3b-independent-narrow-prelaunch-review.v1",
+  "checked_at_utc": "2026-10-29T04:27:07.479550+00:00",
+  "ready_for_launch": true,
+  "code_budget_copy_checks_passed": true,
+  "checks": {
+    "unchanged_helpers": true,
+    "prediction_hook_only_finite_OOR_continue_plus_range_metadata": true,
+    "all8_copies_exact_bytes": true,
+    "exact_prior_closed_no_reset": true,
+    "correct_residual_caps_and_latest_update": true,
+    "explicit_budget_residual_not_defaults": true,
+    "old_stage3_all152_unchanged": true,
+    "native_trainer_budget_score_protocol_unchanged": true,
+    "source_3B_scope_and_once_guard": true,
+    "all_original_training_sampler_and_score_config_unchanged": true
+  },
+  "pending": [],
+  "prior_closed_model_seconds": 28.3440000000046,
+  "residual": {
+    "max_attempts": 200,
+    "max_seconds": 571.6559999999954,
+    "update_cutoff_seconds": 391.6559999999954
+  },
+  "global_caps": {
+    "attempts": 3000,
+    "seconds": 5400
+  },
+  "old_stage3_file_mismatches": [],
+  "entry_sha256": "1afb43292af32da21c3b1c9b5cf2e8ee12cc4cf274b8cff36d3c0a1e0563044c",
+  "prior_entry_sha256": "96a4059f4abebc1a6b1998fd55ec79ae16a1f237a2d2006fbb6cda6ba485f702",
+  "sourceproof": "New prediction_hook AST, after removal of its single range_rows metadata keyword and restoration of exactly one bad=True under finite OOR, is identical to the original frozen hook. Three existing helpers are byte-independent AST identical.",
+  "physical_controls_added": 0,
+  "reviewer_model_loads": 0,
+  "reviewer_physics_steps": 0,
+  "reviewer_optimizer_updates": 0,
+  "new_tests_run_by_reviewer": 0,
+  "config_unexpected_differences": {},
+  "final_freeze_checks": {
+    "final64current_and_snapshots": true,
+    "old152_preserved": true,
+    "necessary5CPU_checks_frozen_hash_match": true,
+    "prior_closed_ledger_still_exact": true,
+    "original_init_sha": true,
+    "no3B_model_work_started": true,
+    "residual_exact": true
+  },
+  "source_identity_sha256": "f8de658efdf77d3f1db6c77172e0604af43aad824ea4801eeed4343d8ecdf966",
+  "frozen_source_files": 64,
+  "frozen_mismatches": [],
+  "focused_cpu_test_count": 5,
+  "focused_cpu_log_sha256": "f3bca2987210aaf17edf9200e0d7e98321787afd4c42137af06328b455fa725e",
+  "focused_cpu_evidence_sha256": "2eeaafcca2ec36745dd2d4d9f63e1f5ab11a9ad2d32f1e3821cd223f850b850b"
+}

@@ -1,0 +1,53 @@
+LOSS-DEFINITION-20261102 — 按“预测错误的定义”重做的有界适配测试
+分析聊天：__LOCAL_CHAT__；原负责人：__LOCAL_CHAT__，local，保留其模型/思考设置。
+直接人类授权：本聊天用户纠正“我说的是现在对loss的定义不行”，随后要求“那你现在广泛的做一下literal review看看有没有别的定义loss的方法 然后测试一下能不能为我们的这个项目使用”。之前授权负责人执行、结束后统一回传、不等待/轮询、GPU优先/CPU另项目占满持续适用。
+
+1. 问题、对照和边界
+本轮改变比较对象：从全图预条件噪声残差，转向灰色物体与蓝杆的占据区域、空间质量分布。不是再筛噪声权重、边缘RGB权重、频谱或感知外观项。几何正确不自动等于动力学正确；原始RH/AR16评价仍独立判定运动和形状。前一轮结果是背景，不能算本问题已完成。
+原物理/数据/split/4帧历史与4动作/GT曝光顺序/sigma/clean弱噪声/精度/原3-denoise raw推理/评价指标及资格和原绝对门槛均不改变。无新增物理、采集、pose/template头、输出修补或对齐warp、外部网络/权重、安装或新聊天/worktree/subagent。只用RGB派生的训练loss量；不得用模拟器未来pose/contact/完整隐藏轮廓标签训练。诊断构造图像不加入训练，也不是物理counterfactual GT。
+完整E2 state起点、SHA c3ba4099b42f054b4cc60a675e93265d8aee8649e9a7825b3ad70a269e1fb187。共同native BASE128严格复用loss-screen-20261102已有BASE128和已核验R1 A128证据，不重训/重推；共同E2同样复用。三新臂均独立从E2恢复model/Adam/scaler/全部conditioning与global RNG，同HMF前128个eff16/micro4、lr1e-5、clip1、AMP设置。每臂128尝试/至多128更新、2048原生H1曝光；合计384尝试/6144曝光，0额外GT训练曝光。不增加rollout训练。
+
+2. RGB到可微前景（本项目适配，非论文原版分割网络）
+先用现有renderer源码与GT核实白/灰/蓝固定色，预期cw=(255,255,255)/255、cg=(119,136,153)/255 LightSlateGray、cb=(65,105,225)/255 RoyalBlue；必须记录实际源码证据。若预期不匹配，仅依据既有renderer真实常量纠正并在运行前记录，不按val调阈值。
+A=[cg-cw, cb-cw]，3x2固定矩阵，P=(A^T A)^(-1) A^T。
+对RGB张量I，u=P(I-cw)，m_gray=clamp(u_gray,0,1)，m_blue=clamp(u_blue,0,1)。目标g=m(y).detach()与预测p=m(D)完全相同映射。固定矩阵FP64解析/求解后转FP32；所有loss FP32，autocast关闭。
+这是训练loss内部的分段可微颜色解混，既不截断实际model输入，也不改RGB输出/原评测。它不是校准概率或完整不可见物体分割。记录预测u饱和比例、mask面积、RGB偏离palette和GT混色残差；检查纯三色、抗锯齿混合、全白、空类、越界RGB及clamp边界梯度。与原hard palette评测mask差异只作测量，不替换原评测。若线性颜色假设对现有GT明显不成立，报告具体证据后修正同一RGB映射工程实现；不能静默换成privileged renderer mask。
+所有新训练loss用同一次native forward构造的连续D=c_skip*z+c_out*F.float()，z是加噪GT。不作用于残差噪声图，不调用no_grad/byte wrap_model_output，不用STE。D是有噪GT条件下单次去噪重建，不能冒称已优化纯噪声采样轨迹。
+
+3. 两种新误差定义与三训练臂
+G（区域几何）：每sample每前景类 d(p,g)=1-(2*sum_HW(p*g)+eps)/(sum_HW(p*p)+sum_HW(g*g)+eps)，eps=1e-6；G=mean_B,classes d。V-Net平方分母Dice适配，两个前景类等权，不把白背景作为第三类稀释错误。p=g时0，均空时0。这不是RGB像素MSE，也不是原C/D区域加权残差MSE。它不保证孔/刚体，也不区分相同重叠率的远近错位。
+
+T（前景输运+面积）：对每sample每前景类，N=9216，a_i=(p_i+eps/N)/(sum p+eps)，b_i=(g_i+eps/N)/(sum g+eps)，eps=1e-6 pixel mass。固定像素坐标(x,y)=(0..95,0..95)/(95*sqrt(2))。16方向theta_j=j*pi/16，j=0..15（固定，无随机采样）。投影v_i=x_i*cos(theta)+y_i*sin(theta)，对每方向将全部像素坐标排序pi；排序索引与网络输出无关。w_j=sum_i=1..N-1 abs(cumsum(a_pi-b_pi)_i)*(v_pi(i+1)-v_pi(i))。重复坐标间距0，不能把空间坐标删掉再对颜色直方图做Wasserstein。
+T=mean_B,classes [mean_j w_j + abs(sum p-sum g)/(sum g+eps)]。这是固定16投影的精确离散一维W1的平均加相对面积差；是sliced-W1有限方向适配，不是Deshpande论文的SW2生成器复现，也不是真正2D最优输运或unbalanced Sinkhorn。全空用极小均匀floor得到有限定义；面积项避免归一化抹掉物体消失/缩小。不要声称16方向可以唯一确定所有2D形状，更不能声称保证拓扑。
+
+定一次单位换算系数（不按val/模型效果挑选）：用独立预检RNG复制正式前4个训练microbatch，共16个训练sample，对每个B4同一native forward分别求native/G/T的完整模型参数梯度范数（FP32、unscale、clip前；不更新）。cG=这4个batch中 norm(native)/norm(G) 的中位数，cT同理。所有值、点积/cosine、clamp饱和、有限性完整记录。非有限/零梯度不可用epsilon掩盖；先查实现，不为训练结果调系数或换样本。系数一经生成就保存hash，在所有正式臂固定，不动态GradNorm。正标量不改变G/T的零点，意图是减少任意单位导致的初始量级差；单批梯度匹配不保证整个训练平衡。
+三臂：G_ONLY=cG*G（纯几何替换原目标，专门测试能否在保留原sampler时维持去噪能力）；NATIVE_G=native+cG*G；NATIVE_T=native+cT*T。原native必须保留原F.mse_loss的约简与运算顺序。仅G_ONLY不含native，不能悄悄加回RGB项；三臂不能叠加其它loss。纯几何目标不再是原扩散score matching，可能损害色彩/背景/采样，必须作为有风险的定义消融解释，不预先视为推荐配方。
+
+4. 不运行新模型的定义响应验证（GPU tensor）
+固定原train12（每字母4家族）H1或首个有资格frame，明确sample/frame；不用val选择目标/系数。对同GT作受控错误：物体平移2/4/8px（无cropping eligible）；旋转正负5/15度（对称性说明）；膨胀/收缩；填可见孔；切断连接；复制块；移除灰物体/移除蓝杆/全白；蓝杆移位；背景色微差；灰色亮度微差；前一帧充当下一帧（只用真实有运动案）。受控变换只用于测loss响应/可微性，绝非修补模型输出或新训练augmentation。构造失败/孔不可见/裁切则按原样unknown，不硬改成成功例。可用少量单线程CPU连通域处理GT并报告成本，禁止重CPU PH批处理。
+比较至少：图像MSE参考、平方Dice G、soft-Jaccard、Kervadec有符号距离场boundary（常数平移另记；binary GT）、16投影W1及其面积项分量、soft-clDice（固定10次erosion，分别报告前景/背景；不能宣称实际Betti保证）、灰/蓝质心与协方差误差。给每定义明确公式/GT来源、非有限/梯度饱和、已知blind spot。可在mask-space另作精确0/偏移检查，别将soft RGB抗锯齿目标与hard boundary目标混同。
+每方向检查shift增大时输运是否增大、连续shift参数梯度是否指向正确GT；空图是否有有限且可恢复的梯度；背景小误差不能使严重错位比正确物体更好仅以全图均值混淆。不存在所有loss必须统一通过的主观总排名；各定义针对的错误应有预声明响应。mask/颜色hack、同质心异形、同孔数错位和Dice同重叠不同距离作为反例公开。PH TopoLoss、GW刚体内部距离、光流/状态/PDE loss仅文献评估，本轮未实现不得标成已测。
+上限12个GT x最多24种诊断构造=288张96x96；最多12定义、最多64个tensor-only梯度调用；不做image-optimization长迭代。最多保存12张汇总PNG，不保存大批重复诊断原图。
+
+5. 模型兼容性与原评测
+预检累计<=128图像级model forward（包括定义校准16，原native一致性及候选真实参数gradient、工程修正），0optimizer更新；tensor-only诊断单独计。核对native loss/梯度与原实现一致、每新loss实际梯度有限非零，并记录G/T/anchor的参数gradient cosine。完整E2恢复后正式训练，保持所有数据/conditioning noise配对；保存每step原native、G、T、总loss、preclip norm、AMP skip和RNG hash。新目标数值与native数值单位不同，不能凭总loss下降宣称更好。
+只评3个最终128轻量weights，每臂原train12+seenval24+旧失败3，RH和原raw AR16、原B4/slot/actual epsilon，每臂1248预测，共3744。E2和BASE128已有raw/evidence只读复用。全部16步曲线、H1/4/8/16、每字母每split、逐案IoU/物体位置/blue位置/轮廓/shape/topology/资格unknown完整保留；不改旧绝对fit条件。额外分开记录RGB越界/背景误差/物体消失，尤其G_ONLY采样能力风险，不以新指标替代原标准。
+方向性筛选维持旧R1每字母条件：val AR4 IoU提高且位置不差；RH强H1 IoU/位置不差；H1/4/8/16拓扑fail不增。AR8/16改善与退步分开讲，不能ALL掩盖C；纯几何也允许完整负结果。只是一轮单seed128步探索，非收敛/全48拟合/泛化证明；不追加steps/多seed/调方向数/再挑候选。
+
+6. 算力、存储和工程
+总模型图像forward上限17504=6144训练+11232评测+128预检；新增独立采样预测3744上限；正式backward1536microbatch；训练384尝试/更新<=384，0新物理/data。model batch forward训练1536+评测2880+预检<=128 =4544上限。预检反向/梯度额外准确累计。可串行复用1个GPU model、3次formal fullrestore，preflight同模型，不能并行GPU实验或CPU模型fallback。
+新执行root建议artifacts/loss-definition-screen-20261102，上限650,000,000B（3*138MB raw、3*35MB轻量weights、<=64MB报告与账本），至少24MiB终态/报告保留。共享10,000,000,000B含256MiB atomic reserve与64MiB growth guard，运行前按实际占用复核；只引用旧数据/完整E2/BASE，不复制环境/Adam/data，不删旧唯一证据。本分析root自身<=30MB；owner按真实共享余量核实。
+CPU单数值进程、所有库/Torch intra/inter/OpenCV线程1、BelowNormal隐藏，GPU模型和可等价tensor统计；不重CPU PH/光流/视频编码、不触碰另一项目。普通路径/原子IO/报告错误直接修正，预算内保留错误和重算成本，不把自定冻结文案当平台禁令；修复不应扩大科学范围。若某个目标确实数值不可用，保留负结果并继续不依赖它的已授权工作，不换科学配方凑通过。
+所有模型计算、报告与保存结果审计完成后统一主动回传分析聊天__LOCAL_CHAT__；不要让分析聊天轮询/等待，不逐步要求人类确认工程细节。完成后waiting_user_review，不部署或继续下一轮。分析聊天独立重算结果后给人类审阅。
+
+原始依据：
+Milletari et al., V-Net, 2016, Dice平方分母目标 https://arxiv.org/pdf/1606.04797
+Berman et al., Lovasz-Softmax, CVPR2018 https://arxiv.org/pdf/1705.08790
+Kervadec et al., Boundary loss, MIDL2019, Eq4/5 https://proceedings.mlr.press/v102/kervadec19a/kervadec19a.pdf
+Karimi & Salcudean, Hausdorff-inspired losses https://arxiv.org/pdf/1904.10030
+Deshpande et al., Sliced Wasserstein, CVPR2018 https://arxiv.org/pdf/1803.11188
+Peyre & Cuturi, Computational Optimal Transport, 1D CDF/quantile formula https://arxiv.org/abs/1803.00567
+Feydy et al., Sinkhorn divergence, AISTATS2019 https://proceedings.mlr.press/v89/feydy19a.html
+Shit et al., clDice, CVPR2021 https://arxiv.org/pdf/2003.07311 ; author https://github.com/jocpae/clDice
+Hu et al., TopoLoss, NeurIPS2019 https://www3.cs.stonybrook.edu/~cvl/content/papers/2019/Hu_NeurIPS19.pdf
+以上为项目适配实验，未复制论文原数据/网络，不宣称论文复现。

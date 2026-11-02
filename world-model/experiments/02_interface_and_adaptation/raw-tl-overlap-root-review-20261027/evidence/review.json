@@ -1,0 +1,91 @@
+{
+  "status": "reviewed_with_limits",
+  "commit": "2e6539f7f8691af1aea3fa3601e7cfd5fcc76c28",
+  "bound_files_verified": [
+    "PLAN.md",
+    "case-analysis.json",
+    "case-input-truth-prediction.png",
+    "case-overlap-crops.png",
+    "training-window-coverage.json",
+    "frozen-training-frame-selection.json",
+    "train-frames-and-checks-result.json"
+  ],
+  "case_dedup": [
+    {
+      "json_sha256": "a0f8f1c338c8b59862745626787709162d0576524f8fa4b5c182aaadd2092e95",
+      "archive_sha256": "6a86c8a993dc6b2e9d8fd95c7f9e3e423f570e77854905e606bf95842d8f5692",
+      "request_key": "261af8c90be57aa6afd77582e485049a8ef43bcc2312438660ba70b7c4aad8c1"
+    },
+    {
+      "json_sha256": "a0f8f1c338c8b59862745626787709162d0576524f8fa4b5c182aaadd2092e95",
+      "archive_sha256": "6a86c8a993dc6b2e9d8fd95c7f9e3e423f570e77854905e606bf95842d8f5692",
+      "request_key": "261af8c90be57aa6afd77582e485049a8ef43bcc2312438660ba70b7c4aad8c1"
+    }
+  ],
+  "unique_cases": 1,
+  "raw_case_and_sibling_array_equality": true,
+  "green_points_independently_checked": 8,
+  "train_json_files_hash_and_target_labels_verified": 24,
+  "scheduled_target_labels_verified": 2328,
+  "training_summary_recomputed": {
+    "T": {
+      "windows": 1164,
+      "scenes": 12,
+      "maximum": 0.49420919709242356,
+      "zero": 888,
+      "positive_lt_half": 276,
+      "at_least_half": 0
+    },
+    "L": {
+      "windows": 1164,
+      "scenes": 12,
+      "maximum": 0.362578300701089,
+      "zero": 802,
+      "positive_lt_half": 362,
+      "at_least_half": 0
+    }
+  },
+  "manual_L_geometry_physics_goal_match_training": true,
+  "fixed_training_frame_selection_recomputed": 4,
+  "source_ui_and_loss_reviewed": true,
+  "images_visually_reviewed": [
+    "case-input-truth-prediction.png",
+    "case-overlap-crops.png"
+  ],
+  "cpu_receipts_verified": [
+    {
+      "stage": "case-and-coverage",
+      "exit_code": 0,
+      "reason": null,
+      "seconds": 1.1101767,
+      "observed_peak_working_set": 85856256,
+      "cpu_cores": 2,
+      "torch_sdk_models": 0,
+      "neural_operations": 0,
+      "physics": 0,
+      "gui_operations": 0
+    },
+    {
+      "stage": "train-frames-and-checks",
+      "exit_code": 0,
+      "reason": null,
+      "seconds": 1.2293019,
+      "observed_peak_working_set": 54517760,
+      "cpu_cores": 2,
+      "torch_sdk_models": 0,
+      "neural_operations": 0,
+      "physics": 0,
+      "gui_operations": 0
+    }
+  ],
+  "production_files_changed": false,
+  "new_neural_physics_operations": 0,
+  "limits": [
+    "Root used stdlib and saved array payloads; no model or physics calls.",
+    "Full PNG-to-array pixel equality and geometry-mask counts were source-reviewed and evidence-bound, not rerun by root.",
+    "Coverage labels matched all24 source JSONs; polygon geometry computation not independently repeated.",
+    "Only one unique manual case; support gap is established, causal attribution is not.",
+    "No weight content or additional train/dev/held image payload read.",
+    "Goal-only intervention remains a proposal; moving a goal introduces a new image condition and does not by itself prove insufficient-data causality."
+  ]
+}

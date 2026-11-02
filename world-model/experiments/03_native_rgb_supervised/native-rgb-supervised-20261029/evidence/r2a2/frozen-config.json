@@ -1,0 +1,45 @@
+{
+  "kind": "native-rgb-R2A2-512-paired-physics.v1",
+  "max_controls": 512,
+  "slots": 64,
+  "controls_per_slot": 8,
+  "prior_supervised_controls": 40192,
+  "prior_all_native_controls": 74752,
+  "physics_source": "__LOCAL_WORKSPACE__\\Tdyssey\\third_party\\diffusion_policy",
+  "original_protocol_sha256": "fd358dba8f26a616ec6c55b3f6d532681bf5036e2cf79fe5a467001e3a77ae96",
+  "candidate_protocols": {
+    "D-half-life-0.1s": {
+      "damping": 0.0009765625,
+      "half_life_seconds": 0.1
+    },
+    "D-half-life-0.3s": {
+      "damping": 0.09921256574801246,
+      "half_life_seconds": 0.3
+    }
+  },
+  "sole_physical_difference": "space.damping only; two finite half-life candidates; originalD0/D1 offline only",
+  "force_limit": 10000.0,
+  "pre_step_speed_limit": 200.0,
+  "kp": 100.0,
+  "kv": 20.0,
+  "control_dt": 0.1,
+  "physics_dt": 0.01,
+  "substeps": 10,
+  "penetration_limit_world_px": 2.0,
+  "request_sha256": "4a34ac57fe3583b64103a57dc951434a1c3e782c1d712137b58c2832c3c3a22a",
+  "model_calls": 0,
+  "optimizer_updates": 0,
+  "gpu_work": 0,
+  "R2B_authorized": false,
+  "old_unused320_spent": false,
+  "replay_authorized": false,
+  "new_independent_families": 0,
+  "reused_independent_families": 16,
+  "baseline_protocols_not_rerun": true,
+  "relatively_sustained_contact_H1_substeps_gte": 8,
+  "relatively_sustained_contact_H4_aggregate_substeps_gte": 32,
+  "contact_group_scope": "R2A2 descriptive groups, not sole acceptance and not retroactive R2A criteria",
+  "storage_candidate_limit": 134217728,
+  "shared_limit": 3221225472,
+  "atomic_reserve": 268435456
+}

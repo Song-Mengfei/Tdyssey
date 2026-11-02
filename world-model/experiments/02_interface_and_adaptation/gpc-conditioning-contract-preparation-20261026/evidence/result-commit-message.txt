@@ -1,0 +1,15 @@
+docs(wm): record conditioning diagnostic startup stop
+
+Why:
+The sole authorized attempt hit the unchanged 4GiB startup RAM floor before
+launching a model worker, so no conditioning-quality conclusion is available.
+
+Changes:
+- Record available RAM 2.6919GiB, the permanent spent claim and zero model work.
+- Preserve exact costs, guard cleanup evidence and the original 32/96 protocol.
+- Leave training, retries and further experiments stopped for main review.
+
+Validation:
+- Prior source freeze passed 7/51/9 checks in three synthetic commands.
+- Native attempt stopped in 0.562s; complete external command took 1.2519153s.
+- No worker/Job was created; model lock released and no cleanup errors.

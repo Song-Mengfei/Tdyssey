@@ -1,0 +1,3663 @@
+{
+  "schema_version": 1,
+  "kind": "independent_D_teacher_replay_audit",
+  "training": false,
+  "checkpoint_loaded": false,
+  "torch_loaded": false,
+  "all_passed": true,
+  "provenance": {
+    "script": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\audit_and_video.py",
+    "script_sha256": "e7d8c0f68cfa400a3d0209b4c757e03cc653e4291c0147b1ef993167cb42ef65",
+    "python": "3.12.3 (main, Apr 15 2024, 17:48:16) [MSC v.1929 64 bit (AMD64)]",
+    "argv": [
+      "artifacts/d-sequence-20261022/audit_and_video.py",
+      "--report",
+      "artifacts/d-sequence-20261022/scene-100000-resume160-search42/report.json",
+      "--report",
+      "artifacts/d-sequence-20261022/scene-100100-resume160-search42/report.json",
+      "--report",
+      "artifacts/d-sequence-20261022/scene-100200-resume160-search42/report.json",
+      "--output",
+      "artifacts/d-sequence-20261022/videos-v1"
+    ],
+    "commit": "eb527ea6b73441aa1c735c07771441af3b9b0db7",
+    "packages": {
+      "numpy": "1.26.4",
+      "opencv-python-headless": "4.10.0.84",
+      "pygame": "2.6.1",
+      "pymunk": "6.9.0",
+      "shapely": "2.0.6"
+    }
+  },
+  "route_diversity_by_exact_search_start": {
+    "b02ce1ad3640bca28742c8d4dbe33b094bfaa6c9862cbf5c0f53c780d942fa4e": {
+      "reports": 1,
+      "successful_routes": [],
+      "all_routes": [
+        "south/southwest/northwest/northwest/north/northeast"
+      ],
+      "unique_observed_route_signatures": 1,
+      "unique_successful_route_signatures": 0
+    },
+    "c071bac611cc42f49784f42a654dbe395c1df21616dbf7a19560867e1f12806b": {
+      "reports": 1,
+      "successful_routes": [],
+      "all_routes": [
+        "northeast/northeast/southeast/southwest/northwest/northwest/northeast/southeast/southeast/south/southwest/northwest"
+      ],
+      "unique_observed_route_signatures": 1,
+      "unique_successful_route_signatures": 0
+    },
+    "01d6eb503dd0a74cf9bd12c8df14cb47fb3100d395677204ccb370811dcdc767": {
+      "reports": 1,
+      "successful_routes": [],
+      "all_routes": [
+        "south/southwest/northwest/northwest/north/northeast"
+      ],
+      "unique_observed_route_signatures": 1,
+      "unique_successful_route_signatures": 0
+    }
+  },
+  "reports": [
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100000-resume160-search42\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 160,
+        "source_controls": 89,
+        "replayed_control_physics_substeps": 2490
+      },
+      "source_report_sha256": "def8ed919f845afa936280716a4eb3781d7538429f9c95e25017a3ffe77ee654",
+      "source_status": "stopped_early",
+      "source_stop_reason": "search_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100000-resume160-search42\\report.json": "def8ed919f845afa936280716a4eb3781d7538429f9c95e25017a3ffe77ee654",
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100000-search-42\\report.json": "69c9fd7d3008bb67bf3a3d6cf4faa901c37b85e14bdca8f118c8cbf0ab386d9d"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              335.0,
+              173.0
+            ],
+            "angle": -0.9049274284249247
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              235.0,
+              124.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              228.86376245284058,
+              290.1733307438053
+            ],
+            "angle": -1.0130003005122161
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              326.70735131528977,
+              290.63124433483284
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            8.078998179776697e-07,
+            39.52622497443288
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 160,
+        "pusher_target": [
+          326.70735141790567,
+          296.9376688403422
+        ],
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "b02ce1ad3640bca28742c8d4dbe33b094bfaa6c9862cbf5c0f53c780d942fa4e",
+      "source_counts": {
+        "control_steps": 89,
+        "control_physics_substeps": 890,
+        "reset_physics_substeps": 1,
+        "resume_replay_controls": 160
+      },
+      "source_search_counts": {
+        "restores": 320,
+        "replay_steps": 66800,
+        "candidate_steps": 6315
+      },
+      "result": "STOPPED_EARLY: search_budget",
+      "current_source_sha256": {
+        "scripts/evaluate_contact_sequence.py": "cce1f6b029bc0ea83d7fd44398740de227c16940b7003dbd829eea0b24eaf1ca",
+        "tdyssey/simulator_sequence.py": "42e90a7ee170d088ef401b0175cb253b808adcaa3c7c0835623b259a73175195",
+        "tdyssey/contact_geometry.py": "7fa4f3d80a50e9394b401124b1941be875dafeb65bb1fdbd76ee869f605a4643",
+        "tdyssey/simulator_search.py": "49318a57bdb6d0b96e98030621ca764c031d13fa1d8f18e801a6bdf749cadd64",
+        "tdyssey/official.py": "9fb95bfd481bea1009ecdfa382866a2f65a9419e8653595b105928549c95af8e",
+        "tdyssey/simulator_planning.py": "2f4c5288b669f53b1d8785955d1dd2186ff8701b47a93f4986458ec4c72fe6bf",
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "pyproject.toml": "c41f94734bc1c591ba4c87e7b0cc7e6e8335e4e5873fca239724b8638cf2bece",
+        "uv.lock": "30954ae72f9ff2fff77fa1d274bef08dc8d392aed53c44e71ac021f1f11aa88c"
+      },
+      "source_files_changed_since_run": [],
+      "initial_metrics": {
+        "coverage": 0.0,
+        "iou": 0.0
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              233.31266387725952,
+              290.634616906725
+            ],
+            "angle": -0.057306792434798456
+          },
+          "velocity": [
+            -7.233221305912411e-14,
+            1.055973999047318e-14
+          ],
+          "angular_velocity": -1.5996828258372456e-15,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              276.5699517270501,
+              226.74748749810533
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            -3.58852279215662e-20,
+            1.1368681944585918e-12
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 249,
+        "pusher_target": [
+          276.5699517270501,
+          226.74748749810556
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.5660637230466911,
+        "iou": 0.3947621188923466
+      },
+      "final_control": 249,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 70,
+        "contact_bearing_counts": {
+          "south": 5,
+          "southwest": 3,
+          "northwest": 8,
+          "north": 3,
+          "northeast": 51
+        },
+        "contact_runs": [
+          {
+            "start_control": 167,
+            "end_control": 171,
+            "controls": 5,
+            "bearing_counts": {
+              "south": 5
+            },
+            "translation": [
+              -21.97379083594967,
+              -18.586316745285615
+            ],
+            "angle_change": 0.2956924105583013,
+            "dominant_bearing": "south"
+          },
+          {
+            "start_control": 173,
+            "end_control": 175,
+            "controls": 3,
+            "bearing_counts": {
+              "southwest": 3
+            },
+            "translation": [
+              -1.2641812456091372,
+              -8.523423388746664
+            ],
+            "angle_change": 0.035069325316185895,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 181,
+            "end_control": 185,
+            "controls": 5,
+            "bearing_counts": {
+              "northwest": 5
+            },
+            "translation": [
+              24.006222247587345,
+              -10.960111747684692
+            ],
+            "angle_change": 0.4990790437569854,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 187,
+            "end_control": 189,
+            "controls": 3,
+            "bearing_counts": {
+              "northwest": 3
+            },
+            "translation": [
+              4.191040241395626,
+              2.585085347328203
+            ],
+            "angle_change": 0.02617706036263792,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 192,
+            "end_control": 194,
+            "controls": 3,
+            "bearing_counts": {
+              "north": 3
+            },
+            "translation": [
+              3.5469594148573265,
+              18.258673897748736
+            ],
+            "angle_change": -0.05667050550358027,
+            "dominant_bearing": "north"
+          },
+          {
+            "start_control": 199,
+            "end_control": 249,
+            "controls": 51,
+            "bearing_counts": {
+              "northeast": 51
+            },
+            "translation": [
+              -4.05734839786254,
+              17.687378799559724
+            ],
+            "angle_change": 0.15634617358688738,
+            "dominant_bearing": "northeast"
+          }
+        ],
+        "route_signature": "south/southwest/northwest/northwest/north/northeast",
+        "object_translation": [
+          4.448901424418949,
+          0.4612861629196914
+        ],
+        "object_translation_distance": 4.472751816085722,
+        "object_translation_path": 106.57655253716847,
+        "object_angle_change": 0.9556935080774177,
+        "object_absolute_angle_path": 1.1413408809634489
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\videos-v1\\00-scene-100000-resume160-search42\\actual-controls-paused.mp4",
+        "sha256": "1e17ea76cd03598f36b2d7eb5236ddf8713c95e090acd6d4e6ef867519a0849a",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 297,
+        "duration_seconds": 29.7,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.5265660285949707,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 160,
+            "phase": "search initial",
+            "state_sha256": "b02ce1ad3640bca28742c8d4dbe33b094bfaa6c9862cbf5c0f53c780d942fa4e",
+            "uncompressed_display_bgr_sha256": "a7e671c9c6f7725d0e6cff5d0606cfba5d3f86e6f17075b65bfa7720fa088ccf"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 161,
+            "phase": "recorded teacher",
+            "state_sha256": "9329c94e8cc9ecee504a834ef1ed3d0512e626592879c24bf93e18ec51cbb25d",
+            "uncompressed_display_bgr_sha256": "5a1252bcadf638887e0adc7db1b040c109fc643227c9d425ba6c5aef1716a7d7"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 162,
+            "phase": "recorded teacher",
+            "state_sha256": "3239ed25c0ba140d487e3187fc1125dbe0131101ab42162aa7bf802a74ba2f0c",
+            "uncompressed_display_bgr_sha256": "f8e29fdfee82f153379d0e8a55d6acee4ea70b5c03c9970efd7413557a7b0156"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 163,
+            "phase": "recorded teacher",
+            "state_sha256": "c64faff6ca88b42374935c6c0ff2cc56c8028f7315ff9792ded72c463810d5c9",
+            "uncompressed_display_bgr_sha256": "4f9c130d9bc01a8696a27e562c80d02a3bf4ac9b2fa435e2d52e9fdc011fcfcb"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 164,
+            "phase": "recorded teacher",
+            "state_sha256": "f677272926390e484933eb4c2032141916b8aead191ffcfd156fd003ec7dd248",
+            "uncompressed_display_bgr_sha256": "6f0dba5c482056e011e274361cab90599086917749eef9c6b5496de13d5e6d14"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 165,
+            "phase": "recorded teacher",
+            "state_sha256": "efd1dc844c53cee1c1ff2c6cadc7a79167c5a0eafcbe53258da2d4366bb98b4a",
+            "uncompressed_display_bgr_sha256": "8800d158ef1a4b9b7c8ff352282e4a5785d2c77a847ca6ebf017be403158912a"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 166,
+            "phase": "recorded teacher",
+            "state_sha256": "7a868091ff7c07516d7ab7f634606871e92f9cee6be9eb41d8e48a59d6778a1d",
+            "uncompressed_display_bgr_sha256": "9ebf2cdba88a94d17303813f88eab9d2e20c4fca9bd404ec836d890214b36e8f"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 167,
+            "phase": "recorded teacher",
+            "state_sha256": "5b9a1ab9631f5b403ddf5dd7e90fd48e0abea10049c6fcc1116910bc46cb873d",
+            "uncompressed_display_bgr_sha256": "3b80551e35155945780403cde2ebe56c7bb98f65b7e88d6a09eb2d27b316090b"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 168,
+            "phase": "recorded teacher",
+            "state_sha256": "c08398c3cef9af9ad3145ca261b94c3feb8b6623431832f2312bb74823068257",
+            "uncompressed_display_bgr_sha256": "35d8dcb154f158a2c8d1d6f43b7649bd4e831e74546c07774da65052e07584a8"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 169,
+            "phase": "recorded teacher",
+            "state_sha256": "e145b530fa1a5e87028c1471668bc202b3b651baca1ed7ef8d7389dbf709b48b",
+            "uncompressed_display_bgr_sha256": "e690073442e73e85642d1a880394cbccd47a5190c54909215c8c01bc38b407e8"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 170,
+            "phase": "recorded teacher",
+            "state_sha256": "9fb40b379433b67373710fcbef23ae72207ca8bee78ca7977bee5559fe33af28",
+            "uncompressed_display_bgr_sha256": "2c40abe75dfbadb527c5ce93ed9438133b3b15eb9e2a7b84f7f630762aadac17"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 171,
+            "phase": "recorded teacher",
+            "state_sha256": "964b5681373fc8c8681ac754cfe21ffa18ab2a1ba39b7e48f1ad56f547e72ae7",
+            "uncompressed_display_bgr_sha256": "291e48763e67f12624f41b1b85f1bc7ed0d618150684a8600ba65fd92a88d5d3"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 172,
+            "phase": "recorded teacher",
+            "state_sha256": "acd63097620a69a485d7942b3b0aee8812005b00c9608f7f8afcc39a4421b7af",
+            "uncompressed_display_bgr_sha256": "1a80fb796b7e880a7c6a91361cab00db3ad3d4302c3cd6210cf144bf0916510e"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 173,
+            "phase": "recorded teacher",
+            "state_sha256": "ac6bac03c414c965fdbb40b98148a017ff71a85c95718fee125a77a72859338c",
+            "uncompressed_display_bgr_sha256": "2bf184cfe4cbe521062a8fbb63cd24537472179f97769a1968e867ff02dd1206"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 174,
+            "phase": "recorded teacher",
+            "state_sha256": "c9afb03858f2efdf78c926db8e5a2f1985f6debd72ba459af138fe6e457eec9b",
+            "uncompressed_display_bgr_sha256": "c207892830d6250984e4bd3c544d891ac0eefe67d24c773c4e3c8ed618879bb9"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 175,
+            "phase": "recorded teacher",
+            "state_sha256": "24f3ac1c6b2257e219484a4ebabda25a844ef369249fd0c5533fe9f36ae99dc0",
+            "uncompressed_display_bgr_sha256": "3b80f2cf49a198f159aed06b04110ecc657b6972aca7f20558c65ac8a096f7e1"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 176,
+            "phase": "recorded teacher",
+            "state_sha256": "c919fc4a473d52ab8294a3b2dc49a05f1c38dc49324f9b5d3552d430b8e5b06f",
+            "uncompressed_display_bgr_sha256": "f4378dd272317ddf756e363b760ed469c1bbec2d9f9757fe866c48336931b052"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 177,
+            "phase": "recorded teacher",
+            "state_sha256": "b675bda4067ab0bfd0222b881fbc223f7458fae84b4a71563b61a7f2ea295af6",
+            "uncompressed_display_bgr_sha256": "1cef23de6d04d2bae802d695f9d7cc43a9827f46b16310c5df7502b0a35d0743"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 178,
+            "phase": "recorded teacher",
+            "state_sha256": "ea96689b48c94723a9b2210dffb0e91288e252ee2d09365bf0cda275e68a07c6",
+            "uncompressed_display_bgr_sha256": "f518f9e5d2041543c7ceeec3dcfc61ffe8ef34b712e63c6a2e00b31b7e889665"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 179,
+            "phase": "recorded teacher",
+            "state_sha256": "da58e381e487cfaf8b35de2b651d4199d444dde3b9f21f07ba117513bfc3e0c9",
+            "uncompressed_display_bgr_sha256": "b96c0ec606a37c6fc7e5965dc8a0859bfac4490c055e151b5e1fbe7c42bca736"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 180,
+            "phase": "recorded teacher",
+            "state_sha256": "8d21011dea571ab6a7e70eefd830a9c1bbe9f844a80f329511d78f3880f28be6",
+            "uncompressed_display_bgr_sha256": "1c4e0662bfd994d6d8c0c92b3ab1b164fce37158d2cb08526750850cc5492105"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 181,
+            "phase": "recorded teacher",
+            "state_sha256": "d14b40ef0590b10dde1e2442837052051629ffc0cb063c74f85323fa7330cb5f",
+            "uncompressed_display_bgr_sha256": "d9bbfefecb41161ff16621c068b9d1fb904594b38d880108689bf4a896b34f92"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 182,
+            "phase": "recorded teacher",
+            "state_sha256": "21b00488ffcccca8b98bf7119c127cee284e50e477ed74ec2459cb9421a784d5",
+            "uncompressed_display_bgr_sha256": "3b03787f923a3438f563d4d1e3b6ee2ae5090c18afb3cb87dc3031245e28b2fb"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 183,
+            "phase": "recorded teacher",
+            "state_sha256": "defe4425c4c03829f7a27682a3f71f817cbb4bf272528afa46da5f39166afd5c",
+            "uncompressed_display_bgr_sha256": "fb373145a52248822c453b700d64cc0532b17909ba030d18d29a498fbbac41e2"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 184,
+            "phase": "recorded teacher",
+            "state_sha256": "a0e2e6ef8cbf06bc9ae53bd00738312ac7e85214cf032d180cf26a7a1bf83d14",
+            "uncompressed_display_bgr_sha256": "092e4a0e6cc1e1869f5a441afb3b266b017c9a82291043587f2919fa38087cee"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 185,
+            "phase": "recorded teacher",
+            "state_sha256": "3230403a38e1ae40bd05005df3149509f0da1502d6f90c0c42d3f9e259de5043",
+            "uncompressed_display_bgr_sha256": "b6d7106bbbfd9205c22330c5b3ee94209f1028c84a6a5dc87ef17329a9736058"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 186,
+            "phase": "recorded teacher",
+            "state_sha256": "43344b6b5e3cb8451e788d1e7b41eca7634e178e89ee0b96effbb7d9706290ce",
+            "uncompressed_display_bgr_sha256": "7750cf4132ea79f2a1ad18013ceb3744e60d92029b89513aebd0b6c662ce4ae5"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 187,
+            "phase": "recorded teacher",
+            "state_sha256": "c19d488f4a1f5fdb48b4470ee399568782d5d5bd017e379a18ba1efc09d59ef0",
+            "uncompressed_display_bgr_sha256": "5f3c5d0e0ab09c0c8481d0f850f1710f0a44ce7d9cc7c841791741b827e7894c"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 188,
+            "phase": "recorded teacher",
+            "state_sha256": "55a3ff3a7627cc195b177aadc88944e6189d8ab69de07f90a4f531702ff8d1fa",
+            "uncompressed_display_bgr_sha256": "1950ecb57aff21e6f973f50b2c70b44f4e5620e9d685365ad87e44460ee39319"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 189,
+            "phase": "recorded teacher",
+            "state_sha256": "0e9c2202b8a89b3054c7e1112ff6b08395f32ff42979545df18c6c75a073377e",
+            "uncompressed_display_bgr_sha256": "31991652591ade4937bcf85302fd4a632f5f96ed638b23b679591a4c1c3fba3b"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 190,
+            "phase": "recorded teacher",
+            "state_sha256": "058972b55c2f5f5ee39f5761d08efef85b38660451238b62ce5e614b5be0a59c",
+            "uncompressed_display_bgr_sha256": "75d1971eac5d83889becc56729a39abe08a7bbb07adc95297e3c158e45a32925"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 191,
+            "phase": "recorded teacher",
+            "state_sha256": "daf97b94672dc356654a865dc812241ed9f53e043da41bba7003b186264d9c07",
+            "uncompressed_display_bgr_sha256": "4f7562a76b2df5a3657ce75b17fe37f74b65601ca396e915d3077deaee1f28a6"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 192,
+            "phase": "recorded teacher",
+            "state_sha256": "4a628c38bca70cae32f12e5734e4e01d77d3b9bdc33a585cf3c1fbb3eef7cc96",
+            "uncompressed_display_bgr_sha256": "3ad6639f08f3202dad7f56dc06082ace0d489d41e62ca1f7889c7f4acff22a4d"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 193,
+            "phase": "recorded teacher",
+            "state_sha256": "c8ed3b4eea4d6dfbafb58d6f751950513dd8b2a8babc3d0a19561a3dfb8abcd4",
+            "uncompressed_display_bgr_sha256": "e48fca984cbd2b3046a31bcbb53ae69ca5fa81937e34ec8ae083e49ca1a1c194"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 194,
+            "phase": "recorded teacher",
+            "state_sha256": "f75839799f0a8526fa62ae7ed24cb4e6afc4c6c93664e857159b4349600b262d",
+            "uncompressed_display_bgr_sha256": "074764cb63769b1a833152d6652fd86b1457647ffb07c66cfc7e53309498c83d"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 195,
+            "phase": "recorded teacher",
+            "state_sha256": "be11f58e582d0e2230ce7080ccdd992b74440ca5033bd00560f59c8b7273c5ec",
+            "uncompressed_display_bgr_sha256": "d009172fdcd7897fc7adc4529f100286f11f78549c27e11158b5d9d5ca7dae22"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 196,
+            "phase": "recorded teacher",
+            "state_sha256": "93402ac18ae7bec8d5c5acdfd79085cf4ef12702933d89de03069aeb434efb4f",
+            "uncompressed_display_bgr_sha256": "e5f4cd9008832e2a34fd2a4d365a83c250f40048d3103a59c577f44345e2ff8c"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 197,
+            "phase": "recorded teacher",
+            "state_sha256": "af34e02b922c2499f8cac801a3acfaac1da87b765c5e6e73a13f86ee757bfe93",
+            "uncompressed_display_bgr_sha256": "1ceee52ee847449a267495980da39f852a94ecead497aad155b1f2e6a2c09c56"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 198,
+            "phase": "recorded teacher",
+            "state_sha256": "fdf55eee21f5eb17dba67953a62723fc99a4d445995b2acc90d62ece843b653d",
+            "uncompressed_display_bgr_sha256": "807c944d9a4b276e36d23f9d4be70ac7800fff216c9147d2401c13342bc47c12"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 199,
+            "phase": "recorded teacher",
+            "state_sha256": "26f349c142f4726decddfb8cf065b840320a71994b42356348cd9c3e7cca6546",
+            "uncompressed_display_bgr_sha256": "8bd428b10e609d1d60d99f55239bf0b6b872147b4564a702e58f15c6f7fda213"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 200,
+            "phase": "recorded teacher",
+            "state_sha256": "5ddc187b613bbf3b1b141a16993d976e57b03aea8e1401df9f228136e3fd6dd4",
+            "uncompressed_display_bgr_sha256": "3d341a6a5599a54aaa79f63d4fe2f404babfd409366eede07cf475eb6c32e3a6"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 201,
+            "phase": "recorded teacher",
+            "state_sha256": "c65399e2bb17c2073cf9c1fb331708b4628729f5499bd531d08a24a19b6977a2",
+            "uncompressed_display_bgr_sha256": "f6f8c2667e9cbf447b31d32022109b6f00ecd0586d453f8d810a88f8574cbacc"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 202,
+            "phase": "recorded teacher",
+            "state_sha256": "05be6a40167c42abc8f22c3242490724bc8d6028dfb0743128d9445ccb349fa7",
+            "uncompressed_display_bgr_sha256": "203a9847e88aff17eeffdc8c92b49e21a2a65b081822a9db091a77b54e17655c"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 203,
+            "phase": "recorded teacher",
+            "state_sha256": "69d1f58dadbf3c05f97e1008900c200c08fdcdf9babde03cb7f90d40535d179f",
+            "uncompressed_display_bgr_sha256": "ebf8d25bbc9750681197b74eaa96ed98a005f600707c48142a86a6a8d30b8577"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 204,
+            "phase": "recorded teacher",
+            "state_sha256": "e660d55f41d8f9d4f34bb9279ce1a6044807a885e1affc4b6290b02cd025ecbb",
+            "uncompressed_display_bgr_sha256": "cb2efae8c8c95351d4839333c6c15a72f2d558eb0c9af985fd7777e22f40053c"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 205,
+            "phase": "recorded teacher",
+            "state_sha256": "13649bf20deaa8611a709ba3bbb0dfea89c0e69ec1a0d52a6782a080607fd534",
+            "uncompressed_display_bgr_sha256": "8c4d020fbbf62906ce08ea21f6910dfda28cbdf2873088afe75d0706f7af2d2e"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 206,
+            "phase": "recorded teacher",
+            "state_sha256": "a825de93b5a37705960a14f5198cff09d990a86ef39315c9c81dc4a65cafb9a0",
+            "uncompressed_display_bgr_sha256": "5345bcaa85ca5af04026404438149982de3b65bf5cc307bf36fb45669458c0d8"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 207,
+            "phase": "recorded teacher",
+            "state_sha256": "697f13d53ec72af075fb982b7a9eddc9743eee0f4a280c01ee33e6ee96868e08",
+            "uncompressed_display_bgr_sha256": "ca55815ac9f81d6df99d9f56306a6478e8e63d395f8204a5db8d08de2e2eb1c4"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 208,
+            "phase": "recorded teacher",
+            "state_sha256": "1a4fe09aa7c5d7e38d84ce42f0069e0e68c6e736c2b3b961c9df1382fb538ecf",
+            "uncompressed_display_bgr_sha256": "14fe8dd3ffd6a0b6f639706fad12f72fc11a0dea2efe39391c74a466b3d7dde7"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 209,
+            "phase": "recorded teacher",
+            "state_sha256": "0a5c4776fc82afd0b7077798bcb42ef0e8f71faea73f1eed5ac7e753db106c3f",
+            "uncompressed_display_bgr_sha256": "f1654f8a632d3b5de6291f9ae11fde4adcfddedf02963b0249432ab0fac28497"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 210,
+            "phase": "recorded teacher",
+            "state_sha256": "bd3dc6192f77961550e3c03f857e4be2857e8924e1402298bf468d68696dbe22",
+            "uncompressed_display_bgr_sha256": "fbbda9fbfe62d82837850bc6a962e704a4f70ea38d1a8b1052a1fbbc4f3175b0"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 211,
+            "phase": "recorded teacher",
+            "state_sha256": "f2beffb67578ff416949f4a3cad367fdaef090c234a15bfcf67e5acaeb134b25",
+            "uncompressed_display_bgr_sha256": "ea84f915f46157c45c380c0faa26013d6f5b3f98e5296b87d72c56911914577e"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 212,
+            "phase": "recorded teacher",
+            "state_sha256": "df4f731c5abf82523c4c3743afa40370bbd82968e9a841987b946fc995f3f952",
+            "uncompressed_display_bgr_sha256": "a5969cfcdd3ebdf69e6cce7662a970d726652a2a0dbc64d7aa6f4fabe27a6c2a"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 213,
+            "phase": "recorded teacher",
+            "state_sha256": "80d3cd47d44d7986e0170bb9274efaf06b0b52f7978e8ed7ed128f104fbc3eb8",
+            "uncompressed_display_bgr_sha256": "c687046582bfa64d8ed34fcbc0c4575c024e3d2f97e73aeb5fc8dbb1fdda7ed1"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 214,
+            "phase": "recorded teacher",
+            "state_sha256": "5b0dcae6ceb5a6e913a44d152ced96222f295e1b0e98ec15c4ae112b0ec7c96c",
+            "uncompressed_display_bgr_sha256": "53d8b03d4fa9602cbd093f54cec54f4050cb9aff0859cc945d947d207ee30b35"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 215,
+            "phase": "recorded teacher",
+            "state_sha256": "f1033239156fb05f9d9fdfaa4334af2bd05e5aa693e1f70b42eed9a67e4e486c",
+            "uncompressed_display_bgr_sha256": "47eec576034616644a5c7812014b1353d5dea1a7f6936aa84bbc130014c6064a"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 216,
+            "phase": "recorded teacher",
+            "state_sha256": "44379cd29edc0b9423a6e120ab0ad33c44d85c3b6310581ceb230625a43ba7d8",
+            "uncompressed_display_bgr_sha256": "1ef9d2d2803fade152caf9350ca4dec71f0df5d6c1fe58afdd6f697bd5e26d77"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 217,
+            "phase": "recorded teacher",
+            "state_sha256": "434b5dedb005c3eabd99181a0f7825b40522099a18005e9a185c36d5df34ed80",
+            "uncompressed_display_bgr_sha256": "4a56941cda9a41e5c2cd03e5f6474a8a57f5d60472cb819659fe246eff5a021c"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 218,
+            "phase": "recorded teacher",
+            "state_sha256": "73ae4b7f0c28969743fe80c97ff123b6408e48cdf4e0f3681875d3acb71a0ce1",
+            "uncompressed_display_bgr_sha256": "2b2367272bbf14f07961563e8909356f43e235681e3726862e44fb11b850a925"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 219,
+            "phase": "recorded teacher",
+            "state_sha256": "b92d2fe395d1e89135f2ab7395a520d0157b7c4fafb4b710853c85a17ccfcd59",
+            "uncompressed_display_bgr_sha256": "e84ba21568457da4c93b850e67b6a8dbf157b3f2f30d4f2477e2a2c3c71154b8"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 220,
+            "phase": "recorded teacher",
+            "state_sha256": "ea7c612b8f00d940ed5b2cb3c4f95fff80fe08647c94153f0b05cbd322536742",
+            "uncompressed_display_bgr_sha256": "499f404f17e2fb5b18eff1e8c09d16d352478ab14ab9fd02e01bfae9248223a5"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 221,
+            "phase": "recorded teacher",
+            "state_sha256": "31454bb6fcff5b3d7a7b44cc8130f7c8464456d2c153eba4bb4dc79eec4acdb5",
+            "uncompressed_display_bgr_sha256": "f213cfb8b10849bce18047764f6650d81378ef85c04cf50616a682f373146f83"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 222,
+            "phase": "recorded teacher",
+            "state_sha256": "8242a33ab3dc70adcaab7ff379cd37f30f32910294b5ee03a4c54aeaf5d42935",
+            "uncompressed_display_bgr_sha256": "22f04df12e32bbc19b2a1bd6ed145670df5c3b08489ef8ea21114b1577f59aa7"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 223,
+            "phase": "recorded teacher",
+            "state_sha256": "c9ee696b6a152bb890f588b0a630ceab02f7a44ba1e00d180dc834ecf7e33f0f",
+            "uncompressed_display_bgr_sha256": "9585a32d8a7fb64397d0f6a2e9c7ca805afe5064811b31330e61e9487f1276eb"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 224,
+            "phase": "recorded teacher",
+            "state_sha256": "12dc0e86d1c5e2bb3b27f8586a07c03efa2fb606e9d9a8e0563038d4abcdb0b2",
+            "uncompressed_display_bgr_sha256": "ff9cf5ac5f04196536ea65d54347987cfad2735731ed05358ae0f7e2155935b5"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 225,
+            "phase": "recorded teacher",
+            "state_sha256": "954adb51d35b5d7f4c210027441cb3cf4ff8a1a9f766ad8abc5279a9a2d90ed0",
+            "uncompressed_display_bgr_sha256": "2cc615b6ee61af79aa0adbc3de14cbb2e5dc60f87c704cba91fe7f13f914a627"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 226,
+            "phase": "recorded teacher",
+            "state_sha256": "a346cc60f42533ee6354730537fcce136a90c3f35221c0e7f64a6396a7609680",
+            "uncompressed_display_bgr_sha256": "277fa3d7f442c3f879333d57b8e2db471669b143b9f87c351c5e69529b07e346"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 227,
+            "phase": "recorded teacher",
+            "state_sha256": "38f91494a0fab30208fe82281d4b1c8b5d68baf43fc0e221b4c02b085442500e",
+            "uncompressed_display_bgr_sha256": "988a4401264976620134058b52f0525fd0cb6548f4801f49875641d53ba4dbe2"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 228,
+            "phase": "recorded teacher",
+            "state_sha256": "181e0a16dcfa53d9885030eae6975a722804c1f19b7783f8f304371c084a5658",
+            "uncompressed_display_bgr_sha256": "eb7d7e928e5b4ada27a2e7c261f07dc5d55a2b309483c74f5e921e75ddc48057"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 229,
+            "phase": "recorded teacher",
+            "state_sha256": "5457b1ce3ca7d0756b76114b960ba42115ee2f0198cc80a018740e8934be4117",
+            "uncompressed_display_bgr_sha256": "c491af62006216f2202ebf21aa21a4bc29e54f3967f8fd433677272dd6daa821"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 230,
+            "phase": "recorded teacher",
+            "state_sha256": "4977893934b4b8a00c95f8485b14f4527500fa38f81fb2efc2c76757f90ccc9f",
+            "uncompressed_display_bgr_sha256": "aecf07f04586d7f7de90001ca2546671d701821245f26504646b1f5909580161"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 231,
+            "phase": "recorded teacher",
+            "state_sha256": "18909344d3a8bc769aacfd67fb65544d5ccdcefcab0b009dae9d6e4e1d6e3686",
+            "uncompressed_display_bgr_sha256": "fd279e2e4737856f5af79a38ea13057bba8235e98dd26843e43e2268a18bdab3"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 232,
+            "phase": "recorded teacher",
+            "state_sha256": "b84d14d73b9b88fda49789ba187383226bf1260a064132f205d4d3896a88eb47",
+            "uncompressed_display_bgr_sha256": "8943d2f1bf06a13f4271edf5a07635d67f11da6d1092381ca6bb86c1a572bc7d"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 3,
+            "control": 233,
+            "phase": "recorded teacher",
+            "state_sha256": "7cf89d4046315b136cfd1cf882853cc2349db4bbddaf756b90abc11e0aa36c31",
+            "uncompressed_display_bgr_sha256": "aa415cdf0771cfbf0822febab3b55c323be2e00161021ae589c0c348daadf77d"
+          },
+          {
+            "first_frame": 229,
+            "frame_count": 3,
+            "control": 234,
+            "phase": "recorded teacher",
+            "state_sha256": "3e5f40213c20b174383eeabdca819d114e43736f56b171e1090adf84d5fa2f6d",
+            "uncompressed_display_bgr_sha256": "d31c7021b29f3a86be2ef4869ccf0b42054a36c742206a1422f516c693b9fea7"
+          },
+          {
+            "first_frame": 232,
+            "frame_count": 3,
+            "control": 235,
+            "phase": "recorded teacher",
+            "state_sha256": "21772d310486276974a9975e328c4010adca72cdcc568e318cbffa59c4de704b",
+            "uncompressed_display_bgr_sha256": "2acf7b7e0e47ca0e619737c3ecd57d79fed0c491d6082a2d7e1519afbd7106e6"
+          },
+          {
+            "first_frame": 235,
+            "frame_count": 3,
+            "control": 236,
+            "phase": "recorded teacher",
+            "state_sha256": "d39da60a750417695b0a4c4bf1cf91d84f8b3f08bc7d34d0d926e70e56314707",
+            "uncompressed_display_bgr_sha256": "0197b2b4bb47a15c37b508d752fe8986ad029249f281fdc0f320587e605e536b"
+          },
+          {
+            "first_frame": 238,
+            "frame_count": 3,
+            "control": 237,
+            "phase": "recorded teacher",
+            "state_sha256": "88abf60c9225fd92c6d9edc3224b6f9a608764d324e93ec2367fc24713df5ddc",
+            "uncompressed_display_bgr_sha256": "99baf86ea5b31b321d03cd96e9657475a50883990ed48c156696618c637735d4"
+          },
+          {
+            "first_frame": 241,
+            "frame_count": 3,
+            "control": 238,
+            "phase": "recorded teacher",
+            "state_sha256": "b9c90606e5cf445e4e405e38a667d595d9d16412cb93be0a6033076360538f67",
+            "uncompressed_display_bgr_sha256": "3c7ed8df1b92bcbde3b41d37b4616500f7d706d9a95fd1442022b716e527fa8a"
+          },
+          {
+            "first_frame": 244,
+            "frame_count": 3,
+            "control": 239,
+            "phase": "recorded teacher",
+            "state_sha256": "8191d88a07916128a8c772c70fd9364c1e486cb624d9e9ef26e87b7b3fdc4492",
+            "uncompressed_display_bgr_sha256": "40b235a43cffd76004e26f888ebbb14dd0cc34c9548de40655cf5c405f78129d"
+          },
+          {
+            "first_frame": 247,
+            "frame_count": 3,
+            "control": 240,
+            "phase": "recorded teacher",
+            "state_sha256": "e18b18f23a57d3fd0327008033e8eb7ad3da2991c3211d541b56d5b9c8d5032d",
+            "uncompressed_display_bgr_sha256": "afe931ff3d6c25c9e0608c04619a478d9c06522585d5af9d3056afa67787846b"
+          },
+          {
+            "first_frame": 250,
+            "frame_count": 3,
+            "control": 241,
+            "phase": "recorded teacher",
+            "state_sha256": "f58134d098eea0e48cfe0f3a5cff77420c84f41ca4043a9d420885ff993b7225",
+            "uncompressed_display_bgr_sha256": "440dac431c2c8ee331ca5ad203bff92aa7f1c3bd0ef0f9a2761f8fc6042eca72"
+          },
+          {
+            "first_frame": 253,
+            "frame_count": 3,
+            "control": 242,
+            "phase": "recorded teacher",
+            "state_sha256": "2fd446bee2424b95d6be3d4c8cbc461c450f3cf61c8c127ff01752f37c99f266",
+            "uncompressed_display_bgr_sha256": "f4bf893ed44c5e15a1535bb79ba5315e58eba9bb25614aff8eb216789fd1ed55"
+          },
+          {
+            "first_frame": 256,
+            "frame_count": 3,
+            "control": 243,
+            "phase": "recorded teacher",
+            "state_sha256": "51a59306fe41e1fa2b9b919cb77af533299d1e4e98531604470f720638ba955e",
+            "uncompressed_display_bgr_sha256": "b6f579128776362b00fe7f572c9ea6c2f2318e3e578fdf8e81f1bbb508946c97"
+          },
+          {
+            "first_frame": 259,
+            "frame_count": 3,
+            "control": 244,
+            "phase": "recorded teacher",
+            "state_sha256": "21fcde3817d34e2e497e3564ac0395daad0fcc57e9046c1bbec495961e393847",
+            "uncompressed_display_bgr_sha256": "2045edbfe8ef42e3442b6a54c42f915cbb338bb004e16972eda43e0e5bf7a1ca"
+          },
+          {
+            "first_frame": 262,
+            "frame_count": 3,
+            "control": 245,
+            "phase": "recorded teacher",
+            "state_sha256": "1fbbd0d41667ad45dfa62f2dfbb8769a009d9cb70c61b594a800e1581275590f",
+            "uncompressed_display_bgr_sha256": "6ab19d8cb8b41fa940f82a04352ef95cbda1c96514e55df5339727f525495775"
+          },
+          {
+            "first_frame": 265,
+            "frame_count": 3,
+            "control": 246,
+            "phase": "recorded teacher",
+            "state_sha256": "48ac3f137de1b68d16a305b2382eb833c41a5f6d9d8446a3cdd54aedddb2fa47",
+            "uncompressed_display_bgr_sha256": "e32e7bec262e256291b5998237f2f54885c2307b19bb389103346fdde22d1e4d"
+          },
+          {
+            "first_frame": 268,
+            "frame_count": 3,
+            "control": 247,
+            "phase": "recorded teacher",
+            "state_sha256": "28b394c754b4791f29fb5c1dd385b60e39d7e1b205d97633f51e53afe6674dad",
+            "uncompressed_display_bgr_sha256": "e2f8a3367bb79b3bcb77a1fa6683233bf3ff17d056efff4e7802b81eea9b4c54"
+          },
+          {
+            "first_frame": 271,
+            "frame_count": 3,
+            "control": 248,
+            "phase": "recorded teacher",
+            "state_sha256": "19aac1bc0e9b41f2d424cd5708a827d99426268ef117526a1ec918b85581ac1b",
+            "uncompressed_display_bgr_sha256": "f7deb0a15670ccb82448298c01489fd449d5c393fd7cb57f4723965bbb96cf5a"
+          },
+          {
+            "first_frame": 274,
+            "frame_count": 3,
+            "control": 249,
+            "phase": "recorded teacher",
+            "state_sha256": "12cd4745b5a6d45cce28359d17d4c171363fcdee81c11fc270c5e63225e6998a",
+            "uncompressed_display_bgr_sha256": "f3381a82c44adf227462411b918fdd33250e1044609e63d1ac92b864b533d630"
+          },
+          {
+            "first_frame": 277,
+            "frame_count": 20,
+            "control": 249,
+            "phase": "final result",
+            "state_sha256": "12cd4745b5a6d45cce28359d17d4c171363fcdee81c11fc270c5e63225e6998a",
+            "uncompressed_display_bgr_sha256": "9167cf3d74e4b9343f25998b44cdab34ed16212bad4dcbc7d9f2512c6b364bb1"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.2660000000032596,
+      "torch_loaded": false
+    },
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100100-resume160-search42\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 160,
+        "source_controls": 123,
+        "replayed_control_physics_substeps": 2830
+      },
+      "source_report_sha256": "d3277613f158a78750f8d3a0b979e6b250d4d99caae498ce0e01cbd0a69554b5",
+      "source_status": "stopped_early",
+      "source_stop_reason": "search_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100100-resume160-search42\\report.json": "d3277613f158a78750f8d3a0b979e6b250d4d99caae498ce0e01cbd0a69554b5",
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100100-search-42\\report.json": "806003b66e56b6f6445f8636cbcade3714711c1b2b53b8e65269ac53ce677616"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              363.0,
+              405.0
+            ],
+            "angle": -1.363497017621291
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              74.0,
+              98.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              229.63158329374934,
+              277.5664636281833
+            ],
+            "angle": -0.3482222754977704
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              169.43352387632336,
+              195.35612836400244
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            81.54373437003633,
+            -9.569411909189421
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 160,
+        "pusher_target": [
+          182.73513767530764,
+          194.12060336918563
+        ],
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "c071bac611cc42f49784f42a654dbe395c1df21616dbf7a19560867e1f12806b",
+      "source_counts": {
+        "control_steps": 123,
+        "control_physics_substeps": 1230,
+        "reset_physics_substeps": 1,
+        "resume_replay_controls": 160
+      },
+      "source_search_counts": {
+        "restores": 320,
+        "replay_steps": 68840,
+        "candidate_steps": 17103
+      },
+      "result": "STOPPED_EARLY: search_budget",
+      "current_source_sha256": {
+        "scripts/evaluate_contact_sequence.py": "cce1f6b029bc0ea83d7fd44398740de227c16940b7003dbd829eea0b24eaf1ca",
+        "tdyssey/simulator_sequence.py": "42e90a7ee170d088ef401b0175cb253b808adcaa3c7c0835623b259a73175195",
+        "tdyssey/contact_geometry.py": "7fa4f3d80a50e9394b401124b1941be875dafeb65bb1fdbd76ee869f605a4643",
+        "tdyssey/simulator_search.py": "49318a57bdb6d0b96e98030621ca764c031d13fa1d8f18e801a6bdf749cadd64",
+        "tdyssey/official.py": "9fb95bfd481bea1009ecdfa382866a2f65a9419e8653595b105928549c95af8e",
+        "tdyssey/simulator_planning.py": "2f4c5288b669f53b1d8785955d1dd2186ff8701b47a93f4986458ec4c72fe6bf",
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "pyproject.toml": "c41f94734bc1c591ba4c87e7b0cc7e6e8335e4e5873fca239724b8638cf2bece",
+        "uv.lock": "30954ae72f9ff2fff77fa1d274bef08dc8d392aed53c44e71ac021f1f11aa88c"
+      },
+      "source_files_changed_since_run": [],
+      "initial_metrics": {
+        "coverage": 0.0,
+        "iou": 0.0
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              222.87862207848264,
+              290.18573804036873
+            ],
+            "angle": 0.7306314546555268
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              262.53642061669626,
+              224.9396123458891
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            43.4645915443384,
+            86.5025118899517
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 283,
+        "pusher_target": [
+          267.84435360956627,
+          238.97012042191307
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.8993925214948709,
+        "iou": 0.8171782756886653
+      },
+      "final_control": 283,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 45,
+        "contact_bearing_counts": {
+          "northeast": 15,
+          "east": 2,
+          "southeast": 7,
+          "southwest": 5,
+          "northwest": 12,
+          "south": 4
+        },
+        "contact_runs": [
+          {
+            "start_control": 168,
+            "end_control": 171,
+            "controls": 4,
+            "bearing_counts": {
+              "northeast": 3,
+              "east": 1
+            },
+            "translation": [
+              -3.1812895030230948,
+              3.0480346168443475
+            ],
+            "angle_change": -0.01830729003465098,
+            "dominant_bearing": "northeast"
+          },
+          {
+            "start_control": 174,
+            "end_control": 181,
+            "controls": 8,
+            "bearing_counts": {
+              "northeast": 8
+            },
+            "translation": [
+              -3.0837077680872937,
+              21.196174491952604
+            ],
+            "angle_change": 0.2470005518535188,
+            "dominant_bearing": "northeast"
+          },
+          {
+            "start_control": 189,
+            "end_control": 192,
+            "controls": 4,
+            "bearing_counts": {
+              "southeast": 4
+            },
+            "translation": [
+              -14.513910068037006,
+              -7.067769815154463
+            ],
+            "angle_change": 0.2541717750242857,
+            "dominant_bearing": "southeast"
+          },
+          {
+            "start_control": 200,
+            "end_control": 202,
+            "controls": 3,
+            "bearing_counts": {
+              "southwest": 3
+            },
+            "translation": [
+              5.696433966252329,
+              -6.985050936179903
+            ],
+            "angle_change": 0.0440814300826379,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 211,
+            "end_control": 215,
+            "controls": 5,
+            "bearing_counts": {
+              "northwest": 5
+            },
+            "translation": [
+              20.273719847820388,
+              9.57201102910443
+            ],
+            "angle_change": 0.4970258102831985,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 230,
+            "end_control": 232,
+            "controls": 3,
+            "bearing_counts": {
+              "northwest": 3
+            },
+            "translation": [
+              0.9846943178166896,
+              4.2427232407375755
+            ],
+            "angle_change": 0.03235215270182745,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 241,
+            "end_control": 245,
+            "controls": 5,
+            "bearing_counts": {
+              "northeast": 4,
+              "east": 1
+            },
+            "translation": [
+              -17.30454329494296,
+              -5.565551931188111
+            ],
+            "angle_change": -0.05594391942323995,
+            "dominant_bearing": "northeast"
+          },
+          {
+            "start_control": 252,
+            "end_control": 253,
+            "controls": 2,
+            "bearing_counts": {
+              "southeast": 2
+            },
+            "translation": [
+              -1.6574591480137428,
+              -5.5551769977039385
+            ],
+            "angle_change": 0.0702286191406748,
+            "dominant_bearing": "southeast"
+          },
+          {
+            "start_control": 255,
+            "end_control": 255,
+            "controls": 1,
+            "bearing_counts": {
+              "southeast": 1
+            },
+            "translation": [
+              0.17298116058657342,
+              -0.5128019631175675
+            ],
+            "angle_change": -0.0013151767298934525,
+            "dominant_bearing": "southeast"
+          },
+          {
+            "start_control": 257,
+            "end_control": 260,
+            "controls": 4,
+            "bearing_counts": {
+              "south": 4
+            },
+            "translation": [
+              3.4012979307422313,
+              -3.95726985848097
+            ],
+            "angle_change": -0.018875381467349905,
+            "dominant_bearing": "south"
+          },
+          {
+            "start_control": 266,
+            "end_control": 267,
+            "controls": 2,
+            "bearing_counts": {
+              "southwest": 2
+            },
+            "translation": [
+              1.6220683652053651,
+              -0.22105946998414083
+            ],
+            "angle_change": -0.0027592216009666437,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 278,
+            "end_control": 281,
+            "controls": 4,
+            "bearing_counts": {
+              "northwest": 4
+            },
+            "translation": [
+              0.8367529784138128,
+              4.425012005355541
+            ],
+            "angle_change": 0.031194380323255055,
+            "dominant_bearing": "northwest"
+          }
+        ],
+        "route_signature": "northeast/northeast/southeast/southwest/northwest/northwest/northeast/southeast/southeast/south/southwest/northwest",
+        "object_translation": [
+          -6.7529612152667085,
+          12.619274412185405
+        ],
+        "object_translation_distance": 14.31253198651216,
+        "object_translation_path": 117.68910240988878,
+        "object_angle_change": 1.0788537301532972,
+        "object_absolute_angle_path": 1.420672172738754
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\videos-v1\\01-scene-100100-resume160-search42\\actual-controls-paused.mp4",
+        "sha256": "7bcdd2780d16354f0abb77d0a6108d328551eb4f584ad80259f59256bae02244",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 399,
+        "duration_seconds": 39.9,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.5261592864990234,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 160,
+            "phase": "search initial",
+            "state_sha256": "c071bac611cc42f49784f42a654dbe395c1df21616dbf7a19560867e1f12806b",
+            "uncompressed_display_bgr_sha256": "55ae1a946c91b73fa53bd58fe2b960f8abedea3705cffda653cc9e1a48ac2159"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 161,
+            "phase": "recorded teacher",
+            "state_sha256": "0752cc85f105685c61afa55cd746e77ac5ed40a6fb4893d5db9d03e8c83a1e55",
+            "uncompressed_display_bgr_sha256": "e36ee201f24a608770f7539f29bd88b68ea460829a09de0290cb7d4755716036"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 162,
+            "phase": "recorded teacher",
+            "state_sha256": "ea4e09dce406d39b7a47a5305ed2ddeac982ce4ae25321793a211af58f777b47",
+            "uncompressed_display_bgr_sha256": "4509e9057ef62487e22ae6c13c1249708a88015f8d15c990a6390f6928f2965d"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 163,
+            "phase": "recorded teacher",
+            "state_sha256": "6bd04d13701cf3264558276ee45312af05da782e6dea8fe45c728bab310b2866",
+            "uncompressed_display_bgr_sha256": "3668c725962a9a84167da80bc1467be99bef88da8a65b866942e959ccdd5d4de"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 164,
+            "phase": "recorded teacher",
+            "state_sha256": "de7d98c5079a5f59e7958d004363b9527ed37bd78d8b5b1ef21eee07e6f557e6",
+            "uncompressed_display_bgr_sha256": "1ae5e88a09e01141691132d375944ffb2cb7a2b6c4de86ba8589d41c87fa9200"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 165,
+            "phase": "recorded teacher",
+            "state_sha256": "379b793bf1eb32ff2e340c649264fd6920f728808d058d26214ed0f53d653e33",
+            "uncompressed_display_bgr_sha256": "17b1d532e72fdb7744aedd98cdc85992777651163208079bc62bde2eb3512640"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 166,
+            "phase": "recorded teacher",
+            "state_sha256": "67c374cc0c36617891df8ab0bec1d3bf8ac8312a3af288fc61b224995c6ece18",
+            "uncompressed_display_bgr_sha256": "12c4b24a573bbf2fa75945a461d07c9c980a3a1c4cbc1a072483ff53d9655d27"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 167,
+            "phase": "recorded teacher",
+            "state_sha256": "082e24e550f8475f070448dd7ae63a03b914186edb7a62440e3235d479f45a17",
+            "uncompressed_display_bgr_sha256": "acb5c03550f4b622e3f1756f216a88c452165df78bbdefe1b8dea32628e0730a"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 168,
+            "phase": "recorded teacher",
+            "state_sha256": "af754fbcf279d4f94ef33feaac1354a4fa740e6d114e1460bdc7ff947df71572",
+            "uncompressed_display_bgr_sha256": "2b3577a7ca752b1b67f496e3209b0c3f188e6fadaabeab8de55ccbd8ff07f740"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 169,
+            "phase": "recorded teacher",
+            "state_sha256": "4e66c7aa3e82dfbb7ac1b2c76096182e2d6febd12915e6ac4bc133b9be703a1e",
+            "uncompressed_display_bgr_sha256": "72ab9d2af7fd3db944e2ab0391f6e47b7000654c4c30d990604ddd055bd23d47"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 170,
+            "phase": "recorded teacher",
+            "state_sha256": "18f08f0e41116fba47229794150151121a05098797ace3f262b98d7558a100f2",
+            "uncompressed_display_bgr_sha256": "a5627f2ff1c039b26ee4e0a0a581d024498c6602b35be34fec246d0c3aef6ee4"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 171,
+            "phase": "recorded teacher",
+            "state_sha256": "a3d1d017350e9296ed457f2685d616431dc9d66ffec3d9f6e20b6155be90fd03",
+            "uncompressed_display_bgr_sha256": "56019c387da0eb6370c171f7f3dc673d9317beacdf1db1210417edb0be79f3c0"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 172,
+            "phase": "recorded teacher",
+            "state_sha256": "420d6e912fdac2a26b394f222dcf7885e9d62f77da174d72fd42d0efac15dd83",
+            "uncompressed_display_bgr_sha256": "2dc6b19facfd3157a10002983b4d65b7d3ff523a20d678f39db1b0d1c0e14da1"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 173,
+            "phase": "recorded teacher",
+            "state_sha256": "f11ec26df98e55591e2da2cf39711633d23f4cbf38ec42a9b229634d551a0108",
+            "uncompressed_display_bgr_sha256": "81fdd4c6d14cd536cf2bbb9c6a5e7bcd6fd369064b4b9b55e392d27c265a1063"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 174,
+            "phase": "recorded teacher",
+            "state_sha256": "64180da03f8106db7bf34244a347dcd7257feb9c75c82eab49d2243883a36818",
+            "uncompressed_display_bgr_sha256": "1eaba098893b69368c55497f3c2aea7b128845e81c9020c95547d4dabe9c436d"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 175,
+            "phase": "recorded teacher",
+            "state_sha256": "706e8ac1e9eacb7ef411fef9d50391339321a1360bb026b5209e13ab7957adf5",
+            "uncompressed_display_bgr_sha256": "657b8359185cebf73b1e3c8a297fab9c3e27dd1f0922286c297e60c87a9a3108"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 176,
+            "phase": "recorded teacher",
+            "state_sha256": "8a5250290c43ab4e365a7fe4ec742e9f43879b03cce64b4ead8862cccbf29882",
+            "uncompressed_display_bgr_sha256": "54fd8cf9f59fde3b59afd0ad7d0b8c67cdd9fa6aa1caf2aa2b7ad233512bbc9f"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 177,
+            "phase": "recorded teacher",
+            "state_sha256": "e997d22c512f4998e18b337c2ec17a7659eb3edcb42e13fb1d3ebe8fc627e151",
+            "uncompressed_display_bgr_sha256": "049a25889246db549fb24dc16425066ef66ad6a6a52c7dbea0967ee73ac632ab"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 178,
+            "phase": "recorded teacher",
+            "state_sha256": "3e465372a99cbfa039dd44e39a0832013b0c49140df53f82e3c01250c581a306",
+            "uncompressed_display_bgr_sha256": "78643bb0ff311e89e520277ee9014a57d47a4183860455eef4db96386d5f6e7f"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 179,
+            "phase": "recorded teacher",
+            "state_sha256": "bf61454f3ac13ce0f3f278db18d547da4701537695ed36f50f5cd2d3f6645f57",
+            "uncompressed_display_bgr_sha256": "f4b7991b8cb0c309f89ee44401b3315f06376018f6d0d64191a2cbad77d51a0a"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 180,
+            "phase": "recorded teacher",
+            "state_sha256": "b39172f27ca4365f22901ba3ffbdad9778a8adee7cadd941dd88fd6b074593a8",
+            "uncompressed_display_bgr_sha256": "e850bbda7fb8e9abe10fbc560bccab48e2fe50e3dbe809547c487e626782beaa"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 181,
+            "phase": "recorded teacher",
+            "state_sha256": "1098604ba2b7401be382aad6b7e11f5f80c344df62a1a275727fd9fad0b7db53",
+            "uncompressed_display_bgr_sha256": "de9960103616a27ca90a7d8cb750246fdad1794f1690d0a29b109ea112d8e11d"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 182,
+            "phase": "recorded teacher",
+            "state_sha256": "2286957835a74c7059e8ef5a2ae32b781607207ab0add2f3faec1e231c3195b5",
+            "uncompressed_display_bgr_sha256": "a9f61c68886cdf45897ec7ac7968059632600565d18a26e7c0abc1e3ae294ac3"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 183,
+            "phase": "recorded teacher",
+            "state_sha256": "5006a880bddbd3d9cb510844ef11163d3e380f60c39d437d01eec36b5a659c18",
+            "uncompressed_display_bgr_sha256": "03ed0ca1b9650808fadbd1963430e4969d277d77a9e79d28d6ab939bbc2a38ec"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 184,
+            "phase": "recorded teacher",
+            "state_sha256": "da30ad15106a2d8f84b298484ba452483a293cb43b9f569fb382f650f2b094e8",
+            "uncompressed_display_bgr_sha256": "063bd7a833cd5a231f6815fb3eda907fa576f4e970eb5b8dc016f814107eda8f"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 185,
+            "phase": "recorded teacher",
+            "state_sha256": "2dd8fbba59e22e77f9ed0e0a1e42eb751fc616cfb10256a0c87e0ba1f8aa425c",
+            "uncompressed_display_bgr_sha256": "b40b3ceb23046c30c2e98407773a164a85a54ec57f9740b9fb7d833fccfedece"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 186,
+            "phase": "recorded teacher",
+            "state_sha256": "a507055b339c063ed6f8a4306b1a93892fa938335cb45711c5700dc1c562dbaf",
+            "uncompressed_display_bgr_sha256": "fd2b4f13d5e7c9179d86c1a3afbc3bf49f26cc86eed11c57b6938734fd8367bd"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 187,
+            "phase": "recorded teacher",
+            "state_sha256": "37d82609100334251f31908f229b8315e3853aa85b33c861eb42c35677beac84",
+            "uncompressed_display_bgr_sha256": "486ce452bbea3ee3d7142751f5abc9bfb6111d2ea387920ae2d6802da5a31ca9"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 188,
+            "phase": "recorded teacher",
+            "state_sha256": "228973942e0c07bfe85e8cae6bff06622fde4e7fb4472aa4c1b123212c258f64",
+            "uncompressed_display_bgr_sha256": "be2a57d210173e37f046f532a2bae54992f1c83a291c45ea885f9ebf07d95168"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 189,
+            "phase": "recorded teacher",
+            "state_sha256": "dadd26b1e2072406aca85dc112ceb0f1ab605a9c16c166995320fc5c84648ffe",
+            "uncompressed_display_bgr_sha256": "8790eccb20d90ba312a1a0b6677178f69606e6dba7607b818f5b25e32a9142e2"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 190,
+            "phase": "recorded teacher",
+            "state_sha256": "f212b62314252be28db032f6d9e3822d8f2afcf8e2d4c0418882612f23fbf549",
+            "uncompressed_display_bgr_sha256": "59dd882b7e4aee13a80affa85ca44f0195df3e2a523f7b9001de322ffc7606b8"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 191,
+            "phase": "recorded teacher",
+            "state_sha256": "01bc9ba7aeeb0992f899205b62387908135c9e17c9dc54f22efa5cafdbff1631",
+            "uncompressed_display_bgr_sha256": "dcd76e65b3e72b0dfb16d630aeb300f59d134260ea68cca5ec42972326c436fb"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 192,
+            "phase": "recorded teacher",
+            "state_sha256": "6a139aba36c6b5f93d042d9897bcf04518d209afdf5dbca1dd878573390c48ba",
+            "uncompressed_display_bgr_sha256": "2213d2882ab0118b482b31f990c62607666f1a2098ec0cb6126646e431e41d08"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 193,
+            "phase": "recorded teacher",
+            "state_sha256": "230d19e3742a1e34f818c54aefd996163271cb9c1d3ecc3dd4050873fdf5e789",
+            "uncompressed_display_bgr_sha256": "68030a41de01c37220df56808a1c9777552ea4c70fa974a08380fba87c8528da"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 194,
+            "phase": "recorded teacher",
+            "state_sha256": "b386532b4c36c6ef2d5c6c869a2d86de596911d8ab876e1094faaf033bee2b70",
+            "uncompressed_display_bgr_sha256": "9008b8b547ee0c0fcf54907dd0f6598a36c631aa180fbb7223417748df6fac8f"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 195,
+            "phase": "recorded teacher",
+            "state_sha256": "38e2b86611608e38c2ac1e6767576fe827d6fb521ce1b38b265b5c817482c732",
+            "uncompressed_display_bgr_sha256": "66e7c822023f5ee4666c483a3b336e5fd51d6f0a9e70747c971be57dccdf19ee"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 196,
+            "phase": "recorded teacher",
+            "state_sha256": "4157b7b9ab00e8b268f6993e9279d431d5bed3280cf4a0064308c49748749cfa",
+            "uncompressed_display_bgr_sha256": "31793e5493494e842727d12bfe6503f1850ad59c26adb27446a3ef46e6ff45a1"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 197,
+            "phase": "recorded teacher",
+            "state_sha256": "76785e183fba465f9339aa1c9361d712404c4073ebaa6107a349a9957cc1fb37",
+            "uncompressed_display_bgr_sha256": "221ec2d95aee49cf61cb6e71898fc73a3a53f17655dd1e39f83f10fccd739655"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 198,
+            "phase": "recorded teacher",
+            "state_sha256": "f3524013d64f16b523291838ae0a655abfc3ed362dc7a9ac8ad3050d025d906e",
+            "uncompressed_display_bgr_sha256": "29d462c66c24ad519c49696e91ee03313f5b10108ca1f6a6fa092774f89376f4"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 199,
+            "phase": "recorded teacher",
+            "state_sha256": "81586e50f544907b332cfeaea3b3d48c06c2fb28f278859e6d227f8c3a74f503",
+            "uncompressed_display_bgr_sha256": "ed43d1ba8d8001ce7051d7c53a3966491eca399ec37fae3400cc80f70fcea36a"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 200,
+            "phase": "recorded teacher",
+            "state_sha256": "989401fd30e65ba6f38bc68f9c36fdf3c620a9d8c6961001f550caa3f2ffdcdb",
+            "uncompressed_display_bgr_sha256": "fc5ffcae522e9facc41609c8995cb6bbfffdae5be98cdc59d01d6b9801f6fe5a"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 201,
+            "phase": "recorded teacher",
+            "state_sha256": "b2de791382727b589fb9a0d7b120b09537067253820c22aaeb3aacd389616c4a",
+            "uncompressed_display_bgr_sha256": "c7a63f0e6fe8ea258f028c8c9ba5fa99e1d0f81522c2cf1613b9663629665018"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 202,
+            "phase": "recorded teacher",
+            "state_sha256": "4aa893f5d222cadb7f22bf615d1eeef808f15c788897328cb73404273f3b7160",
+            "uncompressed_display_bgr_sha256": "94a529f2538c2316110c7600d7fac47ad8f511540ef36a8ece4fb67f2a9006bb"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 203,
+            "phase": "recorded teacher",
+            "state_sha256": "155cf41d3b858c15d6b4507603369779cee0a1949559f4d9d401f43409dfa035",
+            "uncompressed_display_bgr_sha256": "c62d98f1ca7bb15d299866bf963297cf80195587ae4eea284e65e03c8e575389"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 204,
+            "phase": "recorded teacher",
+            "state_sha256": "339358ae6ad45949ee1c8764fcb8456556b828041a87d6f0d61acb31747dd3b9",
+            "uncompressed_display_bgr_sha256": "1413c714780cb523591bda39bada0d0d24550d1ee6a8d52d991b6203a754a14c"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 205,
+            "phase": "recorded teacher",
+            "state_sha256": "69998893ec7c4ebff3f7efd20288167b14c1d51add3d1a721824eed983ee2cef",
+            "uncompressed_display_bgr_sha256": "ae1c1526a3be561804e657f03d926d0a653b96eb7f2766140299fecae39443e4"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 206,
+            "phase": "recorded teacher",
+            "state_sha256": "83262150f6c55885bd2ded672b633b09321dad710b151a77c2c53968e9d3c46d",
+            "uncompressed_display_bgr_sha256": "3514f8d6b106527a9593f037aa50f1780a0d20f02b7191005a95c5ae4ae05bb5"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 207,
+            "phase": "recorded teacher",
+            "state_sha256": "69f51ff1a6288ef5d7d01c3e5c3c8e542041e99869fe496d1c65310509d6dc6e",
+            "uncompressed_display_bgr_sha256": "15d47c9e4001d6cb883ecdb8efc87f64288862587bd67ecfae68145d9fc40651"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 208,
+            "phase": "recorded teacher",
+            "state_sha256": "bbebdc87364c0722da821c722a93be83e55d255417893713158a7066b17eb594",
+            "uncompressed_display_bgr_sha256": "c9512130274ca62db9658e7ba59cf4b19729390bf708823c8ade7a32fed6238f"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 209,
+            "phase": "recorded teacher",
+            "state_sha256": "4e579284d63dcedaf3277ab26d2dd3999af5d1ead22c887ac7b97201f7a00772",
+            "uncompressed_display_bgr_sha256": "8bdca7bb9679c3f0c4e0a3079ce8880addc3182f0a953a99c6686b6af75b9c6b"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 210,
+            "phase": "recorded teacher",
+            "state_sha256": "42952767f295832f246ef9dc2f545ceec912ecd2179a2c849acd2245c757cc48",
+            "uncompressed_display_bgr_sha256": "ed7a629558c8b506acf342ceead5946c5a7055fd6cd6985417885911fafbda9a"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 211,
+            "phase": "recorded teacher",
+            "state_sha256": "5558fad644be03aeed010b32a23067c9114b6b76b762060235a7de520cab2a5b",
+            "uncompressed_display_bgr_sha256": "098d29a1c208daa84a1da312420568b38202e762e9f959af37dbdea5db7b4450"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 212,
+            "phase": "recorded teacher",
+            "state_sha256": "a8310f9d2e6de76132150164146995d353591b2685ae11acfd51cce2c7571853",
+            "uncompressed_display_bgr_sha256": "bc5bb4d378ad13de26892b7f82cdbd25e109dd4c3708ce75e4d565aa839efd44"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 213,
+            "phase": "recorded teacher",
+            "state_sha256": "7e278ad5c045e1fc9d906c5732b37af896bf30084139bf4ab55f315f8b88dcfd",
+            "uncompressed_display_bgr_sha256": "e5ec9330a6d0b0458c661586ac9a78c03fbc1d2abcf89c55c0217891d7246ffb"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 214,
+            "phase": "recorded teacher",
+            "state_sha256": "b45d1ed5d817fadaf59a60990ac478b6aeab6d1b7f6405ec62140cae4339d59e",
+            "uncompressed_display_bgr_sha256": "9c1dfd2dc49f9d9e96d0394de89535a8c7aca351ce597b4c5fee3943ee3956b0"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 215,
+            "phase": "recorded teacher",
+            "state_sha256": "abcc7ff53a620891824bda9619c14debcd86ca0a2af131c38e5517f0ca685974",
+            "uncompressed_display_bgr_sha256": "848dbd3fa17d47731459e14753df6112009587156320f4f6da7ee37ec99daf80"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 216,
+            "phase": "recorded teacher",
+            "state_sha256": "c4230ce3e2ec51bcc4b427506dc2d7e0056045e3c48b82fda073e6252e86e66e",
+            "uncompressed_display_bgr_sha256": "8e2d4aa7f2c0ff3d26dde99b7c35d36ecb8275c3cd5584399914217763fbf6d7"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 217,
+            "phase": "recorded teacher",
+            "state_sha256": "c2e6ff7c26c699a1349dc2ff0278d1dc58fc1339219ec22e072e5ba6451c064a",
+            "uncompressed_display_bgr_sha256": "e87c5ac6d4ec462d5cdf716623bb3d4cb78cccd7fd33fef28b8a0b4436eafe1b"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 218,
+            "phase": "recorded teacher",
+            "state_sha256": "ddcf99918bbc57cfd1b0c2221bf55d6b1655fd4f6b3b32b4f1f9721b3139f68f",
+            "uncompressed_display_bgr_sha256": "f93db3565ee9d091336242cbea216242d2b66d93aed9a88d6adf3d0e1765a753"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 219,
+            "phase": "recorded teacher",
+            "state_sha256": "32cc10afa0ad18427d099dd3324644307941a9829ecf9760e660dd08db89849f",
+            "uncompressed_display_bgr_sha256": "82eb3a8c23e00f950c360384ecf49d663d34f4d6c955e03296c0d8597bac14eb"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 220,
+            "phase": "recorded teacher",
+            "state_sha256": "02e985bceafa388e61f0ff8880c78ba022cfb6f9d7b641627a96f4aa00da3b48",
+            "uncompressed_display_bgr_sha256": "b71ccf450e6d8531e2b401e33b0342272c48c3bfad1f9dd6c958d4613bd8d57f"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 221,
+            "phase": "recorded teacher",
+            "state_sha256": "7bf232214449f40cd1f1f44da3d6afa061b2d8b010b3ea7fea40ba28971af575",
+            "uncompressed_display_bgr_sha256": "3ef0c471e59251bd00358ceb9ed760e39b82b479873bb09bb5a3a51214dcd68f"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 222,
+            "phase": "recorded teacher",
+            "state_sha256": "680c89f1dcf8240424e0b483cf831566c8534c607adc8044fcea811d502f8e0c",
+            "uncompressed_display_bgr_sha256": "cf672e53eb00927adae2ace0bfac5c1f53662088550c1dc49d60bd199ff00833"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 223,
+            "phase": "recorded teacher",
+            "state_sha256": "ccf8a12581efc39f398637747222ed815dfd0614017b068385e6772fbe55d344",
+            "uncompressed_display_bgr_sha256": "b38cbad5728513047575b3928f845a3ebde76c0a252722f994c2233e6442b3f8"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 224,
+            "phase": "recorded teacher",
+            "state_sha256": "ab12f44d3285f4511c49ae863853c4df470242a1ed902e876a04a942ca61fa04",
+            "uncompressed_display_bgr_sha256": "885575e3690d8f937bbccb6b3eba4edac60d9ccf4d1f81de05bbc3c14276075a"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 225,
+            "phase": "recorded teacher",
+            "state_sha256": "68400cbe57acbda90025c87698fac65c301d65093946654c2a53b712a83bf989",
+            "uncompressed_display_bgr_sha256": "068787f4657c552741fe1e33f7b319f5fcafa3537ac82dd75fee10a479c6cadf"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 226,
+            "phase": "recorded teacher",
+            "state_sha256": "766fd96ed152cbcab99805732ff7ffb556b4a6436eb92e1fa8dc1e9fe5c4f3e7",
+            "uncompressed_display_bgr_sha256": "85c13828e44e7f59f96a1484bda47d61be417d5c67bd6d0d23e799c7b085b3e4"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 227,
+            "phase": "recorded teacher",
+            "state_sha256": "0aa4b5ed5576be5b4daafbd7d4b4bf40270e7387c23bf31f0f8689f57d8d8aaa",
+            "uncompressed_display_bgr_sha256": "58c52def846fe691af91c2ed5d94279fd1d85ba58efb699c240327d6d75dae17"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 228,
+            "phase": "recorded teacher",
+            "state_sha256": "985fbddce58a7f1080ac7c3f9719393f3a27d217498dfeba6a57cfe6f7831b47",
+            "uncompressed_display_bgr_sha256": "0bf392fe9e0e6cb7bb567d13dcdbf8957acd9b096363a24119d3255b47b2a212"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 229,
+            "phase": "recorded teacher",
+            "state_sha256": "5eaba437434f5227ef1b40eaca562ac88c445259640a3cf014e4a0ee76a1b406",
+            "uncompressed_display_bgr_sha256": "3c0e8a6848d0ed4a93bf25518b1fb51f1f1fd4b1a63d06bd73c7cb751f74249c"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 230,
+            "phase": "recorded teacher",
+            "state_sha256": "2ac13889bb50f4c2e993653585f0e685f3e52123d9bcb3e068c8eebd3c67d217",
+            "uncompressed_display_bgr_sha256": "9e1c9432f06dd8f415ab2669f96421fafe7cb9652575766642904c9b2e7b63a0"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 231,
+            "phase": "recorded teacher",
+            "state_sha256": "d4c7b15f123d9d10d019c73769bc0ecb9702fe825ec9a9d779b3b415ab1fd99e",
+            "uncompressed_display_bgr_sha256": "05f226ff45d1cfdb0d81a3aa7faf7a05e03ab9cd32b277844a80c1d7d62b633a"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 232,
+            "phase": "recorded teacher",
+            "state_sha256": "b013644772277f5ec43a33464dd13e18e199f71fd3048fa829f3947f02d57c29",
+            "uncompressed_display_bgr_sha256": "0e81d2148dbfbb13c3256a9b31e56590eeb104cebd0c8a1e8e2e91c93a23862a"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 3,
+            "control": 233,
+            "phase": "recorded teacher",
+            "state_sha256": "03f4ef8f0943870c847d8e221aff124d402230f7d89b2e8bf05cc589174a0fe3",
+            "uncompressed_display_bgr_sha256": "893565e51befe26be871aac4cd2b71293573072c09b9a047fd0469d7647133a0"
+          },
+          {
+            "first_frame": 229,
+            "frame_count": 3,
+            "control": 234,
+            "phase": "recorded teacher",
+            "state_sha256": "cf645615740b72015af59c6190926842ed497ad0fcc091fce10915ef450098e3",
+            "uncompressed_display_bgr_sha256": "28de11f5e21b97e9100baad659e83f182a73865fd53ac8f5bf61dde475a99796"
+          },
+          {
+            "first_frame": 232,
+            "frame_count": 3,
+            "control": 235,
+            "phase": "recorded teacher",
+            "state_sha256": "fe8c8d7e62c16aa9a98f305dd0242891b72f1c27eaaef3fd61aff67ffc8a4ef5",
+            "uncompressed_display_bgr_sha256": "1dba7baeef36aa4dcce608c9e48ea3ac3e1e0d4acf804cfe8cb62efd1732ad65"
+          },
+          {
+            "first_frame": 235,
+            "frame_count": 3,
+            "control": 236,
+            "phase": "recorded teacher",
+            "state_sha256": "9f9583003fc0c0127d2902249f69a53d8f9c1882ba6a25a10715ea35ac45cc4b",
+            "uncompressed_display_bgr_sha256": "321d624c3e1a8b5b2839f91b03a20ad990ce5d6f0293c408766de0e3e24eb022"
+          },
+          {
+            "first_frame": 238,
+            "frame_count": 3,
+            "control": 237,
+            "phase": "recorded teacher",
+            "state_sha256": "05dc2e26a9c1fb080b797c04516b474407e5fddc43e3601b5f680bac25b02987",
+            "uncompressed_display_bgr_sha256": "d5dd789e83ed6f651f1bfad118acc8dcff6349c718bfb5664f76788c0c789967"
+          },
+          {
+            "first_frame": 241,
+            "frame_count": 3,
+            "control": 238,
+            "phase": "recorded teacher",
+            "state_sha256": "c61e4f6a55e727c984f3c7d2148b970ea05bf5b7d16103f3a0ac0b243bd6b7be",
+            "uncompressed_display_bgr_sha256": "9c3db6d205a3e735d97e3fe5fde103a2807a596334829bf233d1effbe5326b3f"
+          },
+          {
+            "first_frame": 244,
+            "frame_count": 3,
+            "control": 239,
+            "phase": "recorded teacher",
+            "state_sha256": "7469363de4eb8471aa1cd8059428cff50c618982efa4878f58306a08b494d5d8",
+            "uncompressed_display_bgr_sha256": "d4b05b7a45accf36db6ca997abe9e3520989837e1e0abcde3e8c24d8a4252f87"
+          },
+          {
+            "first_frame": 247,
+            "frame_count": 3,
+            "control": 240,
+            "phase": "recorded teacher",
+            "state_sha256": "3c197272e28ce0411fe9549b196932941a55bb41eda7aadb547bcc693c7ce43a",
+            "uncompressed_display_bgr_sha256": "21795f0c6c3358548f07651fa1e59e687041f3ba4c2606c81715673ebbdddde2"
+          },
+          {
+            "first_frame": 250,
+            "frame_count": 3,
+            "control": 241,
+            "phase": "recorded teacher",
+            "state_sha256": "5c10bb966dff8af6cea1b331672c44a97bd420afa1bddb153eeb873d8ccacfbf",
+            "uncompressed_display_bgr_sha256": "cbe4aff234f064e822ebf737cc5bbbfe724d0a409983d25fd2e05c016b21501a"
+          },
+          {
+            "first_frame": 253,
+            "frame_count": 3,
+            "control": 242,
+            "phase": "recorded teacher",
+            "state_sha256": "166451e413797ac96f16ac9d8dd8abf310e4c65403451c07696a4a8cb936a9ad",
+            "uncompressed_display_bgr_sha256": "abcb2e86df9aca7af1ef1a605779065dd4f976d1cb14f4fad2ac666c241653c7"
+          },
+          {
+            "first_frame": 256,
+            "frame_count": 3,
+            "control": 243,
+            "phase": "recorded teacher",
+            "state_sha256": "feec90b938adf9e2f12694e623a468431329333eb65893a6fbd92f2e8f562d81",
+            "uncompressed_display_bgr_sha256": "df83255e93ba2c9ea72c2c320dd806b7525e09c25a3770487c6d4332311a8104"
+          },
+          {
+            "first_frame": 259,
+            "frame_count": 3,
+            "control": 244,
+            "phase": "recorded teacher",
+            "state_sha256": "6da7f742ebfff400742b8269a5f05c2d3fb602c503919d8ab8f97e03054ec03d",
+            "uncompressed_display_bgr_sha256": "347e72c35f21cd0675007c771ac6a99a03ab63284cec5dd5df335f2292adcaf0"
+          },
+          {
+            "first_frame": 262,
+            "frame_count": 3,
+            "control": 245,
+            "phase": "recorded teacher",
+            "state_sha256": "9b94f480a9a5d169238e468e45445905a317c481bdb2588815ffc9c783db7591",
+            "uncompressed_display_bgr_sha256": "bd12d8ae911bbcb5b93805a46854d7efa9942391f856ed2101e60465c0e5e514"
+          },
+          {
+            "first_frame": 265,
+            "frame_count": 3,
+            "control": 246,
+            "phase": "recorded teacher",
+            "state_sha256": "fd232c827947d4e5f0a4956a81dd4970e38ccad82ab510f35f39431cef97001f",
+            "uncompressed_display_bgr_sha256": "0d90b6600b8e1f8cf6313f307812113069db9479b90b7e782c44a642a953a212"
+          },
+          {
+            "first_frame": 268,
+            "frame_count": 3,
+            "control": 247,
+            "phase": "recorded teacher",
+            "state_sha256": "386cac3cad4f5c1da6836e2e9e34e2353e3e08ba2704ca6c19b87d8926465970",
+            "uncompressed_display_bgr_sha256": "443abad34f6fbed5f8c7d5ad7113a60baad4297cd8bd8117309e2e1ed7d82dae"
+          },
+          {
+            "first_frame": 271,
+            "frame_count": 3,
+            "control": 248,
+            "phase": "recorded teacher",
+            "state_sha256": "7e086c99c255301ce502b80e3a62ce1654a682dc4e8781a0ecb06c0289c62e83",
+            "uncompressed_display_bgr_sha256": "42ca3b443cdee56d37938d97de7541ad4490b5568ad42e1801b3786cc85b31ea"
+          },
+          {
+            "first_frame": 274,
+            "frame_count": 3,
+            "control": 249,
+            "phase": "recorded teacher",
+            "state_sha256": "165d913c9e8749f12a41bbb13bbe26b7e252ead36da8b341e8fc6007a0db2405",
+            "uncompressed_display_bgr_sha256": "91a094c9ab604b19cfcba38e210105b5c419e1af27fef93fd6fe37bd0d74ae8a"
+          },
+          {
+            "first_frame": 277,
+            "frame_count": 3,
+            "control": 250,
+            "phase": "recorded teacher",
+            "state_sha256": "ffe71cf36792ddb4bf6c735e398e079ef1881c980c97e729b01bbaa911355bff",
+            "uncompressed_display_bgr_sha256": "04e290edab7ffd51d0cf95f58c3c0bdcf7b5724c53f964e4e82fadad4c62f7d3"
+          },
+          {
+            "first_frame": 280,
+            "frame_count": 3,
+            "control": 251,
+            "phase": "recorded teacher",
+            "state_sha256": "2478ae26107e1450e00933efa4e51921868e96d94f540cc49e3fc6498ed176c9",
+            "uncompressed_display_bgr_sha256": "5dec9f34383e825a5eab8fc9e35828f2da5dc7dacd4e6a30d68e70051c984b17"
+          },
+          {
+            "first_frame": 283,
+            "frame_count": 3,
+            "control": 252,
+            "phase": "recorded teacher",
+            "state_sha256": "581ace168c974446d2a7737d902bcbc03628c70a5b5bcec5e755724e2815aaa7",
+            "uncompressed_display_bgr_sha256": "c441cb21928f8d9728fb1b6e4d4f6b57a68fa9e0ab8ec0d6f945f39e7daa3939"
+          },
+          {
+            "first_frame": 286,
+            "frame_count": 3,
+            "control": 253,
+            "phase": "recorded teacher",
+            "state_sha256": "f8f75c726ac56cf2e8a98cb84c830fef008c698e1af01581c28bff5c8b612047",
+            "uncompressed_display_bgr_sha256": "c947c33e857f25612dd6f2542094e61d613dc28e19e22d06c1e9a8e03858963f"
+          },
+          {
+            "first_frame": 289,
+            "frame_count": 3,
+            "control": 254,
+            "phase": "recorded teacher",
+            "state_sha256": "0f5d58bcc64d29c29d02961153b962da91dae5bce4ea3f790a35338956ec6b1d",
+            "uncompressed_display_bgr_sha256": "e113f20cda456f9fe89e592af3b8825c4003962089962b205737d92372f71a74"
+          },
+          {
+            "first_frame": 292,
+            "frame_count": 3,
+            "control": 255,
+            "phase": "recorded teacher",
+            "state_sha256": "a9ee32a15cbe99cef58e3326cc9868d6500695f1a34c7d8adf3c2d79df0a6c2d",
+            "uncompressed_display_bgr_sha256": "6ff97f30f7ac7e29e083a1c96d65c354e92034ebee7d64bee9ad02648f3894e5"
+          },
+          {
+            "first_frame": 295,
+            "frame_count": 3,
+            "control": 256,
+            "phase": "recorded teacher",
+            "state_sha256": "c8f125181b25035e3d7f72f19f77b69c10711ed3e0477ce779709b1320a7f288",
+            "uncompressed_display_bgr_sha256": "967c4878d76cab4f89f908909fa829ce6b142b2202900be6d313658ce9a36ff9"
+          },
+          {
+            "first_frame": 298,
+            "frame_count": 3,
+            "control": 257,
+            "phase": "recorded teacher",
+            "state_sha256": "8d3c06ac8fb7f0f3261fe76cf43e22f75da800e31805e3b396c04c7cb6b71cd8",
+            "uncompressed_display_bgr_sha256": "0049371ccc2ef93b75f83ba6bce055181a7a1d849f5e07f620ef4bc30d206ad6"
+          },
+          {
+            "first_frame": 301,
+            "frame_count": 3,
+            "control": 258,
+            "phase": "recorded teacher",
+            "state_sha256": "71cba7482034935e2dab20afb39884a6b435ab7c9fe6fd82bf771fc20f75c43d",
+            "uncompressed_display_bgr_sha256": "883eee0bc1d798ceec98176380b68808535d203158464d9b6a7f01f05356a378"
+          },
+          {
+            "first_frame": 304,
+            "frame_count": 3,
+            "control": 259,
+            "phase": "recorded teacher",
+            "state_sha256": "ec558b4ffb23f058f05811214a112d0b44da1a6b218c00aae4587d67fb9c5f0f",
+            "uncompressed_display_bgr_sha256": "e9195fe8b2bb712a5defb393069bce54943c58729757b4bce9e397b874038a00"
+          },
+          {
+            "first_frame": 307,
+            "frame_count": 3,
+            "control": 260,
+            "phase": "recorded teacher",
+            "state_sha256": "a34ec6f25ee0f54f3f0d9d45a9b77f61f1f42ba39bd5409530a26d091f3736e0",
+            "uncompressed_display_bgr_sha256": "d7ec5e48581438c5e27fefac83d603bced7de985de02bc4e0b12ee64360728dc"
+          },
+          {
+            "first_frame": 310,
+            "frame_count": 3,
+            "control": 261,
+            "phase": "recorded teacher",
+            "state_sha256": "3f469b06c72e0d4cc50dca74c30961b150f84ea7c621795d124803519774e68f",
+            "uncompressed_display_bgr_sha256": "85ef50f240992e45e4ad94f521644bc6618338f6105cc95292f2a1f8e9dcd00d"
+          },
+          {
+            "first_frame": 313,
+            "frame_count": 3,
+            "control": 262,
+            "phase": "recorded teacher",
+            "state_sha256": "156b7aa0d5d3e03c0fab9a0be206183954de34bb9540e20aa70e58586cda118b",
+            "uncompressed_display_bgr_sha256": "be627e8d35fa995e0c1f4972652811124684462b0f8dbda4b7d0aaa33a023721"
+          },
+          {
+            "first_frame": 316,
+            "frame_count": 3,
+            "control": 263,
+            "phase": "recorded teacher",
+            "state_sha256": "a8a74a4bb514d8a3da7187bed1fef63a7748aff7ccce86e4aece448fbdbf9e50",
+            "uncompressed_display_bgr_sha256": "0191625ad371b0009a06a3e38472398ca5717ed9969cadfb8b433f1c040bbd01"
+          },
+          {
+            "first_frame": 319,
+            "frame_count": 3,
+            "control": 264,
+            "phase": "recorded teacher",
+            "state_sha256": "975e1ef5d4732a1e47faff8b94e52ed141735e0265ace6c312e4f795b69a1d22",
+            "uncompressed_display_bgr_sha256": "0b21b9c6efd991c2a3ede1f0e710147539802043546d8bb12234800d5abad0e8"
+          },
+          {
+            "first_frame": 322,
+            "frame_count": 3,
+            "control": 265,
+            "phase": "recorded teacher",
+            "state_sha256": "cf75dced1038863556dce80743b4db1f821e51deeaa062d50f295aa4b8108e94",
+            "uncompressed_display_bgr_sha256": "8ff535a01b384d663ee2a4dacdbd3a4ab26bfd90319716c0f5cc3970404cf16b"
+          },
+          {
+            "first_frame": 325,
+            "frame_count": 3,
+            "control": 266,
+            "phase": "recorded teacher",
+            "state_sha256": "d0ad0a5df9ee797153f1312e8f0373889e5cd08202983e2ce394c458aec61e92",
+            "uncompressed_display_bgr_sha256": "4df5a7dbb31686017bbeb0fe5df3b69ce354280cadbbe936dc67608d863df773"
+          },
+          {
+            "first_frame": 328,
+            "frame_count": 3,
+            "control": 267,
+            "phase": "recorded teacher",
+            "state_sha256": "f86b4e96526917638c900774520281ee4beb73b208f7541b62d2b88adfcfcddc",
+            "uncompressed_display_bgr_sha256": "7ac4cd03a2e21cc54b9d6ddb09bf859705a5db12c9267f0fad8da402a73f4d3d"
+          },
+          {
+            "first_frame": 331,
+            "frame_count": 3,
+            "control": 268,
+            "phase": "recorded teacher",
+            "state_sha256": "af8ffed7f08eb93e96660549686b05106575b9be61a03e1ca877ee56faef6d60",
+            "uncompressed_display_bgr_sha256": "2cfd6502827b56da7ad896fbeb24e13a8c713ab5a5a9749c525e934ce40b8ddb"
+          },
+          {
+            "first_frame": 334,
+            "frame_count": 3,
+            "control": 269,
+            "phase": "recorded teacher",
+            "state_sha256": "1d204f9272a686f6ddaff13ce8d6d1a029aefd7163a387ae7a81bd9895a5f266",
+            "uncompressed_display_bgr_sha256": "70bd71aada517c850f833dee54d98157b219292e255f19be6ccc59abc7a05ed6"
+          },
+          {
+            "first_frame": 337,
+            "frame_count": 3,
+            "control": 270,
+            "phase": "recorded teacher",
+            "state_sha256": "036f8441b0df30152f6fb29452987804427d68b65cc7307c600ca6e82c290b7d",
+            "uncompressed_display_bgr_sha256": "c82c90f239a4bfa0625596c7dc523a86ef373e3708e5fe84daf79442fdeb3c68"
+          },
+          {
+            "first_frame": 340,
+            "frame_count": 3,
+            "control": 271,
+            "phase": "recorded teacher",
+            "state_sha256": "1eb65878105700d8f2ed894b4b55742f6c1975ad9b44b5bb2bb8b0e57b99c719",
+            "uncompressed_display_bgr_sha256": "205f7a16ffc6e99f8653d1f471d8ed3ac1fd8394c7704337882eee292f086a69"
+          },
+          {
+            "first_frame": 343,
+            "frame_count": 3,
+            "control": 272,
+            "phase": "recorded teacher",
+            "state_sha256": "b1e43977764e95491041bad23e39a1ba032f89f41dee3154cae60247e2e58343",
+            "uncompressed_display_bgr_sha256": "006e70c4bc1ba49e07ef76b26089182894afbbbc0bdb0c656a8183b8f8886153"
+          },
+          {
+            "first_frame": 346,
+            "frame_count": 3,
+            "control": 273,
+            "phase": "recorded teacher",
+            "state_sha256": "57d9c48552be0dc4e2697efcbbe62fcd6cf937125ebf434baf506da2d527602a",
+            "uncompressed_display_bgr_sha256": "f23d7f0c63b62dd9df6caed374cbd4eb5005e7cc559f64c7eb2757bf172f9c61"
+          },
+          {
+            "first_frame": 349,
+            "frame_count": 3,
+            "control": 274,
+            "phase": "recorded teacher",
+            "state_sha256": "1ef2cc0ea2dc9c5752a0f0cfd3db2dd107c8b7b13038cbf19018d78054e17001",
+            "uncompressed_display_bgr_sha256": "ab8d1dee6c30f859fce0704645afd964a7e004f8261fa93db4b4e09fe2040eec"
+          },
+          {
+            "first_frame": 352,
+            "frame_count": 3,
+            "control": 275,
+            "phase": "recorded teacher",
+            "state_sha256": "3d927a8664e273db6b4a8357596bfc6ce9d0d1d29c5921389ba43b51fdc6cd61",
+            "uncompressed_display_bgr_sha256": "10fd56d54cf51241a018e65d874228327ede1a5cf70e741ac73e39a89f09a77c"
+          },
+          {
+            "first_frame": 355,
+            "frame_count": 3,
+            "control": 276,
+            "phase": "recorded teacher",
+            "state_sha256": "666ca2d2fe0d47873fac76ba82577ecfc4a6effa5e8e4db9798e2e1bd504587c",
+            "uncompressed_display_bgr_sha256": "545a215857491a90ed3ef5f1ff6d8255737d225983204b4e1cb8edd37be42a91"
+          },
+          {
+            "first_frame": 358,
+            "frame_count": 3,
+            "control": 277,
+            "phase": "recorded teacher",
+            "state_sha256": "8723638967f848ea3411267956d45ba8c6a5ba04c68f41528d82ce7ff2d9b93a",
+            "uncompressed_display_bgr_sha256": "ee06a7328e19f6a57a9d2c8da04b20be372c087bfcb9c31d3a9809bea44212c9"
+          },
+          {
+            "first_frame": 361,
+            "frame_count": 3,
+            "control": 278,
+            "phase": "recorded teacher",
+            "state_sha256": "d05e475507b1799c3202b5d2ccb852983fd4eff6c1be11544eae03581db70200",
+            "uncompressed_display_bgr_sha256": "1740fe859e9e29a48d5f5895091568d8fed9e4a42813e1e0fe6ff849a9d6dd73"
+          },
+          {
+            "first_frame": 364,
+            "frame_count": 3,
+            "control": 279,
+            "phase": "recorded teacher",
+            "state_sha256": "821b0002ac177d612f974274a6ce13fd01323a5663497e2b68f7e482f90fc57b",
+            "uncompressed_display_bgr_sha256": "ffd845feb6b532d12d17071dabe375bb013d342abec252498e3662185856803d"
+          },
+          {
+            "first_frame": 367,
+            "frame_count": 3,
+            "control": 280,
+            "phase": "recorded teacher",
+            "state_sha256": "fae165fd9ae297339b5bdb20c073fbca9c0972daf763aaadc5da4cd486e0c21f",
+            "uncompressed_display_bgr_sha256": "8bd82b1ce229fd1bbc2cc9da096468d2d30510ff858e13560ea8782101212e9a"
+          },
+          {
+            "first_frame": 370,
+            "frame_count": 3,
+            "control": 281,
+            "phase": "recorded teacher",
+            "state_sha256": "8a0df7bc364cde36c8333a83660f0d2eb11bb0664f2eb2a27455055ebbe6369b",
+            "uncompressed_display_bgr_sha256": "fac6ea2c7eb48511ad76164b287acf4c0fd0371976597600cee475a4953495c3"
+          },
+          {
+            "first_frame": 373,
+            "frame_count": 3,
+            "control": 282,
+            "phase": "recorded teacher",
+            "state_sha256": "ee9cd55548cb271a2ae6ef8df4213767ad9fc2d3963f171231942729ffafdb49",
+            "uncompressed_display_bgr_sha256": "90724966cf6a460e931ea33eae6ab5eb10413d1ef0cac860f3dccca62a550328"
+          },
+          {
+            "first_frame": 376,
+            "frame_count": 3,
+            "control": 283,
+            "phase": "recorded teacher",
+            "state_sha256": "e3ce21b834fc4ab64a3a7f0bba2d2204a7c54202ad7fa15a7237eaaf7d5c76ae",
+            "uncompressed_display_bgr_sha256": "221f80ce2047901b6eb7a36cb57e4f1bac0f59dda3f7df71ae531063b4a98b66"
+          },
+          {
+            "first_frame": 379,
+            "frame_count": 20,
+            "control": 283,
+            "phase": "final result",
+            "state_sha256": "e3ce21b834fc4ab64a3a7f0bba2d2204a7c54202ad7fa15a7237eaaf7d5c76ae",
+            "uncompressed_display_bgr_sha256": "72844189f0ee3b28e6e5221734345b0c3595a2c863b86078c4724d847f7283c7"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.875,
+      "torch_loaded": false
+    },
+    {
+      "schema_version": 1,
+      "status": "passed",
+      "source_report": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100200-resume160-search42\\report.json",
+      "training": false,
+      "checkpoint_loaded": false,
+      "issues": [],
+      "counts": {
+        "reset_physics_substeps": 1,
+        "prefix_controls": 160,
+        "source_controls": 88,
+        "replayed_control_physics_substeps": 2480
+      },
+      "source_report_sha256": "63412b8f639d545d671b371398a97475400f51d7ba6de16ca0947cd97ca957ea",
+      "source_status": "stopped_early",
+      "source_stop_reason": "search_budget",
+      "source_success": false,
+      "source_reports": {
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\scene-100200-resume160-search42\\report.json": "63412b8f639d545d671b371398a97475400f51d7ba6de16ca0947cd97ca957ea",
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100200-search-42\\report.json": "fb63148f7b51883587eeb7f27436a77fc4b75993e61ea40f8cf18177e1964261"
+      },
+      "episode_initial_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              120.0,
+              332.0
+            ],
+            "angle": -0.8668472048140878
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              386.0,
+              132.0
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 0,
+        "pusher_target": null,
+        "schema_version": 1
+      },
+      "search_start_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              223.06189338400577,
+              287.8720849282113
+            ],
+            "angle": -0.9963796243307408
+          },
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              308.1603271477934,
+              298.4086679975502
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            0.12832974991804744,
+            -92.70500617719358
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 160,
+        "pusher_target": [
+          308.17663106891536,
+          283.61337571713125
+        ],
+        "schema_version": 1
+      },
+      "search_start_state_sha256": "01d6eb503dd0a74cf9bd12c8df14cb47fb3100d395677204ccb370811dcdc767",
+      "source_counts": {
+        "control_steps": 88,
+        "control_physics_substeps": 880,
+        "reset_physics_substeps": 1,
+        "resume_replay_controls": 160
+      },
+      "source_search_counts": {
+        "restores": 320,
+        "replay_steps": 66520,
+        "candidate_steps": 6546
+      },
+      "result": "STOPPED_EARLY: search_budget",
+      "current_source_sha256": {
+        "scripts/evaluate_contact_sequence.py": "cce1f6b029bc0ea83d7fd44398740de227c16940b7003dbd829eea0b24eaf1ca",
+        "tdyssey/simulator_sequence.py": "42e90a7ee170d088ef401b0175cb253b808adcaa3c7c0835623b259a73175195",
+        "tdyssey/contact_geometry.py": "7fa4f3d80a50e9394b401124b1941be875dafeb65bb1fdbd76ee869f605a4643",
+        "tdyssey/simulator_search.py": "49318a57bdb6d0b96e98030621ca764c031d13fa1d8f18e801a6bdf749cadd64",
+        "tdyssey/official.py": "9fb95bfd481bea1009ecdfa382866a2f65a9419e8653595b105928549c95af8e",
+        "tdyssey/simulator_planning.py": "2f4c5288b669f53b1d8785955d1dd2186ff8701b47a93f4986458ec4c72fe6bf",
+        "tdyssey/envs/official.py": "f3aaf10786c8eefc9db2462f9a5d6ea782adc06eef6860aecbcc74cd37817fc7",
+        "tdyssey/geometry.py": "865bece79920bb543eda1f19753fa33a13de5236eb044e32a8d99ff9bc560456",
+        "tdyssey/state.py": "7d7a7f8b4c7ec341c2c27c731170579638c5466577998cce5c83fce0e78b4e3d",
+        "tdyssey/evaluation.py": "5331b1f53f479f514a5f4c2c4dd20d9f9501afe7d8cf8b459bd404c1695c1fc6",
+        "manifests/official_dp.json": "6418e2bceac63e22d4db26122d3bf2630452667b18c5383033ba41e9b858adbc",
+        "pyproject.toml": "c41f94734bc1c591ba4c87e7b0cc7e6e8335e4e5873fca239724b8638cf2bece",
+        "uv.lock": "30954ae72f9ff2fff77fa1d274bef08dc8d392aed53c44e71ac021f1f11aa88c"
+      },
+      "source_files_changed_since_run": [],
+      "initial_metrics": {
+        "coverage": 0.05596231005682884,
+        "iou": 0.028786638420814133
+      },
+      "search_start_state_error": 0.0,
+      "native_success": false,
+      "final_state": {
+        "shape": "D",
+        "geometry_hash": "3968cef22e4bd0e6350070e4308c647806ce2e4d0afd9f9787926b392c04b275",
+        "physics_hash": "b08b494f2cbaad6e19930ae4e27aa79f15032b0eb5285093cd432ebb76dcaedb",
+        "object_body": {
+          "pose": {
+            "position": [
+              229.6911489507255,
+              289.49656269574865
+            ],
+            "angle": -0.042476921621852404
+          },
+          "velocity": [
+            -6.606756752860593e-14,
+            8.766500841638025e-15
+          ],
+          "angular_velocity": -1.4567837329131019e-15,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "pusher_body": {
+          "pose": {
+            "position": [
+              273.88722761403665,
+              226.23162973665148
+            ],
+            "angle": 0.0
+          },
+          "velocity": [
+            -3.373052490819425e-20,
+            1.136868194348904e-12
+          ],
+          "angular_velocity": 0.0,
+          "force": [
+            0.0,
+            0.0
+          ],
+          "torque": 0.0
+        },
+        "goal": {
+          "position": [
+            224.18019484660536,
+            287.81980515339467
+          ],
+          "angle": 0.7853981633974483
+        },
+        "control_step": 248,
+        "pusher_target": [
+          273.88722761403665,
+          226.2316297366517
+        ],
+        "schema_version": 1
+      },
+      "final_metrics": {
+        "coverage": 0.6063651162127509,
+        "iou": 0.43509610965314915
+      },
+      "final_control": 248,
+      "route": {
+        "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+        "contact_controls": 69,
+        "contact_bearing_counts": {
+          "south": 5,
+          "southwest": 3,
+          "northwest": 7,
+          "north": 3,
+          "northeast": 51
+        },
+        "contact_runs": [
+          {
+            "start_control": 166,
+            "end_control": 170,
+            "controls": 5,
+            "bearing_counts": {
+              "south": 5
+            },
+            "translation": [
+              -21.774446051848628,
+              -18.99674188894369
+            ],
+            "angle_change": 0.2945863793591361,
+            "dominant_bearing": "south"
+          },
+          {
+            "start_control": 172,
+            "end_control": 174,
+            "controls": 3,
+            "bearing_counts": {
+              "southwest": 3
+            },
+            "translation": [
+              -1.1190238216489092,
+              -8.478472572382714
+            ],
+            "angle_change": 0.03458062009479246,
+            "dominant_bearing": "southwest"
+          },
+          {
+            "start_control": 180,
+            "end_control": 184,
+            "controls": 5,
+            "bearing_counts": {
+              "northwest": 5
+            },
+            "translation": [
+              25.160062082707555,
+              -10.571059833183881
+            ],
+            "angle_change": 0.5080397354305697,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 187,
+            "end_control": 188,
+            "controls": 2,
+            "bearing_counts": {
+              "northwest": 2
+            },
+            "translation": [
+              5.514017157723373,
+              3.403921883271124
+            ],
+            "angle_change": 0.040735959235244604,
+            "dominant_bearing": "northwest"
+          },
+          {
+            "start_control": 191,
+            "end_control": 193,
+            "controls": 3,
+            "bearing_counts": {
+              "north": 3
+            },
+            "translation": [
+              3.1327041149344836,
+              18.69608867030078
+            ],
+            "angle_change": -0.08015560022091038,
+            "dominant_bearing": "north"
+          },
+          {
+            "start_control": 198,
+            "end_control": 248,
+            "controls": 51,
+            "bearing_counts": {
+              "northeast": 51
+            },
+            "translation": [
+              -4.284057915148139,
+              17.57074150847575
+            ],
+            "angle_change": 0.1561156088100559,
+            "dominant_bearing": "northeast"
+          }
+        ],
+        "route_signature": "south/southwest/northwest/northwest/north/northeast",
+        "object_translation": [
+          6.629255566719735,
+          1.6244777675373712
+        ],
+        "object_translation_distance": 6.82539063981746,
+        "object_translation_path": 109.4697786809677,
+        "object_angle_change": 0.9539027027088884,
+        "object_absolute_angle_path": 1.1778422223709173
+      },
+      "video": {
+        "path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-sequence-20261022\\videos-v1\\02-scene-100200-resume160-search42\\actual-controls-paused.mp4",
+        "sha256": "fea713612ec150fd52e61ddab67ffcc74b6d6290a66df782511d26a6002de91a",
+        "verified": true,
+        "timing": "fixed_pause_per_actual_control_not_wall_time_or_interpolated_motion",
+        "pause_seconds": 0.3,
+        "fps": 10.0,
+        "width": 768.0,
+        "height": 768.0,
+        "frames": 294,
+        "duration_seconds": 29.4,
+        "decoded_reference_thumbnail_max_mean_absolute_error": 3.5277597904205322,
+        "verification_thumbnail_size": [
+          192,
+          192
+        ],
+        "maximum_allowed_mean_absolute_error": 6.0,
+        "frame_groups": [
+          {
+            "first_frame": 0,
+            "frame_count": 10,
+            "control": 160,
+            "phase": "search initial",
+            "state_sha256": "01d6eb503dd0a74cf9bd12c8df14cb47fb3100d395677204ccb370811dcdc767",
+            "uncompressed_display_bgr_sha256": "c53d2bff648bb764334bf991e7268b139bb9eb2dd2391ba7889a3a9bdb1eafab"
+          },
+          {
+            "first_frame": 10,
+            "frame_count": 3,
+            "control": 161,
+            "phase": "recorded teacher",
+            "state_sha256": "3513a436db1266cd2177b3db14fbb28e8a2c365323da1ccbcad694695d6f847c",
+            "uncompressed_display_bgr_sha256": "497dab137333f0866c777e5a1689f10c28a4fdd9892c48f8986196c3e2a238a4"
+          },
+          {
+            "first_frame": 13,
+            "frame_count": 3,
+            "control": 162,
+            "phase": "recorded teacher",
+            "state_sha256": "e5a3df001694e272dced2a198559976222e39c41573ea2802875e10aca49dc5f",
+            "uncompressed_display_bgr_sha256": "2f42b0820bda0bf7fe670aba743b66368d82cf8bd64aaf8f3ec4b6d88d5a3c53"
+          },
+          {
+            "first_frame": 16,
+            "frame_count": 3,
+            "control": 163,
+            "phase": "recorded teacher",
+            "state_sha256": "b44206176f7ec4f8a971803c73ea9f60eec92b54a879248a2100b88bd0a39994",
+            "uncompressed_display_bgr_sha256": "aa6c192934913063ee3e39da8749ea1ac6ada7f8527397d9f0ff69a5d0689f07"
+          },
+          {
+            "first_frame": 19,
+            "frame_count": 3,
+            "control": 164,
+            "phase": "recorded teacher",
+            "state_sha256": "4a648f978f901a3732a62e32b5c3bdd082acc1a08162ee07d083d841aa794b7a",
+            "uncompressed_display_bgr_sha256": "817240303c871306cb2af726b6feae37f7d59e88668e6b8e19074e294e197268"
+          },
+          {
+            "first_frame": 22,
+            "frame_count": 3,
+            "control": 165,
+            "phase": "recorded teacher",
+            "state_sha256": "95f6e038fa46185aec6a67a2bb1001fc45652cfc52d38394fc6e33ad8826719c",
+            "uncompressed_display_bgr_sha256": "13f7a9cf53d09b9fcc830b1b34206957c92bba0aa1bd98432d97a0984c9b6822"
+          },
+          {
+            "first_frame": 25,
+            "frame_count": 3,
+            "control": 166,
+            "phase": "recorded teacher",
+            "state_sha256": "77d4164dde1b99649b714b82a286c5a81e6b3d9592ff14f79d65778ee5089d3e",
+            "uncompressed_display_bgr_sha256": "e539867c4ad0b2b81331ece464c54c865d0a18961d8cc81b7d636fedd53aba2e"
+          },
+          {
+            "first_frame": 28,
+            "frame_count": 3,
+            "control": 167,
+            "phase": "recorded teacher",
+            "state_sha256": "d27aad1f3f60ad0765aa7aeb8abe9c1f0559d4003ecf5a4495e4d38f2836e4bf",
+            "uncompressed_display_bgr_sha256": "e9091eb2ef471c3d1e43561e1fe662cd6cb5592969861767806de2cdc70735d5"
+          },
+          {
+            "first_frame": 31,
+            "frame_count": 3,
+            "control": 168,
+            "phase": "recorded teacher",
+            "state_sha256": "d0b36e167245fecee9c3cd75a947f733a15cc0a30fbd48b9f1df5db07901d6cf",
+            "uncompressed_display_bgr_sha256": "cbdd6fe9f25821a68e56b35f96137b08865b07ea45647cbc533e3eb98188684d"
+          },
+          {
+            "first_frame": 34,
+            "frame_count": 3,
+            "control": 169,
+            "phase": "recorded teacher",
+            "state_sha256": "ca723c536fd6cc95f040f04a17e61b2e0ea34f0c4fb6aa6f180aacffbfbddcc8",
+            "uncompressed_display_bgr_sha256": "b269d996dbf2887c527753d334cbd51d8407aed63257224f26718a589ba5d694"
+          },
+          {
+            "first_frame": 37,
+            "frame_count": 3,
+            "control": 170,
+            "phase": "recorded teacher",
+            "state_sha256": "6d9474ed940df71002953521109caf495c10b5dda7e748f54b18d80f5262c7ee",
+            "uncompressed_display_bgr_sha256": "786ed8bc05514a9b802971fc8ffe631a8633cae56a818d0a1a57440f6ebb8956"
+          },
+          {
+            "first_frame": 40,
+            "frame_count": 3,
+            "control": 171,
+            "phase": "recorded teacher",
+            "state_sha256": "fc07aa40ed8d6878d1ef5ee2955f3885f2e2eebad9efa480b75d699b5e15ed01",
+            "uncompressed_display_bgr_sha256": "88de9d97ac72b15f604c36cef900d1969d6cc580eb57a3c6037d8f8498c40c97"
+          },
+          {
+            "first_frame": 43,
+            "frame_count": 3,
+            "control": 172,
+            "phase": "recorded teacher",
+            "state_sha256": "aa3ba69ffc62d356d57799b7bc48cda08f04836becbe90c5079f4b77bd7616ee",
+            "uncompressed_display_bgr_sha256": "0c9eb4452ec70ca6c40f6fcc68c22676a812783473e28f5525d4eca8e178c170"
+          },
+          {
+            "first_frame": 46,
+            "frame_count": 3,
+            "control": 173,
+            "phase": "recorded teacher",
+            "state_sha256": "5ce6fde05600b0f7c1a8155b3d2257ab9050d2c8493a684e90b1ea02b4bbb7ac",
+            "uncompressed_display_bgr_sha256": "a784aee1b13a2d767e33a9740cda22b0322eb37e78f3d11037ee370e56deeaae"
+          },
+          {
+            "first_frame": 49,
+            "frame_count": 3,
+            "control": 174,
+            "phase": "recorded teacher",
+            "state_sha256": "6b143628858bbcf140a4d1d1a5104571651f76610cc6858ee793b34bab513f90",
+            "uncompressed_display_bgr_sha256": "38ee77f1b74a42b2b829dea29d830678c453dfc75618ea38cced1b6813a1c204"
+          },
+          {
+            "first_frame": 52,
+            "frame_count": 3,
+            "control": 175,
+            "phase": "recorded teacher",
+            "state_sha256": "eaeccbc2bc77fb583ab20a13f124efa69abf88591ea5a70390d1c5f81c2d756e",
+            "uncompressed_display_bgr_sha256": "4e1717688d3fb083cefba9f8b847fa92ed74582501927e22c9e11bdce3feff00"
+          },
+          {
+            "first_frame": 55,
+            "frame_count": 3,
+            "control": 176,
+            "phase": "recorded teacher",
+            "state_sha256": "75dfa2603bfbff84306d41136d5c56495fa684b8fd02dd6c79fe386befabeaec",
+            "uncompressed_display_bgr_sha256": "ceb407908a6fc99cba29d4a2488f7d15600ce73b876865fb69cd819b2e09029e"
+          },
+          {
+            "first_frame": 58,
+            "frame_count": 3,
+            "control": 177,
+            "phase": "recorded teacher",
+            "state_sha256": "e2f8047798c5d0f55d4f787195a971c202b13fb426a03ba40265e18517596400",
+            "uncompressed_display_bgr_sha256": "7ce5679aad208c36843211b5795277330763cb3406c949be5db8af13a91aaf3b"
+          },
+          {
+            "first_frame": 61,
+            "frame_count": 3,
+            "control": 178,
+            "phase": "recorded teacher",
+            "state_sha256": "a3a4fb9348507258f9425169e9556db0518986054d77e406f25198d9a7a5df57",
+            "uncompressed_display_bgr_sha256": "935dbf7ea9e447a692c86cd507b366b9d67d763bd0b033e7d4f59c07fa9095ef"
+          },
+          {
+            "first_frame": 64,
+            "frame_count": 3,
+            "control": 179,
+            "phase": "recorded teacher",
+            "state_sha256": "52c195078d1810160550ed41949a78aafa9d28868b52295b47e1e9afdf5b58f1",
+            "uncompressed_display_bgr_sha256": "4254631bf26256f4758480e3ef6dcaa2e12b44763781e5e726ed23b04340b878"
+          },
+          {
+            "first_frame": 67,
+            "frame_count": 3,
+            "control": 180,
+            "phase": "recorded teacher",
+            "state_sha256": "774ef429570a58dfdda7dd28608e18db368ba8206f72e2e8b2d337d36ad1d036",
+            "uncompressed_display_bgr_sha256": "2998c02aae81e062983257f68223e86b24e744ac3b7da931c8601dd5799a8b1f"
+          },
+          {
+            "first_frame": 70,
+            "frame_count": 3,
+            "control": 181,
+            "phase": "recorded teacher",
+            "state_sha256": "7c739b2d3798fabe81f829d80f265b752078377c691d3126e9d542ed9e7d585b",
+            "uncompressed_display_bgr_sha256": "16b9651ed6f742a5da5c80a44b48f66951d54b352df28f916a86ad8e87e3d320"
+          },
+          {
+            "first_frame": 73,
+            "frame_count": 3,
+            "control": 182,
+            "phase": "recorded teacher",
+            "state_sha256": "386ccbc214dcae6010948313c7159c9dd06e8693d1bb6869c85a23a96f5c1d33",
+            "uncompressed_display_bgr_sha256": "d66c7a54c77eb214f0d3d50e5f2633c3ae1dd183c7a0d8019d6c93abeaf3af32"
+          },
+          {
+            "first_frame": 76,
+            "frame_count": 3,
+            "control": 183,
+            "phase": "recorded teacher",
+            "state_sha256": "c9afdc4925ab2f0f04fff22f21740ab508ecc3ca9ba85097d8cd72c04c0fb822",
+            "uncompressed_display_bgr_sha256": "fecddd458678a4ac8193661871a69cf3709188fc64370ab98194dbace9425330"
+          },
+          {
+            "first_frame": 79,
+            "frame_count": 3,
+            "control": 184,
+            "phase": "recorded teacher",
+            "state_sha256": "e654800c942adc34b0a5e52438dfcbeebd0eae12164e12093e0f47c4b70831b0",
+            "uncompressed_display_bgr_sha256": "913d1c8037c0dd40c4ed808486d48a921ddf4571689fa7c59661f5388aeddaa1"
+          },
+          {
+            "first_frame": 82,
+            "frame_count": 3,
+            "control": 185,
+            "phase": "recorded teacher",
+            "state_sha256": "2f194440c3b308a49a73a5f2102c769c19d34175617613eeca7e2f2413554665",
+            "uncompressed_display_bgr_sha256": "66784b0e062f7770cbc7d631f91824bbbe5125dad9033e75faedb57262683340"
+          },
+          {
+            "first_frame": 85,
+            "frame_count": 3,
+            "control": 186,
+            "phase": "recorded teacher",
+            "state_sha256": "16a0b533b03e52f7f3e273e80e42349f047b54733b988a891a167a875965a6ce",
+            "uncompressed_display_bgr_sha256": "73d5285656a6c9132c933d220f7339472e34ec3e380c262ba722582be8de06a7"
+          },
+          {
+            "first_frame": 88,
+            "frame_count": 3,
+            "control": 187,
+            "phase": "recorded teacher",
+            "state_sha256": "b94440b7208b2bd0bd939e0ccfe2c8e88605518c938052616189a650dad372be",
+            "uncompressed_display_bgr_sha256": "544f96f9ca8217da26dd23355d286802dafb15a82e428daa8a25c8dfbaac8200"
+          },
+          {
+            "first_frame": 91,
+            "frame_count": 3,
+            "control": 188,
+            "phase": "recorded teacher",
+            "state_sha256": "0b4b996b37e4069668982b86b052aab012bfd43402c2a367efebf099797bf6a2",
+            "uncompressed_display_bgr_sha256": "4be932ebad68c11a03dcc4ab99ac5df4163621f044a397f10049875c58f38548"
+          },
+          {
+            "first_frame": 94,
+            "frame_count": 3,
+            "control": 189,
+            "phase": "recorded teacher",
+            "state_sha256": "182d1b5b86939b2ef0ce04459d052a89de3a552bdbca488580898aa7cb8b3220",
+            "uncompressed_display_bgr_sha256": "42e4bcdb89be1af6d1797408db69b191d94ca2a6275a021d9b6c3f9652c71670"
+          },
+          {
+            "first_frame": 97,
+            "frame_count": 3,
+            "control": 190,
+            "phase": "recorded teacher",
+            "state_sha256": "0cf42da35d34901ba142a26fa65413cc63d10603610758661202b644debf0c27",
+            "uncompressed_display_bgr_sha256": "01db5a5c3a69ecad6dd8ff9f861ea44887ba735aee029d5850e89d1b7634e5ae"
+          },
+          {
+            "first_frame": 100,
+            "frame_count": 3,
+            "control": 191,
+            "phase": "recorded teacher",
+            "state_sha256": "36bc3769d49095c48b3a0c191014803249b095d6de0b7f9f01a9ce89b7b7249e",
+            "uncompressed_display_bgr_sha256": "af6c97fccbd7ff7b75144943e6947bd409c9ab990e94aa1006cf974e6f4e65c8"
+          },
+          {
+            "first_frame": 103,
+            "frame_count": 3,
+            "control": 192,
+            "phase": "recorded teacher",
+            "state_sha256": "66ea59356fba6fbd1bbe38d97616f229a7dc62d39debcc934650516af1d1b539",
+            "uncompressed_display_bgr_sha256": "4c16456bb217e72a1bd2248e64de3d024fcd7ff9e64efe4669d69c662f28f33a"
+          },
+          {
+            "first_frame": 106,
+            "frame_count": 3,
+            "control": 193,
+            "phase": "recorded teacher",
+            "state_sha256": "045ac5d2ae952fde44fbbe9df4e8609cf514ba6fd628abfd934b0b69410e84ad",
+            "uncompressed_display_bgr_sha256": "0a946d210db9e4e7b57d965af6ca84c7f87cc0dd48c09bb33f71643f7a9f965e"
+          },
+          {
+            "first_frame": 109,
+            "frame_count": 3,
+            "control": 194,
+            "phase": "recorded teacher",
+            "state_sha256": "c9d2aef554fc54fd0cfe066dc16cb5c658ddac2a679835b544e8ae511e1278f6",
+            "uncompressed_display_bgr_sha256": "5cb4a93b91f62c2d29d878b529a395e5986ca9945fd720d07ccb349a44cd014f"
+          },
+          {
+            "first_frame": 112,
+            "frame_count": 3,
+            "control": 195,
+            "phase": "recorded teacher",
+            "state_sha256": "89dd95d34ade3cc030e855754d2638c07e473b4be37087aff16beae8454db23b",
+            "uncompressed_display_bgr_sha256": "f3c885a78ae5ba50304472d97baf80f6b2da4cc23792b00e5e016e3fdc35a607"
+          },
+          {
+            "first_frame": 115,
+            "frame_count": 3,
+            "control": 196,
+            "phase": "recorded teacher",
+            "state_sha256": "8e70320077adc2714aa4579d544e65043e933637b0e0a184aa95613711933b3a",
+            "uncompressed_display_bgr_sha256": "a110cc5d5b475b2a53d295120fdcf7b43299e959356f2ea83029d28028b465d9"
+          },
+          {
+            "first_frame": 118,
+            "frame_count": 3,
+            "control": 197,
+            "phase": "recorded teacher",
+            "state_sha256": "3c51ef7e4d4131ef30209b3fc782c7ab0eb76ac910b62906b7e24d0e3b0195bf",
+            "uncompressed_display_bgr_sha256": "71cfcb631c819d801bf464df09e35bf3396629a083d0a132e0d0f7303891d388"
+          },
+          {
+            "first_frame": 121,
+            "frame_count": 3,
+            "control": 198,
+            "phase": "recorded teacher",
+            "state_sha256": "284360d0f7966f3127b5309c1f01765d97347586fc85544e40028877c4212c86",
+            "uncompressed_display_bgr_sha256": "aac32a887091505bbfbcde801a76a84bd169ac660d3f5e85abd98d74207c56d9"
+          },
+          {
+            "first_frame": 124,
+            "frame_count": 3,
+            "control": 199,
+            "phase": "recorded teacher",
+            "state_sha256": "47aef575a8f3fc5f487831d99d814d95cb7e660c85db3d10c3a4a066ae968c32",
+            "uncompressed_display_bgr_sha256": "0398a2839931dc40a49d2d7d10e507dc99a3a1d1e580023f0324858c0c1b3272"
+          },
+          {
+            "first_frame": 127,
+            "frame_count": 3,
+            "control": 200,
+            "phase": "recorded teacher",
+            "state_sha256": "0f183ba543b16075955ea2a454d3ce17300d389b3ef035a5fc2cd279883122ea",
+            "uncompressed_display_bgr_sha256": "bd0484520fab6be946a12a9d7f62c078ba7a10b31f5a2e7f7740d1f368f02423"
+          },
+          {
+            "first_frame": 130,
+            "frame_count": 3,
+            "control": 201,
+            "phase": "recorded teacher",
+            "state_sha256": "c71a9ccce6bcd3732662004ff7218e22d7722181844c80e529ca8c4f014b3e32",
+            "uncompressed_display_bgr_sha256": "525cdb76b113917f6ef3245fb17b5f6c77fea85dd0b10c31c997246a1d3b7b8d"
+          },
+          {
+            "first_frame": 133,
+            "frame_count": 3,
+            "control": 202,
+            "phase": "recorded teacher",
+            "state_sha256": "353288455977b0cccad304ae4088b6a2fdcf60161a6b1846d6859e541ae761df",
+            "uncompressed_display_bgr_sha256": "3f3f8853ea97905aca05861146db055024f414d8dba5fb7a28ba327e1e506a56"
+          },
+          {
+            "first_frame": 136,
+            "frame_count": 3,
+            "control": 203,
+            "phase": "recorded teacher",
+            "state_sha256": "6a7346cfc8b995f31ca78caac7156fd7822f45e0bc88dc337c649c6fda53f36a",
+            "uncompressed_display_bgr_sha256": "6b5415a7656c05f360211cda714b9e68cf300d39979e38b030097c524530dd69"
+          },
+          {
+            "first_frame": 139,
+            "frame_count": 3,
+            "control": 204,
+            "phase": "recorded teacher",
+            "state_sha256": "3e13d9631f1ab993a36b996785ef17985546e0228fd4e99e0b640925fe480cb6",
+            "uncompressed_display_bgr_sha256": "e0cbb14270fdbada121fd380858b977f4a8193696a9e2a39921c706c5a544bf5"
+          },
+          {
+            "first_frame": 142,
+            "frame_count": 3,
+            "control": 205,
+            "phase": "recorded teacher",
+            "state_sha256": "bdc60f5fc1b7e4038309ef63f0eeb11655eeec2795f1a19141d28f21c8084607",
+            "uncompressed_display_bgr_sha256": "fcfa3cea2c5ad6150cc5900fd2b23cb76eb86697349497b4011d6ad9a74798c2"
+          },
+          {
+            "first_frame": 145,
+            "frame_count": 3,
+            "control": 206,
+            "phase": "recorded teacher",
+            "state_sha256": "c7b436c76b80dcd6bce3a53677d4dca4f66fecc44d28474e14657ff8109c209e",
+            "uncompressed_display_bgr_sha256": "1b49f4caa3e643b30a238f77d365e1ee191072a665a53ebe9a932645be2b9d58"
+          },
+          {
+            "first_frame": 148,
+            "frame_count": 3,
+            "control": 207,
+            "phase": "recorded teacher",
+            "state_sha256": "2951b0a8528b6670fad8cbad0c15becc73c17830975274d5bd1e397ef087913b",
+            "uncompressed_display_bgr_sha256": "a654dff233bf89d12cab9536a27e54a15cde34cf6b531c54d719797ac4711d3a"
+          },
+          {
+            "first_frame": 151,
+            "frame_count": 3,
+            "control": 208,
+            "phase": "recorded teacher",
+            "state_sha256": "983085d8170ef778b2784431d7aa4ceeb9ba940eef6726f3a9132d4c15738ebd",
+            "uncompressed_display_bgr_sha256": "8ceab52875c23f12457068a41eca00204a8170cf2d381a37c02114f6c34965cd"
+          },
+          {
+            "first_frame": 154,
+            "frame_count": 3,
+            "control": 209,
+            "phase": "recorded teacher",
+            "state_sha256": "f1b2c83858a7c6bd375508f6fa55b368156eb7d7626bccb4bef2be2f479a4c2b",
+            "uncompressed_display_bgr_sha256": "be0d35951066b6c24d6ff7ce71538a97fef4a046745851de325fc84133ac4ca4"
+          },
+          {
+            "first_frame": 157,
+            "frame_count": 3,
+            "control": 210,
+            "phase": "recorded teacher",
+            "state_sha256": "07cf3e4b9b7616a1fbb90bc93b578c605f4b96374779c41d37c7bab58305f3ad",
+            "uncompressed_display_bgr_sha256": "727a9a3514977ffd6cb0d6bae56e23b07a1f7624028beba8b6e6007bb12a1e43"
+          },
+          {
+            "first_frame": 160,
+            "frame_count": 3,
+            "control": 211,
+            "phase": "recorded teacher",
+            "state_sha256": "b142283b0c17e8edebba7656a6717bc23d3d2e33e59470e55b6510d8e43769b8",
+            "uncompressed_display_bgr_sha256": "0e8e9d555d8944af3a44cac77fb9440048bd5439b97274f22e1a5a9a9a87e7fe"
+          },
+          {
+            "first_frame": 163,
+            "frame_count": 3,
+            "control": 212,
+            "phase": "recorded teacher",
+            "state_sha256": "7ebe862446dac8365fa1218fd2e9fb6421b90920894c79932d52c488721316e6",
+            "uncompressed_display_bgr_sha256": "4453a1eb302e9bee1ce2e955aed063d4a1a6c217f46db61bb7bfd13486c0728a"
+          },
+          {
+            "first_frame": 166,
+            "frame_count": 3,
+            "control": 213,
+            "phase": "recorded teacher",
+            "state_sha256": "5c47f12d527726ccb124da36ab1b369f9070a076d3fb4abb4c6566968b197393",
+            "uncompressed_display_bgr_sha256": "3c4bbbab803ec393cfe89067c058522b35603067a16acf9cd020c70dd34f1660"
+          },
+          {
+            "first_frame": 169,
+            "frame_count": 3,
+            "control": 214,
+            "phase": "recorded teacher",
+            "state_sha256": "abf9d82753539f0f40ccc2edce656df39900bf2b8bd5dffd1ef603b3ff66644f",
+            "uncompressed_display_bgr_sha256": "9cc0b2f369bb194ed890cfdf7bedbcb6f915bab6c35995cb979e9be6e3955803"
+          },
+          {
+            "first_frame": 172,
+            "frame_count": 3,
+            "control": 215,
+            "phase": "recorded teacher",
+            "state_sha256": "833fef97403a0d9957c3328699ce2c6b069bdcd49694307887e94d053c818c29",
+            "uncompressed_display_bgr_sha256": "06e4dd90d07c15f50ae59c75e62baf25d22f0f32d48c501bbd6d48dc6586760f"
+          },
+          {
+            "first_frame": 175,
+            "frame_count": 3,
+            "control": 216,
+            "phase": "recorded teacher",
+            "state_sha256": "a1e3b66e5b6c16597808334286264c41690807a95e81aababc35187e7262b49b",
+            "uncompressed_display_bgr_sha256": "0feaf41b08da0e6d32e2ba8138fd66bb4e51298625c7b584cacb630d8889c3f8"
+          },
+          {
+            "first_frame": 178,
+            "frame_count": 3,
+            "control": 217,
+            "phase": "recorded teacher",
+            "state_sha256": "9b5a0d4fb34c18c0d659b0e86081028a477ae9814e469588ff81f0ee33d2572c",
+            "uncompressed_display_bgr_sha256": "1e6830c060e7f3074540e8057c81af187038b6e68f78a1516e6e71e98c35d091"
+          },
+          {
+            "first_frame": 181,
+            "frame_count": 3,
+            "control": 218,
+            "phase": "recorded teacher",
+            "state_sha256": "4809c2480e659990d5d6decf26afe16c5e09d5d726799994892eb2d38abe1500",
+            "uncompressed_display_bgr_sha256": "0009ed01e47d482a0fd36f47506d82f0e5a188aef3cc6e4ee1eab6d614b6bc58"
+          },
+          {
+            "first_frame": 184,
+            "frame_count": 3,
+            "control": 219,
+            "phase": "recorded teacher",
+            "state_sha256": "914bfc51e5bf9279bd69b50f478a35e981fc72d7379a5895831c666bf5c9becd",
+            "uncompressed_display_bgr_sha256": "a4232b7a2164650a8ee05b0e4335fa5bb16ddbda896b70aa3e51b0f35019331b"
+          },
+          {
+            "first_frame": 187,
+            "frame_count": 3,
+            "control": 220,
+            "phase": "recorded teacher",
+            "state_sha256": "8b8172162aadd7422eb125e5dd3b2878224723f9d73a4da7cef034e5ae480d02",
+            "uncompressed_display_bgr_sha256": "337dfd5892ee06ace422563a4a09ab0762b9470bfd38c570b8a6d1e8d3383731"
+          },
+          {
+            "first_frame": 190,
+            "frame_count": 3,
+            "control": 221,
+            "phase": "recorded teacher",
+            "state_sha256": "da9d0886df635f44ebd984b5f2406c249e3de62a9ce98d3f7f6b820d86a130e0",
+            "uncompressed_display_bgr_sha256": "98aafc40a493302d493699fc2997f27b8ec4307759b989fd215e31951b5f925f"
+          },
+          {
+            "first_frame": 193,
+            "frame_count": 3,
+            "control": 222,
+            "phase": "recorded teacher",
+            "state_sha256": "76e6a148f91720b198d9b0078ce24fecb9aa1292326d13e28725b918ed45443c",
+            "uncompressed_display_bgr_sha256": "bcddb4568fa76ebfd4465f71aa5b3d6deb520425ec931ab69d0db51b9e930d4a"
+          },
+          {
+            "first_frame": 196,
+            "frame_count": 3,
+            "control": 223,
+            "phase": "recorded teacher",
+            "state_sha256": "d8b908b73125bfee0ff1e84954332d37df8e31848f506c4927654267df504038",
+            "uncompressed_display_bgr_sha256": "865d93b754d1aa7cd52cec9349651c6f3ab77eaf47c5173a2ca1a65071eb46f0"
+          },
+          {
+            "first_frame": 199,
+            "frame_count": 3,
+            "control": 224,
+            "phase": "recorded teacher",
+            "state_sha256": "e1e86da443b86e3bfeedbfd060d1caa9b081ed8d2466ef5fffe7964c1808d86b",
+            "uncompressed_display_bgr_sha256": "dcb0a5b63c13ad4f3872b312131497d76a2bcfe6871e96bbb2ee473c44bf4a2c"
+          },
+          {
+            "first_frame": 202,
+            "frame_count": 3,
+            "control": 225,
+            "phase": "recorded teacher",
+            "state_sha256": "4897f81685bb6ded9ce92c944d380ac2135e7779ecdfbc77ca7967141c1fb2b1",
+            "uncompressed_display_bgr_sha256": "119f1e1d75829b4e5842daddc2d18c93528dea22a6d4591fbbc889f2dd3086cd"
+          },
+          {
+            "first_frame": 205,
+            "frame_count": 3,
+            "control": 226,
+            "phase": "recorded teacher",
+            "state_sha256": "c10b6ae94c4bf6f37bf240f7583b95ec638abb40695ebdacfdd023201b2cebb6",
+            "uncompressed_display_bgr_sha256": "70609cb259a3214065a51ec1d9daa75ac2af8c2d7564a6e380e31cf78f9b7571"
+          },
+          {
+            "first_frame": 208,
+            "frame_count": 3,
+            "control": 227,
+            "phase": "recorded teacher",
+            "state_sha256": "be01c0b3e658984dc1b3db03a945afbc0184ad37a36671289b7b8247bd77065b",
+            "uncompressed_display_bgr_sha256": "ed967958e084f641726a344f24c47d868d04b62b7bf8d71ed6db69e5314502ea"
+          },
+          {
+            "first_frame": 211,
+            "frame_count": 3,
+            "control": 228,
+            "phase": "recorded teacher",
+            "state_sha256": "5a56d7f17bfaa257214366982102fa2892730150e339518d3671e88eb39894a8",
+            "uncompressed_display_bgr_sha256": "802739ac06c5d23056e6f8a36532381c5af14b4e9ee63beadabcbb0fa9eef267"
+          },
+          {
+            "first_frame": 214,
+            "frame_count": 3,
+            "control": 229,
+            "phase": "recorded teacher",
+            "state_sha256": "2846deb1c965e394b61d22dabccdd9dc184534add6e0466cd6c6b3365bb1a097",
+            "uncompressed_display_bgr_sha256": "6d2bf5928f76933962b0ccea228918757c56eda68155b401e3fcd8dd37bc0f79"
+          },
+          {
+            "first_frame": 217,
+            "frame_count": 3,
+            "control": 230,
+            "phase": "recorded teacher",
+            "state_sha256": "0998c56e26461a88edddef3aadd896b92ff3418b590ad2cb1dc96d439037f00e",
+            "uncompressed_display_bgr_sha256": "7e65c941829c651d34fb85994ca61f31bc5dcc276d7060365691896457088912"
+          },
+          {
+            "first_frame": 220,
+            "frame_count": 3,
+            "control": 231,
+            "phase": "recorded teacher",
+            "state_sha256": "fc2f7a73db66e9414b97047e5fec7e6613219e960186d274336b9c5ca8d9fce7",
+            "uncompressed_display_bgr_sha256": "567638ef0b0cae451aac98497737a5b26b509b00dfe321a768c6e8c4b854a487"
+          },
+          {
+            "first_frame": 223,
+            "frame_count": 3,
+            "control": 232,
+            "phase": "recorded teacher",
+            "state_sha256": "4871165234276a607d8a1a8f28380df82fcab0511c8587174cd6bfece23a0759",
+            "uncompressed_display_bgr_sha256": "33cb176baed45fec81dd403ca1c37c1d08470d83ec748b7f5f504b45fa0f4daf"
+          },
+          {
+            "first_frame": 226,
+            "frame_count": 3,
+            "control": 233,
+            "phase": "recorded teacher",
+            "state_sha256": "d8fa142472a05a284c0d917f0c15760941e12bdd33366790fa95e317b84c4c73",
+            "uncompressed_display_bgr_sha256": "fbcc05eaeef11a3024d3a88fc6a1a473e369716a01e69196b821905fbe6fb229"
+          },
+          {
+            "first_frame": 229,
+            "frame_count": 3,
+            "control": 234,
+            "phase": "recorded teacher",
+            "state_sha256": "283bded0799c6d2bce2e64ce606c275baf8829cf4c8328afa0f7db63ec3a123c",
+            "uncompressed_display_bgr_sha256": "b90fd3d11127ed6c47200120c865ef9746f795d776855eb571933d4630c2f50d"
+          },
+          {
+            "first_frame": 232,
+            "frame_count": 3,
+            "control": 235,
+            "phase": "recorded teacher",
+            "state_sha256": "d7096faee9081a6df0e206d0aff22debc6ef7bde6c9c3a9d3661e54848c5a5d2",
+            "uncompressed_display_bgr_sha256": "92975c01175060cd8af2c4495aea271b8f1f3fd7554713988dbd2210585e36ac"
+          },
+          {
+            "first_frame": 235,
+            "frame_count": 3,
+            "control": 236,
+            "phase": "recorded teacher",
+            "state_sha256": "546083227250886d87d9b8e8a49fed802101d18dbe972b842dbcef5ce4898496",
+            "uncompressed_display_bgr_sha256": "2ce283822851841ceb0674fcd58466fac52fb33b47a4634bc7994238528b7bc6"
+          },
+          {
+            "first_frame": 238,
+            "frame_count": 3,
+            "control": 237,
+            "phase": "recorded teacher",
+            "state_sha256": "f1391331226e2a931e58a5293c70d4a841e5d3352d6b97eb0e1cba8a6f5e0a5f",
+            "uncompressed_display_bgr_sha256": "52178e88d9a48ccf7e2f287855486b478aa5ff8cad9567681ecaed463cd35ea7"
+          },
+          {
+            "first_frame": 241,
+            "frame_count": 3,
+            "control": 238,
+            "phase": "recorded teacher",
+            "state_sha256": "cadeae3f964d9b055f6cb2ca29e3fdd2a93048282927aea1d2a809372b811392",
+            "uncompressed_display_bgr_sha256": "a81828d5916837d1acf2425296bd28a910b8ed92bb1e16364f7cc9bb8a9bef7b"
+          },
+          {
+            "first_frame": 244,
+            "frame_count": 3,
+            "control": 239,
+            "phase": "recorded teacher",
+            "state_sha256": "cf3c5aca4be70f92f128c7890a55ec3fae859201c20149bd669d661b80ecab7d",
+            "uncompressed_display_bgr_sha256": "0a32ff72003f9b4300dd752d070b14bcff7433f6b7d62687a3fa293c2e308682"
+          },
+          {
+            "first_frame": 247,
+            "frame_count": 3,
+            "control": 240,
+            "phase": "recorded teacher",
+            "state_sha256": "b7d3c778568c3ea444d63972a22287f1f401bd4d0b8adc0352ea029d95e5d0ad",
+            "uncompressed_display_bgr_sha256": "92bbd4253f890421ce9b3a0925883cd0e957c008d84ca03ad5a679522b26bbf9"
+          },
+          {
+            "first_frame": 250,
+            "frame_count": 3,
+            "control": 241,
+            "phase": "recorded teacher",
+            "state_sha256": "b23eb3094513073156a2812c92686ec33e5a85f650d2189c996abc59cce78ce4",
+            "uncompressed_display_bgr_sha256": "e565cb4ae13c256da55934572ba217ee5caa0e04f8e51c0ff01e603ee6902558"
+          },
+          {
+            "first_frame": 253,
+            "frame_count": 3,
+            "control": 242,
+            "phase": "recorded teacher",
+            "state_sha256": "8601a86cedd93f2ec15a6ed54b80116bc773ab503784d6c1bc1623d60a95e0e4",
+            "uncompressed_display_bgr_sha256": "8f8490410d37d7b522cbd64ff7b04a011e81d05e9c965efab2e5bfb24b6c908a"
+          },
+          {
+            "first_frame": 256,
+            "frame_count": 3,
+            "control": 243,
+            "phase": "recorded teacher",
+            "state_sha256": "5dedd7de64a01c9d16ff12680a6b9cae5014b71a3c865e7583fd6a20ba9b01ee",
+            "uncompressed_display_bgr_sha256": "62a3e8da6903c1ed8137fb54e6b4d2d8e742fde218ebf086ff97843da482363a"
+          },
+          {
+            "first_frame": 259,
+            "frame_count": 3,
+            "control": 244,
+            "phase": "recorded teacher",
+            "state_sha256": "e5103a6db44b0c5643109b6bc6b61558dab7eaec47810a69f2b348dc51ffc72a",
+            "uncompressed_display_bgr_sha256": "633c0d0126b2c0d4b5679d2f496602ae5e059606583781a500af18eea9e57d07"
+          },
+          {
+            "first_frame": 262,
+            "frame_count": 3,
+            "control": 245,
+            "phase": "recorded teacher",
+            "state_sha256": "4cd3a51a3fe1806da8185b03f8b04d5ea0398dfb1614b173a512b465a83027a3",
+            "uncompressed_display_bgr_sha256": "8b66214a38f5c5287f5fe236e92b0fa73bd8228dda8c937ce54d6f25bbc3283f"
+          },
+          {
+            "first_frame": 265,
+            "frame_count": 3,
+            "control": 246,
+            "phase": "recorded teacher",
+            "state_sha256": "a957f244ba5b8caf3256cb2d7098af31a78db0fc7f3b1232d64558ad47bdea22",
+            "uncompressed_display_bgr_sha256": "5270ca8d464f824b9fd9ebfee6a9f4e98d352c153f326212e4fc06b0a6ce102f"
+          },
+          {
+            "first_frame": 268,
+            "frame_count": 3,
+            "control": 247,
+            "phase": "recorded teacher",
+            "state_sha256": "374cfd26145c7d18c909e47f4acbff1dcaa5f0ce32d9db01b409fbeb2023a29a",
+            "uncompressed_display_bgr_sha256": "03d070f7ad8f9a50cab9a4a3c2e01cabc102fbf4128ef7eb9f02351b593da6c1"
+          },
+          {
+            "first_frame": 271,
+            "frame_count": 3,
+            "control": 248,
+            "phase": "recorded teacher",
+            "state_sha256": "5128108b4c7b1391c751a88549538ab4c59b4a87d6f134497170650e0b4d0da7",
+            "uncompressed_display_bgr_sha256": "0c65d4f4a3da8d13965b5a87426161454abbb83770ba35c92c6a6ee23f4584bc"
+          },
+          {
+            "first_frame": 274,
+            "frame_count": 20,
+            "control": 248,
+            "phase": "final result",
+            "state_sha256": "5128108b4c7b1391c751a88549538ab4c59b4a87d6f134497170650e0b4d0da7",
+            "uncompressed_display_bgr_sha256": "2e22818115a3008cdc899e1c38113fb862268117a4cbf2e863ef567ea3a4a98f"
+          }
+        ]
+      },
+      "elapsed_seconds": 3.0780000000377186,
+      "torch_loaded": false
+    }
+  ]
+}

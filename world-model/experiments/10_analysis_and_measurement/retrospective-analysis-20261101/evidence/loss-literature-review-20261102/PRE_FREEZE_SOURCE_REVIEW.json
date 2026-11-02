@@ -1,0 +1,18 @@
+{
+  "stage": "pre-freeze independent source inspection only",
+  "files": {
+    "objectives.py": "071bc49cd6f05db8d79aef29b610d73a8894416b2c0345b5fb68c1dd810223b7",
+    "native_forward.py": "40a82798f4f528ce6b1e52c009df70af0fbbfba43b6d34cb09efce6567c1bfd9",
+    "preflight.py": "cdb89bcf60b00552ad991095f4f376b3b6e4677ce2824d8ff169e5f75a638dda"
+  },
+  "checks": [
+    "BASE retains original F.mse_loss reduction",
+    "SNR uses draw squared plus .1 squared and no repeated EDM weight",
+    "GDL is magnitude-gradient difference on unquantized D/.5",
+    "FFL is FP32 complex FFT with per-image/channel max and detached weights",
+    "same-forward auxiliary calculations, no new training GT",
+    "preflight preserves native reference and checks tensor FFT/phase/gradient cases"
+  ],
+  "models_called": 0,
+  "execution_not_started_by_reviewer": true
+}

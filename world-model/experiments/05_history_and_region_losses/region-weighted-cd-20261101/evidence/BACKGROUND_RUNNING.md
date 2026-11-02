@@ -1,0 +1,22 @@
+# C/D complete and actually reported; waiting_user_review
+
+Run RWCD-20261101-81bdec2c68934570a46dac1db04b3a72. C/D each completed30272targets/1892successfulupdates, AMP0. Neither passed full frozen support: C motionmeans pass but Orotation/Bholes fail; D motionmeans and O/B fail. Actual parent MCP finalsend succeeded. Owned one-shot task Tdyssey-RWCD-81bdec2c ended with0instances/result0 and matchingaction, then only its registration was deleted. Owner automation tdyssey-c-d formally deleted. No active owner polling or authorization for another experiment. Review: artifacts/region-weighted-cd-20261101/FINAL_REVIEW.md. Actual receipts: background/final-callback-result.json, windows-task-delete-result.json and automation-final-delete-result.json. Historical notes below are preserved.
+
+# Authorized O/B attribution then one C/D background pipeline
+
+Current run: RWCD-20261101-81bdec2c68934570a46dac1db04b3a72.
+Frozen runtime-config SHA256:6ae814d58c7af48b6c2cc6e63181a6f254281453b2f1d7a1c63f387725142c46,3457bindings.
+
+Windows one-shot task Tdyssey-RWCD-81bdec2c was actually registered and Run called at2026-11-01T11:55:23.891Z (19:55:23Singapore), zero periodic Windows triggers and PT0S execution limit. Registration is not evidence of optimizer updates; actual independent service/worker/phase-child receipts underbackground are authoritative. The launcher must have exited. Actual Job membership is retained, not mistaken for Codex lifetime ownership.
+
+Actual service supervisor31524owns worker34548and phase child23532; launcher32860has actually exited. Worker proof was written11:56:31UTC, child proof11:56:53UTC. Background status uses phase name training for the entire attribution-then-C/D process; diagnosis and real update counters must be read separately before claiming model work or optimizer success.
+
+The pipeline first completes exactly768 real-history O/B predictions using the three old checkpoints and original complete B4 batches0/1/6/7. Original AR outputs are reused. If input/action/timing integrity fails, C/D updates stop atzero. Correctly paired model prediction failures alone do not prove an interface fault. Local independent real-history direction and cumulative AR direction are distinct.
+
+If the original contracts hold, C/D both restore the full common epoch2 state and traverse the unchanged7568segments/1313families/30272targets/1892batches once per arm. C uses true history; D independently assigns2of4segments to detached generated-history training. Native residual weights are.50full/.25R/.25E. Masks are target-side weights, never model inputs or output repairs. Same sixletters/split/physics/LR/AMP/gradclip/noise and native3step sampler. C32/D32 count inside totals and save full recovery boundaries before continuing. No extra epoch, newdata, physics, server or UI-model change.
+
+The earlier unexecuted preparation9693416a is archived underprelaunch-freezes with originalsource/config/log snapshots. A support-report missingness bug was corrected to enforce all16 available/unknown0 before strict support comparisons. No numeric threshold or experiment scope changed, and no productionGPU/model/update was run under that earlier identity.
+
+An initial automation request was actually rejected by automatic approval review. Direct human approval was then rechecked with read_thread, and a safer read-only phase-report monitor was actually approved:tdyssey-c-d every30minutes, quiet without a newly actionable phase. It cannot start/restart/continue any experiment. Exact actual rejection, direct message evidence and successful create/update receipts are background/automation-create-rejected-result.json, AUTOMATION_AUTHORIZATION_REVIEW.json andnotification.json. The independent one-shot pipeline was separately launched within the actual human-approved scope.
+
+Owner proactively returns diagnosis, measured32batch throughput/ETA and final/failure data/media/localpaths to parent__LOCAL_CHAT__(local), saving exacttexts and actual MCP receipts. Parent does not poll or release another task automatically. Actual MCPsending requires app/tools; offline compute may continue, offline sending is not guaranteed. Finalactualcallback -> waiting_user_review, verified-ended owned task registration cleanup and completedmonitor deletion. Preserve all earlier data/models/user evidence under shared10GB with256MiB atomicreserve; currentprelaunchshared~4.817GB, olduint8cache reused without copying.

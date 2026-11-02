@@ -1,0 +1,62 @@
+{
+  "kind": "native-gpc-stage3-independent-prelaunch-review.v1",
+  "checked_at_utc": "2026-10-29T03:53:25.872538+00:00",
+  "ready_for_launch": true,
+  "pending": [],
+  "protected_files_checked": 381,
+  "protected_mismatches": [],
+  "prepared_inputs_passed": true,
+  "native_math_source_proof_passed": true,
+  "reviewed_contract": {
+    "stage_attempts": 200,
+    "stage_all_model_work_seconds": 600,
+    "new_gradient_cutoff_seconds": 420,
+    "minimum_tail_seconds": 180,
+    "aggregate_attempts": 3000,
+    "aggregate_seconds": 5400,
+    "microbatch": 4,
+    "effective_batch": 16,
+    "scheduler_T_max": 3000,
+    "last_only": true,
+    "train_unique_windows": 18,
+    "dev_windows": 36,
+    "new_physics": 0
+  },
+  "reviewed_error_behavior": [
+    "durable optimizer reservation before draws/backward; never refunded",
+    "before-step failure can rollback order/RNG and retains attempted exposure evidence",
+    "after-step anomaly retains previous complete checkpoint",
+    "callback exception restores mode/flags/RNG and cannot overwrite prior safe last",
+    "last.pt missing is explicit root failure",
+    "finite RGB strict [0,1] range; raw saved and no output repair"
+  ],
+  "timing_limit": "Synchronous CUDA operations and atomic writes cannot be preempted by heartbeat; actual closed ledger elapsed must be <=600 for budget acceptance. Root reserves tail before new attempts and before operations.",
+  "postrun_checklist": [
+    "closed ledger actual attempt/completion/elapsed <=200/600, aggregate retained3000/5400 and no replay",
+    "source/config/protocol/weights freeze unchanged;381 protected inputs unchanged",
+    "same14 frozen/fitted native batches, shapes,seeds,windowIDs,denominators18/36 and raw arrays/statuses",
+    "all8729827 parameters trainable; all parameter gradient/change evidence; original release initialization SHA",
+    "single complete last state model/optim/scaler/scheduler/RNG/order/progress/config/source/data/ledger; no best duplicate",
+    "draws/exposures selected only18 and attempt reservations account failures",
+    "TRAIN target rawgray1-IoU reduction>=20%,strictwins>=12/18,nohardgeneration failures; shape assessability/failures retained; dev36 separate31/4/1",
+    "storage old/new/source/cache plus checkpoint atomic temporary peak <=3GiB; no new physics/full319/H4/unseen/server/packaging"
+  ],
+  "reviewer_model_loads": 0,
+  "reviewer_optimizer_updates": 0,
+  "reviewer_env_steps": 0,
+  "training_iterator_calls": 0,
+  "final_freeze_checks": {
+    "frozen56source_files_and_snapshots": true,
+    "exact_source_CPU_evidence": true,
+    "zero_models_before_launch": true,
+    "strict_original_init": true,
+    "protocol_config_bound": true,
+    "explicit_indices_bound": true
+  },
+  "source_identity_sha256": "92b079d526c326ed9f89f0908fb05319b454506cb0c0c89253f79090b85b973c",
+  "frozen_source_files": 56,
+  "focused_CPU_tests": 34,
+  "focused_CPU_log_sha256": "a27a4045eeb0576a81b6146d9b97a4050a3408f0897f1ee701e91c14e338b5dd",
+  "focused_checks_sha256": "d56463a24516de949fb749733e92da084e393a034ca8541f7a11f65fd687aeb6",
+  "freeze_mismatches": []
+}

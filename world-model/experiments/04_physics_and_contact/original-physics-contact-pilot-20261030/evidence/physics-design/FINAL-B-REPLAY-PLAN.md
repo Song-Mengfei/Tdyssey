@@ -1,0 +1,3 @@
+# Final paired B replay requested by root
+
+After candidate4 four-case probes, root explicitly requests one final complete original37-action prefix replay (replacing incomplete writer evidence, retaining its400substeps cost) and one v4 replay, both from the actual initial full construction plus3initial hold controls. Do not restore the middle of contact or claim cache serialization. Save initial/eachcontrol RGB, state15, everymicro pre/post state and contact event. Compare original fresh prefix to recorded control/substep states and report exact differences, not assumed equality. No threshold/physics change and no seed search. Same37 requested actions; videos10Hz physical time, no acceleration/interpolation/model.

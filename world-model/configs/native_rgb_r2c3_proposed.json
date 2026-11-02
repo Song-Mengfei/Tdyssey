@@ -1,0 +1,356 @@
+{
+  "kind": "native-GPC-R2C3-longitudinal-training-proposal.v1",
+  "is_proposal": true,
+  "execution_authorized": false,
+  "training_authorized": false,
+  "implementation_exists": false,
+  "proposal_only_no_C3_model_calls_or_updates": true,
+  "release_condition": "Parent acceptance of R2C2, then parent stage instruction; do not ask the human again for routine authorized training. No automatic launch from this proposal.",
+  "repo_root": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main",
+  "planned_output": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3",
+  "planned_entrypoint": "scripts/native_rgb_r2c3_run.py (not implemented by this proposal)",
+  "parent_training_length_note": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c2\\PARENT_TRAINING_LENGTH_NOTE.md",
+  "time_policy": "record_only_v2",
+  "user_set_model_time_budget": false,
+  "max_model_seconds": null,
+  "latest_new_attempt_seconds": null,
+  "tail_reserve_seconds": null,
+  "global_model_seconds_limit": null,
+  "resume": {
+    "checkpoint": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\run\\last.pt",
+    "sha256": "3c397035857fe98b896ea5083b52f32c129f1787c1be6884d4c740a9e58e5be0",
+    "bytes": 105300718,
+    "lineage_complete_updates": 300,
+    "global_complete_updates_before_C3": 550,
+    "old_other_lineage_updates_excluded": 250,
+    "restore": [
+      "model",
+      "optimizer",
+      "scaler",
+      "scheduler",
+      "rng.python",
+      "rng.numpy",
+      "rng.torch",
+      "rng.cuda",
+      "rng.noise_generator",
+      "PreparedInputs/order/slot_and_queue_RNGs",
+      "progress"
+    ],
+    "reinitialize": false,
+    "expected_prepared_delivered_draws": 4800,
+    "expected_pending_indices": null,
+    "expected_micro_cursor": 0,
+    "expected_scheduler_last_epoch": 300,
+    "old_full_restore_helper_config_check_requires_explicit_versioned_successor_identity": true
+  },
+  "lineage_observations": [
+    1000,
+    3000,
+    6000
+  ],
+  "additional_complete_updates_by_segment": [
+    700,
+    2000,
+    3000
+  ],
+  "additional_complete_update_target": 5700,
+  "lifetime_training_limit_set_by_user": null,
+  "convergence_or_capacity_claim_at_6000": false,
+  "data": {
+    "manifest": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\manifest.json",
+    "split": "TRAIN41/seen-val12",
+    "seen_letters": [
+      "T",
+      "L",
+      "O",
+      "C",
+      "X",
+      "B"
+    ],
+    "train_families": 41,
+    "unique_H1_train_windows": 861,
+    "sampling": "same frozen80percent moving/20percent other; same letter/family/category/window queues",
+    "seed": 5478,
+    "effective_batch": 16,
+    "microbatch": 4,
+    "actual_new_draws_expected_if_all_updates_complete": 91200,
+    "lineage_draws_at_6000": 96000,
+    "old_4800_draw_prefix_unchanged": true,
+    "old_R2C0WindowOrder_4800_cap_requires_explicit_versioned_continuation": true,
+    "continuation_order_max_draws": 96000,
+    "no_rng_or_queue_reset": true,
+    "per_cycle_draws": 480,
+    "additional_cycles": 190,
+    "expected_new_moving_draws": 72960,
+    "expected_new_other_draws": 18240,
+    "new_physics_controls": 0,
+    "unseen_letters_accessed": 0,
+    "half_life_seconds_fixed": 0.1,
+    "new_data_or_sampler_ratio_changes": false
+  },
+  "model_and_objective": {
+    "architecture": "unchanged original GPC;8729827 trainable parameters",
+    "objective": "unchanged native H1 phase-two residual MSE",
+    "input": "4 real RGB history plus H1 target and4 normalized actual actions for training",
+    "image_normalization": "uint8/255 float32 exactly once",
+    "action_normalization": "absolute float32/511*2-1 exactly once",
+    "amp": "same fp16 autocast/FP32 loss",
+    "optimizer": {
+      "kind": "AdamW",
+      "lr_base": 0.0001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0.01
+    },
+    "grad_clip_norm": 1.0,
+    "restore_GradScaler_state": true,
+    "no_geometry_heads_losses_or_postprocessing": true
+  },
+  "learning_rate": {
+    "restore_existing_scheduler_state": true,
+    "kind": "CosineAnnealingLR unchanged through completed update3000, then hold eta_min",
+    "T_max": 3000,
+    "eta_min": 1e-05,
+    "base_lr": 0.0001,
+    "formula_after_u_completed_updates": "L(u)=1e-5+(1e-4-1e-5)*(1+cos(pi*min(u,3000)/3000))/2",
+    "update_u_uses_lr": "optimizer update u uses L(u-1); successful completion advances scheduler to L(u), only if u<=3000",
+    "after_3000": "Do not call cosine scheduler.step beyond last_epoch3000; leave optimizer groups at eta_min; store hold phase and true completed update counter separately. Do not reset warmup or silently rebuild scheduler.",
+    "skipped_update": "No completed-update increment and no scheduler.step for an AMP-skipped optimizer update. Charge attempt and report/stop for parent review, no silent retry.",
+    "reference_Lu": {
+      "300": 9.779754323328192e-05,
+      "301": 9.778295768677619e-05,
+      "1000": 7.75e-05,
+      "3000": 1e-05,
+      "3001": 1e-05,
+      "6000": 1e-05
+    },
+    "runtime_log_required": [
+      "completed_update_before",
+      "completed_update_after",
+      "optimizer_lr_used",
+      "lr_after_scheduler_or_hold",
+      "scheduler_last_epoch",
+      "hold_phase",
+      "scaler_before",
+      "scaler_after",
+      "optimizer_applied",
+      "attempt_charged"
+    ]
+  },
+  "fixed_loss": {
+    "checkpoints": [
+      300,
+      1000,
+      3000,
+      6000
+    ],
+    "cohorts": [
+      "train_visual",
+      "val_natural",
+      "val_motion"
+    ],
+    "windows_per_cohort": 12,
+    "batch": 4,
+    "H1_only_same_residual_loss": true,
+    "same_fixed_noise_for_all_checkpoints": true,
+    "noise_seed_domain": "canonical SHA256 of [R2C3-fixed-loss-v1,5478,cohort,batch_index,window_ids], unchanged across checkpoints; freeze before first model call",
+    "noise_plan_saved": "save per-batch seeds and numeric noise hashes; regenerate identical plans, no large duplicate tensor archive",
+    "loss_autocast": "same fp16 model/FP32 MSE; eval mode with no backward",
+    "preserve_training_RNG_and_order": "capture/restore all global RNG + dedicated training noise generator; independent fixed-loss generator; preserve PreparedInputs state and mode",
+    "forward_batches_per_checkpoint": 9,
+    "planned_total_fixed_loss_forward_batches": 36,
+    "check_300_only_after_C3_authorized": true
+  },
+  "evaluation": {
+    "new_training_points": [
+      1000,
+      3000,
+      6000
+    ],
+    "settings": [
+      3,
+      16
+    ],
+    "reference_300": {
+      "trained3": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\run\\evaluation\\final",
+      "trained16": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c2\\run\\evaluation\\steps16",
+      "trained8_reference_only": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c2\\run\\evaluation\\steps8"
+    },
+    "reference_copy_last": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\run\\evaluation\\copy_last",
+    "frozen_indices": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\evaluation\\indices.json",
+    "cohorts": [
+      "train_visual",
+      "val_natural",
+      "val_motion"
+    ],
+    "windows_per_cohort": 12,
+    "batch": 4,
+    "seed": 5478,
+    "paired_seed_formula": "reuse unchanged R2C0 paired_seed per cohort/batch/windowIDs/step",
+    "horizons_saved": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "horizons_scored": [
+      1,
+      4
+    ],
+    "sampler": {
+      "sigma_min": 0.002,
+      "sigma_max": 5,
+      "rho": 7,
+      "order": 1,
+      "s_churn": 0,
+      "s_cond": 0
+    },
+    "raw_feedback": "unchanged float32; all finite out-of-range retained; no future truth/state/label in predictor",
+    "planned_new_sampler_settings": 6,
+    "planned_new_sampler_batch_calls": 216,
+    "planned_new_denoiser_forwards_order1": 2052,
+    "planned_new_float32_frames": 864,
+    "planned_new_endpoint_score_rows": 432,
+    "expected_counts_are_not_observations": true,
+    "endpoint_persistence": "Use immutable raw batch/row/step indices for H1/H4, not duplicate float64 endpoint image arrays; fixed scorer receives lossless in-memory views. Public reference loader must be equivalence-checked before launch.",
+    "shape": "H1/H4 failures and unknown; preserve holes/components/fragments and occlusion unknown; never count unknown as pass",
+    "natural_subgroups": [
+      "all12",
+      "H1_nonobvious8",
+      "H1_nearstatic_aux4"
+    ],
+    "report": "per-group and per-window curves; TRAIN vs seen-val; gray and blue separate; all36H1/H4 galleries at each point; no best-seed selection"
+  },
+  "accounting": {
+    "policy": "append explicit C3 scope to existing v2 ledger; preserve all actual counters/history; no time gate",
+    "C2_closed_model_seconds_statistics": 86.907,
+    "reported_global_seconds_after_C2_statistics": 1469.1250000000073,
+    "global_attempts_and_completed_before_C3": 550,
+    "planned_global_complete_updates_after_if_no_failures": 6250,
+    "replace_old_global_3000_attempt_guard": true,
+    "guard_change_reason": "Old3000 was a supervisor diagnostic scope, not a user lifetime training limit; it must not truncate this explicit5700-complete continuation.",
+    "stage_goal_complete_updates": 5700,
+    "planned_attempts_if_no_failures": 5700,
+    "every_attempt_including_failure_is_charged": true,
+    "AMP_skip_policy": "Observe scaler step outcome; attempted draw/cost retained, no completed update/scheduler advancement; preserve last safe full checkpoint and failure evidence, stop and report parent; no automatic retries or fabricated completion.",
+    "actual_C3_prior_ledger_SHA_and_copy": "Freeze exact closed live ledger at release, after C2 callback; not a stale R1 or active C2 snapshot.",
+    "replace_old_per_stage_300_attempt_guards": true,
+    "old_hardcoded_scope_sites_requiring_public_successor": [
+      "RecordOnlyTimeLedger.change: active_stage.reserved_updates>=300",
+      "R2C1R1ModelWorkBudget.max_attempts300 and heartbeat/reserve local stage cap",
+      "R1 CLI config_contract/CAPS fixed300",
+      "RecordOnlyTimeLedger global max_updates3000",
+      "R2C0WindowOrder.take/load_state_dict cursor4800"
+    ],
+    "required_CPU_scope_checks": [
+      "C3 stage attempt301 is allowed without resetting counters",
+      "5700 new complete updates reach lineage6000 and global6250 if no failures",
+      "old300/3000/4800 guards cannot accidentally truncate the new explicit scope",
+      "failed/AMP-skipped attempts are charged but never counted as completed"
+    ]
+  },
+  "checkpoint_plan": {
+    "preserve_all_previously_delivered_weights": true,
+    "new_full_last_count": 1,
+    "new_full_last_path": "r2c3/run/last.pt",
+    "full_last_observations": [
+      1000,
+      3000,
+      6000
+    ],
+    "atomic_replace": true,
+    "new_t0_full_duplicate": false,
+    "initial_resume_checkpoint_referenced_until_first_safe_new_save": true,
+    "full_payload_observed_reference_bytes": 105300718,
+    "full_payload_hard_persistent_cap_bytes": 117440512,
+    "full_at_6000_is_final_kept_payload": true,
+    "model_only_points": [
+      1000,
+      3000
+    ],
+    "model_only_state_tensor_bytes": 34920332,
+    "model_only_each_persistent_cap_bytes": 37748736,
+    "light_milestone_contents": [
+      "model state_dict",
+      "cumulative progress",
+      "parent/full-checkpoint lineage SHA",
+      "config/source/data/eval identity"
+    ],
+    "light_milestone_no_Adam_scaler_scheduler_RNG_copy": true,
+    "no_separate_6000_light_duplicate": true,
+    "final_complete_payload_real_reload_verification": true
+  },
+  "storage": {
+    "shared_limit_bytes": 3221225472,
+    "atomic_reserve_bytes": 268435456,
+    "stage_cap_bytes": 419430400,
+    "category_caps_bytes": {
+      "new_full_last_payload_cap": 117440512,
+      "two_model_only_milestones_cap": 75497472,
+      "new_raw_float32_and_container_cap": 96468992,
+      "endpoint_scores_and_reports_cap": 25165824,
+      "readable_galleries_cap": 33554432,
+      "compact_attempt_micro_logs_and_draw_audits_cap": 16777216,
+      "source_snapshots_config_and_identity_cap": 8388608,
+      "unallocated_growth_reserve": 46137344
+    },
+    "raw_float32_frame_bytes": 110592,
+    "raw_total_logical_bytes": 95551488,
+    "raw_container_files_max": 216,
+    "raw_container_overhead_reserved_bytes": 917504,
+    "raw_plan_does_not_depend_on_compression_ratio": true,
+    "avoid_duplicate_endpoint_float64_bytes": 95551488,
+    "baseline_reported_reference_bytes": 2456891776,
+    "baseline_reference_kind": "Independent root/audit actual shared footprint before final proposal/callback; refresh again at C3 release",
+    "projected_worst_total_at_reference_bytes": 3145806208,
+    "headroom_at_reference_bytes": 75419264,
+    "maximum_existing_shared_baseline_to_reserve_full_stage_bytes": 2532311040,
+    "shortage_policy": "Report exact shortfall; never delete old evidence/weights or reduce to another300-update batch. No launch if full-stage reservation does not fit.",
+    "logging_bound": "Compact indices/IDs and numeric per-attempt/micro rows; reference frozen861-window catalogue. Do not repeat full16-window metadata at each of5700 attempts, which would exceed the16MiB compact-log budget.",
+    "nonstage_ledger_status_growth_reserve_bytes": 1048576,
+    "atomic_write_order": "Sequential safe full save at each complete observation before its new evaluations. Preserve old full until verified atomic replace; no simultaneous large temp checkpoint writes. Gallery generation after model clock closed. Reserve256MiB covers temporary replacement, not another permanent full."
+  },
+  "frozen_input_references": {
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\manifest.json": "e8d78646c3869557ddc54a752addb0463e8ead05424ae1e9e03bd7cc211f4eb6",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\split-plan.json": "0b05ad6ff820e34c0f4c6e3a0c961bee96da70d0adbd3f8c35e068d5861c79c0",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\pools.json": "11db84d37f27994fb9a58acef7ca7501eb12965da2b2ee20e5243a072562a6ec",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\draws4800.json": "e4ee1035144ec053245f900c5b03fd2afe56365ec69db079647f69bcc1a0a0fc",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\data\\order-state4800.json": "d859970107c6af7db0710a46069867eb5c110e391450877e9b743d4efa4dae67",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\evaluation\\indices.json": "48829714f3739276a79f4f9740600c3e70d3831a5a6f4b8ea7bc96fda517bcb5",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c0\\evaluation\\protocol.json": "7ca3270f441154fb7ab5e07b089e9a5485c4435459d3f18e23625e1016e5b35d",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-20261028\\frozen-renderer-calibration.json": "fae795cd325ca4b88aa23faa127f9e84036f06bec485b169d12b902887c45609",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\source-identity.json": "317cc28812c59770782642915bc39884109609bb4172e15668e2632a0410eb64",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\configs\\native_rgb_r2c1r1.json": "65551468b89763ecfa30ee8a67232d87813a843f8975f5f38706f96fccbb379a",
+    "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c2\\PARENT_TRAINING_LENGTH_NOTE.md": "1ee62a6646185e20ee34d4903cf00f3ef79596733b18d4356a9245ed6ef75079"
+  },
+  "implementation_prerequisites": [
+    "Explicit successor checkpoint/config identity preserving original R1 payload and native math; no silent restore helper bypass",
+    "Versioned continuation of the same R2C0 order beyond4800 with lossless legacy state migration and prefix/queue/RNG CPU proofs",
+    "Replace inherited per-stage300 attempt guards, R1 CLI CAPS300 and global3000 guard together with explicit5700-complete C3 scope; preserve counters and genuine failure accounting",
+    "Restore cosine state and public conditional step through3000, then hold eta_min; targeted LR boundary tests",
+    "Raw endpoint-reference loader with exact float64 metric identity equivalence; no duplicate images",
+    "Full-byte/stage/shared/atomic preflight and bounded compact logging; freeze source/config/input identities before unique run"
+  ],
+  "interpretation": {
+    "C2_scope": "sampler dependence only at fixed300-update weights; cannot establish training sufficiency, convergence, capacity ceiling or hopeless shape fidelity",
+    "horizontal_gain": "3-to16 improvement at a fixed training point supports a sampling factor",
+    "longitudinal_gain": "improvement with training at fixed sampler supports insufficient training at300",
+    "both_or_neither": "Report both factors or no improvement honestly; no unique-cause claim; small/ambiguous differences remain insufficient evidence",
+    "overfit_check": "TRAIN loss/metrics improve while seen-val/nearstatic/shape worsen is a retention/overfit warning, not unseen generalization evidence",
+    "point_6000": "an observation, not automatic convergence or final project completion; parent decides whether10000plus is warranted"
+  },
+  "forbidden": [
+    "actual C3 execution before parent C2 acceptance/instruction",
+    "new training in this proposal",
+    "new physics or half-life experiments",
+    "unseen8 letters",
+    "server startup or automatic upload/training",
+    "automatic sampling-ratio/data/model changes",
+    "deleting old weights/evidence",
+    "hard model-time cutoff"
+  ],
+  "server_training": "Always manually executed by the human."
+}

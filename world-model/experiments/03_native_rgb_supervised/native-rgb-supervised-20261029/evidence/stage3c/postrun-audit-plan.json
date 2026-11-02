@@ -1,0 +1,110 @@
+{
+  "kind": "stage3c-cold-only-postrun-audit-plan.v1",
+  "prepared_at_utc": "2026-10-29T05:11:38.452376+00:00",
+  "status": "prepared_not_executed_waiting_for_explicit_root_cold_notification",
+  "scope": {
+    "hot_training_artifacts_read": false,
+    "new_torch_or_model_imports": false,
+    "checkpoint_deserialization": false,
+    "gpu_optimizer_or_physics_work": false,
+    "frozen_runtime_edits": false
+  },
+  "execution_preconditions": [
+    "Root explicitly declares the sole stage3C run cold. No session polling.",
+    "Read final model-work.json, require budget.closed=true and global active_stage=null; otherwise preserve error and stop."
+  ],
+  "expected_authorized_bounds": {
+    "parent_updates": 129,
+    "parent_draws": 2064,
+    "parent_cost_seconds": 444.6250000000073,
+    "cumulative_target_updates": 250,
+    "local_attempt_cap": 121,
+    "local_model_seconds_cap": 600,
+    "local_new_update_cutoff_seconds": 420,
+    "initial_tail_reserve_seconds": 180,
+    "global_attempt_cap": 3000,
+    "global_seconds_cap": 5400,
+    "no_new_physics": true
+  },
+  "checks": [
+    {
+      "area": "closed_cost",
+      "verify": [
+        "Final runtime ledger equals the durable global ledger.",
+        "Exactly prior two closed stage records and historical costs remain unchanged; new3C stage is separately charged.",
+        "Local reserved/completed attempts <=121; cumulative updates <=250; failures/AMP skips remain charged.",
+        "Global seconds equal444.6250000000073+local actual seconds and global attempt delta matches the newstage; caps3000/5400 unchanged."
+      ]
+    },
+    {
+      "area": "actual_restore",
+      "verify": [
+        "restore-review passed; six protected before/after state hashes identical for model/optimizer/scaler/scheduler/RNG/order.",
+        "Start129 updates/2064samples/cursor2064,296optimizer entries,Tmax3000,last_epoch129.",
+        "Restored parameter hashes match pinned3B fitted129 evidence.",
+        "Only declared phase/output/local-budget/source metadata delta; newsource identity is truthful and oldcore unchanged.",
+        "Initial complete129 boundary save recorded before any new update; after overwrite this is provenance evidence, not a claim that an extra129weight file is retained.",
+        "Private saveguard prevents unverified/fresh0 state from becoming a usable continuation checkpoint."
+      ]
+    },
+    {
+      "area": "new_training_progress",
+      "verify": [
+        "History logical updates run130..final; sampling attempt numbers continue from129, each real effective batch16.",
+        "Reconstruct new selected-index Counter and add parent exposures; exact match to cumulative progress, samples/ordercursor/attempted_draws.",
+        "No window outside frozenTRAIN18, DEV36 unchanged.",
+        "Inherited first_gradient_norms and initial_parameter_sha256 retain original scope; do not mislabel inherited norms as new3C measurements.",
+        "Newhistory loss/global gradient_norm finite; LR equals original cumulative cosine schedule at each logical step.",
+        "Local history time is run_seconds minus parent training_seconds, not raw cumulative run_seconds. Actual reserve guard controls gradient start time.",
+        "Compute129-to-final changed tensor hashes from stage3c_resume_parameter_sha256 versus newfinal native metadata; preserve original-published initial hashes."
+      ]
+    },
+    {
+      "area": "final_outputs_checkpoint_timing",
+      "verify": [
+        "Only one final18+36H1 inference phase; no originalbaseline or129 re-prediction; fixed batch members/seeds unchanged.",
+        "Checkpoint semantic runtime review passed inside the same model clock; independently hash currentlast without Torchload.",
+        "Final checkpoint fields/currentidentity,updates,cursor andTmax are consistent; last_only/no best.",
+        "Fullstage peak equals max(restore boundary peak, coretrain/native peak), preserving missing-value limits.",
+        "Include model construction/load, state fingerprint/initialsave, training, fixedloss, finalnative, saves, semanticcheck and cleanup in actualcost."
+      ]
+    },
+    {
+      "area": "frozen_and_storage",
+      "verify": [
+        "Check96frozen source/input identities and snapshots; verify oldprotected evidence or its independent cold audit without modifying originals.",
+        "Purestdlib file-metadata scan of startup storage roots, deduplicate overlaps, report errors/reparse points.",
+        "Allold/new/native source/cache/GPC/physics/originalasset plus>=256MiB atomicreserve <=3GiB.",
+        "Output a timestamped snapshot and disclose later small report growth; root refreshes once before callback."
+      ]
+    }
+  ],
+  "cold_evidence_to_read": [
+    "model-work.json",
+    "restore-review.json",
+    "run/result.json",
+    "run/history.jsonl",
+    "run/sampling-history.jsonl",
+    "run/validation.json",
+    "source-identity.json",
+    "run/source-snapshot/identity.json",
+    "MODEL_WORK_STARTED.json",
+    "parent-expected.json",
+    "prior-ledger.json",
+    "continuation-plan.json",
+    "predictions/fitted-train18.json",
+    "predictions/fitted-dev36.json",
+    "review-protected-inputs.json",
+    "../native-rgb-cost-ledger.json"
+  ],
+  "planned_outputs": [
+    "review-postrun-budget.json",
+    "review-postrun-budget.md",
+    "final-storage.json"
+  ],
+  "conclusion_limits": [
+    "Exact restore/training evidence does not imply motion or shape score success.",
+    "Unused budget does not authorize another model execution or stage4.",
+    "On missing/failing final evidence preserve denominators and state unknown/failed; never silently complete from a partial subset."
+  ]
+}

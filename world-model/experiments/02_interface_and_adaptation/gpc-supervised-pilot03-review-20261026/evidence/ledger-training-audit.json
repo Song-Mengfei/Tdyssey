@@ -1,0 +1,183 @@
+{
+  "actual_euler_calls_inferred_from_three_step_source_and_outputs": 999,
+  "actual_predictions_supported_by_saved_outputs": 333,
+  "adapted_evaluation_started": false,
+  "checkpoint_boundaries": [
+    50,
+    100,
+    150,
+    200,
+    250,
+    300,
+    350,
+    400,
+    450,
+    500
+  ],
+  "cleanup_errors": [],
+  "euler_completed": 996,
+  "euler_reserved": 999,
+  "eval_completed": 16,
+  "event_counts": {
+    "checkpoint_committed": 10,
+    "checkpoint_selected": 1,
+    "complete_eval": 16,
+    "complete_forecast": 332,
+    "complete_model_load": 2,
+    "complete_update": 500,
+    "created": 1,
+    "failed": 1,
+    "reserve_eval": 16,
+    "reserve_forecast": 333,
+    "reserve_model_load": 2,
+    "reserve_update": 500
+  },
+  "finite_gradient_metric_count": 500,
+  "first_account_failure": "evaluation_failed: OSError: [WinError 1175] \u65e0\u6cd5\u5220\u9664\u8981\u88ab\u66ff\u6362\u7684\u6587\u4ef6\u3002",
+  "first_heartbeat_error": {
+    "actual_worker_pid": 26136,
+    "at_monotonic": 45866.296,
+    "at_unix": 1792962738.03157,
+    "at_utc": "2026-10-25T21:12:18.031569+00:00",
+    "details": null,
+    "errno": 22,
+    "exception_type": "OSError",
+    "kind": "gpc_heartbeat_failure.v1",
+    "message": "[WinError 1175] \u65e0\u6cd5\u5220\u9664\u8981\u88ab\u66ff\u6362\u7684\u6587\u4ef6\u3002",
+    "step": "status.atomic.publish",
+    "temporary_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-supervised-adaptation-pilot03-20261026\\guardian\\worker-status.json.e6e4fffabb22450b9b05b0daa112489f.tmp",
+    "traceback": "Traceback (most recent call last):\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 233, in _publish\n    step='heartbeat.publish';return publish_status(self.path,value)\n                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\gpc_adaptation_guard.py\", line 168, in publish_status\n    _publish_json(temporary,path,shared_status=True)\n  File \"__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\tdyssey\\wm_compat_guard.py\", line 135, in _publish_json\n    raise ctypes.WinError(ctypes.get_last_error())\nOSError: [WinError 1175] \u65e0\u6cd5\u5220\u9664\u8981\u88ab\u66ff\u6362\u7684\u6587\u4ef6\u3002\n",
+    "winerror": 1175
+  },
+  "first_training_noise_sha256": "6491426e8008aa70e167765a924defb1c197b3cc77d7b931d3abd17b625ec4f2",
+  "forecast_completed": 332,
+  "forecast_reserved": 333,
+  "global_lock_retained": false,
+  "guard_reason": "worker_heartbeat_failure:status.atomic.publish:OSError",
+  "heartbeat_error_to_guard_end_seconds": 0.39099999999598367,
+  "job_active_after_cleanup": 0,
+  "kind": "pilot03_ledger_training_offline_audit.v1",
+  "last_training_noise_sha256": "48f485962ec6955c10ba0f4307d33d48baa2b5eac7594bb5ec40f921fc057164",
+  "ledger_chain_valid": true,
+  "ledger_events": 1714,
+  "ledger_state": {
+    "active_model_role": "frozen",
+    "checkpoint": {
+      "boundary": {
+        "binding_sha256": "015a2a33ad4b71408e277330a4cbc11a9416b644437a5ba8f567026e80ce7e90",
+        "budget_id": "ed910e57093b4d9694884c9c6a4e8944",
+        "spent_eval_examples": 0,
+        "spent_reserved_euler_steps": 0,
+        "spent_reserved_eval_batches": 0,
+        "spent_reserved_forecasts": 0,
+        "spent_reserved_model_loads": 1,
+        "spent_reserved_updates": 500,
+        "spent_train_examples": 500,
+        "training_schedule": {
+          "cursor": 500,
+          "order_sha256": "54edfd533df01652b3208996f80bf88e9f19f9806bb01ddcde93adbcaafc170d",
+          "rule_sha256": "909d35e2816e317ec0766291632b91cef5e0bc1545bc7da176572176637a84bc",
+          "sha256": "f7217a2d09393798529b00e72fcd971e8d7be11cab7a9c769704a9b30ddd004a"
+        }
+      },
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\gpc-supervised-adaptation-pilot03-20261026\\adapted-latest.pt",
+      "sha256": "0bfd1a944c8fb01555a7ad2d01aab6f526a4805e2bb5239a96703d356c5741d3"
+    },
+    "checkpoint_committed_eval_batches": 0,
+    "checkpoint_committed_updates": 500,
+    "completed_euler_steps": 996,
+    "completed_eval_batches": 16,
+    "completed_forecasts": 332,
+    "completed_model_loads": 2,
+    "completed_updates": 500,
+    "first_reason": "evaluation_failed: OSError: [WinError 1175] \u65e0\u6cd5\u5220\u9664\u8981\u88ab\u66ff\u6362\u7684\u6587\u4ef6\u3002",
+    "model_load_roles": [
+      "train_init",
+      "frozen"
+    ],
+    "pending": {
+      "actual_count": 1,
+      "euler_steps": 3,
+      "kind": "forecast",
+      "metadata": {
+        "case": [
+          "L00",
+          "side",
+          5479
+        ],
+        "horizon": 3,
+        "mode": "AR",
+        "role": "frozen"
+      },
+      "operation_id": 1713
+    },
+    "selected_checkpoint_sha256": "0bfd1a944c8fb01555a7ad2d01aab6f526a4805e2bb5239a96703d356c5741d3",
+    "selection_count": 1,
+    "spent_eval_examples": 16,
+    "spent_reserved_euler_steps": 999,
+    "spent_reserved_eval_batches": 16,
+    "spent_reserved_forecasts": 333,
+    "spent_reserved_model_loads": 2,
+    "spent_reserved_updates": 500,
+    "spent_train_examples": 500,
+    "status": "stopped"
+  },
+  "ledger_terminal_sha256": "ebf9b867b3ec597403e0d4421f51320cb24a17be17fa458b792d026b16b4fe05",
+  "measurement_by_role_shape_stratum": {
+    "frozen|L|regression": 45,
+    "frozen|T|regression": 288
+  },
+  "measurement_rows": 333,
+  "model_loads_completed": 2,
+  "model_loads_reserved": 2,
+  "new_physics_or_policy": 0,
+  "noise_generator_chain_valid": true,
+  "overall_seconds": 360.57800000000134,
+  "paired_adaptation_effects": "unavailable",
+  "pending_forecast_output_present": true,
+  "raw_prediction_files": 333,
+  "real_retries": 0,
+  "selected_sha256": "0bfd1a944c8fb01555a7ad2d01aab6f526a4805e2bb5239a96703d356c5741d3",
+  "source_or_science_changed_after_launch": false,
+  "spent_cursor": 500,
+  "status": "stopped",
+  "temporary_status_counters": {
+    "at_monotonic": 45866.296,
+    "euler_steps": 999,
+    "eval_batches": 16,
+    "forecasts": 333,
+    "model_loads": 2,
+    "optimizer_updates": 500,
+    "phase": "evaluation"
+  },
+  "temporary_status_present": true,
+  "train_L": {
+    "gradient_norm_max": 6.850869655609131,
+    "gradient_norm_min": 0.04767301306128502,
+    "loss_mean": 0.0045906163767213005,
+    "loss_median": 0.0027861492708325386,
+    "n": 250
+  },
+  "train_T": {
+    "gradient_norm_max": 5.192049026489258,
+    "gradient_norm_min": 0.03915294259786606,
+    "loss_mean": 0.003849820179748349,
+    "loss_median": 0.00230528402607888,
+    "n": 250
+  },
+  "train_all": {
+    "gradient_norm_max": 6.850869655609131,
+    "gradient_norm_min": 0.03915294259786606,
+    "loss_mean": 0.0042202182782348245,
+    "loss_median": 0.0025324716698378325,
+    "n": 500
+  },
+  "training_selection_seconds": 135.76600000000326,
+  "training_shape_counts": {
+    "L": 250,
+    "T": 250
+  },
+  "unique_training_windows": 500,
+  "updates_completed": 500,
+  "updates_reserved": 500
+}

@@ -1,0 +1,10 @@
+# Independent CPU contact prototype, before running
+
+No model/GPU/training. This is a design probe, not the released physics protocol.
+Do not modify pinned reference, main wrapper, data or playground. Reconstruct B from its full initial public state plus all 37 recorded actions; compare against raw states and disclose internal solver cache limitation.
+
+Before looking at prototype results, define intended overlap target epsilon=0.25 world px (0.046875 image px), maximum acceptable numerical overlap 1.0 world px (0.1875 image px, less than 6% of the thinnest B stroke17.1429 worldpx). Overlap>2world px is material; center in solid or entering an initially unreachable sealed hole is illegal regardless of depth. Invalid/nonfinite must remain reported, not discarded. Existing old3.6–4.35 overlaps are neither automatically accepted nor erased; they are old protocol observations.
+
+Prototype keeps KINEMATIC pusher, DYNAMIC object, Space.damping0, original PD100/20 at100Hz, 10Hz requested absolute targets, unchanged body geometry/material/walls. Changes are explicit: solver50 instead of10; split each.01 integration interval into adaptive microsteps≤.0025s and maximum predicted point travel.25worldpx. Each microstep projects requested kinematic velocity into unilateral geometric contact-rate constraints against walls and the current dynamic-body closest-point velocity, permitting at most epsilon compression to establish genuine solver impulse. Do not move/clear velocities of object or write poses. Preserve tangential velocity. At a blocked wall normal command saturates instead of continuing to drive through.
+
+Candidate bounds are not changed based on results. At most one candidate37control B replay and one original37control replay initially; add at most six20control free-contact trajectories only if candidate remains finite. Save all attempt times/controls/microsteps and failures. A guard alone is not success. No claim exact upstream parity, since integration and contact command execution change.

@@ -1,0 +1,62 @@
+{
+  "kind": "R2C1-independent-CPU-contract-review.v1",
+  "ready_for_root_final_freeze": true,
+  "actual_model_execution_performed_by_reviewer": false,
+  "source_files": {
+    "tdyssey/native_rgb_r2c1_training.py": "e882799be46ee02f7f1c0ffa5d69c2d3c826f2a06b92ab8cbb546b5feb9c683c",
+    "tdyssey/native_rgb_r2c1_budget.py": "fadbe1176b15c5019b1815fc3d2a2aa561f2d73a9b56c68ab0ea07b2f7c2c745",
+    "scripts/native_rgb_r2c1_run.py": "265fddae4f1e336cd2b283f790849bd7ad72eb4b5b7df99d54c6b5fa0c7504e6",
+    "configs/native_rgb_r2c1.json": "6a25dd07f6760c30052754a9cbdeb0d60979faabfbe2204776130925de0b4c22",
+    "tests/test_native_rgb_r2c1_contracts.py": "e611671331f890b739f558d404381f423e7f49412f318abb2b580af07e55c86e",
+    "tdyssey/raw_world_model_training.py": "6084a5c34a961fd02b5139655ee148cfdc4d39e8a4356130f4fabf21b5ea2a02"
+  },
+  "focused_tests": 7,
+  "focused_tests_passed": true,
+  "focused_test_seconds": 0.217,
+  "checks": {
+    "original_H1_residual_function_reused": true,
+    "effective16_equals4micro_losses_weighted_point25": true,
+    "full_parameters_trainable_count_guard8729827": true,
+    "normalized_actions_pass_to_native_unchanged": true,
+    "finite_OOR_raw_persisted_and_feedback_unchanged": true,
+    "nonfinite_or_shape_OOM_hard_stop": true,
+    "durable_attempt_reserve_before_draw": true,
+    "no_failed_attempt_refund": true,
+    "frozen4800_prefix_and_data_eval_identity": true,
+    "prior_global250_868point484_preserved_and_caps3000_5400": true,
+    "local_caps300_1200_cutoff900_tail_atleast300": true,
+    "baseline_can_only_advance_update_cutoff": true,
+    "one_external_clock_covers_construct_infer_train_CPUmetrics_save_reload_cleanup": true,
+    "single_same_last_payload_t0_and_complete_boundary_only": true,
+    "no_midmicro_checkpoint": true,
+    "model_optim_scaler_scheduler_RNG_prepared_reload_digest_guard": true,
+    "original_and_final_samecohorts_sampler_batch_seeds": true,
+    "all4_rawsteps_saved": true,
+    "no_new_physics_renderer_or_unseen": true,
+    "conservative_shared_fullstage_plus_atomic_reservation_every_check": true,
+    "stage_actual_bytes_checked_on_cached_calls": true,
+    "full_scans_after_cache_period_and_force_save": true,
+    "scan_finish_time_resets_cache": true,
+    "CUDA_initialized_construction_failure_cleanup": true,
+    "cleanup_exception_becomes_failure": true,
+    "once_claim_and_prior_SHA_preflight": true,
+    "CLI_finish_after_train_cleanup": true
+  },
+  "input_audit": "independent-input-review.json",
+  "resource_policy": {
+    "shared_limit_bytes": 3221225472,
+    "stage_limit_bytes": 268435456,
+    "atomic_reserve_bytes": 268435456,
+    "full_stage_preallocated_bytes": 268435456,
+    "nonstage_growth_allowance_bytes": 1048576,
+    "fullscan_interval_seconds": 60,
+    "note": "No claim of per-call full filesystem scan. All old nonstage artifacts/sources freeze; only bounded ledger/status growth. Periodic/forced scan checks immutable-footprint premise."
+  },
+  "root_finalization": [
+    "Root final source/snapshot/config freeze must match actual current files before firstmodeloperation.",
+    "Root refreshing new_stage_source_files must include newconfig/tests alongside newcode forstage256MiB accounting; sharedroots already cover fullconfigs/tests/tdyssey/scripts.",
+    "Root alone performs CUDA occupancy preflight and the one authorized actual run."
+  ],
+  "practical_limit": "Synchronous native/IO/CUDA operations cannot be hard-preempted by these prechecks; measured overruns, missingevaluations and exceptions must remain reported, never extra-budget retries.",
+  "reviewer_no_Torch_model_GPU_optimizer_env_or_physics_calls": true
+}

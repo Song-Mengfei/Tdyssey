@@ -1,0 +1,92 @@
+{
+  "compare_only_after_root_cold_notification": true,
+  "compared_rows": 4,
+  "created_at_utc": "2026-10-29T04:23:30.641135+00:00",
+  "critical_old_source_sha256": {
+    "denoiser.py": "e4ce1c17a26b97fcee1d863e56f49b3c32c247900d08d06586941ef337463c41",
+    "diffusion_sampler.py": "d2995d0150e03f3115995b726786b213fa76167d8a589c21722fb797d0d06dd4",
+    "native_rgb_stage3_score.json": "353ba2e644842a7006d3b4b2e4fe913167a41e08a9f16e7cfbb92d767ae64428",
+    "native_rgb_stage3_score.py": "9a165c71befa83d190d29311c265e2795ae24205464310d26fd0e64100ff49d6"
+  },
+  "first_batch": {
+    "batch_index": 0,
+    "batch_seed": 3335533039,
+    "batch_size": 4,
+    "positions": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "window_ids": [
+      "train-2b-018:11",
+      "train-2a-091:4",
+      "train-2b-164:13",
+      "train-2a-021:28"
+    ]
+  },
+  "future_new_stage": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3b",
+  "helper_file": "compare-baseline-prefix.py",
+  "helper_sha256": "fb92cbc619cb4dfeb4da388e1d80e034b6dd9c09989e1c7a021ff2b22277a7f8",
+  "identical_input_files": [
+    {
+      "bytes": 189956,
+      "old_sha256": "dd5aaf17af1afc7e91fa2db9f0f1d5670999e75d6797aaf14e4934835fad7cab",
+      "relative_path": "frozen-windows.json"
+    },
+    {
+      "bytes": 22828,
+      "old_sha256": "fbcec905d228bc0731197db1ca415f95ac3214b8951653e0a3c61ba41022d68f",
+      "relative_path": "train18-windows.json"
+    },
+    {
+      "bytes": 157150,
+      "old_sha256": "8f3e13bf7a76fb7b77da430ff11c82f5f5ac7f0f80ee3d219059f1547c3156de",
+      "relative_path": "dev36-windows.json"
+    },
+    {
+      "bytes": 5148,
+      "old_sha256": "cf4553fd2001a7878f8c423e969b8c0b4f799e5ccca901fc918d6d0058666843",
+      "relative_path": "paired-batches.json"
+    },
+    {
+      "bytes": 267413,
+      "old_sha256": "a5af2f5dbae3fac9fd26e90b55e960a0ae310513f17895e5112d766b8e421e8e",
+      "relative_path": "truth/train18.npz"
+    },
+    {
+      "bytes": 529473,
+      "old_sha256": "13cb15e4f8652d070d793cb44713c4279fb08c2acb7d566b89efbedbe5b6be8c",
+      "relative_path": "truth/dev36.npz"
+    }
+  ],
+  "identity_comparisons": [
+    "Six original/copied index,batch,truth files byte-identical to this plan",
+    "all old/new frozen snapshot hashes internally valid",
+    "common frozen source paths have identical sourceSHA",
+    "published original checkpoint assetSHA identical",
+    "first4 batch seed,positions,members,size identical"
+  ],
+  "kind": "stage3b-predeclared-CPU-baseline-prefix-compare.v1",
+  "mismatch_policy": "Preserve every discrepancy, investigate inputs/source/randomness/device identity from existing records; never choose the better baseline or rerun models.",
+  "model_calls": 0,
+  "new_scores_or_thresholds": false,
+  "no_model_or_weights_load": true,
+  "old_raw_phase_npz": "predictions/frozen-train18.npz",
+  "old_stage": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3",
+  "original_published_checkpoint_sha256": "4084ed27c2c8b372aa10858474517ac7fe21b531de4a811059c35c05f8191892",
+  "physics_controls": 0,
+  "prediction_key": "prediction",
+  "raw_comparisons": [
+    "dtype/shape",
+    "contiguous raw bytesSHA256 for prefix and per row",
+    "np.array_equal(equal_nan=True)",
+    "max abs difference across all values only if both arrays fully finite",
+    "finite overlap difference separately qualified if any nonfinite",
+    "old/new window_ids and status",
+    "finite count/min/max/below0/above1 per row"
+  ],
+  "scoring_policy": "Use only the original frozen stage3 score9a165 and protocol353ba/calibrationcd2ed unchanged for complete3B baseline+fitted. Original stage3 data and score remain intact.",
+  "status_key": "status",
+  "window_ids_key": "window_ids"
+}

@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "kind": "independent_legacy_decoder_readonly_review",
+  "source_report_sha256": "c7b1e3257468874940ad074d3ffc00c3d3d88f9f6de16531aba6d2c3cc6e3795",
+  "source_decoder_config_sha256": "87731d5af6519f8a761959504e86b692bb57d9826b3aa49c5e3556b4f52a06c0",
+  "operations": {
+    "old_NPZ_reads_only": true,
+    "new_render_or_physics": 0,
+    "model_loads_or_forecasts": 0,
+    "downloads": 0,
+    "v1_decode_or_fit_calls": 0
+  },
+  "mask_collision_pairs": [
+    {
+      "shape": "T",
+      "left": "cal-T-10",
+      "right": "cal-T-11",
+      "true_coverages": [
+        0.9619047619047625,
+        0.9238095238095226
+      ],
+      "true_success_classes": [
+        true,
+        false
+      ],
+      "v1_decoded_coverages": [
+        0.9392538715241082,
+        0.9392538715241082
+      ],
+      "v1_object_fit_binary_input_identical": true,
+      "v1_full_object_color_mask_identical": false,
+      "v1_full_object_color_mask_different_pixels": 2,
+      "v1_pusher_mask_identical": false,
+      "full_RGB_identical": false,
+      "different_RGB_pixels": 51,
+      "RGB_max_absolute_difference": 0.7450979948043823,
+      "RGB_MSE": 0.00017489930905867368,
+      "RGB_derived_object_boundary_ROI_different_pixels": 35,
+      "RGB_derived_object_boundary_ROI_MSE": 0.0006332275224849582,
+      "ROI_definition": "one-pixel dilation of the common largest connected v1 color-mask component; no true pose/ROI used",
+      "object_RGB_ROI_excluding_two_pixel_dilated_blue_pusher_different_pixels": 30,
+      "object_RGB_ROI_excluding_pusher_MSE": 8.091930067166686e-05,
+      "pusher_exclusion_uses_truth": false
+    }
+  ],
+  "existing_prediction_failure_histogram": {
+    "L": {
+      "H1": {
+        "total": 141,
+        "valid": 0,
+        "reasons": {
+          "object_missing_or_area_mismatch": 128,
+          "object_shape_mismatch": 12,
+          "pusher_circle_mismatch": 1
+        }
+      },
+      "H4": {
+        "total": 141,
+        "valid": 4,
+        "reasons": {
+          "object_missing_or_area_mismatch": 102,
+          "object_shape_mismatch": 34,
+          "ok": 4,
+          "fragmented_object": 1
+        }
+      }
+    },
+    "T": {
+      "H1": {
+        "total": 48,
+        "valid": 6,
+        "reasons": {
+          "object_shape_mismatch": 22,
+          "object_missing_or_area_mismatch": 20,
+          "ok": 6
+        }
+      },
+      "H4": {
+        "total": 48,
+        "valid": 34,
+        "reasons": {
+          "ok": 34,
+          "object_shape_mismatch": 3,
+          "object_missing_or_area_mismatch": 11
+        }
+      }
+    }
+  },
+  "conclusions": [
+    "Observed cal-T-10/cal-T-11 have identical binary fit inputs and identical decoded pose, opposite strict-success labels, but different complete RGB and RGB-derived object-boundary values.",
+    "Identical binary masks establish information loss in that chosen thresholding representation, not equality of complete RGB observations.",
+    "Nonzero RGB differences are not by themselves proof that a new decoder can recover pose/coverage reliably; that requires a frozen RGB-only algorithm and validation with failures retained.",
+    "The v1 object fit sees a binary object mask; subthreshold and antialias color differences never reach its silhouette objective.",
+    "Pusher segmentation/circularity and object-component/shape gates can reject generated frames independently of whether useful pose evidence survives in RGB.",
+    "True pose/contact/coverage and future actions may be error labels only; they must not select masks, ROI, initialization, angle neighborhood, candidate, or a successful fit.",
+    "Existing v1 calibration and main predictions have already been inspected. A reused-data v2 split is development evidence and must not be called an untouched final test."
+  ],
+  "component_method": "Same 8-connectivity largest-component extraction as the source; no decoder fit or renderer invocation."
+}

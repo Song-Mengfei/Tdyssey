@@ -1,0 +1,25 @@
+{
+  "kind": "checkpoint500_offline_diagnosis_predecode_plan.v1",
+  "base_commit": "a461829c6bdf967c0bfab60e621e8c286465c68a",
+  "branch_rule": "For T/L x regression/independent x physical contact_by_h4 false/true, choose lexicographic first (anchor,candidate); empty cells stay empty.",
+  "prediction_rule": "seed5478; ARH1, ARH4, TFH4; frozen and adapted; at most48 existing predictions",
+  "real_rule": "Only selected branches: four history plus four actual frames per branch, at most64.",
+  "train_rule": "For shape/contact false,true, first two distinct (trajectory_id,anchor) in original500schedule order; train role only; exactlyfive frames per window, at most40.",
+  "statistics": "All3996 existing measurement JSON: role/shape/stratum/mode/horizon/contact_by_h4/physical truth large rotation byH4. Preserve invalid/null/abstention/physical branch and anchor denominators. No new scores.",
+  "commands": [
+    {"number":1,"arguments":["-B","scripts/gpc_checkpoint500_offline_diagnosis.py","freeze"],"scope":"JSON statistics and sample manifest; no pixel decode"},
+    {"number":2,"arguments":["-B","-m","unittest","tests.test_gpc_checkpoint500_offline_pixels","tests.test_gpc_checkpoint500_offline_contract"],"scope":"Fixed synthetic NumPy/ordinary-object checks; no production payload decode"},
+    {"number":3,"arguments":["-B","scripts/gpc_checkpoint500_offline_diagnosis.py","pixels","--manifest-sha256","SHA256_FROM_COMMAND1"],"scope":"Only fixed selected arrays; contact sheets and numerical diagnostics"}
+  ],
+  "external_timeout_seconds_per_command":60,
+  "authorized_command_maximum":4,
+  "planned_command_maximum":3,
+  "cumulative_seconds_maximum":240,
+  "working_set_bytes_maximum":1073741824,
+  "evidence_bytes_maximum":33554432,
+  "cpu_threads_maximum":2,
+  "external_wrapper":"scripts/run_gpc_offline_diagnostic_command.ps1",
+  "stop":"First numerical command error or cap: preserve outputs and stop all remaining numerical work, even if unused quota remains. No retry.",
+  "forbidden_operations":"Torch import, SDK, weight-to-tensor deserialize, CUDA, real model creation/call, new predictions/Euler, training/optimizer/policy, physical reset/control/render, new samples or acceptance changes: all0.",
+  "old_evidence":"Reuse sealed previous preservation baseline; only actual read key identities checked. Held payload contents0 opens/hashes. No production writes or new candidate/config/account."
+}

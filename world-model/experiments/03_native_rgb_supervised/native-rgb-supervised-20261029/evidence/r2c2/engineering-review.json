@@ -1,0 +1,45 @@
+{
+  "kind": "R2C2-final-prelaunch-independent-source-review.v1",
+  "checked_at_utc": "2026-10-29T12:44:36.650310+00:00",
+  "read_only_no_model": true,
+  "old_source_active_and_snapshots_checked": 256,
+  "old_source_unchanged": true,
+  "checkpoint_sha256": "3c397035857fe98b896ea5083b52f32c129f1787c1be6884d4c740a9e58e5be0",
+  "checkpoint_bytes": 105300718,
+  "checkpoint_not_loaded": true,
+  "model_calls": 0,
+  "new_scores": 0,
+  "issues": [],
+  "engineering_notes": [
+    "Native sampler calls model.denoise directly; count model.inner_model forward hook, not top-level Denoiser forward hook.",
+    "Order1 expected8setting 288 actual inner-model forwards and16setting576; observed counters must be recorded rather than fabricated.",
+    "R1 torch_native_sample keeps float32/no autocast and upstream denoise quantization; retain these exact native behaviors.",
+    "R1 RecordOnlyTimeLedger constructor is a one-time250/895.843 migration; C2 must append to current550/1382.218 v2 ledger without migration/reset/time caps.",
+    "R2C1StorageBudget default stage256MiB must be explicitly narrowed to C2 stage128MiB with shared3GiB+256MiB atomic reserve.",
+    "Only step0 histories/paired seeds/actions match R1; later histories must equal each setting own raw feedback, not R1 predictions.",
+    "Endpoint containers float64 exactly preserve float32 raw; verify raw steps files dtype float32, allH2/H3 retained.",
+    "rollout_raw swallows callback exceptions into short records; preserve full traceback around actual sampling/structural failures and abort all C2 settings on hard stop."
+  ],
+  "runner_ready_for_review": true,
+  "passed": true,
+  "runner_ready_for_root_single_launch": true,
+  "config_sha256": "a66c062fa6a5f1332001600daa1923a05ab74c543745aab3bfc6e845fd20c4c0",
+  "source_identity_sha256": "ea2f776b333efa73d055f66bd1cc223974e8a79e24268ba3b98a4732aa943bc1",
+  "frozen_source_files": 133,
+  "frozen_active_and_snapshot_sha_checks": 266,
+  "runner_cli_tests_sha256": {
+    "tdyssey/native_rgb_r2c2_inference.py": "1fb88a132092c86fe4aea5dbf6a4c9425c792d69f560c23a2a8b1aae49e971f0",
+    "scripts/native_rgb_r2c2_run.py": "eef747b06dd7a03dbde56d2a9ff77ad0fae30dc77746f5d6c59aabef6f54ddc6",
+    "tests/test_native_rgb_r2c2_contracts.py": "4fc431859cc3c355d7ff52df13ad901eb73a0678f1689cdaf46ce60aad630136"
+  },
+  "forbidden_training_calls": [],
+  "reviewed_contract_cases": [
+    "temporary existing v2 ledger crosses900/1200/5400/6001 without time refusal; prior cost/history preserved; all update methods forbidden",
+    "real raw sink retains float32 finiteOOR, unmodified feedback and full missing denominators with injected scorer only",
+    "sampler and before-call storage exceptions retain complete traceback, no retries",
+    "wrong dtype raw persists before exception"
+  ],
+  "reviewer_ran_cpu_tests": false,
+  "runner_reported_cpu_contracts_passed": 4,
+  "callback_traceback_and_wrongdtype_scene_now_retained": true
+}

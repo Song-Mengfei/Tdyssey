@@ -1,0 +1,30 @@
+{
+  "kind": "high-motion-fit-visible-standard.v1",
+  "frozen_before_predictions": true,
+  "H1_strong_IoU_min": 0.95,
+  "H1_translation_position_max_imagepx": 0.3,
+  "copy_error_reduction_min": 0.5,
+  "AR_IoU_min": 0.9,
+  "AR_position_max_imagepx": 1.0,
+  "case_IoU_floor": 0.85,
+  "case_fraction_min": 0.9,
+  "blue_position_mean_max_imagepx": 1.0,
+  "angle_error_max_deg": 5.0,
+  "axis_ratio_min": 1.2,
+  "true_axis_calibration_max_deg": 5.0,
+  "axis_jump_max_deg": 45.0,
+  "dual_axis_agreement_max_deg": 10.0,
+  "visible_rotation_guard_deg": 5.0,
+  "hole_min_pixels": 2,
+  "strong_definition": "true image-centroid displacement>=1px OR abs saved physical rotation>=3deg",
+  "dominant_definition": "strong target: translation/1 >= abs(rotation)/3 => translation; otherwise rotation. Threshold-normalized classification, not a physical unit equivalence.",
+  "shape_definition": "Original frozen renderer-calibrated visible topology/area/aligned-contour tolerances; independent same-frame hole/opening/components and blue checks. Occlusion/clipping unavailable remains unknown, never pass.",
+  "angle_definition": "PCA of gray and visible white convex-deficit regions, modulo180 and time-unwrapped; each real sequence calibrated against saved true angles first. Independent RH compares previous REAL frame to one prediction; AR compares its own trajectory. A visible-axis appendix, not a rigid-pose certificate.",
+  "uncertainty": "Unknown does not pass. Nonrotating targets have direction not_required, not false correctness. Existing formal numeric angular registrations do not override this diagnostic.",
+  "extra_noise_seeds": [
+    2026110171,
+    2026110172
+  ],
+  "primary_noise_seed": 2026110170,
+  "primary_failure_layout": "Three old failure cases are a new fixed B3 batch in this experiment; no numerical claim of pairing with historical CD B4 outputs."
+}

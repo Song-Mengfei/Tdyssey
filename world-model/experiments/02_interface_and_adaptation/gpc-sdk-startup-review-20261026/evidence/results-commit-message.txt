@@ -1,0 +1,16 @@
+docs(wm): record the single SDK startup diagnostic
+
+Why:
+Main review needs actual bounded startup evidence without reopening the spent
+training pilot or treating SDK readiness as a model-adaptation result.
+
+Changes:
+- Record the one sdk_ready result, stage timings, resource and output accounts.
+- Preserve the unknown original cause and the no-retry/no-training boundary.
+- Record unchanged old assets and held manifest/stat-only verification.
+
+Validation:
+- 43 engineering fake checks and source-only checks passed before launch.
+- One native SDK diagnostic: 3.860s guarded, 163259 retained bytes including claim.
+- Job empty, lock released; GPC/neural/physical work zero; no second diagnostic.
+- Offline stage/budget reconciliation and old-asset preservation passed.

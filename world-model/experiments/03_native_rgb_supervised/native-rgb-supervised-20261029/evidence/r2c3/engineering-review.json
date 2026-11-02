@@ -1,0 +1,82 @@
+{
+  "kind": "R2C3-independent-final-prelaunch-source-review.v2",
+  "checked_at_utc": "2026-10-29T13:17:49.198050+00:00",
+  "passed": true,
+  "issues": [],
+  "read_only_no_model": true,
+  "model_calls": 0,
+  "checkpoint_loads": 0,
+  "new_scores": 0,
+  "physics_controls": 0,
+  "config_sha256": "c3e0c11c038bceb2df409adddb33ece52a34aedd6a67837adea3f180973f66b2",
+  "source_identity_sha256": "6ff0203353ebb53cdb8811f132717d6a1235552060346a996c24cf3461044259",
+  "frozen_source_files": 141,
+  "source_and_snapshot_SHA_checks": 282,
+  "input_SHA_checks": 34,
+  "reviewed_code_SHA256": {
+    "tdyssey/native_rgb_r2c3_training.py": "f84519abc1467224387163da6a7647d9f5ad2ac0c7e479f669115767f7c29b1d",
+    "scripts/native_rgb_r2c3_run.py": "ec77d000f8dd3a00049513687ecb14736d0318c51f2798e88b07bd229c902871",
+    "tests/test_native_rgb_r2c3_resume.py": "95ce5f47f75d22081c5b14d1a4a463ea653cb906aaa52e9e7fad551888444525",
+    "tdyssey/native_rgb_r2c3_continuation.py": "7c596179724cc6062231b83fd6fe6b1942fd5ea598cea2e784f00d6c9fadfd4e",
+    "tests/test_native_rgb_r2c3_continuation.py": "21c17831913cc1e555bbee7cb38612693eaeda4b9275f7214a3ecaa64b004b88",
+    "tdyssey/native_rgb_r2c3_evaluation_io.py": "e77365d357e9c24370e05f6f79ab578136ad0f243511b4e55beaa0cdde21f18d",
+    "tests/test_native_rgb_r2c3_evaluation_io.py": "0378d0b29eca62afbba7ee6b4d2e755e3d08a4cb049a5b4bbb85e18ae39c9200"
+  },
+  "rules_confirmed": [
+    "Load complete trusted R1 checkpoint once; restore model/optimizer/scaler/scheduler/allRNG/PreparedInputs/progress, runtime digests verify each component before update301.",
+    "Versioned order preserves legacy4800 core and RNG/queues; normal AMP skips consume draws and each publicly extends16, restorable beyond96000; no first4800 replay.",
+    "Original supervised loss/batch/AMP/AdamW/clip preserved; fixed loss uint8 target now once-/255, RGB-only predictor and native sampler math unchanged.",
+    "AdamW None return is not a skip detector; public optimizer post-hook application count and scaler scale reduction distinguish real skip and success.",
+    "Normal finite AMP gradient overflow retains attempt/draw, lowers scale, leaves model/optimizer/scheduler unchanged, records skip/extends order and continues; no completion or LR advance.",
+    "Success resets consecutive overflow; sixteen consecutive skips or real fatal numerical/structural/OOM errors preserve evidence and stop.",
+    "LR update301 uses restoredL300; original cosine advances through successful3000 then hold eta_min without rebound; native last_epoch stays3000 with separate true completed count.",
+    "Explicit5700 new successful complete goal replaces old300/global3000 proposal guards; no attempt or model-time cutoff.",
+    "One rolling full checkpoint every100 successful updates, no duplicate t0; model-only1000/3000, closed milestone JSON allows immediate callback and continued work without permission wait.",
+    "checkpoint_dirty preserves safe scaler/order/RNG scene after skips even when lineage update equals last saved update.",
+    "Only1000/3000/6000 fixed loss and3/16 native evaluations; no new300-point evaluation, previous300 outputs/scores reused.",
+    "Reference endpoints avoid duplicate float64 arrays and verify source step/hash/row/window and canonical metric inputs; future truth is not predictor input.",
+    "Shared3GiB with256MiB atomic plus400MiB stage reservations retained; safe saves and cold galleries serialize large writes."
+  ],
+  "focused_contracts_reviewed": {
+    "resume_and_fixedloss_and_scaled_step": 5,
+    "continuation_order_LR_accounting": 7,
+    "endpoint_references": 1
+  },
+  "reviewer_repeated_test_execution": false,
+  "runner_reported_tests_passed": true,
+  "historical_proposal_overrides": [
+    "Actual human requested continued longer training; historical proposal-only waiting clause superseded.",
+    "Parent correction ordinary AMP skip must continue, not old proposal fatal-on-first-skip.",
+    "No new300 fixed-loss evaluation; fixed loss curve begins1000."
+  ],
+  "root_must_launch_once": true,
+  "run_not_started_by_reviewer": true,
+  "notes": [
+    "This is a source/contract review, not a claim that future runtime training or milestones have already completed.",
+    "Real observed counters, costs, checkpoint reload and scientific outcomes still require the one actual authorized run."
+  ],
+  "prior_review_identity_history": [
+    {
+      "config_sha256": "e26148f5eeb0e74de23a9beee0d6af8ab6b0a707e25af018cddbcce38e8b1fab",
+      "source_identity_sha256": "2f96c850ae712c3157f6039639be8f04d109de4cea910cc129e9d0c7d4ed5a83",
+      "reason": "Preserved initial freeze before explicit missing time-policy link correction; no prior model operations."
+    }
+  ],
+  "active_config_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\configs\\native_rgb_r2c3.json",
+  "active_source_identity_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\source-identity-v2.json",
+  "active_input_identity_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c3\\input-identities-v2.json",
+  "config_link_correction_verified": true,
+  "config_link_correction_keys": [
+    "input_identity",
+    "source_identity",
+    "time_policy_file",
+    "time_policy_sha256"
+  ],
+  "unchanged_nonconfig_source_SHA_manifest_rows": 140,
+  "active_config_snapshot_SHA_verified": true,
+  "time_policy_link_SHA_verified": true,
+  "correction_reviewed_at_utc": "2026-10-29T13:20:23.353337+00:00",
+  "additional_model_calls": 0,
+  "additional_checkpoint_loads": 0,
+  "additional_scores": 0
+}

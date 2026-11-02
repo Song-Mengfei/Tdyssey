@@ -1,0 +1,18 @@
+docs(wm): record the v2 measurement lock timeout
+
+Why:
+The single authorized v2 comparison stopped during M on the fixed storage-lock
+deadline. Its incomplete evidence and spent account must remain reviewable.
+
+Changes:
+- Record the 22.485-second native guardian stop and 24 durable L measurements.
+- Preserve null gates, unattempted forecast denominators and zero model costs.
+- Report partial calibration, resources, cleanup and exact storage accounting.
+- Document integrity checks and the separately regenerated test-log exceptions.
+
+Validation:
+- Journal chain: 51 valid events; 25 completed outputs and no pending work.
+- All 86 code and 280 asset binding hashes match the execution source/assets.
+- Original 703 files/23 roots and all v1 production files/claims are unchanged.
+- Frozen v2 inventory: 37 files, 683850 bytes; native Job and PID cleanup pass.
+- Source/link, message and whitespace checks passed; no rerun or repair.

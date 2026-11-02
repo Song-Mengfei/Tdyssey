@@ -1,0 +1,78 @@
+{
+  "kind": "native-gpc-stage3-independent-prepared-input-review.v1",
+  "checked_at_utc": "2026-10-29T03:48:59.526420+00:00",
+  "passed": true,
+  "checks": {
+    "train_support_exact": true,
+    "all18_independent_min_hash_selections": true,
+    "dev36_original_order_and_fields": true,
+    "joint_manifest_sha": true,
+    "development_file_sha": true,
+    "config_window_and_batch_sha": true,
+    "train18_paired_batches": true,
+    "train18_truth_contract": true,
+    "train18_last_hold_timing": true,
+    "train18_absolute_raw_actions": true,
+    "dev36_paired_batches": true,
+    "dev36_truth_contract": true,
+    "dev36_last_hold_timing": true,
+    "dev36_absolute_raw_actions": true,
+    "all20_original_GPC_sources": true,
+    "released_init_SHA": true
+  },
+  "details": {
+    "train18": {
+      "batch_sizes": [
+        4,
+        4,
+        4,
+        4,
+        2
+      ],
+      "truth_sha256": "a5af2f5dbae3fac9fd26e90b55e960a0ae310513f17895e5112d766b8e421e8e",
+      "histories_shape": [
+        18,
+        4,
+        3,
+        96,
+        96
+      ],
+      "actions_absolute_shape": [
+        18,
+        4,
+        2
+      ],
+      "true_differs_from_last_windows": 18
+    },
+    "dev36": {
+      "batch_sizes": [
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "truth_sha256": "13cb15e4f8652d070d793cb44713c4279fb08c2acb7d566b89efbedbe5b6be8c",
+      "histories_shape": [
+        36,
+        4,
+        3,
+        96,
+        96
+      ],
+      "actions_absolute_shape": [
+        36,
+        4,
+        2
+      ],
+      "true_differs_from_last_windows": 35
+    }
+  },
+  "reviewer_model_loads": 0,
+  "reviewer_physics_controls": 0,
+  "reviewer_training_iterator_calls": 0
+}

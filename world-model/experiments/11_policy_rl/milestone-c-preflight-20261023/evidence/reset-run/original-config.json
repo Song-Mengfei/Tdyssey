@@ -1,0 +1,164 @@
+{
+  "base": {
+    "bytes": 1095708090,
+    "sha256": "37d661ce6a487905fa4ff81ab7d65bf1b56b1c06adf480a961f65338fa0e38a0"
+  },
+  "budgets": {
+    "development": {
+      "control": 24000,
+      "plan": 3040,
+      "reset": 160
+    },
+    "diagnostic": {
+      "control": 0,
+      "plan": 0,
+      "reset": 0
+    },
+    "global": {
+      "actor_step": 72,
+      "batch": 24,
+      "critic_step": 72
+    },
+    "max_checkpoints": 2,
+    "storage_bytes": 536870912,
+    "train": {
+      "control": 2048,
+      "plan": 384,
+      "reset": 384
+    },
+    "wall_time_seconds": 7200
+  },
+  "evaluation": {
+    "episode_controls": 300,
+    "max_groups": 4,
+    "new_development_scenes": [
+      100003,
+      100004
+    ],
+    "policy_seeds": [
+      5478,
+      5479
+    ],
+    "scenes": [
+      100000,
+      100001,
+      100002,
+      100003,
+      100004
+    ],
+    "untouched_test": false
+  },
+  "optimization": {
+    "actor_lr": 1e-05,
+    "beta": 1.0,
+    "clip": 0.2,
+    "critic_lr": 0.0003,
+    "denoising_discount": 1.0,
+    "first_batch_passes": 1,
+    "gae_lambda": 0.95,
+    "gamma": 0.99,
+    "max_grad_norm": 1.0,
+    "max_passes": 3,
+    "plan_microbatch": 1,
+    "std_floor": 0.01,
+    "step_microbatch": 1,
+    "subset": "output",
+    "target_kl": 0.02
+  },
+  "runtime": {
+    "device": "cuda",
+    "precision": "fp32",
+    "threads": 4
+  },
+  "scenes": {
+    "excluded_evaluation": [
+      100000,
+      100001,
+      100002,
+      100003,
+      100004
+    ],
+    "training": {
+      "L": [
+        500000,
+        500001,
+        500002,
+        500003,
+        500004,
+        500005,
+        500006,
+        500007,
+        500008,
+        500009,
+        500010,
+        500011,
+        500012,
+        500013,
+        500014,
+        500015,
+        500016,
+        500017,
+        500018,
+        500019,
+        500020,
+        500021,
+        500022,
+        500023,
+        500024,
+        500025,
+        500026,
+        500027,
+        500028,
+        500029,
+        500030,
+        500031
+      ],
+      "T": [
+        400000,
+        400001,
+        400002,
+        400003,
+        400004,
+        400005,
+        400006,
+        400007,
+        400008,
+        400009,
+        400010,
+        400011,
+        400012,
+        400013,
+        400014,
+        400015,
+        400016,
+        400017,
+        400018,
+        400019,
+        400020,
+        400021,
+        400022,
+        400023,
+        400024,
+        400025,
+        400026,
+        400027,
+        400028,
+        400029,
+        400030,
+        400031
+      ]
+    }
+  },
+  "schema_version": 1,
+  "shapes": [
+    "T",
+    "L"
+  ],
+  "status": "proposed_not_executed",
+  "train_seed": 5478,
+  "training": {
+    "batch_controls": 128,
+    "batch_plans": 16,
+    "episode_controls": 300
+  }
+}

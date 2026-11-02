@@ -1,0 +1,45 @@
+{
+  "kind": "native-gpc-stage3-independent-source-review.v1",
+  "checked_at_utc": "2026-10-29T03:49:52.337764+00:00",
+  "passed": true,
+  "training_module": {
+    "baseline_sha256": "5209c9c269fc15e98c752032c1998b92bf95ee5cff43e100ff4a166f279e883d",
+    "current_sha256": "2f81949a58604bb87a41c3bd2aa147836eddcd30c483f96d813b2a47294ef768",
+    "changed_existing_top_level_definitions": [
+      "save_training_checkpoint",
+      "source_identity",
+      "train"
+    ],
+    "added_definitions": [
+      "explicit_window_indices",
+      "invoke_native_prediction_callback"
+    ],
+    "unchanged_core_AST": {
+      "construct_model": true,
+      "WindowOrder": true,
+      "BatchRenderer": true,
+      "capture_rng": true,
+      "restore_rng": true,
+      "normalized_config": true,
+      "measure_denoising": true,
+      "data_identity": true,
+      "tensor_hashes": true,
+      "parameter_update_report": true
+    },
+    "unchanged_native_math_calls_in_train": {
+      "supervised_denoising_loss": true,
+      "AdamW": true,
+      "CosineAnnealingLR": true,
+      "autocast": true,
+      "backward": true,
+      "unscale_": true,
+      "clip_grad_norm_": true,
+      "GradScaler": true,
+      "step": true,
+      "update": true
+    }
+  },
+  "budget_module_sha256": "0da5929c2fcaa3f5451342bafebed270d7ee75d380eaf5fc65161424bbaf4e6f",
+  "model_loads": 0,
+  "optimizer_updates": 0
+}

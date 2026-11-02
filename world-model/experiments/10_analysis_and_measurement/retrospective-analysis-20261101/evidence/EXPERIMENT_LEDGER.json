@@ -1,0 +1,391 @@
+{
+  "schema": "retrospective-experiment-ledger.v1",
+  "caveat": "Do not sum branches as one model; missing cost is null, not zero. Time scopes differ.",
+  "rows": [
+    {
+      "id": "RIGID",
+      "parent": "旧结构化起点",
+      "data_ids": [
+        "D00"
+      ],
+      "controlled_change": "结构化路线，已撤销",
+      "successful_updates": 261,
+      "supervised_exposures": null,
+      "wall_or_model_seconds": null,
+      "result": "未通过，数字仅历史消息",
+      "evidence": [
+        "E05"
+      ],
+      "verification": "historical_chat_only"
+    },
+    {
+      "id": "NATIVE1668",
+      "parent": "published GPC",
+      "data_ids": [
+        "D01"
+      ],
+      "controlled_change": "全参数native RGB/残差MSE",
+      "successful_updates": 1668,
+      "supervised_exposures": null,
+      "wall_or_model_seconds": 5352.516,
+      "result": "未胜copy-last；best1500/last1668已删除",
+      "evidence": [
+        "E06"
+      ],
+      "optimizer_attempts_including_replay": 1899
+    },
+    {
+      "id": "STAGE3",
+      "parent": "published GPC",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "微拟合入口",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 28.344,
+      "result": "首baseline负值守卫中断，不能说200步拟合失败",
+      "evidence": [
+        "E08"
+      ]
+    },
+    {
+      "id": "MICRO129",
+      "parent": "published GPC",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "18窗微拟合",
+      "successful_updates": 129,
+      "supervised_exposures": 2064,
+      "wall_or_model_seconds": 416.281,
+      "result": "未通过18窗拟合门槛",
+      "evidence": [
+        "E08"
+      ]
+    },
+    {
+      "id": "MICRO250",
+      "parent": "MICRO129 complete state",
+      "data_ids": [
+        "D04"
+      ],
+      "controlled_change": "同18窗继续121更新",
+      "successful_updates": 121,
+      "supervised_exposures": 1936,
+      "wall_or_model_seconds": 423.859,
+      "result": "train18旧门槛通过，DEV/刚性失败；独立于6000线",
+      "evidence": [
+        "E09"
+      ]
+    },
+    {
+      "id": "R2C1_FAIL",
+      "parent": "published GPC",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "新入口日志参数冲突",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 27.359,
+      "result": "保存t0后停；无训练/推理",
+      "evidence": [
+        "E15"
+      ]
+    },
+    {
+      "id": "R2C300",
+      "parent": "published GPC fresh optimizer",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "80%明显运动曝光",
+      "successful_updates": 300,
+      "supervised_exposures": 4800,
+      "wall_or_model_seconds": 486.375,
+      "result": "motionH4 IoU .531987，近静止漂移/形状失败",
+      "evidence": [
+        "E16"
+      ],
+      "AMP_skips": 0
+    },
+    {
+      "id": "R2C_SAMPLE",
+      "parent": "fixed R2C300",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "denoise3/8/16",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 86.907,
+      "result": "motionH4 IoU .531987/.504268/.489620",
+      "evidence": [
+        "E17"
+      ]
+    },
+    {
+      "id": "R2C6000",
+      "parent": "R2C300 complete state",
+      "data_ids": [
+        "D07"
+      ],
+      "controlled_change": "延长训练至6000",
+      "successful_updates": 5700,
+      "supervised_exposures": 91200,
+      "wall_or_model_seconds": 6876.985,
+      "result": "motionH4 .531987→.635105；棱角仍未恢复",
+      "evidence": [
+        "E18"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 6000
+    },
+    {
+      "id": "R3A",
+      "parent": "无模型",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "独立采集；50/50 clean-weak接口准备",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "912成功；选23984目标",
+      "evidence": [
+        "E19"
+      ]
+    },
+    {
+      "id": "R3B_FAIL",
+      "parent": "6000 complete state",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "后台加载器启动失败",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 33.047,
+      "result": "正式cursor0，未训练；后经授权修复",
+      "evidence": [
+        "E21"
+      ]
+    },
+    {
+      "id": "R3B7499",
+      "parent": "6000 complete state",
+      "data_ids": [
+        "D08"
+      ],
+      "controlled_change": "新数据+cleanweak；一遍23984目标",
+      "successful_updates": 1499,
+      "supervised_exposures": 23984,
+      "wall_or_model_seconds": 1469.752,
+      "result": "H4均值改善，运动保形未通过",
+      "evidence": [
+        "E20"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 7499,
+      "formal_training_loop_seconds": 1205.891
+    },
+    {
+      "id": "AR1_E1",
+      "parent": "7499 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "跨物理域新数据一遍，LR1e-5",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 6452.18,
+      "result": "全48 H16 IoU .497→.597；强OC失败",
+      "evidence": [
+        "E28",
+        "E30"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 9433,
+      "collection_wall_seconds": 1625.66,
+      "training_side_seconds_including_baseline": 4326.94
+    },
+    {
+      "id": "OC_E2",
+      "parent": "AR1_E1 full state",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同数据再完整一遍",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 15146,
+      "result": "全48 H16 IoU .6306；强OC .4039",
+      "evidence": [
+        "E31"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 11367
+    },
+    {
+      "id": "OC_E3",
+      "parent": "OC_E2 full state",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同数据再完整一遍",
+      "successful_updates": 1934,
+      "supervised_exposures": 30935,
+      "wall_or_model_seconds": 13859.9,
+      "result": "全48 H16 IoU .6226；强OC .3316，退步",
+      "evidence": [
+        "E31"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13301
+    },
+    {
+      "id": "OC_DENOISE16",
+      "parent": "fixed AR1_E1",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "仅强OC8例denoise3→16",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "H16 .3472→.2839；有限配对限制",
+      "evidence": [
+        "E31"
+      ]
+    },
+    {
+      "id": "A",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "4步分组但全部真实历史，原残差MSE",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1291.207,
+      "result": "正式48 H16 .641489；O不转/短暂反向，B丢孔",
+      "evidence": [
+        "E32"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "B",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "h2起自身生成history/detach，原残差MSE",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1593.091,
+      "result": "正式48 H16 .686780，但运动H1/落点变差",
+      "evidence": [
+        "E32"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "C",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "全部真实历史；.50全图+.25区域+.25边缘残差",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1178.23,
+      "result": "运动门槛三项过，O方向/B孔未过；总体.640077",
+      "evidence": [
+        "E34"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "D",
+      "parent": "OC_E2 full model/Adam/scaler/RNG",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "同C loss，每batch2真2生成，62.5%目标全真上下文",
+      "successful_updates": 1892,
+      "supervised_exposures": 30272,
+      "wall_or_model_seconds": 1895.643,
+      "result": "运动门槛三项失败，O/B失败；总体.671314",
+      "evidence": [
+        "E34"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 13259,
+      "time_scope": "training loop, not full experiment wall"
+    },
+    {
+      "id": "CD_DIAGNOSIS",
+      "parent": "E2/A/B fixed",
+      "data_ids": [
+        "D14"
+      ],
+      "controlled_change": "同16个O/B案例真实历史单步768帧",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": 240.078,
+      "result": "未发现核查范围内接口错位；B RH保两孔、AR丢孔；O单步方向多unknown",
+      "evidence": [
+        "E37"
+      ],
+      "predicted_frames": 768
+    },
+    {
+      "id": "SAVED_IDENTITY_AUDIT",
+      "parent": "A/B/C/D",
+      "data_ids": [
+        "D15"
+      ],
+      "controlled_change": "CPU保存结果与checkpoint身份核验",
+      "successful_updates": 0,
+      "supervised_exposures": 0,
+      "wall_or_model_seconds": null,
+      "result": "确实更新/新输出，不能证明改善",
+      "evidence": [
+        "E39"
+      ]
+    },
+    {
+      "id": "HMF3000_COMPLETE",
+      "parent": "OC_E2 full state",
+      "data_ids": [
+        "D16"
+      ],
+      "controlled_change": "单分支高运动曝光，沿用A配方；样本范围/曝光比例/训练量同时改变",
+      "successful_updates": 3000,
+      "supervised_exposures": 48000,
+      "wall_or_model_seconds": 2273.4838530998677,
+      "result": "单步与训练AR明显改善，完整联合拟合未通过；验证C及旧3例退步",
+      "evidence": [
+        "E40",
+        "E72",
+        "E73",
+        "E74",
+        "E75"
+      ],
+      "AMP_skips": 0,
+      "lineage_end": 14367,
+      "time_scope": "training loop; worker total4123.711s",
+      "completed_singapore": "2026-11-01 23:53:45",
+      "historical_snapshot_retained": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\retrospective-analysis-20261101\\CURRENT_SNAPSHOT.json",
+      "automatic_next_experiment": false
+    }
+  ]
+}

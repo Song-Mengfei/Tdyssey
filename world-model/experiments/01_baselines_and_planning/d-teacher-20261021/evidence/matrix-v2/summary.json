@@ -1,0 +1,1257 @@
+{
+  "schema_version": 1,
+  "kind": "all_predeclared_D_teacher_matrix_summary",
+  "generated_utc": "2026-10-20T21:03:56.123694+00:00",
+  "matrix_version": 2,
+  "protocol_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\protocol.json",
+  "protocol_status": "complete",
+  "inventory_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\scene_inventory.json",
+  "provisional": false,
+  "scope": "privileged known-shape simulator action search; development, not held-out generalization",
+  "known_development_scene": 100000,
+  "training": false,
+  "checkpoint_loaded": false,
+  "expected_runs": 8,
+  "outcome_counts": {
+    "queued": 0,
+    "running": 0,
+    "control_failure": 3,
+    "timeout": 5,
+    "native_success": 0,
+    "protocol_error": 0
+  },
+  "protocol_issues": [],
+  "frozen_source_copy_audit": {
+    "status": "passed",
+    "issues": [],
+    "files": 13,
+    "scope": "frozen source copy vs protocol; current working tree is not substituted"
+  },
+  "rows": [
+    {
+      "scene_request": 100000,
+      "search_seed": 42,
+      "scene_role": "development",
+      "outcome": "timeout",
+      "process_status": "process_complete",
+      "report_status": "stopped_early",
+      "stop_reason": "wall_time_budget",
+      "success": false,
+      "actual_controls": 288,
+      "task_control": 288,
+      "max_coverage": 0.6336632684885438,
+      "final_coverage": 0.6336632684885438,
+      "max_iou": 0.4637680111165413,
+      "final_iou": 0.4637680111165413,
+      "contact_controls": 35,
+      "contact_count_sum": 50,
+      "final_position_error_px": 1.2515577628931913,
+      "final_angle_error_deg": 104.86479117505033,
+      "restores": 1204,
+      "replay_controls": 161393,
+      "forecast_controls": 89774,
+      "control_physics_substeps": 2880,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 591.9559999997728,
+      "evaluation_seconds": 600.2970000000205,
+      "process_seconds": 602.890000000014,
+      "deadline_attempt_count": 1,
+      "deadline_attempt_seconds": 2.25,
+      "deadline_attempt_counts": {
+        "restores": 4,
+        "replay_steps": 953,
+        "candidate_steps": 36
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 1,
+        "replay_steps": 89,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100000-search-42\\00-scene-100000-search-42\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100000-search-42\\00-scene-100000-search-42\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 288,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 2880,
+      "independent_audit_seconds": 8.14100000000326,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 35,
+          "contact_bearing_counts": {
+            "east": 29,
+            "southeast": 6
+          },
+          "contact_runs": [
+            {
+              "start_control": 84,
+              "end_control": 112,
+              "controls": 29,
+              "bearing_counts": {
+                "east": 29
+              },
+              "translation": [
+                -106.13623754715942,
+                117.17333074380531
+              ],
+              "angle_change": -0.10807287208729144,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 181,
+              "end_control": 186,
+              "controls": 6,
+              "bearing_counts": {
+                "southeast": 6
+              },
+              "translation": [
+                -3.8417377070464056,
+                -1.4273942526998553
+              ],
+              "angle_change": -0.031837411511257185,
+              "dominant_bearing": "southeast"
+            }
+          ],
+          "route_signature": "east/southeast",
+          "object_translation": [
+            -109.97797525420583,
+            115.74593649110545
+          ],
+          "object_translation_distance": 159.6630102911057,
+          "object_translation_path": 162.90939995826744,
+          "object_angle_change": -0.13991028359854862,
+          "object_absolute_angle_path": 0.46873723896956676
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100000-search-42\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100000,
+      "object_frame_pusher_contact_sector_proxy": [
+        3,
+        4,
+        5
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100000,
+      "search_seed": 43,
+      "scene_role": "development",
+      "outcome": "control_failure",
+      "process_status": "process_complete",
+      "report_status": "complete",
+      "stop_reason": "control_budget",
+      "success": false,
+      "actual_controls": 300,
+      "task_control": 300,
+      "max_coverage": 0.6052582242047273,
+      "final_coverage": 0.6052582242047273,
+      "max_iou": 0.4339571917243337,
+      "final_iou": 0.4339571917243337,
+      "contact_controls": 40,
+      "contact_count_sum": 48,
+      "final_position_error_px": 1.1490392670798402,
+      "final_angle_error_deg": 98.23221712649891,
+      "restores": 1217,
+      "replay_controls": 166120,
+      "forecast_controls": 89233,
+      "control_physics_substeps": 3000,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 548.5289999999222,
+      "evaluation_seconds": 557.1410000000033,
+      "process_seconds": 558.655999999959,
+      "deadline_attempt_count": 0,
+      "deadline_attempt_seconds": 0,
+      "deadline_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100000-search-43\\00-scene-100000-search-43\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100000-search-43\\00-scene-100000-search-43\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 300,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 3000,
+      "independent_audit_seconds": 9.375,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 40,
+          "contact_bearing_counts": {
+            "east": 34,
+            "northeast": 4,
+            "north": 2
+          },
+          "contact_runs": [
+            {
+              "start_control": 117,
+              "end_control": 136,
+              "controls": 20,
+              "bearing_counts": {
+                "east": 20
+              },
+              "translation": [
+                -92.60801734019122,
+                91.63398545253358
+              ],
+              "angle_change": 0.18297885645893386,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 198,
+              "end_control": 213,
+              "controls": 16,
+              "bearing_counts": {
+                "northeast": 4,
+                "east": 12
+              },
+              "translation": [
+                -16.68404549978493,
+                18.69445678193182
+              ],
+              "angle_change": -0.20379903749600237,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 220,
+              "end_control": 221,
+              "controls": 2,
+              "bearing_counts": {
+                "east": 2
+              },
+              "translation": [
+                -2.013439988801508,
+                2.6795080666650506
+              ],
+              "angle_change": -0.0023646123825544763,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 291,
+              "end_control": 292,
+              "controls": 2,
+              "bearing_counts": {
+                "north": 2
+              },
+              "translation": [
+                2.089051788853226,
+                1.5637832794610063
+              ],
+              "angle_change": -0.0016011888580887979,
+              "dominant_bearing": "north"
+            }
+          ],
+          "route_signature": "east/east/east/north",
+          "object_translation": [
+            -109.68225431284637,
+            114.98188329028949
+          ],
+          "object_translation_distance": 158.90572801547987,
+          "object_translation_path": 162.03921555539804,
+          "object_angle_change": -0.024150028568996063,
+          "object_absolute_angle_path": 0.3913796489042952
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100000-search-43\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100000,
+      "object_frame_pusher_contact_sector_proxy": [
+        1,
+        3,
+        4
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100100,
+      "search_seed": 42,
+      "scene_role": "predeclared_additional",
+      "outcome": "control_failure",
+      "process_status": "process_complete",
+      "report_status": "complete",
+      "stop_reason": "control_budget",
+      "success": false,
+      "actual_controls": 300,
+      "task_control": 300,
+      "max_coverage": 0.6186977670369214,
+      "final_coverage": 0.6186977670369214,
+      "max_iou": 0.44790904718204316,
+      "final_iou": 0.44790904718204316,
+      "contact_controls": 50,
+      "contact_count_sum": 52,
+      "final_position_error_px": 4.957043621751067,
+      "final_angle_error_deg": 61.11840086652343,
+      "restores": 1147,
+      "replay_controls": 161512,
+      "forecast_controls": 83781,
+      "control_physics_substeps": 3000,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 558.3420000000042,
+      "evaluation_seconds": 566.6410000000033,
+      "process_seconds": 568.75,
+      "deadline_attempt_count": 0,
+      "deadline_attempt_seconds": 0,
+      "deadline_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100100-search-42\\00-scene-100100-search-42\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100100-search-42\\00-scene-100100-search-42\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 300,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 3000,
+      "independent_audit_seconds": 9.545999999972992,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 50,
+          "contact_bearing_counts": {
+            "south": 33,
+            "southwest": 1,
+            "east": 5,
+            "northeast": 11
+          },
+          "contact_runs": [
+            {
+              "start_control": 50,
+              "end_control": 65,
+              "controls": 16,
+              "bearing_counts": {
+                "south": 15,
+                "southwest": 1
+              },
+              "translation": [
+                -93.39724826939897,
+                -56.10479398069276
+              ],
+              "angle_change": 0.7747492837428128,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 111,
+              "end_control": 121,
+              "controls": 11,
+              "bearing_counts": {
+                "south": 11
+              },
+              "translation": [
+                -24.198510426434666,
+                -38.689512661847516
+              ],
+              "angle_change": 0.04660333157173846,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 123,
+              "end_control": 129,
+              "controls": 7,
+              "bearing_counts": {
+                "south": 7
+              },
+              "translation": [
+                -15.772658010417018,
+                -32.639229729276394
+              ],
+              "angle_change": 0.19392212680896936,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 184,
+              "end_control": 185,
+              "controls": 2,
+              "bearing_counts": {
+                "east": 2
+              },
+              "translation": [
+                -1.6099817619074486,
+                0.5792061131386959
+              ],
+              "angle_change": 0.01598322318965606,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 234,
+              "end_control": 244,
+              "controls": 11,
+              "bearing_counts": {
+                "northeast": 11
+              },
+              "translation": [
+                -0.04976026746498974,
+                3.883352664640711
+              ],
+              "angle_change": 0.049129911374734325,
+              "dominant_bearing": "northeast"
+            },
+            {
+              "start_control": 262,
+              "end_control": 263,
+              "controls": 2,
+              "bearing_counts": {
+                "east": 2
+              },
+              "translation": [
+                -2.6512833896020425,
+                0.7748423916779643
+              ],
+              "angle_change": -0.002935012243277524,
+              "dominant_bearing": "east"
+            },
+            {
+              "start_control": 272,
+              "end_control": 272,
+              "controls": 1,
+              "bearing_counts": {
+                "east": 1
+              },
+              "translation": [
+                -0.19947839611083396,
+                0.05866853682971396
+              ],
+              "angle_change": 0.00238701848790962,
+              "dominant_bearing": "east"
+            }
+          ],
+          "route_signature": "south/south/south/east/northeast/east/east",
+          "object_translation": [
+            -138.0735148127799,
+            -122.08073891797619
+          ],
+          "object_translation_distance": 184.30410279620477,
+          "object_translation_path": 202.14242271156238,
+          "object_angle_change": 1.08217785234415,
+          "object_absolute_angle_path": 1.0910635979423562
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100100-search-42\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100100,
+      "object_frame_pusher_contact_sector_proxy": [
+        2,
+        3,
+        4,
+        6
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100100,
+      "search_seed": 43,
+      "scene_role": "predeclared_additional",
+      "outcome": "control_failure",
+      "process_status": "process_complete",
+      "report_status": "complete",
+      "stop_reason": "control_budget",
+      "success": false,
+      "actual_controls": 300,
+      "task_control": 300,
+      "max_coverage": 0.5607239774506437,
+      "final_coverage": 0.5607239774506437,
+      "max_iou": 0.38958752085471865,
+      "final_iou": 0.38958752085471865,
+      "contact_controls": 47,
+      "contact_count_sum": 47,
+      "final_position_error_px": 2.473892130324697,
+      "final_angle_error_deg": 89.86217466937232,
+      "restores": 1109,
+      "replay_controls": 163376,
+      "forecast_controls": 79411,
+      "control_physics_substeps": 3000,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 447.44100000016624,
+      "evaluation_seconds": 455.28100000001723,
+      "process_seconds": 456.75,
+      "deadline_attempt_count": 0,
+      "deadline_attempt_seconds": 0,
+      "deadline_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100100-search-43\\00-scene-100100-search-43\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100100-search-43\\00-scene-100100-search-43\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 300,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 3000,
+      "independent_audit_seconds": 7.936999999976251,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 47,
+          "contact_bearing_counts": {
+            "south": 38,
+            "southwest": 9
+          },
+          "contact_runs": [
+            {
+              "start_control": 91,
+              "end_control": 97,
+              "controls": 7,
+              "bearing_counts": {
+                "south": 7
+              },
+              "translation": [
+                -29.82364777032012,
+                -10.746956679466962
+              ],
+              "angle_change": 0.24523076502579455,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 153,
+              "end_control": 161,
+              "controls": 9,
+              "bearing_counts": {
+                "south": 9
+              },
+              "translation": [
+                -39.15383385868006,
+                -27.082351969285753
+              ],
+              "angle_change": 0.23960615692263032,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 216,
+              "end_control": 237,
+              "controls": 22,
+              "bearing_counts": {
+                "south": 22
+              },
+              "translation": [
+                -67.76590605786163,
+                -64.38652818942393
+              ],
+              "angle_change": 0.06793285127104232,
+              "dominant_bearing": "south"
+            },
+            {
+              "start_control": 289,
+              "end_control": 297,
+              "controls": 9,
+              "bearing_counts": {
+                "southwest": 9
+              },
+              "translation": [
+                -2.566766565025773,
+                -12.53954873054937
+              ],
+              "angle_change": 0.027734586816478446,
+              "dominant_bearing": "southwest"
+            }
+          ],
+          "route_signature": "south/south/south/southwest",
+          "object_translation": [
+            -139.31015425188758,
+            -114.75538556872601
+          ],
+          "object_translation_distance": 180.4885525309339,
+          "object_translation_path": 185.80456095636313,
+          "object_angle_change": 0.5805043600359456,
+          "object_absolute_angle_path": 0.6116130319481548
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100100-search-43\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100100,
+      "object_frame_pusher_contact_sector_proxy": [
+        5,
+        6
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100200,
+      "search_seed": 42,
+      "scene_role": "predeclared_additional",
+      "outcome": "timeout",
+      "process_status": "process_complete",
+      "report_status": "stopped_early",
+      "stop_reason": "wall_time_budget",
+      "success": false,
+      "actual_controls": 272,
+      "task_control": 272,
+      "max_coverage": 0.6321696734859169,
+      "final_coverage": 0.6321696734859169,
+      "max_iou": 0.46216965747279615,
+      "final_iou": 0.46216965747279615,
+      "contact_controls": 31,
+      "contact_count_sum": 31,
+      "final_position_error_px": 1.1533597026368156,
+      "final_angle_error_deg": 103.65931912141963,
+      "restores": 1083,
+      "replay_controls": 150383,
+      "forecast_controls": 81312,
+      "control_physics_substeps": 2720,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 593.109999999986,
+      "evaluation_seconds": 600.2189999999828,
+      "process_seconds": 602.9529999999795,
+      "deadline_attempt_count": 1,
+      "deadline_attempt_seconds": 7.125,
+      "deadline_attempt_counts": {
+        "restores": 12,
+        "replay_steps": 3127,
+        "candidate_steps": 289
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 1,
+        "replay_steps": 135,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100200-search-42\\00-scene-100200-search-42\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100200-search-42\\00-scene-100200-search-42\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 272,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 2720,
+      "independent_audit_seconds": 8.10899999999674,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 31,
+          "contact_bearing_counts": {
+            "north": 11,
+            "west": 18,
+            "south": 2
+          },
+          "contact_runs": [
+            {
+              "start_control": 55,
+              "end_control": 63,
+              "controls": 9,
+              "bearing_counts": {
+                "north": 9
+              },
+              "translation": [
+                48.70440252589398,
+                34.214300249718235
+              ],
+              "angle_change": -0.11501378882812952,
+              "dominant_bearing": "north"
+            },
+            {
+              "start_control": 119,
+              "end_control": 136,
+              "controls": 18,
+              "bearing_counts": {
+                "west": 18
+              },
+              "translation": [
+                54.35749085811179,
+                -78.34221532150696
+              ],
+              "angle_change": -0.014518630688523437,
+              "dominant_bearing": "west"
+            },
+            {
+              "start_control": 195,
+              "end_control": 196,
+              "controls": 2,
+              "bearing_counts": {
+                "north": 2
+              },
+              "translation": [
+                2.3931037887448667,
+                1.5230840162010963
+              ],
+              "angle_change": -0.017775768588847773,
+              "dominant_bearing": "north"
+            },
+            {
+              "start_control": 245,
+              "end_control": 246,
+              "controls": 2,
+              "bearing_counts": {
+                "south": 2
+              },
+              "translation": [
+                -0.829225988659914,
+                -0.5115497418814812
+              ],
+              "angle_change": -0.009642862727251345,
+              "dominant_bearing": "south"
+            }
+          ],
+          "route_signature": "north/west/north/south",
+          "object_translation": [
+            104.62577118409072,
+            -43.116380797469105
+          ],
+          "object_translation_distance": 113.16171741776488,
+          "object_translation_path": 158.72375777261576,
+          "object_angle_change": -0.15695105083275207,
+          "object_absolute_angle_path": 0.23127987064494526
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100200-search-42\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100200,
+      "object_frame_pusher_contact_sector_proxy": [
+        0,
+        1,
+        2,
+        5,
+        7
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100200,
+      "search_seed": 43,
+      "scene_role": "predeclared_additional",
+      "outcome": "timeout",
+      "process_status": "process_complete",
+      "report_status": "stopped_early",
+      "stop_reason": "wall_time_budget",
+      "success": false,
+      "actual_controls": 264,
+      "task_control": 264,
+      "max_coverage": 0.6308729465752827,
+      "final_coverage": 0.6308729465752827,
+      "max_iou": 0.4607848080988723,
+      "final_iou": 0.4607848080988723,
+      "contact_controls": 36,
+      "contact_count_sum": 38,
+      "final_position_error_px": 0.17552947903915742,
+      "final_angle_error_deg": 107.23750139377753,
+      "restores": 1056,
+      "replay_controls": 144526,
+      "forecast_controls": 80286,
+      "control_physics_substeps": 2640,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 593.0919999997132,
+      "evaluation_seconds": 600.2339999999967,
+      "process_seconds": 602.920999999973,
+      "deadline_attempt_count": 1,
+      "deadline_attempt_seconds": 16.625,
+      "deadline_attempt_counts": {
+        "restores": 23,
+        "replay_steps": 5934,
+        "candidate_steps": 792
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 1,
+        "replay_steps": 126,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100200-search-43\\00-scene-100200-search-43\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100200-search-43\\00-scene-100200-search-43\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 264,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 2640,
+      "independent_audit_seconds": 7.6560000000172295,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 36,
+          "contact_bearing_counts": {
+            "north": 8,
+            "west": 21,
+            "southwest": 5,
+            "northwest": 2
+          },
+          "contact_runs": [
+            {
+              "start_control": 49,
+              "end_control": 56,
+              "controls": 8,
+              "bearing_counts": {
+                "north": 8
+              },
+              "translation": [
+                33.1878834088445,
+                30.599936072036826
+              ],
+              "angle_change": 0.07363536189857134,
+              "dominant_bearing": "north"
+            },
+            {
+              "start_control": 111,
+              "end_control": 129,
+              "controls": 19,
+              "bearing_counts": {
+                "west": 19
+              },
+              "translation": [
+                54.714547068949884,
+                -56.339893758014284
+              ],
+              "angle_change": -0.007313167167292689,
+              "dominant_bearing": "west"
+            },
+            {
+              "start_control": 138,
+              "end_control": 144,
+              "controls": 7,
+              "bearing_counts": {
+                "southwest": 5,
+                "west": 2
+              },
+              "translation": [
+                14.044571002186501,
+                -19.495890680978107
+              ],
+              "angle_change": -0.24725453368143713,
+              "dominant_bearing": "southwest"
+            },
+            {
+              "start_control": 168,
+              "end_control": 169,
+              "controls": 2,
+              "bearing_counts": {
+                "northwest": 2
+              },
+              "translation": [
+                2.222446811794242,
+                1.230853718897606
+              ],
+              "angle_change": -0.03846977377173166,
+              "dominant_bearing": "northwest"
+            }
+          ],
+          "route_signature": "north/west/southwest/northwest",
+          "object_translation": [
+            104.16944829177513,
+            -44.00499464805796
+          ],
+          "object_translation_distance": 113.08277283206502,
+          "object_translation_path": 150.31416648961203,
+          "object_angle_change": -0.21940211272189014,
+          "object_absolute_angle_path": 0.36908928145477793
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100200-search-43\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100200,
+      "object_frame_pusher_contact_sector_proxy": [
+        0,
+        1,
+        2,
+        7
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100300,
+      "search_seed": 42,
+      "scene_role": "predeclared_additional",
+      "outcome": "timeout",
+      "process_status": "process_complete",
+      "report_status": "stopped_early",
+      "stop_reason": "wall_time_budget",
+      "success": false,
+      "actual_controls": 256,
+      "task_control": 256,
+      "max_coverage": 0.6360887779214766,
+      "final_coverage": 0.6329589037915508,
+      "max_iou": 0.46637110071732746,
+      "final_iou": 0.46301380810503145,
+      "contact_controls": 29,
+      "contact_count_sum": 32,
+      "final_position_error_px": 1.2126968597795516,
+      "final_angle_error_deg": 128.17996735618362,
+      "restores": 1106,
+      "replay_controls": 137165,
+      "forecast_controls": 86273,
+      "control_physics_substeps": 2560,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 593.7490000001853,
+      "evaluation_seconds": 600.2189999999828,
+      "process_seconds": 603.0630000000237,
+      "deadline_attempt_count": 1,
+      "deadline_attempt_seconds": 0.9529999999795109,
+      "deadline_attempt_counts": {
+        "restores": 2,
+        "replay_steps": 397,
+        "candidate_steps": 44
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 1,
+        "replay_steps": 141,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100300-search-42\\00-scene-100300-search-42\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100300-search-42\\00-scene-100300-search-42\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 256,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 2560,
+      "independent_audit_seconds": 6.437000000034459,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 29,
+          "contact_bearing_counts": {
+            "west": 17,
+            "northwest": 12
+          },
+          "contact_runs": [
+            {
+              "start_control": 100,
+              "end_control": 119,
+              "controls": 20,
+              "bearing_counts": {
+                "west": 17,
+                "northwest": 3
+              },
+              "translation": [
+                -80.22158987594665,
+                54.89859741445534
+              ],
+              "angle_change": 0.7734620194569457,
+              "dominant_bearing": "west"
+            },
+            {
+              "start_control": 189,
+              "end_control": 197,
+              "controls": 9,
+              "bearing_counts": {
+                "northwest": 9
+              },
+              "translation": [
+                -5.790473475392702,
+                -2.857085104764792
+              ],
+              "angle_change": 0.05342304894361316,
+              "dominant_bearing": "northwest"
+            }
+          ],
+          "route_signature": "west/northwest",
+          "object_translation": [
+            -86.01206335133935,
+            52.041512309690546
+          ],
+          "object_translation_distance": 100.53056274305087,
+          "object_translation_path": 105.75631181435487,
+          "object_angle_change": 0.8268850684005589,
+          "object_absolute_angle_path": 0.8268850684005589
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100300-search-42\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100300,
+      "object_frame_pusher_contact_sector_proxy": [
+        0,
+        1
+      ],
+      "source_fields_not_in_report": []
+    },
+    {
+      "scene_request": 100300,
+      "search_seed": 43,
+      "scene_role": "predeclared_additional",
+      "outcome": "timeout",
+      "process_status": "process_complete",
+      "report_status": "stopped_early",
+      "stop_reason": "wall_time_budget",
+      "success": false,
+      "actual_controls": 256,
+      "task_control": 256,
+      "max_coverage": 0.626545508180659,
+      "final_coverage": 0.6264809287702643,
+      "max_iou": 0.4561822120154181,
+      "final_iou": 0.4561137459921579,
+      "contact_controls": 29,
+      "contact_count_sum": 29,
+      "final_position_error_px": 3.2654679283631345,
+      "final_angle_error_deg": 117.4188033913972,
+      "restores": 1131,
+      "replay_controls": 141818,
+      "forecast_controls": 87640,
+      "control_physics_substeps": 2560,
+      "reset_physics_substeps": 2,
+      "resume_replay_controls": 0,
+      "planning_seconds": 593.8719999999739,
+      "evaluation_seconds": 600.1869999999763,
+      "process_seconds": 603.045999999973,
+      "deadline_attempt_count": 1,
+      "deadline_attempt_seconds": 10.71899999998277,
+      "deadline_attempt_counts": {
+        "restores": 18,
+        "replay_steps": 4458,
+        "candidate_steps": 748
+      },
+      "discarded_partial_candidate_counts": {
+        "restores": 1,
+        "replay_steps": 106,
+        "candidate_steps": 0
+      },
+      "unreturned_timeout_attempt_counts": {
+        "restores": 0,
+        "replay_steps": 0,
+        "candidate_steps": 0
+      },
+      "source_parity": "passed",
+      "initial_parity": "passed",
+      "config_parity": "passed",
+      "v2_config_parity": "passed",
+      "source_fields_pending": [],
+      "replay_audit_status": "passed",
+      "audit_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100300-search-43\\00-scene-100300-search-43\\audit.json"
+      ],
+      "video_paths": [
+        "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\videos-v2\\scene-100300-search-43\\00-scene-100300-search-43\\actual-controls-paused.mp4"
+      ],
+      "independent_audit_controls": 256,
+      "independent_audit_reset_physics_substeps": 1,
+      "independent_audit_physics_substeps": 2560,
+      "independent_audit_seconds": 6.1560000000172295,
+      "independent_audit_routes": [
+        {
+          "descriptor": "executed pusher bearing about object COM before contact; not contact-normal inference",
+          "contact_controls": 29,
+          "contact_bearing_counts": {
+            "west": 18,
+            "northwest": 11
+          },
+          "contact_runs": [
+            {
+              "start_control": 80,
+              "end_control": 97,
+              "controls": 18,
+              "bearing_counts": {
+                "west": 18
+              },
+              "translation": [
+                -70.02550771835831,
+                59.354540592176846
+              ],
+              "angle_change": 0.5472905830335542,
+              "dominant_bearing": "west"
+            },
+            {
+              "start_control": 190,
+              "end_control": 200,
+              "controls": 11,
+              "bearing_counts": {
+                "northwest": 11
+              },
+              "translation": [
+                -13.55293189803254,
+                -4.454295897171335
+              ],
+              "angle_change": 0.09057804395769287,
+              "dominant_bearing": "northwest"
+            }
+          ],
+          "route_signature": "west/northwest",
+          "object_translation": [
+            -83.68140051947233,
+            54.880412230533494
+          ],
+          "object_translation_distance": 100.0721561649075,
+          "object_translation_path": 107.21351638654221,
+          "object_angle_change": 0.6390673258680688,
+          "object_absolute_angle_path": 0.6390673258680688
+        }
+      ],
+      "report_path": "__LOCAL_WORKSPACE__\\Tdyssey\\artifacts\\d-teacher-20261021\\matrix-v2\\scene-100300-search-43\\report.json",
+      "issues": [],
+      "notes": [],
+      "costs_complete": true,
+      "provisional": false,
+      "accepted_scene_seed": 100300,
+      "object_frame_pusher_contact_sector_proxy": [
+        0,
+        1
+      ],
+      "source_fields_not_in_report": []
+    }
+  ],
+  "totals": {
+    "actual_controls": 2236,
+    "control_physics_substeps": 22360,
+    "reset_physics_substeps": 16,
+    "resume_replay_controls": 0,
+    "contact_controls": 297,
+    "contact_count_sum": 327,
+    "restores": 9053,
+    "replay_controls": 1226293,
+    "forecast_controls": 677710,
+    "planning_seconds": 4520.090999999724,
+    "evaluation_seconds": 4580.218999999983,
+    "process_seconds": 4599.028999999922,
+    "deadline_attempt_count": 5,
+    "deadline_attempt_seconds": 37.67199999996228,
+    "deadline_attempt_counts": {
+      "restores": 59,
+      "replay_steps": 14869,
+      "candidate_steps": 1909
+    },
+    "discarded_partial_candidate_counts": {
+      "restores": 5,
+      "replay_steps": 597,
+      "candidate_steps": 0
+    },
+    "unreturned_timeout_attempt_counts": {
+      "restores": 0,
+      "replay_steps": 0,
+      "candidate_steps": 0
+    },
+    "all_simulated_controls": 1906239,
+    "costs_complete": true
+  },
+  "independent_audit_totals_separate": {
+    "independent_audit_controls": 2236,
+    "independent_audit_reset_physics_substeps": 8,
+    "independent_audit_physics_substeps": 22360,
+    "independent_audit_seconds": 63.35700000001816
+  },
+  "cost_notes": [
+    "All declared rows and all persisted work included, including failures/timeouts.",
+    "Running or queued rows are lower bounds; an in-progress planning call is not yet saved.",
+    "Deadline-attempt work includes completed candidates in that call; partial-candidate work is a subset, never added twice.",
+    "Contact counts are actual logged contact-bearing control steps / n_contacts sums, not unique physical contact points.",
+    "Pusher contact sectors are an object-frame direction proxy, not exact surface contact locations.",
+    "Aggregate evaluation/process seconds sum runs, not elapsed concurrent wall time.",
+    "Inventory captures, preview renders, earlier prototype runs and independent replay costs are separate from matrix execution totals."
+  ]
+}

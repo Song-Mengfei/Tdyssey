@@ -1,0 +1,73 @@
+{
+  "after_stage1": "Root saves actual results/state, sends the required parent callback, then stops. No extra probe, collection, training, inference, packaging or server job is authorized by this review.",
+  "exception_accounting_note": "Every attempted control remains fully charged. Partial substeps are labelled recorded lower-bound/unconfirmed evidence; any exception requires parent review and forbids automatic replay.",
+  "formal_controls": {
+    "formal_total": 35712,
+    "max_with_stage1": 39712,
+    "seen_validation": 10368,
+    "train": 25344
+  },
+  "future_plan": "PLANNED_STAGES_2_TO_5.md",
+  "future_stages_authorized": false,
+  "kind": "native-rgb-supervised-independent-stage1-readiness.v1",
+  "reviewer": "audit_rgb",
+  "reviewer_executed_physics_controls": 0,
+  "reviewer_gpu_calls": 0,
+  "reviewer_model_calls": 0,
+  "reviewer_optimizer_updates": 0,
+  "root_reported_cpu_checks": {
+    "actual_physics_controls": 0,
+    "motion_statistics": 11,
+    "passed": 23,
+    "provenance": "Root collaboration report before launch; reviewer did not rerun tests",
+    "runner_budget_and_audit_exit": 3,
+    "sampler_geometry_mock": 9,
+    "total": 23
+  },
+  "source_and_config_edits_by_reviewer": false,
+  "source_hashes_at_review": {
+    "configs/native_rgb_supervised_stage1.json": "fa82fb394365be0d72a51d930035066408198768e4977d0add34375c6e3454db",
+    "scripts/native_rgb_supervised_stage1.py": "dca7b09c243920f045fd106fa1bbbf91aa1560da59286cbea01ac53e0808442b",
+    "tdyssey/native_rgb_data.py": "49e54d8d40a2dec03eb75525b0e10b4c6f8e3372409dc14f1c64aba79ec3aa54",
+    "tdyssey/native_rgb_env.py": "47ee5c53ed3369da7548ea1e2512e5cf1eed315e68b290dcf2fa1ee7dd5500d5",
+    "tdyssey/native_rgb_motion_statistics.py": "bf5641fd269a69d02db4332987da4794a0df5e2fd47cbcefb9766a276dfc2c49",
+    "tdyssey/native_rgb_supervised_sampling.py": "ae7dce99e4159d17d6684558aa41c5169af90623cbcb9e591028b2865487fa41"
+  },
+  "status": "ready_for_only_the_already_authorized_single_bounded_stage1_run",
+  "timestamp_utc": "2026-10-28T17:57:57.095508+00:00",
+  "unverified_until_real_evidence": [
+    "Actual moving fraction >=40% and near_static <=45% for each of T/L/O/C/X/B",
+    "Actual finite-force contact motion and zero invalid real transitions",
+    "Blocked/tight-wall cases may remain static; geometry/mock tests cannot establish motion success",
+    "All54 scene slots, real gap bands, actual contact angles and independent-contact coverage"
+  ],
+  "verified_design": {
+    "active_normal_uses_actual_contact_bin_votes": true,
+    "all10_substep_penetrations_saved_float64": true,
+    "area_centroid_not_t_cog": true,
+    "audit_failed_exit_is_nonzero": true,
+    "both_requested_approach_sides_per_letter": true,
+    "charges_persist_before_physics": true,
+    "contact_priority_uses_new_unique_controls_and_historical_trajectories": true,
+    "controls_cap": 4000,
+    "no_8px_action_cap": true,
+    "no_static_filter_to_pass_gate": true,
+    "outer_owned_lock_cleanup": true,
+    "penetration_threshold_world_px": 2,
+    "planning_and_observe_state_immutability_guards": true,
+    "prior_coverage_fingerprinted": true,
+    "raw_and_valid_h1_denominators_separate": true,
+    "requested_near_mid_far_world_px": [
+      32,
+      96,
+      224
+    ],
+    "root_owns_all_env_step_calls": true,
+    "sampler_runner_api_compatible": true,
+    "single_initial_pose_assignment": true,
+    "trajectory_attempt_cap": 54,
+    "trajectory_control_cap": 64,
+    "true_wall_gap_initialization": true,
+    "unwrapped_rotation_classification": true
+  }
+}

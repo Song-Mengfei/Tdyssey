@@ -1,0 +1,984 @@
+{
+  "by_shape": {
+    "train": {
+      "L": {
+        "completed": {
+          "control": 932,
+          "plan": 118,
+          "reset": 4
+        },
+        "reserved": {
+          "control": 932,
+          "plan": 118,
+          "reset": 4
+        }
+      },
+      "T": {
+        "completed": {
+          "control": 1116,
+          "plan": 142,
+          "reset": 5
+        },
+        "reserved": {
+          "control": 1116,
+          "plan": 142,
+          "reset": 5
+        }
+      }
+    }
+  },
+  "checkpoint_files": [
+    {
+      "bytes": 16003916,
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0007-0019-boundary.pt",
+      "reservation_id": 967
+    },
+    {
+      "bytes": 16003916,
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0012-0034-boundary.pt",
+      "reservation_id": 1701
+    },
+    {
+      "bytes": 16003916,
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0017-0049-boundary.pt",
+      "reservation_id": 2435
+    },
+    {
+      "bytes": 16003916,
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0018-0052-audit.pt",
+      "reservation_id": 2516
+    }
+  ],
+  "completed": {
+    "development": {
+      "control": 0,
+      "plan": 0,
+      "reset": 0
+    },
+    "diagnostic": {
+      "control": 0,
+      "plan": 0,
+      "reset": 0
+    },
+    "global": {
+      "actor_step": 52,
+      "batch": 18,
+      "critic_step": 52
+    },
+    "train": {
+      "control": 2048,
+      "plan": 260,
+      "reset": 9
+    }
+  },
+  "config": {
+    "base": {
+      "bytes": 1095708090,
+      "sha256": "37d661ce6a487905fa4ff81ab7d65bf1b56b1c06adf480a961f65338fa0e38a0"
+    },
+    "budgets": {
+      "development": {
+        "control": 24000,
+        "plan": 3040,
+        "reset": 160
+      },
+      "diagnostic": {
+        "control": 0,
+        "plan": 0,
+        "reset": 0
+      },
+      "global": {
+        "actor_step": 72,
+        "batch": 24,
+        "critic_step": 72
+      },
+      "max_checkpoints": 2,
+      "storage_bytes": 536870912,
+      "train": {
+        "control": 2048,
+        "plan": 384,
+        "reset": 384
+      },
+      "wall_time_seconds": 7200
+    },
+    "evaluation": {
+      "episode_controls": 300,
+      "max_groups": 4,
+      "new_development_scenes": [
+        100003,
+        100004
+      ],
+      "policy_seeds": [
+        5478,
+        5479
+      ],
+      "scenes": [
+        100000,
+        100001,
+        100002,
+        100003,
+        100004
+      ],
+      "untouched_test": false
+    },
+    "optimization": {
+      "actor_lr": 1e-05,
+      "beta": 1.0,
+      "clip": 0.2,
+      "critic_lr": 0.0003,
+      "denoising_discount": 1.0,
+      "first_batch_passes": 1,
+      "gae_lambda": 0.95,
+      "gamma": 0.99,
+      "max_grad_norm": 1.0,
+      "max_passes": 3,
+      "plan_microbatch": 1,
+      "std_floor": 0.01,
+      "step_microbatch": 1,
+      "subset": "output",
+      "target_kl": 0.02
+    },
+    "runtime": {
+      "device": "cuda",
+      "precision": "fp32",
+      "threads": 4
+    },
+    "scenes": {
+      "excluded_evaluation": [
+        100000,
+        100001,
+        100002,
+        100003,
+        100004
+      ],
+      "training": {
+        "L": [
+          500000,
+          500001,
+          500032,
+          500003,
+          500004,
+          500005,
+          500006,
+          500007,
+          500008,
+          500009,
+          500033,
+          500034,
+          500012,
+          500013,
+          500014,
+          500036,
+          500016,
+          500017,
+          500037,
+          500019,
+          500020,
+          500021,
+          500022,
+          500023,
+          500024,
+          500038,
+          500026,
+          500027,
+          500028,
+          500029,
+          500039,
+          500031
+        ],
+        "T": [
+          400032,
+          400001,
+          400002,
+          400003,
+          400004,
+          400005,
+          400006,
+          400033,
+          400008,
+          400009,
+          400034,
+          400011,
+          400012,
+          400013,
+          400014,
+          400015,
+          400016,
+          400017,
+          400018,
+          400019,
+          400020,
+          400021,
+          400022,
+          400023,
+          400024,
+          400025,
+          400026,
+          400027,
+          400035,
+          400029,
+          400030,
+          400031
+        ]
+      }
+    },
+    "schema_version": 1,
+    "shapes": [
+      "T",
+      "L"
+    ],
+    "status": "proposed_not_executed",
+    "train_seed": 5478,
+    "training": {
+      "batch_controls": 128,
+      "batch_plans": 16,
+      "episode_controls": 300
+    }
+  },
+  "config_hash": "0c682afbaf03360dc7af77c3c0917c3cfd120d5e7a8da10532c1d3d5251a8db3",
+  "elapsed_wall_seconds": 3573.97616147995,
+  "evaluation_groups": {},
+  "experiment_id": "c-tl-2048-20261024",
+  "last_event_id": 2517,
+  "last_train_operation_id": 2511,
+  "max_observed_time": 1792794619.1751902,
+  "output_dirs": [
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024"
+  ],
+  "pending": {},
+  "recent_events": [
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2454,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794505.5713162,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2455,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794505.599317,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2456,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794505.642414,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2457,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.002393,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2458,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.0329046,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2459,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.060903,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2460,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.0899038,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2461,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.1184244,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2462,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.1474228,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2463,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.1774254,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2464,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794507.204428,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2465,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794507.2479181,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2466,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.6066651,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2467,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.6370635,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2468,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.6700606,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2469,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.702067,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2470,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.7345772,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2471,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.7655754,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2472,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.7945812,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2473,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794508.821471,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2474,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794508.8665078,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2475,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.209834,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2476,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.2393427,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2477,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.2683434,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2478,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.2963421,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2479,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.3258579,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2480,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.3548572,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2481,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.3828576,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2482,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794510.4098966,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2483,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794510.4603553,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2484,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.8471646,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2485,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.875162,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2486,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.9041643,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2487,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.931669,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2488,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.960676,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2489,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794511.9906716,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2490,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794512.0191832,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2491,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794512.0460687,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2492,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794512.089261,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2493,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.4435277,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2494,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.4755278,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2495,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.5085366,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2496,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.5396447,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2497,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.5736458,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2498,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.6036494,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2499,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.632153,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2500,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794513.657525,
+      "shape": "L"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2501,
+      "kind": "plan",
+      "phase": "train",
+      "reserved_at": 1792794513.7017226,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2502,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794515.0328808,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2503,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794515.0628765,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2504,
+      "kind": "control",
+      "phase": "train",
+      "reserved_at": 1792794515.0918787,
+      "shape": "T"
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2505,
+      "kind": "batch",
+      "phase": "train",
+      "reserved_at": 1792794515.1333854,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2506,
+      "kind": "actor_step",
+      "phase": "train",
+      "reserved_at": 1792794546.4186954,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2507,
+      "kind": "critic_step",
+      "phase": "train",
+      "reserved_at": 1792794546.4372098,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2508,
+      "kind": "actor_step",
+      "phase": "train",
+      "reserved_at": 1792794576.661436,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2509,
+      "kind": "critic_step",
+      "phase": "train",
+      "reserved_at": 1792794576.6744342,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2510,
+      "kind": "actor_step",
+      "phase": "train",
+      "reserved_at": 1792794606.8703637,
+      "shape": null
+    },
+    {
+      "amount": 1,
+      "completed": true,
+      "id": 2511,
+      "kind": "critic_step",
+      "phase": "train",
+      "reserved_at": 1792794606.8843622,
+      "shape": null
+    },
+    {
+      "actual_bytes": 1027,
+      "amount": 1027,
+      "completed": true,
+      "existing_bytes": 149723,
+      "id": 2512,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\training.jsonl",
+      "phase": null,
+      "reserved_at": 1792794618.9529407,
+      "shape": null
+    },
+    {
+      "actual_bytes": 1031,
+      "amount": 1031,
+      "completed": true,
+      "existing_bytes": 150750,
+      "id": 2513,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\training.jsonl",
+      "phase": null,
+      "reserved_at": 1792794618.9774032,
+      "shape": null
+    },
+    {
+      "actual_bytes": 1029,
+      "amount": 1029,
+      "completed": true,
+      "existing_bytes": 151781,
+      "id": 2514,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\training.jsonl",
+      "phase": null,
+      "reserved_at": 1792794619.0034025,
+      "shape": null
+    },
+    {
+      "actual_bytes": 5868,
+      "amount": 5868,
+      "completed": true,
+      "existing_bytes": 152810,
+      "id": 2515,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\training.jsonl",
+      "phase": null,
+      "reserved_at": 1792794619.0324025,
+      "shape": null
+    },
+    {
+      "actual_bytes": 16003916,
+      "amount": 67108864,
+      "completed": true,
+      "existing_bytes": 0,
+      "id": 2516,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0018-0052-audit.pt",
+      "phase": null,
+      "reserved_at": 1792794619.0699103,
+      "shape": null
+    },
+    {
+      "actual_bytes": 29136,
+      "amount": 29136,
+      "completed": true,
+      "existing_bytes": 0,
+      "id": 2517,
+      "kind": "storage",
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\train-report-0000.json",
+      "phase": null,
+      "reserved_at": 1792794619.1611884,
+      "shape": null
+    }
+  ],
+  "recovery_boundary": {
+    "bytes": 16003916,
+    "completed": {
+      "global": {
+        "actor_step": 49,
+        "batch": 17,
+        "critic_step": 49
+      },
+      "train": {
+        "control": 1989,
+        "plan": 252,
+        "reset": 7
+      }
+    },
+    "config_hash": "0c682afbaf03360dc7af77c3c0917c3cfd120d5e7a8da10532c1d3d5251a8db3",
+    "last_train_operation_id": 2430,
+    "metadata": {
+      "config_hash": "0c682afbaf03360dc7af77c3c0917c3cfd120d5e7a8da10532c1d3d5251a8db3",
+      "counts": {
+        "completed": {
+          "development": {
+            "control": 0,
+            "plan": 0,
+            "reset": 0
+          },
+          "diagnostic": {
+            "control": 0,
+            "plan": 0,
+            "reset": 0
+          },
+          "global": {
+            "actor_step": 49,
+            "batch": 17,
+            "critic_step": 49
+          },
+          "train": {
+            "control": 1989,
+            "plan": 252,
+            "reset": 7
+          }
+        },
+        "reserved": {
+          "development": {
+            "control": 0,
+            "plan": 0,
+            "reset": 0
+          },
+          "diagnostic": {
+            "control": 0,
+            "plan": 0,
+            "reset": 0
+          },
+          "global": {
+            "actor_step": 49,
+            "batch": 17,
+            "critic_step": 49
+          },
+          "train": {
+            "control": 1989,
+            "plan": 252,
+            "reset": 7
+          }
+        }
+      }
+    },
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0017-0049-boundary.pt",
+    "reserved": {
+      "global": {
+        "actor_step": 49,
+        "batch": 17,
+        "critic_step": 49
+      },
+      "train": {
+        "control": 1989,
+        "plan": 252,
+        "reset": 7
+      }
+    },
+    "sha256": "91cdd38349a36c205ea2d752f02d68e707b43d621300751e0308deccf56ac6e8"
+  },
+  "registry_root": "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\policy-c-registry",
+  "reserved": {
+    "development": {
+      "control": 0,
+      "plan": 0,
+      "reset": 0
+    },
+    "diagnostic": {
+      "control": 0,
+      "plan": 0,
+      "reset": 0
+    },
+    "global": {
+      "actor_step": 52,
+      "batch": 18,
+      "critic_step": 52
+    },
+    "train": {
+      "control": 2048,
+      "plan": 260,
+      "reset": 9
+    }
+  },
+  "schema_version": 1,
+  "started_at": 1792791045.1990287,
+  "written_files": {
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0007-0019-boundary.pt": {
+      "bytes": 16003916,
+      "reservation_id": 967
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0012-0034-boundary.pt": {
+      "bytes": 16003916,
+      "reservation_id": 1701
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0017-0049-boundary.pt": {
+      "bytes": 16003916,
+      "reservation_id": 2435
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\checkpoint-0018-0052-audit.pt": {
+      "bytes": 16003916,
+      "reservation_id": 2516
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\replay-first-L.pt": {
+      "bytes": 251540,
+      "reservation_id": 148
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\replay-first-T.pt": {
+      "bytes": 251540,
+      "reservation_id": 147
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\train-report-0000.json": {
+      "bytes": 29136,
+      "reservation_id": 2517
+    },
+    "__LOCAL_WORKSPACE__\\Tdyssey-dppo-milestone-a\\artifacts\\milestone-c-20261024\\training.jsonl": {
+      "bytes": 158678,
+      "reservation_id": 2515
+    }
+  }
+}

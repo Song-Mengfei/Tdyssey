@@ -1,0 +1,77 @@
+{
+  "kind": "R3A-key-data-conditioning-collector-interface-independent-review.v1",
+  "checked_at_utc": "2026-10-29T16:36:07.246910+00:00",
+  "passed_key_interfaces": true,
+  "actual_library_acceptance_not_yet_claimed": true,
+  "scoped_source_checks": [
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_conditioning.py",
+      "sha256": "8b1c8e57c0844ae736351ac4c7746b2e9fadd29565dc90f48e50b98480605c70"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tests\\test_native_rgb_r3a_conditioning.py",
+      "sha256": "67604d623d276797199e484d89fcca0e01933f0ae6e2f42a3e878ab3e4688c73"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_data.py",
+      "sha256": "e8bc9e0f23795d1438ab1e0421476a5d999a0bc7df9df791b60507e3f1faaf21",
+      "prior_review_sha256": "e8bc9e0f23795d1438ab1e0421476a5d999a0bc7df9df791b60507e3f1faaf21"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_report.py",
+      "sha256": "367ce67262483fb4b9959e80d9fff283e5c48e49d95919ad8f076e4cce088d0e"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tests\\test_native_rgb_r3a_report.py",
+      "sha256": "1ddf76386920dc1fe6f6a3f1aa77fb4988c13f099446094d57e0bd9210b1f71a"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tdyssey\\native_rgb_r3a_collection.py",
+      "sha256": "687288f8d31cd0fcc26faaebdb3d636aea3950f39cdb3ce784fbc68ec217f14a"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\scripts\\native_rgb_r3a_collect_v2.py",
+      "sha256": "e0b904dc011a86fac7be94378dab7d524c113d162652ebebc88fc70d75c0394b"
+    },
+    {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\tests\\test_native_rgb_r3a_io_repair.py",
+      "sha256": "b7e8935d7201f5885553bdae98101089a3194db27074c7e061df895a6f5a4172"
+    }
+  ],
+  "old_full_audit_repeated": false,
+  "new_physics_steps": 0,
+  "new_GPC_model_calls": 0,
+  "checkpoint_loads": 0,
+  "R3B_training_executed": false,
+  "conditioning_contracts_file": "conditioning-contracts.json",
+  "report_contracts_file": "report-contracts.json",
+  "IO_recoverability_file": "io-halt-independent-review.json",
+  "verified": [
+    "New conditioning uses actual sigma_cond=None clean path, weak per-sample loguniform.002...05 and zero history offset; unchanged native target distribution/draw substream order and FP32 residualMSE; independent restorable branch/target/weak RNG streams.",
+    "Original upstream compute_conditioners method body CPU-tested; clean pixel equality, weak real encoding, no target epsilon leak into history condition, action pass-through, exact RNG restore all7 contracts passed.",
+    "Production data-reference requires912 complete independent scenes with sixseen letters each128TRAIN/24val, unique family/seed and selected .1s physics; partial/legacy library only via explicitly benchmarked path.",
+    "Legal49-state timeline yields H1 anchors3..47/45windows and H4 anchors3..44/42; all history/future involved transitions must be valid.",
+    "Area-center displacement uses body origin+R@official_shape.centroid; motion signedrotation is unwrapped and never symmetry-folded; near-scene audit separately uses old8worldpx/5symdegrees/16localpusher rule.",
+    "Dataset returns only five once-normalized RGB frames/four once-normalized actions; state/letter/mask metadata never network features; bounded perworker caches and reusable perletter renderer.",
+    "Stratified epoch order visits each selected index once, no family twice in a batch and no rare-both repetition quota; data source tests independently supplied5 passing CPU contracts.",
+    "Compact actual-control persistence stores full state15 and100Hz chain, actual float64actions, force/velocity/penetration/contact numeric evidence and original returned RGB frame hashes; RGB bank is not persisted.",
+    "Contact tags are substep/kind/phase/object_order/mask; postAO arcs exclude preAO/wall arcs. Reporter uses actual poststate si+1 for yaw, prestate si for named executed-target-error projections; contactfixture proves distinct pre/post cases.",
+    "Only two frozen physical replacements; system errors halt; unique completed success cannot recollect. I/O-only v2 requires audited recovery receipt for L nextcandidate and validates/skips completed T without environment or cost replay.",
+    "Original L a0 failure is a proven before-env.step WinError5:19states/18actions/180substeps, one extra charged reservation retained, no unknown engine advance.",
+    "V2 robust JSON writer and UUID NPZ serialized-file replace retries change I/O only; close-error bookkeeping is consistently failed_system/failed_scenes/failures with immediate halt and no replacement."
+  ],
+  "deferred_R3B_integration_notes": [
+    "Epoch tails may produce batch size below16 due one-family-perbatch; future trainer must explicitly preserve mean-loss weighting and per-epoch counts rather than duplicate-pad or silently drop windows.",
+    "R3B optimizer/LR/newdata sampler and three-noise-RNG migration remain proposals for root/parent finalization; no automatic training."
+  ],
+  "current_runtime_scope": "Source/interface review and CPU-only behavior; this is not final912-scene motion/coverage admission or world-model quality acceptance.",
+  "scientific_limit": "New data and cleaner history conditioning are a joint intervention; no unique causal claim.",
+  "exposure_statistics_revision_verified_by_data_owner": {
+    "full_selected_pool_includes_zero_exposures": true,
+    "observed_only_fields_separate": true,
+    "unexposed_windows_reported": true,
+    "reported_focused_tests_passed": 5,
+    "reported_test_seconds": 0.562,
+    "reviewer_did_not_repeat_tests": true
+  }
+}

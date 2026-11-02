@@ -1,0 +1,303 @@
+{
+  "all_checks_pass": true,
+  "audited_at_utc": "2026-10-25T09:19:22.323109+00:00",
+  "checks": {
+    "all_cost_caps": true,
+    "all_storage_caps": true,
+    "binding_sha": true,
+    "budget_does_not_extend": true,
+    "claim_no_resume": true,
+    "command_sha": true,
+    "forbidden_operations_zero": true,
+    "global_model_lock_absent": true,
+    "guard_pid": true,
+    "journal_report_agrees": true,
+    "launch_sha": true,
+    "launcher_pid": true,
+    "monitor_samples_safe": true,
+    "native": true,
+    "no_output_metadata_mismatches": true,
+    "no_pending_calls_or_outputs": true,
+    "no_temporaries": true,
+    "nonce": true,
+    "original_instances_gone": true,
+    "original_limits_exact": true,
+    "parent_1800": true,
+    "plan_sha": true,
+    "reviewed_commit": true,
+    "same_durable_report": true,
+    "terminal_fence": true,
+    "tree_quiet": true,
+    "worker_ack": true,
+    "worker_claim": true,
+    "worker_handshake": true,
+    "worker_pid": true
+  },
+  "claims": {
+    "attempt_id": "wm-input-compat-eval-v3",
+    "binding_sha256": "bbdb51f3b131757f4538dbc08cbb20b18ad6af2e00ef54325e4a238bef960a3a",
+    "launch_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\wm-input-compat-eval-v3-registry\\launcher-attempt.json",
+    "launch_sha256": "84ad1cb9f3f8fcf624884a775829da4bb66a30c6597d282fe5fd7408d4c4478b",
+    "plan_sha256": "6f242c6bacf38d7aba2bc790fdac17cd57b6310550dc74b93ca21302ca93eaf1",
+    "reviewed_commit": "ff1c5b43a641bbfd6ff4b99b6f08e8b67ca0e66a",
+    "worker_path": "__LOCAL_WORKSPACE__\\Tdyssey-world-model-validation\\artifacts\\wm-input-compat-eval-v3-registry\\attempt.json",
+    "worker_sha256": "e757c54ad060b8e9e036ee4051e9e1450947a098c63a17918099e56350f71259"
+  },
+  "identity": {
+    "current_process_queries": [
+      {
+        "pid": 1352,
+        "present": false,
+        "winerror": 87
+      },
+      {
+        "pid": 10672,
+        "present": false,
+        "winerror": 87
+      },
+      {
+        "pid": 13640,
+        "present": false,
+        "winerror": 87
+      }
+    ],
+    "earlier_pid_reuse_observation": {
+      "checked_utc": "2026-10-25T09:13:50.9402198+00:00",
+      "created_utc": "2026-10-25T09:13:50.3289399+00:00",
+      "image": "conhost",
+      "is_new_instance": true,
+      "pid": 10672
+    },
+    "exit_codes": {
+      "launcher": 0,
+      "worker": 0
+    },
+    "guard_pid": 1352,
+    "guardian_nonce": "0261db33f9b14d4590c3a778f1549ce2",
+    "job_empty_before_close": true,
+    "job_memory_bytes": 3221225472,
+    "kill_on_close": true,
+    "launcher_pid": 10672,
+    "owner_injected": false,
+    "provider_injected": false,
+    "worker_budget_nonce": "be15ee45a5c245feb6534dfb40efbc58",
+    "worker_pid": 13640
+  },
+  "journal": {
+    "bytes": 7121623,
+    "completed_calls": 2268,
+    "completed_outputs": 6373,
+    "counts": {
+      "L_images": 1692,
+      "T_images": 576,
+      "euler_steps": 6804,
+      "images": 2268,
+      "model_loads": 1
+    },
+    "event_counts": {
+      "M_gate": 1,
+      "T_gate": 1,
+      "call_complete": 2268,
+      "call_reserved": 2268,
+      "created": 1,
+      "finished": 1,
+      "model_load_complete": 1,
+      "model_load_reserved": 1,
+      "output_complete": 6373,
+      "output_reserved": 6373
+    },
+    "last_event": {
+      "data": {
+        "bytes": 220,
+        "category": "results",
+        "final": true,
+        "identity": [
+          9130560571195011399,
+          8162774327942760
+        ],
+        "max_bytes": 8192,
+        "mtime_ns": 1792919506947930000,
+        "name": "completion.json",
+        "raw_bytes": 0,
+        "sha256": "3f3791f874c63f2da4d4e1851e39296a272180ce64e97dd9904ce5ff794e8923",
+        "status": "complete",
+        "temp_bytes": 8192
+      },
+      "elapsed_seconds": 1735.562,
+      "kind": "output_complete",
+      "previous_sha256": "52287da83e724319a0e863886a3f3ad66a2e58bc99a79e74c8d00fec4ae02f1b",
+      "sequence": 17288
+    },
+    "metadata_mismatches": [],
+    "original_missing_calls": 36,
+    "paired_rng_checks": 1512,
+    "plan_breakdown": {
+      "H1": 378,
+      "H2": 756,
+      "H3": 378,
+      "H4": 756,
+      "L": 1692,
+      "T": 576,
+      "arm_A": 1134,
+      "arm_B": 1134,
+      "mode_AR": 1512,
+      "mode_TF": 756
+    },
+    "planned_calls": 2304,
+    "records": 17288,
+    "reserved_outputs": 6373,
+    "sha256": "c2fdaf2be86110139edce0fe72ff611dcd5b524831236e14690529dbda0a847c",
+    "stage_events": {
+      "M_gate": {
+        "elapsed_seconds": 393.953,
+        "sequence": 2148
+      },
+      "T_gate": {
+        "elapsed_seconds": 827.1869999999999,
+        "sequence": 5991
+      },
+      "finished": {
+        "elapsed_seconds": 1735.406,
+        "sequence": 17286
+      },
+      "model_load_complete": {
+        "elapsed_seconds": 410.15599999999995,
+        "sequence": 2150
+      },
+      "model_load_reserved": {
+        "elapsed_seconds": 394.03099999999995,
+        "sequence": 2149
+      }
+    },
+    "tip_sha256": "0e4faee52ea2d58e082f24c305bafde8e8dd3c18d61a7b364357c8b8f0db9fd9"
+  },
+  "kind": "v3_native_guardian_ledger_reconciliation",
+  "limits": {
+    "chunk_bytes": 1048576,
+    "euler_steps": 6804,
+    "header_bytes": 1048576,
+    "images": 2268,
+    "metadata_bytes": 12582912,
+    "model_loads": 1,
+    "raw_bytes": 250822656,
+    "result_bytes": 268435456,
+    "seconds": 1798,
+    "telemetry_bytes": 16777216,
+    "temporary_bytes": 1048576
+  },
+  "model_decoder_physics_gpu_queries_during_audit": 0,
+  "read_only_formal_artifacts": true,
+  "resources": {
+    "backend_tracked_cuda_lifetime_peaks": {
+      "allocated_mib": 104.7431640625,
+      "cuda_peak_allocated_bytes": 109831168,
+      "cuda_peak_reserved_bytes": 136314880,
+      "reserved_mib": 130.0
+    },
+    "monitor_records": 7964,
+    "monitor_samples": 7960,
+    "monitor_sha256": "82c5d1fc4506a2d46e7fdd03273c8c7394171fd27e6068bca5b871261e16c761",
+    "note": "Whole-device free GPU/process RAM measurements are native and sampled; allocator lifetime peaks come from real backend torch.cuda max_memory counters in saved final status. No GPU queries in this audit.",
+    "reported_sampled_current_allocator_and_os_peaks": {
+      "cuda_allocated_bytes": 95563264,
+      "cuda_reserved_bytes": 136314880,
+      "private_bytes": 2220331008,
+      "working_set_bytes": 1358249984
+    },
+    "resource_violations": [],
+    "sampled_allocator_max_allocated_mib": 91.13623046875,
+    "sampled_minima_bytes": {
+      "available_ram_bytes": 2923810816,
+      "commit_headroom_bytes": 12635152384,
+      "disk_free_bytes": 14475526144,
+      "gpu_free_bytes": 6224347136
+    },
+    "sampled_minima_gib": {
+      "available_ram_bytes": 2.723011016845703,
+      "commit_headroom_bytes": 11.767402648925781,
+      "disk_free_bytes": 13.48138427734375,
+      "gpu_free_bytes": 5.796875
+    },
+    "startup": {
+      "available_ram_bytes": 4666310656,
+      "commit_headroom_bytes": 17682690048,
+      "disk_free_bytes": 15142273024,
+      "errors": {},
+      "gpu_age_seconds": 0.0,
+      "gpu_free_bytes": 7024410624,
+      "private_bytes": null,
+      "process_peak_working_set_bytes": null,
+      "working_set_bytes": null
+    },
+    "worker_status_unavailable_samples": 7
+  },
+  "scope": "Full journal/monitor hashing and output stat reconciliation only; no repeat output payload hashing or input inventory hashing.",
+  "storage": {
+    "actual_npy_header_bytes": 290304,
+    "actual_npy_header_each_max": 128,
+    "actual_npy_header_each_min": 128,
+    "counter_max_hold_ms": 1.1037,
+    "counter_state": [
+      263982080,
+      14516631,
+      259599582,
+      14516631,
+      31635,
+      0,
+      31635,
+      1103700
+    ],
+    "final_event_bytes": 117,
+    "output_completed_actual_bytes": 259599582,
+    "output_reserved_max_bytes": 263982080,
+    "post_final_event_charged": {
+      "output_bytes": 266079232,
+      "telemetry_bytes": 14848408
+    },
+    "post_final_event_physical": {
+      "output_bytes": 259599582,
+      "telemetry_bytes": 14586782
+    },
+    "raw_frames": 2268,
+    "raw_payload_bytes": 250822656,
+    "report_before_final_event": {
+      "accounting_commits": 31634,
+      "accounting_max_hold_ns": 1103700,
+      "accounting_sequence": 31634,
+      "observed_bytes_kind": "quiescent full filesystem audit",
+      "output_bytes": 266079232,
+      "output_observed_bytes": 259599582,
+      "output_reserved_bytes": 6479650,
+      "pending_result_publications": 0,
+      "telemetry_bytes": 14848291,
+      "telemetry_observed_bytes": 14586665,
+      "telemetry_reserved_bytes": 261626
+    },
+    "reserved_header_bytes": 580608,
+    "telemetry_physical_files": 13
+  },
+  "time": {
+    "guardian_deadline_monotonic": 2700.843,
+    "guardian_started_monotonic": 900.843,
+    "last_guardian_event_sgt": "2026-10-25T17:12:11.068370+08:00",
+    "last_guardian_event_utc": "2026-10-25T09:12:11.068370+00:00",
+    "launch_seal_created_sgt": "2026-10-25T16:42:50.154419+08:00",
+    "launch_seal_created_utc": "2026-10-25T08:42:50.154419+00:00",
+    "launcher_stdout_written_sgt": "2026-10-25T17:12:11.096352+08:00",
+    "launcher_stdout_written_utc": "2026-10-25T09:12:11.096352+00:00",
+    "note": "Seal created timestamp follows read-only preflight; exact enforced parent clock is monotonic. Report elapsed is captured before final journal/full-storage audit; UTC ended stamp follows that audit.",
+    "report_ended_sgt": "2026-10-25T17:12:11.067371+08:00",
+    "report_ended_utc": "2026-10-25T09:12:11.067371+00:00",
+    "reported_pre_final_audit_elapsed_seconds": 1737.594,
+    "seal_to_report_wall_seconds": 1760.912952,
+    "seal_to_stdout_write_wall_seconds": 1760.941933,
+    "wall_headroom_vs_1800_seconds": 39.087048000000095,
+    "worker_deadline_monotonic": 2700.125,
+    "worker_seconds": 1798,
+    "worker_started_monotonic": 902.125
+  },
+  "warnings": {
+    "launcher_stderr_bytes": 0,
+    "worker_output_log": "There was a problem when trying to write in your cache folder (__LOCAL_HOME__\\.cache\\huggingface\\hub). Please, ensure the directory exists and can be written to.\n{\"status\": \"complete\", \"counts\": {\"L_images\": 1692, \"T_images\": 576, \"euler_steps\": 6804, \"images\": 2268, \"model_loads\": 1}, \"stop_reason\": null}\n"
+  }
+}

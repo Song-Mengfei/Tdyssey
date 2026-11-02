@@ -1,0 +1,705 @@
+{
+  "kind": "native-rgb-stage3c-exact-continuation-result.v1",
+  "stage": "3C",
+  "created_at_utc": "2026-10-29T05:22:46.900931+00:00",
+  "outcome": "exact_resume_verified_train18_registered_microfit_passed_dev_and_shape_not_accepted",
+  "one_actual_execution": true,
+  "execution_cycle_finished": true,
+  "failure": null,
+  "training_chain_verified": true,
+  "start_updates": 129,
+  "final_updates": 250,
+  "local_optimizer_attempts": 121,
+  "local_optimizer_updates": 121,
+  "local_draws": 1936,
+  "cumulative_draws": 4000,
+  "unique_training_windows": 18,
+  "selected_window_exposures": {
+    "10568": 222,
+    "10988": 223,
+    "1306": 223,
+    "13608": 222,
+    "14039": 222,
+    "14215": 222,
+    "1482": 222,
+    "17875": 222,
+    "18309": 222,
+    "18921": 222,
+    "19896": 223,
+    "20404": 222,
+    "20570": 222,
+    "3112": 222,
+    "5370": 222,
+    "5552": 223,
+    "7171": 222,
+    "9289": 222
+  },
+  "native_parameter_count": 8729827,
+  "parameter_tensors_changed_since129": 296,
+  "inherited_first_gradient_norms_scope": "stage3B; not new3C per-parameter measurements",
+  "prior_fixed_train_loss": 0.0024270865445335708,
+  "final_fixed_train_loss": 0.001933733673973216,
+  "denoising_validation": [
+    {
+      "denoising_loss": 0.0026539426503909957,
+      "update": 129
+    },
+    {
+      "denoising_loss": 0.002387734880256984,
+      "update": 250
+    }
+  ],
+  "final_learning_rate": 9.84666621830081e-05,
+  "restored_components": [
+    "model",
+    "optimizer",
+    "scaler",
+    "scheduler",
+    "rng",
+    "order"
+  ],
+  "actual_state_restore_verified": true,
+  "parent_checkpoint_sha256": "e94f9349e1affb8372aacc4613bd57ade496704a50b63d257f77cb4c5ad3626a",
+  "checkpoint": {
+    "bytes": 105290926,
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\run\\last.pt",
+    "sha256": "7a3c3fed60f444536afe8999d6f6346d1ce41258f8df7d87dc78f18bcb4ba28f",
+    "updates": 250
+  },
+  "checkpoint_semantic_review": {
+    "CPU_torch_load_counted": true,
+    "checkpoint_sha256": "7a3c3fed60f444536afe8999d6f6346d1ce41258f8df7d87dc78f18bcb4ba28f",
+    "model_work_elapsed": 423.84300000000076,
+    "optimizer_parameter_state_entries": 296,
+    "order_cursor": 4000,
+    "passed": true,
+    "required_fields": [
+      "config",
+      "identity",
+      "ledger",
+      "model",
+      "optimizer",
+      "order",
+      "progress",
+      "rng",
+      "scaler",
+      "scheduler"
+    ],
+    "scheduler_T_max": 3000,
+    "updates": 250,
+    "verification_wall_seconds": 0.13999999999941792
+  },
+  "new_native_prediction_frames": 54,
+  "new_native_sampler_batch_calls": 14,
+  "rebaseline_calls": 0,
+  "repredict129_calls": 0,
+  "raw_arrays_unmodified": true,
+  "train_dynamic_fit_target": {
+    "baseline": "hold",
+    "baseline_hard_failures": 0,
+    "baseline_mean_object_error": 0.23258317101512865,
+    "denominator": 18,
+    "hold_valid": true,
+    "mean_object_error": 0.18517149901054739,
+    "method": "fitted",
+    "method_hard_failures": 0,
+    "passed": true,
+    "protocol_valid": true,
+    "qualification": "18-window microfit diagnostic only. Shape failures/unknown and development evidence remain separate.",
+    "relative_reduction": 0.20384824833907403,
+    "required_denominator": 18,
+    "required_relative_reduction": 0.2,
+    "required_strict_wins": 12,
+    "strict_wins": 15,
+    "ties": 0,
+    "truth_valid": true
+  },
+  "four_method_summary": {
+    "development": {
+      "H1_motion": {
+        "intermediate": {
+          "final_vs_hold": {
+            "baseline": "hold",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.1209302325581395,
+            "denominator": 1,
+            "mean_object_error": 0.3025210084033614,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": -1.5016160310277966,
+            "strict_wins": 0,
+            "ties": 0
+          },
+          "final_vs_update129": {
+            "baseline": "update129",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.27542372881355937,
+            "denominator": 1,
+            "mean_object_error": 0.3025210084033614,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": -0.09838396897220422,
+            "strict_wins": 0,
+            "ties": 0
+          }
+        },
+        "moving": {
+          "final_vs_hold": {
+            "baseline": "hold",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.223749622857659,
+            "denominator": 31,
+            "mean_object_error": 0.26961846378526394,
+            "method": "final",
+            "method_hard_failures": 2,
+            "relative_reduction": -0.20500075191985884,
+            "strict_wins": 6,
+            "ties": 0
+          },
+          "final_vs_update129": {
+            "baseline": "update129",
+            "baseline_hard_failures": 1,
+            "baseline_mean_object_error": 0.2872416048705932,
+            "denominator": 31,
+            "mean_object_error": 0.26961846378526394,
+            "method": "final",
+            "method_hard_failures": 2,
+            "relative_reduction": 0.06135302402752119,
+            "strict_wins": 20,
+            "ties": 1
+          }
+        },
+        "near_static": {
+          "final_vs_hold": {
+            "baseline": "hold",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.0,
+            "denominator": 4,
+            "mean_object_error": 0.16964578120821946,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": null,
+            "strict_wins": 0,
+            "ties": 0
+          },
+          "final_vs_update129": {
+            "baseline": "update129",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.17418931499677595,
+            "denominator": 4,
+            "mean_object_error": 0.16964578120821946,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": 0.0260838834382039,
+            "strict_wins": 3,
+            "ties": 0
+          }
+        }
+      },
+      "final_vs_hold": {
+        "baseline": "hold",
+        "baseline_hard_failures": 0,
+        "baseline_mean_object_error": 0.1960324594762658,
+        "denominator": 36,
+        "mean_object_error": 0.259424347516095,
+        "method": "final",
+        "method_hard_failures": 2,
+        "relative_reduction": -0.3233744462993091,
+        "strict_wins": 6,
+        "ties": 0
+      },
+      "final_vs_update129": {
+        "baseline": "update129",
+        "baseline_hard_failures": 1,
+        "baseline_mean_object_error": 0.27435196499414033,
+        "denominator": 36,
+        "mean_object_error": 0.259424347516095,
+        "method": "final",
+        "method_hard_failures": 2,
+        "relative_reduction": 0.05441046313761287,
+        "strict_wins": 23,
+        "ties": 1
+      },
+      "methods": {
+        "final": {
+          "aligned_shape_auxiliary": {
+            "available": 36,
+            "mean_visible_aligned_iou": 0.8215377356918049,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 36
+          },
+          "denominator": 36,
+          "failure_reasons": {
+            "empty_pusher": 2
+          },
+          "hard_generation_failures": 2,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 3,
+            "failed": 1,
+            "total": 36,
+            "unknown": 33
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.06031489673647564,
+            "object_drift_from_last_error": 0.20262249597391382,
+            "object_drift_from_last_image_px": 0.724074082232733,
+            "object_foreground_rgb_mae": 0.059800899026836926,
+            "pusher_error": 0.33346464570498385,
+            "pusher_foreground_rgb_mae": 0.06263016056752119,
+            "pusher_position_error_image_px": 8.259543238699553,
+            "raw_contour_error_image_px": 0.4987734917870628,
+            "raw_contour_error_world_px": 2.6601252895310017,
+            "raw_mask_iou": 0.740575652483905,
+            "raw_object_error": 0.259424347516095
+          },
+          "observed_extra_fragment_rows": 0
+        },
+        "frozen": {
+          "aligned_shape_auxiliary": {
+            "available": 17,
+            "mean_visible_aligned_iou": 0.018873343583255812,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 36
+          },
+          "denominator": 36,
+          "failure_reasons": {
+            "empty_object": 6,
+            "empty_pusher": 8,
+            "inference_status_failure": 13
+          },
+          "hard_generation_failures": 26,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 1,
+            "failed": 1,
+            "total": 36,
+            "unknown": 35
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.49496884661731794,
+            "object_drift_from_last_error": 0.9941758575297247,
+            "object_drift_from_last_image_px": 75.09567088955872,
+            "object_foreground_rgb_mae": 0.49629508862525173,
+            "pusher_error": 0.8946654698271078,
+            "pusher_foreground_rgb_mae": 0.4915098462719778,
+            "pusher_position_error_image_px": 83.70811491758042,
+            "raw_contour_error_image_px": 74.11487887914569,
+            "raw_contour_error_world_px": 395.2793540221104,
+            "raw_mask_iou": 0.0055270936469145274,
+            "raw_object_error": 0.9944729063530855
+          },
+          "observed_extra_fragment_rows": 6
+        },
+        "hold": {
+          "aligned_shape_auxiliary": {
+            "available": 36,
+            "mean_visible_aligned_iou": 0.9134279400840783,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 36
+          },
+          "denominator": 36,
+          "failure_reasons": {},
+          "hard_generation_failures": 0,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 3,
+            "failed": 0,
+            "total": 36,
+            "unknown": 33
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.04577747709348422,
+            "object_drift_from_last_error": 0.0,
+            "object_drift_from_last_image_px": 0.0,
+            "object_foreground_rgb_mae": 0.04162342769536733,
+            "pusher_error": 0.3805196812445272,
+            "pusher_foreground_rgb_mae": 0.0692540466003434,
+            "pusher_position_error_image_px": 1.0083826939662894,
+            "raw_contour_error_image_px": 0.34741450102387506,
+            "raw_contour_error_world_px": 1.852877338794,
+            "raw_mask_iou": 0.8039675405237342,
+            "raw_object_error": 0.1960324594762658
+          },
+          "observed_extra_fragment_rows": 0
+        },
+        "update129": {
+          "aligned_shape_auxiliary": {
+            "available": 36,
+            "mean_visible_aligned_iou": 0.7976590511498651,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 36
+          },
+          "denominator": 36,
+          "failure_reasons": {
+            "empty_pusher": 1
+          },
+          "hard_generation_failures": 1,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 3,
+            "failed": 2,
+            "total": 36,
+            "unknown": 33
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.06330327506158448,
+            "object_drift_from_last_error": 0.2127400482740724,
+            "object_drift_from_last_image_px": 0.6925651989022542,
+            "object_foreground_rgb_mae": 0.06308500054966887,
+            "pusher_error": 0.31862169529127715,
+            "pusher_foreground_rgb_mae": 0.06270465412528065,
+            "pusher_position_error_image_px": 4.522158186376145,
+            "raw_contour_error_image_px": 0.5463561963056285,
+            "raw_contour_error_world_px": 2.9138997136300184,
+            "raw_mask_iou": 0.7256480350058596,
+            "raw_object_error": 0.27435196499414033
+          },
+          "observed_extra_fragment_rows": 0
+        }
+      }
+    },
+    "train": {
+      "H1_motion": {
+        "moving": {
+          "final_vs_hold": {
+            "baseline": "hold",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.23258317101512865,
+            "denominator": 18,
+            "mean_object_error": 0.18517149901054739,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": 0.20384824833907403,
+            "strict_wins": 15,
+            "ties": 0
+          },
+          "final_vs_update129": {
+            "baseline": "update129",
+            "baseline_hard_failures": 0,
+            "baseline_mean_object_error": 0.22807596210836506,
+            "denominator": 18,
+            "mean_object_error": 0.18517149901054739,
+            "method": "final",
+            "method_hard_failures": 0,
+            "relative_reduction": 0.18811479605830886,
+            "strict_wins": 18,
+            "ties": 0
+          }
+        }
+      },
+      "final_vs_hold": {
+        "baseline": "hold",
+        "baseline_hard_failures": 0,
+        "baseline_mean_object_error": 0.23258317101512865,
+        "denominator": 18,
+        "mean_object_error": 0.18517149901054739,
+        "method": "final",
+        "method_hard_failures": 0,
+        "relative_reduction": 0.20384824833907403,
+        "strict_wins": 15,
+        "ties": 0
+      },
+      "final_vs_update129": {
+        "baseline": "update129",
+        "baseline_hard_failures": 0,
+        "baseline_mean_object_error": 0.22807596210836506,
+        "denominator": 18,
+        "mean_object_error": 0.18517149901054739,
+        "method": "final",
+        "method_hard_failures": 0,
+        "relative_reduction": 0.18811479605830886,
+        "strict_wins": 18,
+        "ties": 0
+      },
+      "methods": {
+        "final": {
+          "aligned_shape_auxiliary": {
+            "available": 18,
+            "mean_visible_aligned_iou": 0.8546610387965381,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 18
+          },
+          "denominator": 18,
+          "failure_reasons": {},
+          "hard_generation_failures": 0,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 0,
+            "failed": 0,
+            "total": 18,
+            "unknown": 18
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.0434229584874982,
+            "object_drift_from_last_error": 0.19603170827327068,
+            "object_drift_from_last_image_px": 0.588184877953058,
+            "object_foreground_rgb_mae": 0.042727654953671285,
+            "pusher_error": 0.25397981692667687,
+            "pusher_foreground_rgb_mae": 0.047628050186883784,
+            "pusher_position_error_image_px": 0.6163754052677113,
+            "raw_contour_error_image_px": 0.3434211875156683,
+            "raw_contour_error_world_px": 1.8315796667502307,
+            "raw_mask_iou": 0.8148285009894526,
+            "raw_object_error": 0.18517149901054739
+          },
+          "observed_extra_fragment_rows": 0
+        },
+        "frozen": {
+          "aligned_shape_auxiliary": {
+            "available": 9,
+            "mean_visible_aligned_iou": 0.030638047698690527,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 18
+          },
+          "denominator": 18,
+          "failure_reasons": {
+            "empty_object": 4,
+            "empty_pusher": 3,
+            "inference_status_failure": 5
+          },
+          "hard_generation_failures": 11,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 0,
+            "failed": 0,
+            "total": 18,
+            "unknown": 18
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.44249058060140034,
+            "object_drift_from_last_error": 0.9898921028044099,
+            "object_drift_from_last_image_px": 71.81140170906883,
+            "object_foreground_rgb_mae": 0.4412381729612275,
+            "pusher_error": 0.9304275473630312,
+            "pusher_foreground_rgb_mae": 0.45376949299637964,
+            "pusher_position_error_image_px": 68.83482060303926,
+            "raw_contour_error_image_px": 70.3374913630675,
+            "raw_contour_error_world_px": 375.1332872696933,
+            "raw_mask_iou": 0.009379753790023947,
+            "raw_object_error": 0.9906202462099761
+          },
+          "observed_extra_fragment_rows": 3
+        },
+        "hold": {
+          "aligned_shape_auxiliary": {
+            "available": 18,
+            "mean_visible_aligned_iou": 0.8818485395821417,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 18
+          },
+          "denominator": 18,
+          "failure_reasons": {},
+          "hard_generation_failures": 0,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 0,
+            "failed": 0,
+            "total": 18,
+            "unknown": 18
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.05281722310922057,
+            "object_drift_from_last_error": 0.0,
+            "object_drift_from_last_image_px": 0.0,
+            "object_foreground_rgb_mae": 0.0485253625003286,
+            "pusher_error": 0.393612686093529,
+            "pusher_foreground_rgb_mae": 0.07941807629784395,
+            "pusher_position_error_image_px": 1.0757077753324245,
+            "raw_contour_error_image_px": 0.42706694380189414,
+            "raw_contour_error_world_px": 2.2776903669434354,
+            "raw_mask_iou": 0.7674168289848713,
+            "raw_object_error": 0.23258317101512865
+          },
+          "observed_extra_fragment_rows": 0
+        },
+        "update129": {
+          "aligned_shape_auxiliary": {
+            "available": 18,
+            "mean_visible_aligned_iou": 0.8176380554415673,
+            "qualification": "Auxiliary visible-mask alignment; unavailable rows are not passed and this finite-subset mean is not the fit criterion",
+            "total": 18
+          },
+          "denominator": 18,
+          "failure_reasons": {},
+          "hard_generation_failures": 0,
+          "invalid_truth_rows": 0,
+          "legacy_deformation": {
+            "assessable": 0,
+            "failed": 0,
+            "total": 18,
+            "unknown": 18
+          },
+          "means_all_rows": {
+            "combined_foreground_rgb_mae": 0.052983196923568995,
+            "object_drift_from_last_error": 0.1937046876762194,
+            "object_drift_from_last_image_px": 0.5071711500821183,
+            "object_foreground_rgb_mae": 0.05208212736707432,
+            "pusher_error": 0.2960018845888411,
+            "pusher_foreground_rgb_mae": 0.05940529215646547,
+            "pusher_position_error_image_px": 0.7533876868625197,
+            "raw_contour_error_image_px": 0.45635414144882375,
+            "raw_contour_error_world_px": 2.433888754393726,
+            "raw_mask_iou": 0.771924037891635,
+            "raw_object_error": 0.22807596210836506
+          },
+          "observed_extra_fragment_rows": 0
+        }
+      }
+    }
+  },
+  "shape_interpretation": "Rounded contours persist; TRAIN18unknown; DEV1fail/3assessable+33unknown. Unknown is not a pass.",
+  "model_work_seconds": 423.85899999999674,
+  "prior_3_plus3b_model_seconds": 444.6250000000073,
+  "aggregate_new_round_model_seconds": 868.484000000004,
+  "aggregate_new_round_attempts": 250,
+  "global_ledger_closed": true,
+  "overrun_seconds": 0.0,
+  "peak_cuda_allocated_bytes": 1793521152,
+  "peak_cuda_reserved_bytes": 2059403264,
+  "remaining_new_round_attempts": 2750,
+  "remaining_new_round_seconds": 4531.515999999996,
+  "remaining_is_not_spending_authorization": true,
+  "historical_native_attempts": 1899,
+  "historical_native_model_seconds": 5352.516,
+  "physical_controls": 0,
+  "supervised_physical_controls": 39680,
+  "all_native_physical_controls": 74240,
+  "no_formal_train": true,
+  "no_H4": true,
+  "no_full319": true,
+  "no_unseen": true,
+  "no_server": true,
+  "no_packaging": true,
+  "integrity_audit_passed": true,
+  "budget_audit_passed": true,
+  "storage_at_callback": {
+    "kind": "stage3c-storage-at-callback.v1",
+    "checked_at_utc": "2026-10-29T05:22:46.900931+00:00",
+    "root_list_source": "final-storage.json",
+    "files": 3534,
+    "bytes": 2083997863,
+    "reserved_atomic_bytes": 268435456,
+    "projected_bytes": 2352433319,
+    "max_bytes": 3221225472,
+    "passed": true,
+    "qualification": "Metadata snapshot before final result/callback small files; no deletion or cleanup."
+  },
+  "evidence": {
+    "REPORT.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\REPORT.md",
+      "sha256": "4d0783c1bd0be7ecae055b277aad81ea3098ccb038d4ba8501765a243e78061f"
+    },
+    "DIAGNOSIS.md": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\DIAGNOSIS.md",
+      "sha256": "6ef64d0a3559f44f6606a3380a34f391e33b51eb697c6c23c41ebc0541a3a9ef"
+    },
+    "range-accounting.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\range-accounting.json",
+      "sha256": "acae6815bbe31e2a40e228f42f85b6e9b433c1c9b14cde230bba44770fb5bbb8"
+    },
+    "model-work.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\model-work.json",
+      "sha256": "c8a2ffb450985e6652f173714c49692a0ec4c5f5ab54fdab2e124952fb8ed450"
+    },
+    "run/result.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\run\\result.json",
+      "sha256": "981af269ede4412c06d1aafc6267f7ad1d4cf106f40cbd009e6d00bb2ebb6c06"
+    },
+    "run/last.pt": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\run\\last.pt",
+      "sha256": "7a3c3fed60f444536afe8999d6f6346d1ce41258f8df7d87dc78f18bcb4ba28f"
+    },
+    "restore-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\restore-review.json",
+      "sha256": "d0012701a98bebdcee1f1e1793491ab12b4056b12b0ffd9142c949099c797aaa"
+    },
+    "run/history.jsonl": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\run\\history.jsonl",
+      "sha256": "073deda52dec5f0d24e04d2f8703822c4f49bde39e4133371c5da7d3d9c1160c"
+    },
+    "run/sampling-history.jsonl": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\run\\sampling-history.jsonl",
+      "sha256": "633dd7ad2b9898ff5db9067b53c54b8b798fe2e144c58332539e9090c7924cf8"
+    },
+    "source-identity.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\source-identity.json",
+      "sha256": "a290b7585bb8670fee83631bdbb8299d8dbe03a87502470860b2a7fb7cc19595"
+    },
+    "continuation-plan.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\continuation-plan.json",
+      "sha256": "6efbf8a7e903f3a6185f68e7e82158064c25facfd2d011217f6a255309c9fe10"
+    },
+    "entry-from-stage3b.diff": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\entry-from-stage3b.diff",
+      "sha256": "947ab2c7c3ab3296a071805be1e9ccc12f5122285149129861460bcf0eaff3ad"
+    },
+    "continuation-cpu-checks.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\continuation-cpu-checks.json",
+      "sha256": "7278f641e383d042e507ea581df516d5e1f8164b761996497830192c6e56c9cd"
+    },
+    "root-entry-cpu-check.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\root-entry-cpu-check.json",
+      "sha256": "71cef50a3d4ae3d3e05e00865ccc894ecfcca509e2223450a31c388ea0d9eed8"
+    },
+    "predictions/fitted-train18.npz": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\predictions\\fitted-train18.npz",
+      "sha256": "b96a5192078032176af373049732ec43b4298e38b3de883a6d91642eae5730da"
+    },
+    "predictions/fitted-dev36.npz": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\predictions\\fitted-dev36.npz",
+      "sha256": "6528b6769c3ddae4958ca6a909a6ce46f334a408eb58f9d36de314385ae02a09"
+    },
+    "score/score-report.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\score\\score-report.json",
+      "sha256": "4233329e702e7cde111ea2f182a6e492b2c898a04ca090b2dcc4c46e6ab1f4aa"
+    },
+    "score/per-window.csv": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\score\\per-window.csv",
+      "sha256": "330ce5a58bd5d9f86c50e5ca253bb5a2bcb670317e7f6044466cf0eb803ddfc9"
+    },
+    "score-cpu-timing.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\score-cpu-timing.json",
+      "sha256": "5c4c7d41a0760e4b4f76ba803e83a23abda17865671795fcb5a149f875f216c8"
+    },
+    "comparison129-final/comparison.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\comparison129-final\\comparison.json",
+      "sha256": "3ccb9ae62460bb389718bfb88f5b803580d529bf3229cb1f735f0e97f0eacb66"
+    },
+    "comparison129-final/all54-method-comparison.csv": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\comparison129-final\\all54-method-comparison.csv",
+      "sha256": "4cea6a958f3810f76fe9a748c29eb22333beeb30bbc6b70eb9295d0e2067f9de"
+    },
+    "comparison129-final/gallery-pages.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\comparison129-final\\gallery-pages.json",
+      "sha256": "0cf24e75ded3affd30504aeb89d5cf998f63167287e778d57780348aee032407"
+    },
+    "review-postrun-budget.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\review-postrun-budget.json",
+      "sha256": "eaa75700ecf5490bf091200fe7399b2257f3a30e297d3464336c8823d32cfa6b"
+    },
+    "review-postrun-integrity.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\review-postrun-integrity.json",
+      "sha256": "84dd6d63b6261bb03a7dbd353fd2c0aaffea2bda7cd6c59da749fb0e639e7ffd"
+    },
+    "root-visual-review.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\root-visual-review.json",
+      "sha256": "5855c9f8335724b7788da24983caf9e2d09f4127f0fe98fdadf12650c56244a2"
+    },
+    "final-storage.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\final-storage.json",
+      "sha256": "12c30e52b5577e44b27667ad3398d90db95f4746fc2a2cd8f0c2ee9e82008ff0"
+    },
+    "storage-at-callback.json": {
+      "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\storage-at-callback.json",
+      "sha256": "51b31465c25e5dc54f4b6eaad24c31cac2cb3c085739903e14430e86e48ba42c"
+    }
+  },
+  "next_action": "waiting_parent and STOP; no further continuation or formal training without a new parent release.",
+  "callback_sent": true,
+  "callback_sent_at_utc": "2026-10-29T05:24:13.464778+00:00",
+  "callback_receipt": {
+    "path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\stage3c\\callback-result.json",
+    "sha256": "661d8f5b45eb7a75e5151e39f724d26f1ff2d590e6589fbd942f092f6fca5867"
+  }
+}

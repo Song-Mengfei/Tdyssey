@@ -1,0 +1,17 @@
+docs(wm): record pilot02 CUDA cap stop and spent updates
+
+Why:
+The sole authorized pilot02 reached real GPC training but stopped at the fixed
+CUDA allocation cap before completing its 500-update candidate.
+
+Changes:
+- Record one model load, two reserved updates and one durable completion.
+- Separate measured first-step values from inferred second-step control flow.
+- Preserve unknown parameter delta, absent evaluation and all scientific gaps.
+- Record resource, output and old-asset preservation evidence without a retry.
+
+Validation:
+- 49 prelaunch stdlib/fake checks and source/message/whitespace checks passed.
+- One real pilot02 stopped at 27.719s with allocated peak 520.619MiB over 512MiB.
+- Job empty, lock released; no forecasts, physics, fallback or second attempt.
+- Offline journal/order audit and preservation of 7831 old files passed.

@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "source_commit": "a96146e568826ef46134f73c22fdf59a675e7264",
+  "source_sha256": {
+    "gpc_rank_evaluation/models.py": "c54b0b5db82544c2bc4d2a1bfd85f851b55766b4c75dc492319c5eeb5ed85de1",
+    "gpc_rank_evaluation/utils.py": "33d9592c73adee54a6846530ccc7d1734d058ccac473006ff373962dd23e308f",
+    "gpc_rank_evaluation/eval_baseline.py": "efc2c22750dc4b1e2b90f9003eab0de45f5e707d92d8edfa8722fb16fddee40c",
+    "gpc_rank_evaluation/configs/gpc_rank_evaluation_config.yml": "a6e5e5e409f917295419c1edcd74354472217634fb193cf76a85164b9c4bc842",
+    "diffusion_policy_training/models.py": "c54b0b5db82544c2bc4d2a1bfd85f851b55766b4c75dc492319c5eeb5ed85de1",
+    "diffusion_policy_training/configs/train_config.yml": "1d3c219d9c742493c22934172e7689b56e9cf097f8c34319df94194b196369df"
+  },
+  "checkpoint": {
+    "repo_id": "han2019/gpc_checkpoints",
+    "revision": "c16a467ec176af19bba5136564a81d8d61d72af9",
+    "path": "action_policy_checkpoint/checkpoint_epoch_300/ema_nets.pth",
+    "filename": "ema_nets.pth",
+    "bytes": 364554150,
+    "sha256": "62c8f664bf371cc3a18c4a7eeaecab2e07d99be5afec997ac7a8703da1954eba",
+    "format": "diffusers_ema_state_dict"
+  },
+  "policy": {
+    "obs_horizon": 2,
+    "pred_horizon": 16,
+    "action_horizon": 8,
+    "num_diffusion_iters": 100,
+    "image_shape": [
+      3,
+      96,
+      96
+    ],
+    "normalization": {
+      "agent_pos": {
+        "min": [
+          9.897889,
+          9.63592
+        ],
+        "max": [
+          499.517,
+          499.00488
+        ]
+      },
+      "action": {
+        "min": [
+          2.0,
+          2.0
+        ],
+        "max": [
+          511.0,
+          511.0
+        ]
+      }
+    },
+    "normalization_source": "domain18_stats in pinned gpc_rank_evaluation/eval_baseline.py; not refitted on play/test data",
+    "scheduler": {
+      "beta_schedule": "squaredcos_cap_v2",
+      "clip_sample": true,
+      "prediction_type": "epsilon"
+    }
+  },
+  "expert_dataset": {
+    "repo_id": "han2019/gpc_pushT_data",
+    "revision": "2e852997c3fc38e855353e232a9141b78a496470",
+    "schema": {
+      "data/action/.zarray": {
+        "path": "diffusion_policy_data/domain18/domain18.zarr/data/action/.zarray",
+        "sha256": "88d984c0c7296dcb40e856087160daa1563d2281b53df41aae8a71b8aae61fc1",
+        "metadata": {
+          "chunks": [
+            70,
+            2
+          ],
+          "compressor": {
+            "blocksize": 0,
+            "clevel": 5,
+            "cname": "zstd",
+            "id": "blosc",
+            "shuffle": 2
+          },
+          "dtype": "<f4",
+          "fill_value": 0.0,
+          "filters": null,
+          "order": "C",
+          "shape": [
+            55480,
+            2
+          ],
+          "zarr_format": 2
+        }
+      },
+      "data/state/.zarray": {
+        "path": "diffusion_policy_data/domain18/domain18.zarr/data/state/.zarray",
+        "sha256": "bcceab5ebdc16837cf153606db85b31a85636fc36bf0fe5da2d0321497f289d5",
+        "metadata": {
+          "chunks": [
+            70,
+            5
+          ],
+          "compressor": {
+            "blocksize": 0,
+            "clevel": 5,
+            "cname": "zstd",
+            "id": "blosc",
+            "shuffle": 2
+          },
+          "dtype": "<f4",
+          "fill_value": 0.0,
+          "filters": null,
+          "order": "C",
+          "shape": [
+            55480,
+            5
+          ],
+          "zarr_format": 2
+        }
+      },
+      "data/img/.zarray": {
+        "path": "diffusion_policy_data/domain18/domain18.zarr/data/img/.zarray",
+        "sha256": "830107604cae20c8cd2e408b007872c531cc108f751f489c96b7c38a3e310e86",
+        "metadata": {
+          "chunks": [
+            70,
+            96,
+            96,
+            3
+          ],
+          "compressor": {
+            "blocksize": 0,
+            "clevel": 5,
+            "cname": "zstd",
+            "id": "blosc",
+            "shuffle": 2
+          },
+          "dtype": "|u1",
+          "fill_value": 0,
+          "filters": null,
+          "order": "C",
+          "shape": [
+            55480,
+            96,
+            96,
+            3
+          ],
+          "zarr_format": 2
+        }
+      },
+      "meta/episode_ends/.zarray": {
+        "path": "diffusion_policy_data/domain18/domain18.zarr/meta/episode_ends/.zarray",
+        "sha256": "76335d5dace39ecaae3670869209fa6fd60f503a41e41837f1fd0820c58ff99d",
+        "metadata": {
+          "chunks": [
+            708
+          ],
+          "compressor": null,
+          "dtype": "<i8",
+          "fill_value": 0,
+          "filters": null,
+          "order": "C",
+          "shape": [
+            500
+          ],
+          "zarr_format": 2
+        }
+      }
+    },
+    "image_data_downloaded": false
+  },
+  "protocol_notes": [
+    "EMA shadows cover both vision_encoder and invariant in their upstream ModuleDict order; buffers must be absent.",
+    "Unranked single-sample diffusion policy; no world-model/reward ranking.",
+    "Configured action prefix indices 1:9 (eight actions); not the upstream ranking evaluator's slicing behavior."
+  ]
+}

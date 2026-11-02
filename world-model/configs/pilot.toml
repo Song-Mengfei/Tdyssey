@@ -1,0 +1,29 @@
+# Design contract only. No trainer consumes this config yet.
+schema_version = 1
+status = "planned"
+observation_mode = "undecided_image_or_state"
+initial_shape = "T"
+adaptation_shapes = ["I", "L"]
+target_expert_demonstrations_allowed = false
+target_nonexpert_interaction_allowed = true
+zero_shot_claim_after_target_training_allowed = false
+
+[budgets]
+# Provisional, from the original plan. Actual budgets need a machine benchmark.
+target_real_control_steps_max = 50000
+small_adaptation_prefixes = [5000, 20000, 50000]
+long_jobs_authorized = false
+
+[evaluation]
+shared_initial_conditions = true
+trajectory_disjoint_model_splits = true
+physical_simulator_validation = true
+development_training_seeds = 1
+core_training_seeds_target = 3
+success_rule = "freeze_after_geometry_and_symmetry_validation"
+
+[storage]
+# Resolve these relative to a user-chosen artifact root in future implementation.
+data = "data"
+checkpoints = "checkpoints"
+runs = "runs"

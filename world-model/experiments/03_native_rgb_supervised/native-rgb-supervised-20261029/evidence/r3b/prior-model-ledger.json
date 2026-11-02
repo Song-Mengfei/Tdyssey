@@ -1,0 +1,150 @@
+{
+  "active_stage": null,
+  "charged_seconds": 8346.110000000008,
+  "charged_updates": 6250,
+  "completed_updates": 6250,
+  "historical_cancelled_experiment": {
+    "historical_native_attempts": 1899,
+    "historical_native_model_seconds": 5352.516,
+    "included_in_new_round_budget": false
+  },
+  "kind": "native_gpc_rgb_cost.v2-record-only-time",
+  "legacy_budget_metadata": {
+    "limits_were_supervisor_plan_not_user_time_budget": true,
+    "previous_kind": "native_gpc_rgb_cost.v1",
+    "previous_max_seconds": 5400.0,
+    "previous_max_updates": 3000
+  },
+  "max_seconds": null,
+  "max_updates": null,
+  "policy_migrations": [
+    {
+      "at_utc": "2026-10-29T11:54:29.776736+00:00",
+      "charged_counters_and_stage_history_unchanged": true,
+      "prior_ledger_sha256": "517e9a6e46c3d56d33ea3899037f910090ff749020da892cb2ea4fff9200422e",
+      "reason": "User did not set a model time budget; supervisor time hard limits revoked before restart",
+      "to_kind": "native_gpc_rgb_cost.v2-record-only-time"
+    }
+  ],
+  "scope_policy_updates": [
+    {
+      "new_global_max_updates": null,
+      "previous_global_max_updates": 3000,
+      "prior_ledger_sha256": "91928095944592ae4b9d50c412cd02fa4c72427004cf5a5b631b086fa3d54b75",
+      "reason": "Explicit new6000-lineage observation scope supersedes old3000 proposal; not a human lifetime allowance"
+    }
+  ],
+  "stages": [
+    {
+      "completed_updates": 0,
+      "finished_unix": 1793246100.547496,
+      "observed_seconds": 28.3440000000046,
+      "phase": "stage3-visible-microfit",
+      "pid": 17580,
+      "reserved_updates": 0,
+      "seconds_before": 0.0,
+      "started_unix": 1793246072.2080836,
+      "status": "failed:FloatingPointError: Invalid native RGB retained without repair",
+      "token": "7ae88990cd8a47ee8e43ea9fbd1144d0"
+    },
+    {
+      "completed_updates": 129,
+      "finished_unix": 1793248500.77415,
+      "observed_seconds": 416.2810000000027,
+      "phase": "stage3b-visible-microfit",
+      "pid": 13488,
+      "reserved_updates": 129,
+      "seconds_before": 28.3440000000046,
+      "started_unix": 1793248084.488895,
+      "status": "bounded_stop",
+      "token": "50d0236c4351457689ff785f6ad9674a"
+    },
+    {
+      "completed_updates": 121,
+      "finished_unix": 1793250906.8358607,
+      "observed_seconds": 423.85899999999674,
+      "phase": "stage3c-visible-microfit-continuation",
+      "pid": 2504,
+      "reserved_updates": 121,
+      "seconds_before": 444.6250000000073,
+      "started_unix": 1793250482.966808,
+      "status": "complete",
+      "token": "78837d8eebff407180d18ffc3056a0fe"
+    },
+    {
+      "completed_updates": 0,
+      "finished_unix": 1793272299.1731365,
+      "observed_seconds": 27.35899999999674,
+      "phase": "R2C1-selected0.1s-learning-diagnostic",
+      "pid": 26492,
+      "reserved_updates": 0,
+      "seconds_before": 868.484000000004,
+      "started_unix": 1793272271.7978082,
+      "status": "stopped_with_evidence",
+      "token": "1bb0d49cc55746d68b7e32f914138eeb"
+    },
+    {
+      "completed_updates": 300,
+      "finished_unix": 1793275356.1681356,
+      "observed_seconds": 486.375,
+      "phase": "R2C1R1-selected0.1s-learning-diagnostic",
+      "pid": 27524,
+      "planned_attempts": 300,
+      "reserved_updates": 300,
+      "seconds_before": 895.8430000000008,
+      "started_unix": 1793274869.7872486,
+      "status": "bounded_complete",
+      "time_policy": "record_only_v2",
+      "token": "ed8e20ab07e44cf59159971aa8291278"
+    },
+    {
+      "completed_updates": 0,
+      "finished_unix": 1793278087.1995935,
+      "inference_settings": [
+        8,
+        16
+      ],
+      "observed_seconds": 86.90700000000652,
+      "phase": "R2C2-fixed300-native-sampler8-16-diagnostic",
+      "pid": 27796,
+      "planned_attempts": 0,
+      "reserved_updates": 0,
+      "seconds_before": 1382.2180000000008,
+      "started_unix": 1793278000.284407,
+      "status": "complete",
+      "time_policy": "record_only_v2",
+      "token": "c5a3bd2abfb146649c00e84605979d42",
+      "training_authorized": false
+    },
+    {
+      "completed_updates": 5700,
+      "finished_unix": 1793286819.0858126,
+      "lineage_target": 6000,
+      "lineage_updates_before": 300,
+      "max_consecutive_amp_skips": 16,
+      "observed_seconds": 6876.985000000001,
+      "phase": "R2C3-resume300-to1000-3000-6000",
+      "pid": 26296,
+      "planned_attempts": null,
+      "planned_completed_updates": 5700,
+      "reserved_updates": 5700,
+      "seconds_before": 1469.1250000000073,
+      "skipped_updates": 0,
+      "started_unix": 1793279942.0832176,
+      "status": "complete",
+      "stop_on_amp_skip": false,
+      "time_policy": "record_only_v2",
+      "token": "eb8397a693ad4723ae4c25142d56638c",
+      "training_authorized": true
+    }
+  ],
+  "time_policy": {
+    "correction_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\PARENT_TIME_CORRECTION.md",
+    "correction_sha256": "d94534e18780fc649eaac9003bb91374ddad4aea19a5789166a1fc1c5d969f71",
+    "hard_time_limits_enabled": false,
+    "policy_file": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\native-rgb-supervised-20261029\\r2c1r1\\time-policy-v2.json",
+    "policy_sha256": "9514f719d940023b43e6a96d483ddd2ec2311bdc599dac4079e9be0050bac9c5",
+    "user_set_model_time_budget": false,
+    "version": "record_only_v2"
+  }
+}

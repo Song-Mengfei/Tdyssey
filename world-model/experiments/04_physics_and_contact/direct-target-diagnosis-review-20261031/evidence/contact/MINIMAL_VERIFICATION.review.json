@@ -1,0 +1,539 @@
+{
+  "kind": "non-executable-minimal-contact-continuation-review.v2",
+  "review_only": true,
+  "loadable_by_runtime": false,
+  "execution_authorized": false,
+  "proposal_status": "ROOT_FINAL_FOUR_CASE_PROPOSAL_ONLY_WAITING_HUMAN_APPROVAL",
+  "supersedes": "Replaces the earlier internal6case/5follow-up draft. Current FINDINGS.txt section6 andwrite_contact_review.py are aligned to this sole root-reviewed4case/4follow-up proposal; no competing current candidate set.",
+  "source_run_id": "DTA-20261031-7b4e4819a73b41a78dba24947fd6579b",
+  "source_config_sha256": "205d313d2feced75db088c9120ede0f9cd9738a059e1af14d584b07f95be643c",
+  "physical_attempts_started": 0,
+  "model_calls": 0,
+  "optimizer_updates": 0,
+  "candidate_attempt_count": 4,
+  "candidate_independent_families": 4,
+  "candidate_total_control_cap": 35,
+  "candidate_total_regular_substep_cap": 350,
+  "initialization_substeps": "Actual original reset_scene initialization calls separately counted/disclosed; no upstreamreset/_set_state extra exploration",
+  "continuation": "For eachcase reconstructunchanged original environment fromfullinitialization and replaysamecompleteobservedprefix; compareactualmicrostepstates throughoriginalfailureand correspondingRGB/actions beforeinterpretingnewfuture. Then finish theremainderoforiginalfailedcontrol and atmost4subsequent original frozencontrols.",
+  "required_observer_revision_review": [
+    {
+      "old": "customAO/AW/OWdepth>1 immediatelyterminates",
+      "proposed": "Inthese4diagnosticcases only, retain AO/OW>1would_stop marker withoutabortingsolelyforthatmarker beforefinitecap. AW>1retainsimmediatehalt. Preserveolddata andlabels.",
+      "requires_user_approval": true
+    },
+    {
+      "old": "nonfinite orcentreinsolid/closedholeimmediatehalt",
+      "proposed": "Keepnonfinite/centreinsolid/closedholeimmediatehalt andAW>1halt; additionallylog+haltobject_outer_wall_envelope_crossed: anyactualobjectcollisionvertexcoordinate<3or>508, derivedfromwallcentrelines5/506radius2. Thisisadiagnosticouter-envelopeguard,notascalar2/5replacementorproductionacceptanceproof.",
+      "requires_user_approval": true
+    }
+  ],
+  "no_physics_parameter_changes": true,
+  "no_action_restrictions_or_replanning": true,
+  "no_extra_seeds_or_replacements": true,
+  "no_automatic_extension_when_recovery_unobserved": true,
+  "training_eligible": false,
+  "output": "Separate diagnostic-only records, no old relabeling/checkpoints/loaderadmission",
+  "stored_reference": {
+    "attempt_id": "DT-T-02-1-b0",
+    "pair": "AO",
+    "peak_depth": 0.9437699286272139,
+    "peak_control_index": 10,
+    "peak_substep_index": 0,
+    "peak_time_seconds": 1.01,
+    "observed_return_le_point1_time_seconds": 1.17,
+    "new_attempts": 0,
+    "new_physics_calls": 0,
+    "usage": "Use existing saved legal recovery and processplot only; do notrunanotherreference"
+  },
+  "AW_excluded": "Saved9AWcases already showwallinteriortargetpursuit(6negative0/512corners,3boundary); no newAWcontinuationrequested",
+  "user_approval_required_before_any_new_physics": true,
+  "attempts": [
+    {
+      "attempt_id": "DT-O-01-0-b0",
+      "family_id": "DT-O-01-0",
+      "letter": "O",
+      "scenario": "rotation_cw",
+      "selection_reason": "AO closest above1",
+      "source_initialization": {
+        "center": [
+          283.5595598725222,
+          268.5019500495972
+        ],
+        "pusher": [
+          235.21386127270853,
+          206.5239562037877
+        ],
+        "angle": 1.7938312404463983
+      },
+      "source_frozen_initial_state15": [
+        235.21386127270853,
+        206.5239562037877,
+        283.5595598725222,
+        268.5019500495972,
+        1.7938312404463983,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_actual_raw_initial_state15": [
+        235.21386127270853,
+        206.5239562037877,
+        283.5595598725222,
+        268.5019500495972,
+        1.7938312404463983,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_initial_state_sha256": "2463dd4ab39618c17b0614b47ce43a3d0ac0485b54c6f8245527c19b536cd571",
+      "source_raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\raw\\DT-O-01-0-b0.npz",
+      "source_raw_sha256": "c09f7edf477710af0128755c51ae47e8dd507d932deb0a2a6b24a1c48ba6c63d",
+      "source_metadata_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\attempts\\DT-O-01-0-b0.json",
+      "source_metadata_sha256": "ca89b24c54aed0f2f575cea8912cc006bc4e60ecd54dede378665960f53a977b",
+      "source_full64_frozen_actions_sha256": "150e85b55306cefbceb8b7bcb576369cc66f69db504f753320b72466f99bc211",
+      "source_actual_executed_actions_sha256": "4baf77771243336081c49b6515e9fed93080284b0ba7a8a9a68952cd84e3adf6",
+      "original_failure_control_index": 3,
+      "original_failure_substep_index": 2,
+      "original_failure_maxdepth": 1.005882448408883,
+      "failure_pair": "AO",
+      "original_executed_regular_substeps": 33,
+      "proposed_total_control_cap_including_replay": 8,
+      "proposed_total_regular_substep_cap": 80,
+      "subsequent_original_controls": 4,
+      "original_failed_control_remainder_included": true,
+      "planned_action_prefix_range": [
+        0,
+        8
+      ],
+      "planned_action_prefix": [
+        [
+          235.21386127270853,
+          206.5239562037877
+        ],
+        [
+          235.21386127270853,
+          206.5239562037877
+        ],
+        [
+          235.21386127270853,
+          206.5239562037877
+        ],
+        [
+          310.42726370485974,
+          223.58297803619922
+        ],
+        [
+          310.42726370485974,
+          223.58297803619922
+        ],
+        [
+          310.42726370485974,
+          223.58297803619922
+        ],
+        [
+          310.42726370485974,
+          223.58297803619922
+        ],
+        [
+          310.42726370485974,
+          223.58297803619922
+        ]
+      ],
+      "planned_action_prefix_sha256": "66815c0675086154378e01b228527d896df5474720bd8c7349b0c467d2ad60e1",
+      "action_hash_encoding": "IEEE754 float64 little-endian, C-order Nx2 bytes",
+      "execute": false,
+      "training_eligible": false,
+      "original_failure_record": {
+        "control": 3,
+        "substep": 2,
+        "reasons": [
+          "overlap_above_1_world_px"
+        ],
+        "substeps_executed": 3
+      }
+    },
+    {
+      "attempt_id": "DT-T-00-0-b0",
+      "family_id": "DT-T-00-0",
+      "letter": "T",
+      "scenario": "translation",
+      "selection_reason": "first global AO termination",
+      "source_initialization": {
+        "center": [
+          285.5943625132761,
+          255.11507046574144
+        ],
+        "pusher": [
+          366.1821849104537,
+          253.88174864549862
+        ],
+        "angle": 0.2392545264243629
+      },
+      "source_frozen_initial_state15": [
+        366.1821849104537,
+        253.88174864549862,
+        296.2583929275981,
+        211.3968996974852,
+        0.2392545264243629,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_actual_raw_initial_state15": [
+        366.1821849104537,
+        253.88174864549862,
+        296.2583929275981,
+        211.3968996974852,
+        0.2392545264243629,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_initial_state_sha256": "6be532ec6261552fe3972cc022b4a4a5b7f273f0aad4b1d13ac7221090c63a3c",
+      "source_raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\raw\\DT-T-00-0-b0.npz",
+      "source_raw_sha256": "98be8d97470838955f7bd56e81c1ad685500370c9a353691de8119c0a96abc3f",
+      "source_metadata_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\attempts\\DT-T-00-0-b0.json",
+      "source_metadata_sha256": "909b8456f573b114a67f20c0bfdb85cdf68ce8730052243785ffa23a368d588b",
+      "source_full64_frozen_actions_sha256": "dbdce85652154aa723e400b8584df43df25992143e1d71d7eba0fbbd16142c32",
+      "source_actual_executed_actions_sha256": "6b6bdcde8f620ebc41c91fd955e3ec7b3ee79f008bd06a472eb0941ea6ccb3a4",
+      "original_failure_control_index": 3,
+      "original_failure_substep_index": 4,
+      "original_failure_maxdepth": 1.1017713742811726,
+      "failure_pair": "AO",
+      "original_executed_regular_substeps": 35,
+      "proposed_total_control_cap_including_replay": 8,
+      "proposed_total_regular_substep_cap": 80,
+      "subsequent_original_controls": 4,
+      "original_failed_control_remainder_included": true,
+      "planned_action_prefix_range": [
+        0,
+        8
+      ],
+      "planned_action_prefix": [
+        [
+          366.1821849104537,
+          253.88174864549862
+        ],
+        [
+          366.1821849104537,
+          253.88174864549862
+        ],
+        [
+          366.1821849104537,
+          253.88174864549862
+        ],
+        [
+          328.56157211146336,
+          254.69087821488245
+        ],
+        [
+          328.56157211146336,
+          254.69087821488245
+        ],
+        [
+          328.56157211146336,
+          254.69087821488245
+        ],
+        [
+          328.56157211146336,
+          254.69087821488245
+        ],
+        [
+          328.56157211146336,
+          254.69087821488245
+        ]
+      ],
+      "planned_action_prefix_sha256": "90ca42a26f3ebbaeeb5b90f4e14e3de0ce2472023e39531ee94a5ed45f46c7a5",
+      "action_hash_encoding": "IEEE754 float64 little-endian, C-order Nx2 bytes",
+      "execute": false,
+      "training_eligible": false,
+      "original_failure_record": {
+        "control": 3,
+        "substep": 4,
+        "reasons": [
+          "overlap_above_1_world_px"
+        ],
+        "substeps_executed": 5
+      }
+    },
+    {
+      "attempt_id": "DT-L-05-0-b0",
+      "family_id": "DT-L-05-0",
+      "letter": "L",
+      "scenario": "depart_recontact",
+      "selection_reason": "maximum observed AO depth",
+      "source_initialization": {
+        "center": [
+          289.93794414613615,
+          291.43706631555267
+        ],
+        "pusher": [
+          269.17482681973064,
+          342.4892512299117
+        ],
+        "angle": 2.0115290711722045
+      },
+      "source_frozen_initial_state15": [
+        269.17482681973064,
+        342.4892512299117,
+        289.93794414613615,
+        291.43706631555267,
+        2.0115290711722045,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_actual_raw_initial_state15": [
+        269.17482681973064,
+        342.4892512299117,
+        289.93794414613615,
+        291.43706631555267,
+        2.0115290711722045,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_initial_state_sha256": "97aa7806e08746b2275233185b00e476d422a43fe36e4bd112e87e32d558be3b",
+      "source_raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\raw\\DT-L-05-0-b0.npz",
+      "source_raw_sha256": "6bc57d5192a9a565df595d3ac3ba8e64679af4affece97923b7e5cd9298c5f9f",
+      "source_metadata_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\attempts\\DT-L-05-0-b0.json",
+      "source_metadata_sha256": "23cc6ca54ecdf2c111114f6e7456253275123e70bd17d4e53e6eb27553cabfc6",
+      "source_full64_frozen_actions_sha256": "149c54f71f997f62a3c21a0a91e089877033376a4d60e87dbc4a924cd6b031ba",
+      "source_actual_executed_actions_sha256": "47da68e952d0abfb98130e76e1a773904887e357ed71420afd9be8d3e1a04f81",
+      "original_failure_control_index": 3,
+      "original_failure_substep_index": 1,
+      "original_failure_maxdepth": 4.692251112759818,
+      "failure_pair": "AO",
+      "original_executed_regular_substeps": 32,
+      "proposed_total_control_cap_including_replay": 8,
+      "proposed_total_regular_substep_cap": 80,
+      "subsequent_original_controls": 4,
+      "original_failed_control_remainder_included": true,
+      "planned_action_prefix_range": [
+        0,
+        8
+      ],
+      "planned_action_prefix": [
+        [
+          269.17482681973064,
+          342.4892512299117
+        ],
+        [
+          269.17482681973064,
+          342.4892512299117
+        ],
+        [
+          269.17482681973064,
+          342.4892512299117
+        ],
+        [
+          19.81373965321339,
+          224.8716155671699
+        ],
+        [
+          19.81373965321339,
+          224.8716155671699
+        ],
+        [
+          19.81373965321339,
+          224.8716155671699
+        ],
+        [
+          19.81373965321339,
+          224.8716155671699
+        ],
+        [
+          307.1612780754657,
+          360.4065479287908
+        ]
+      ],
+      "planned_action_prefix_sha256": "a78c1323017a8dd21208a51988ee6319f71e2391b068838c837bd0e66b751ce5",
+      "action_hash_encoding": "IEEE754 float64 little-endian, C-order Nx2 bytes",
+      "execute": false,
+      "training_eligible": false,
+      "original_failure_record": {
+        "control": 3,
+        "substep": 1,
+        "reasons": [
+          "overlap_above_1_world_px"
+        ],
+        "substeps_executed": 2
+      }
+    },
+    {
+      "attempt_id": "DT-C-06-1-b0",
+      "family_id": "DT-C-06-1",
+      "letter": "C",
+      "scenario": "boundary",
+      "selection_reason": "unique OW termination",
+      "source_initialization": {
+        "center": [
+          438.01446316519525,
+          447.3163056865725
+        ],
+        "pusher": [
+          443.1283394873229,
+          446.4971252963615
+        ],
+        "angle": 4.293172085250609
+      },
+      "source_frozen_initial_state15": [
+        443.1283394873229,
+        446.4971252963615,
+        438.01446316519525,
+        447.3163056865725,
+        4.293172085250609,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_actual_raw_initial_state15": [
+        443.1283394873229,
+        446.4971252963615,
+        438.01446316519525,
+        447.3163056865725,
+        4.293172085250609,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_initial_state_sha256": "fea22ad88c12c63d0f2e959804c8b5482719826dc5b75a05daf2fe80e82dfe15",
+      "source_raw_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\raw\\DT-C-06-1-b0.npz",
+      "source_raw_sha256": "6fca572d7fd6b78dc84e6b1dc57f2ab936ab5d52333e0506f7c2eae8257d9b9d",
+      "source_metadata_path": "__LOCAL_WORKSPACE__\\Tdyssey-raw-tl-portable-main\\artifacts\\direct-target-acceptance-20261031\\collection\\attempts\\DT-C-06-1-b0.json",
+      "source_metadata_sha256": "bde39e100f0212d925931311edf797e44e7b9d0ada0b281ac29b0f2df8358f71",
+      "source_full64_frozen_actions_sha256": "8219a3aa5b7a0daac5dbd4b5fed664adef1221effedd1cf0bb9950c399f6c7e6",
+      "source_actual_executed_actions_sha256": "7a2a37e64faa2072e023cc1d59c9588784010eadb0d9bf5686d3373d358641b0",
+      "original_failure_control_index": 6,
+      "original_failure_substep_index": 7,
+      "original_failure_maxdepth": 1.0378567518303612,
+      "failure_pair": "OW",
+      "original_executed_regular_substeps": 68,
+      "proposed_total_control_cap_including_replay": 11,
+      "proposed_total_regular_substep_cap": 110,
+      "subsequent_original_controls": 4,
+      "original_failed_control_remainder_included": true,
+      "planned_action_prefix_range": [
+        0,
+        11
+      ],
+      "planned_action_prefix": [
+        [
+          443.1283394873229,
+          446.4971252963615
+        ],
+        [
+          443.1283394873229,
+          446.4971252963615
+        ],
+        [
+          443.1283394873229,
+          446.4971252963615
+        ],
+        [
+          447.4328182693652,
+          450.5910549653389
+        ],
+        [
+          451.7372970514075,
+          454.6849846343163
+        ],
+        [
+          456.04177583344983,
+          458.77891430329373
+        ],
+        [
+          460.34625461549217,
+          462.87284397227114
+        ],
+        [
+          464.65073339753445,
+          466.96677364124855
+        ],
+        [
+          468.9552121795768,
+          471.06070331022596
+        ],
+        [
+          473.2596909616191,
+          475.15463297920337
+        ],
+        [
+          477.5641697436614,
+          479.2485626481807
+        ]
+      ],
+      "planned_action_prefix_sha256": "7687fb8deedcdd9607361d71791d86748bdc05377800d7f9f56615b141c0eba2",
+      "action_hash_encoding": "IEEE754 float64 little-endian, C-order Nx2 bytes",
+      "execute": false,
+      "training_eligible": false,
+      "original_failure_record": {
+        "control": 6,
+        "substep": 7,
+        "reasons": [
+          "overlap_above_1_world_px"
+        ],
+        "substeps_executed": 8
+      }
+    }
+  ],
+  "candidate_new_output_cap_bytes": 16777216,
+  "root_review": "../MINIMAL_VALIDATION_REQUEST.txt"
+}

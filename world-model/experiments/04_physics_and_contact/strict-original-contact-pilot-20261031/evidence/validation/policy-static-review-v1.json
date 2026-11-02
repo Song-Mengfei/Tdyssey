@@ -1,0 +1,46 @@
+{
+  "kind": "strict-original-policy-static-review.v1",
+  "created_at_utc": "2026-10-30T17:17:57.576935+00:00",
+  "scope": "Read-only source review while frozen calibration runs; no process polling, replay, physics or source edits",
+  "collector_sha256": "5c0a1992e631b905a90845bb5c97c589df0240c888712802bd78f922f8873abe",
+  "legacy_sampler_sha256": "135f63c125846f438daaf6e6fde301a74710e7cf166990228ea769644725f516",
+  "confirmed": [
+    {
+      "finding": "Departure normal is retained correctly across geometric contact refresh",
+      "evidence": "strictnext_action assigns self.contact only; self.departure_contact is replaced only by observe after selected positive impulse >=0.05s and finalmicroselected. route fallback reads self.departure_contact.",
+      "impact": "No stale-oldnormal overwrite bug found in refresh/bridge logic"
+    },
+    {
+      "finding": "Geometric room telemetry is pre-refresh, not the room of the final selected arc",
+      "evidence": "room calculated before assigning freshcontact; decision selected_arc_id comes from super next_action after assignment; geometric_drive_room_world_px uses old room scalar",
+      "impact": "Use saved pre-state and final selectedpoint/normal to recompute selected room in later analysis; do not infer finalrequest direction or safety from this scalar alone"
+    },
+    {
+      "finding": "Frozen target entry2 has nominal static gap13.5worldpx for a15radius pusher",
+      "evidence": "contact center=boundarypoint+normal15.5; rawentry=center-normal2. This nominal fixed-object target overlaps the15radius expanded contour by1.5px vs invaliditythreshold1px.",
+      "impact": "This is a requested action, not physical intervention. Dynamic motion can keep actual penetration below1; source arithmetic alone cannot establish actual failure. Check saved firstinvalidsubstep/mode to decide whether lower entry is justified"
+    }
+  ],
+  "conditional_concerns": [
+    {
+      "finding": "Entry-to-push target changes by10normalworldpx after verifiedacquisition",
+      "evidence": "entry2 -> push12 only when selected positive impulse >=0.05s and terminalselected; targetmaxdistance/change24",
+      "required_evidence": "If saved invalidfirstrow follows transition from contact_entry_intent to contact_push_intent, inspect priorvelocity and actualpenetration; onlythen consider smallerfrozenpushadvance in solecal2"
+    },
+    {
+      "finding": "Rotation/mixed geometric refresh may select another contact with room12..24",
+      "evidence": "strictguard triggers room<24 while inheritedselect_contact accepts nontranslation room>=12",
+      "required_evidence": "Repeated geometricrefresh with littlecontact/motion must be confirmed in saved decisions; source permits it but does not establish occurrence"
+    },
+    {
+      "finding": "OriginalPD/pusher and dynamicangular momentum can reach walls despite presentgeometryroom",
+      "evidence": "room is static directiontranslation distance, not a guarantee about future sweptrotation or velocity stopping distance",
+      "required_evidence": "Inspect saved velocities/substeps and actualrequest beforewallinvalidity; reduce/redirect requestedaction only if actualevidence justifies, do not alter physics"
+    }
+  ],
+  "no_actual_sampling_outcome_assessed": true,
+  "actual_physical_controls": 0,
+  "model_calls": 0,
+  "optimizer_updates": 0,
+  "source_edited": false
+}

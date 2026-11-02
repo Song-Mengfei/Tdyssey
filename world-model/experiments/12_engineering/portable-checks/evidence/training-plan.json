@@ -1,0 +1,47 @@
+{
+  "kind": "raw_tl_sft_plan.v1",
+  "steps": 10,
+  "seed": 5478,
+  "available_windows": {
+    "T": 582,
+    "L": 1164
+  },
+  "unused_windows": {
+    "T": 577,
+    "L": 1159
+  },
+  "selected_shapes": [
+    "T",
+    "L"
+  ],
+  "whole_episode_splits": true,
+  "selected_split": "train",
+  "epochs": 1,
+  "resampling": false,
+  "scene_identity": "manifest initial-state identities",
+  "action_training": "float32 absolute/511*2-1",
+  "objective": {
+    "name": "phase_two_one_step_residual_mse",
+    "history_frames": 4,
+    "target_frames": 1,
+    "sigma_data": 0.5,
+    "sigma_offset_noise": 0.1,
+    "noise_previous_obs": true,
+    "sigma": {
+      "loc": -1.2,
+      "scale": 1.2,
+      "sigma_min": 0.002,
+      "sigma_max": 20.0
+    },
+    "foreground_weights": false,
+    "replay": false
+  },
+  "list_sha256": "2695cedfa08b71c8947407045448eabad9a28346df7f0dd59957ee4818cbef8b",
+  "plan_sha256": "9f93c31308eff17a5f3204c8d9bf8125da1b6c661ddd08fabf029cf4037d8973",
+  "mode": "read_only",
+  "export_steps": [
+    10
+  ],
+  "output": "artifacts\\portable-checks\\unused-training-output",
+  "training_executed": false
+}
