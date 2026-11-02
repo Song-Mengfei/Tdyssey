@@ -808,3 +808,107 @@ near-T 40.3% -> 28.2% (-12.1 [-16.2, -8.0]), Y 9.1% -> 33.7% (+24.6 [+21.2, +28.
 five letters 18.6% -> 34.2%. Compared descriptively with round 4 (D046), round 7 is better on D and L and has the
 same T/near-T loss; the apparent T recovery on the 26-letter pool did not hold on fresh scenes.
 
+
+## D048 — Copyable teacher; 96 px main line, 192 px side experiment (2026-11-01)
+
+Context: student A/B tests on 2026-11-01 (official recipe, 30k steps from the official checkpoint, teacher demos only,
+100 validation scenes per letter for ten letters, successes of 1000): intended-plan labels 129 vs executed pushes 77
+(same episodes); 192 px camera 129 vs 96 px 111; all demos 111 vs half 104; 990M vs 251M action U-Net from scratch
+146 vs 138 (50k steps). Only the label change is clearly beyond test noise (about +-30). Success (coverage > 0.95)
+allows only 1.3-2.7 px of shift, which is 0.24-0.51 of a 96 px camera pixel (E tightest, T loosest).
+
+Decisions, agreed with the project lead:
+- Copyable teacher: test the teacher re-planning every push (current) against committing to 8 or 4 pushes like the
+  student, on the 50 validation scenes per letter. Rule fixed before results: use the better 8-push variant if it
+  keeps at least 85% of the every-push teacher's successes, else the 4-push one under the same test, else the
+  current teacher. Its demonstrations (training seeds 800000 + 20*i, i = 56200-56299) are compared with the every-push
+  teacher's in the A/B setting above; the lines below use only the copyable demos if they win by at least 30 of 1000,
+  otherwise all intended-plan demos.
+- 96 px is the main line and carries every headline result, because it is the official policy's camera. 192 px is a
+  labelled side experiment asking whether the camera limits final alignment: it is a sensor change, disclosed as such,
+  and only compared with its matched 96 px control. Both lines start from the same 96 px student and follow the same
+  schedule (round 0: 30k steps on all data; then correction rounds of 20k steps). For 192 px, the human T demos and
+  earlier corrections exist only at 96 px and are enlarged; its own corrections are native 192 px. Training seeds:
+  main line i = 53000 + 100*k, side line i = 57000 + 100*k (30 scenes per letter per round).
+- The final candidate is the main-line student with the most validation successes among rounds finished by
+  2026-11-02 14:00. Its fair test on fresh scenes is fixed in a separate entry before it starts.
+
+Teacher outcome (2026-11-01, 50 validation scenes per letter, ten letters, successes of 500): re-planning every push
+390; committing to 4 pushes 317 (81%); committing to 8 pushes, best sample 303 (78%), elite mean 123. Neither
+commitment variant kept 85%, so the rule kept the every-push teacher. Even with exact state, committing to 8 pushes
+like the student costs the planner 22% of its successes (near-T 30 -> 9), which bounds what an 8-push student can
+copy. The new demos (i = 56200-56299) are therefore more every-push demos (`teacher-plan-demos3`); the planned C1 A/B
+would only have repeated L1 and was skipped.
+
+## D049 — Fair test of the final ten-letter student (fixed 2026-11-01 21:50, before any test run)
+
+Test: the original policy and the candidate on 1000 fresh scenes per letter for the ten training shapes (T, near-T,
+Y, D, L, E, F, J, P, U), seeds 9000000 + 20*i (i < 1000, never used before), 8 controls per plan, the evaluation
+tool's fixed policy noise seed, paired by scene; success differences with 95% normal-approximation intervals and mean
+final coverage per letter, reported as a trade-off (D044). The original policy's half runs first (2026-11-01 night);
+it cannot influence the choice of candidate.
+
+Candidate: the 96 px main-line student (D048) with the most successes on the 50 validation scenes per letter among
+students tested by 2026-11-02 16:00 (ties: the later round). This moves D048's 14:00 selection time to 16:00 because
+the original policy's half no longer has to run then. The 192 px side line is compared with its matched 96 px rounds
+on the validation scenes only; it is not part of this test.
+
+D049 amendment (2026-11-02 11:00, before any candidate test run): the main line was stopped early with the project
+lead after a stored-data diagnosis showed it flat since round 2 (21 validation tests averaging 179 of 500, spread +-10,
+as expected from chance alone; the same student tested twice flips 211 of 500 scene outcomes). The selection rule is
+unchanged but applied now: the best validation test is round 14's (196), i.e. the student trained in round 13,
+`runs/dagger10m/round13/train/ema-step20000.pt`. Given the diagnosis, every main-line student since round 2 is expected
+to perform alike; 196 is a lucky draw, and the fair test measures its true level.
+
+## D050 — Fresh-scene test of the 192 px side line (fixed 2026-11-02 11:30, before it runs)
+
+At 15:00 the 192 px side line (D048) stops; its candidate is the student with the most successes on the 50
+validation scenes per letter among tests finished by then (ties: the later round). It runs on exactly the D049 scenes
+(1000 per letter, ten shapes, seeds 9000000 + 20*i), so it is paired by scene with the original policy's half already
+run and with the 96 px main candidate. It is reported as a sensor-change side result next to the 96 px headline.
+
+## D051 — 26-letter run and its final test (fixed 2026-11-02, before the run)
+
+Agreed with the project lead for the next 3-day job. Shapes trained: the 26 capitals and near-T (27). Held-out test
+shapes, approved the same day: `digit3`, `digit4`, `digit7`, `plus`, `hash`, `arrow` (tdyssey/letters.py
+`NOVEL_PATTERNS`: same 5 x 7 block system as the capitals, one connected piece, none matching a capital). They are never
+used for training, data collection, world-model fitting or tuning; the only contact before the final test was a
+loading check of the original policy on 3 validation scenes each (2026-11-02).
+
+Preparation (2026-11-02, chain_26prep.sh): dynamics data for the 17 new letters (value pool i = 1400-1799), world
+model wm2 v3 on 27 shapes, teacher check on 50 validation scenes, every-push teacher demos with plans (training seeds
+i = 50600-50749) for letters whose teacher solves >= 30/50.
+
+Training: both D048 lines continue from their own best ten-letter students (96 px: D049 candidate; 192 px: D050
+candidate). Round 0 retrains on all data for the 27 shapes (intended-plan labels); then correction rounds of 30 training
+scenes per shape (96 px: i = 58000 + 50*k, 192 px: i = 52100 + 50*k), tested on 50 validation scenes per trained shape.
+
+Final test: fresh seeds 10000000 + 20*i (i < 300), 300 scenes per shape for all 33 shapes, four policies: the original,
+the ten-letter 96 px student (D049 candidate), and the 26-letter 96 px and 192 px students (each the best validation
+test among those finished 12 hours before the job ends; ties: the later round). Parts of 100 scenes run in lockstep
+across policies; if time runs out, every policy is reported on the same completed parts. Primary measures: mean success
+over the 27 trained shapes, and pooled success and mean final coverage over the 6 held-out shapes; per-shape paired
+differences against the original with 95% intervals; T and near-T reported separately.
+
+D049 and D050 outcomes (2026-11-02, 1000 fresh scenes per letter, seeds 9000000 + 20*i, paired by scene; success %,
+original -> 96 px main candidate (D049) / 192 px candidate (D050), differences with 95% intervals in
+`runs/fairtest-d049/report-10letters.txt`):
+
+| Shape | Original | 96 px | 192 px |
+| --- | --- | --- | --- |
+| T | 42.2 | 42.9 (+0.7 [-3.6, +5.0]) | 44.5 (+2.3 [-2.1, +6.7]) |
+| near-T | 39.8 | 32.0 (-7.8 [-12.0, -3.6]) | 36.0 (-3.8 [-8.0, +0.4]) |
+| Y | 8.4 | 39.4 | 39.0 |
+| D | 0.1 | 42.5 | 45.7 |
+| L | 0.0 | 34.7 | 37.8 |
+| E | 0.0 | 26.7 | 30.4 |
+| F | 0.5 | 26.1 | 33.1 |
+| J | 0.0 | 23.8 | 24.5 |
+| P | 0.4 | 47.3 | 58.1 |
+| U | 0.0 | 27.4 | 32.5 |
+| Average | 9.1 | 34.3 | 38.2 |
+
+One image policy now covers ten shapes at 3.8x the original's average success, with no loss on T. Every gain on
+Y-U is far outside its interval (smallest: J +23.8 [+21.2, +26.4]). Near-T is the only shape below the original
+(96 px). The 192 px camera adds +3.9 points [+2.6, +5.2] over the 96 px student across all 10,000 paired scenes,
+most on P (+10.8), F (+7.0) and U (+5.1); it is a sensor change and is reported as a side result.
