@@ -3,10 +3,13 @@
 import tempfile
 import hashlib
 import json
+from importlib.util import find_spec
 from pathlib import Path
 import unittest
 from unittest.mock import patch
 
+if any(find_spec(name) is None for name in ('numpy', 'scipy', 'PIL', 'shapely')):
+    raise unittest.SkipTest('Install the numerical profile for RGB evaluation tests')
 import numpy as np
 
 from tdyssey.native_rgb_evaluation import (
