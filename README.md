@@ -20,8 +20,8 @@ T and Y succeeded. World-model pilots expose contact/reward failures; reliable
 imagined rollouts remain pending. A direct-simulator tail-PPO trainer now passes
 an initial GPU update/reload check. Forward-process NFT/AdvantageFlow training,
 matched physical branches and recovery checkpoints are also implemented;
-one image policy now covers ten letter shapes: on 1000 fresh scenes per letter its average success is 34.3%
-against the original's 9.1%, with no loss on T (docs/LEARNING_FINDINGS.md, section 7). GPC reference work stays
+one image policy now covers all 26 capital letters and near-T: on 300 fresh scenes per shape its success is 33.4%
+against the original's 3.7% (docs/LEARNING_FINDINGS.md, sections 7-8). GPC reference work stays
 separate from the official baseline. See [results](docs/RESULTS.md),
 [status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
 The latest forward pilot changed distributed LoRA weights over six updates but

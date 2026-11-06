@@ -34,7 +34,11 @@ LETTERS = ("T", "T_narrow", "Y", "D", "L")
 
 
 def load_episodes(args):
-    eps = []   # (frames uint8 (m,96,96,3), agent_pos (m,2), actions (m,2), group)
+    return list(iter_episodes(args))
+
+
+def iter_episodes(args):
+    """Yield (frames uint8 (m,S,S,3), agent_pos (m,2), actions (m,2), group, coverage, plan) one episode at a time."""
     sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
     rng = np.random.default_rng(1234)
     for f in sorted(f for d in args.demos for f in Path(d).glob("*.npz")):
@@ -48,16 +52,16 @@ def load_episodes(args):
             if m < 2 or rng.random() >= args.data_fraction:               # --data-fraction: fixed random subset
                 continue
             plan = z["plan"][i, :m] if (args.label == "plan" and "plan" in z) else None
-            eps.append((fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan))
+            yield (fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+        del fr
     if args.human_t:
         import zarr
         g = zarr.open(str(args.human_t), "r")
         img, st, act = g["data"]["img"][:], g["data"]["state"][:], g["data"]["action"][:]
         ends = g["meta"]["episode_ends"][:]
         for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
-            eps.append((resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
-                        "T-human", None, None))                             # 96 px; enlarged for 192 px students
-    return eps
+            yield (resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
+                   "T-human", None, None)                                   # 96 px; enlarged for 192 px students
 
 
 def resize_frames(img, size):
@@ -71,8 +75,12 @@ def resize_frames(img, size):
 
 
 def load_records(dirs, unnormalize, size=96):
-    """DAgger records (mpc_dagger.py): 2 frames + the teacher's 16-step label chunk (normalized) at visited states."""
-    out = []   # (frames (2,96,96,3) uint8, agent_pos (2,2), actions (16,2) pixels, group)
+    return list(iter_records(dirs, unnormalize, size))
+
+
+def iter_records(dirs, unnormalize, size=96):
+    """DAgger records (mpc_dagger.py): 2 frames + the teacher's 16-step label chunk (normalized) at visited states.
+    Yields (frames (2,S,S,3) uint8, agent_pos (2,2), actions (16,2) pixels, group) one record at a time."""
     for d in dirs:
         for f in sorted(Path(d).glob("*.npz")):
             with np.load(f) as z:
@@ -83,25 +91,55 @@ def load_records(dirs, unnormalize, size=96):
                 acts = unnormalize(lab)
                 img = resize_frames(np.moveaxis(z["image"], 2, -1), size)                     # (n, 2, S, S, 3)
                 for r in range(n):
-                    out.append((img[r], z["agent_pos"][r].astype(np.float32), acts[r], f"{z['shape']}-dagger"))
-    return out
+                    yield (img[r], z["agent_pos"][r].astype(np.float32), acts[r], f"{z['shape']}-dagger")
 
 
-def build_index(eps, recs=(), near_cov=0.8):
+def count_frames(args):
+    """Frames the streaming build will write, without loading any frames (same choices as iter_episodes)."""
+    sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
+    rng = np.random.default_rng(1234); total = 0
+    for f in sorted(f for d in args.demos for f in Path(d).glob("*.npz")):
+        if not (f.parent/sub/f"{f.stem}_frames.npz").exists():
+            continue
+        with np.load(f) as z:
+            mask = z["mask"]
+        for i in range(len(mask)):
+            m = int(mask[i].sum()) - 1
+            if m < 2 or rng.random() >= args.data_fraction:
+                continue
+            total += m
+    if args.human_t:
+        import zarr
+        total += int(zarr.open(str(args.human_t), "r")["meta"]["episode_ends"][-1])
+    for d in args.records:
+        for f in sorted(Path(d).glob("*.npz")):
+            with np.load(f) as z:
+                if "candidate_x" in z.files and len(z["choice"]) > 0:
+                    total += 2*len(z["choice"])
+    return total
+
+
+def build_index(eps, recs=(), near_cov=0.8, out=None):
     pos, acts, obs_idx, act_idx, group, near = [], [], [], [], [], []
-    total = sum(len(e[0]) for e in eps) + 2*len(recs)
-    shape = eps[0][0].shape[1:] if eps else recs[0][0].shape[1:]
-    mm = os.environ.get("TDYSSEY_FRAMES_MMAP")                           # a directory on local disk: frames live in a file
-    if mm:                                                                # (page cache), not in the job's resident memory
-        path = Path(mm)/f"frames-{os.getpid()}.npy"; path.parent.mkdir(parents=True, exist_ok=True)
-        frames = np.lib.format.open_memmap(path, mode="w+", dtype=np.uint8, shape=(total, *shape))
-        import atexit; atexit.register(lambda: path.unlink(missing_ok=True))
-        print(f"frames memory-mapped to {path} ({frames.nbytes/2**30:.0f} GB)", flush=True)
-    else:
-        frames = np.empty((total, *shape), np.uint8)                      # one copy of every frame (host memory)
+    if out is None:                                                       # in-memory lists: one host copy of every frame
+        total = sum(len(e[0]) for e in eps) + 2*len(recs)
+        shape = eps[0][0].shape[1:] if eps else recs[0][0].shape[1:]
+        out = np.empty((total, *shape), np.uint8)
+    frames = out
     off = aoff = 0
-    for n_ep in range(len(eps)):
-        fr, ap, ac, g, cov, plan = eps[n_ep]; eps[n_ep] = None              # release the source as we go
+    released = [0]
+
+    def release():                                                        # file-backed frames: write out and drop the
+        if isinstance(frames, np.memmap) and (off - released[0]) * frames[0].nbytes >= 4 * 2**30:   # pages every 4 GB, so
+            import mmap                                                    # host memory stays small (250 GB jobs)
+            frames.flush()
+            frames._mmap.madvise(mmap.MADV_DONTNEED)
+            fd = os.open(frames.filename, os.O_RDONLY); os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED); os.close(fd)
+            released[0] = off
+    for n_ep, item in enumerate(eps):
+        fr, ap, ac, g, cov, plan = item
+        if isinstance(eps, list):
+            eps[n_ep] = None                                                # release the source as we go
         m = len(fr)
         frames[off:off+m] = fr; del fr; pos.append(ap)
         if plan is None:
@@ -117,11 +155,15 @@ def build_index(eps, recs=(), near_cov=0.8):
         off += m
         if plan is None:
             aoff += m
-    for n_rec in range(len(recs)):                                          # records: obs = their own 2 frames
-        fr2, ap2, ac16, g = recs[n_rec]; recs[n_rec] = None
+        release()
+    for n_rec, item in enumerate(recs):                                     # records: obs = their own 2 frames
+        fr2, ap2, ac16, g = item
+        if isinstance(recs, list):
+            recs[n_rec] = None
         frames[off:off+2] = fr2; pos.append(ap2); acts.append(ac16)
         obs_idx.append([off, off+1]); act_idx.append(list(range(aoff, aoff+16))); group.append(g); near.append(False)
         off += 2; aoff += 16
+        release()
     return (frames, np.concatenate(pos).astype(np.float32), np.concatenate(acts).astype(np.float32),
             np.array(obs_idx), np.array(act_idx), np.array(group), np.array(near))
 
@@ -162,9 +204,19 @@ def main():
         assert all(k.endswith(("pos_x", "pos_y")) for k in set(enc) - set(keep)), "unexpected encoder mismatch"
         net.obs_encoder.load_state_dict(keep, strict=False)
     unnorm = lambda x: net.normalizer["action"].unnormalize(torch.tensor(x, device=dev)).cpu().numpy()
-    eps = load_episodes(args)
-    recs = load_records(args.records, unnorm, args.image_size)
-    frames, pos, acts, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage)
+    mm = os.environ.get("TDYSSEY_FRAMES_MMAP")                           # a local-disk directory: stream every source
+    if mm:                                                                # into one file-backed array (small host memory)
+        path = Path(mm)/f"frames-{os.getpid()}.npy"; path.parent.mkdir(parents=True, exist_ok=True)
+        out = np.lib.format.open_memmap(path, mode="w+", dtype=np.uint8, shape=(count_frames(args), args.image_size, args.image_size, 3))
+        import atexit; atexit.register(lambda: path.unlink(missing_ok=True))
+        print(f"frames streamed to {path} ({out.nbytes/2**30:.0f} GB)", flush=True)
+        eps = iter_episodes(args); recs = iter_records(args.records, unnorm, args.image_size)
+        frames, pos, acts, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage, out=out)
+        assert len(pos) == len(frames), f"streamed {len(pos)} frames into an array of {len(frames)}"
+    else:
+        eps = load_episodes(args)
+        recs = load_records(args.records, unnorm, args.image_size)
+        frames, pos, acts, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage)
     groups = sorted(set(group))
     letters = sorted({g.rsplit("-", 1)[0] for g in groups})                 # each letter an equal share,
     share = {g: (1/len(letters)) / sum(1 for h in groups if h.rsplit("-", 1)[0] == g.rsplit("-", 1)[0]) for g in groups}
@@ -179,8 +231,9 @@ def main():
     (args.out/"info.json").write_text(json.dumps(info, indent=1))
     on_cpu = True                    # frames in pinned host memory (96 px: ~31 GB; GPU memory is shared with other jobs)
     del eps, recs
+    frames_mm = None
     if isinstance(frames, np.memmap):
-        frames.flush(); frames = torch.from_numpy(frames)
+        frames.flush(); frames_mm = frames; frames = torch.from_numpy(frames)
     elif frames.nbytes > 40e9:                                                  # 192 px: no pinned copy (512 GB job limit)
         frames = torch.from_numpy(frames)
     else:
@@ -212,6 +265,9 @@ def main():
                 pe.mul_(decay).add_(pn.detach(), alpha=1-decay)
             for be, bn in zip(ema.buffers(), net.buffers()):
                 be.copy_(bn)
+        if frames_mm is not None and step % 500 == 0:                        # file-backed frames: drop pages read so far
+            import mmap
+            frames_mm._mmap.madvise(mmap.MADV_DONTNEED)
         raw_losses.append(loss.item())                                         # every step, saved with each checkpoint
         running = 0.98*running + 0.02*loss.item() if step > 1 else loss.item()
         if step % 500 == 0:
