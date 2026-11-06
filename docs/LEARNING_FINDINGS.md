@@ -1,4 +1,4 @@
-# Policy learning findings, 2026-10-24 to 2026-11-02
+# Policy learning findings, 2026-10-24 to 2026-11-06
 
 Status: in progress. Every individual run, including abandoned ones, is listed in the
 [experiment log](LEARNING_EXPERIMENT_LOG.md). A learned-world-model planning teacher solves all D, most Y and
@@ -67,6 +67,11 @@ these documents (kept outside Git).
    two plan-label rounds more corrections no longer change behaviour beyond test-to-test chance.
 12. The ten-letter students also transfer to the 17 untrained capitals (D052): pooled success 0.2% -> 6.6% (96 px)
    and 10.6% (192 px), final coverage 0.33 -> 0.51 / 0.57.
+13. One policy for all 26 capitals and near-T (section 8, D051): on 300 fresh scenes per shape, success over the 27
+   trained shapes rises from 3.7% to 33.4% (96 px) and 33.8% (192 px), with the ten earlier shapes unchanged (33-34%)
+   and the 17 new letters from 0.4% to 33%. Final coverage 0.35 -> 0.82.
+14. More training shapes help on shapes never seen: on six held-out shapes success rises 1.2% (original) -> 2.8%
+   (ten letters) -> 4.7% / 5.9% (26 letters), coverage 0.43 -> 0.53 -> 0.56 / 0.58.
 
 ## Evaluation protocol
 
@@ -640,6 +645,41 @@ below 4%. Chart: `unseen_letters_results.png` (not in Git).
 on 50 validation scenes: A 47, B 49, C 42, G 44, H 49, I 47, K 49, M 49, N 46, O 49, Q 49, R 36, S 49, V 44, W 47,
 X 48, Z 48 (T 30, D 49, L 34 re-checked). Six held-out shapes (`digit3 digit4 digit7 plus hash arrow`) are reserved for
 the 26-letter final test.
+
+## 8. All 26 letters (2026-11-02 to 2026-11-06)
+
+Preparation (D051): dynamics data for the 17 other capitals, world model wm2 v3 for 27 shapes, teacher 36-49 of 50 on
+the new letters, intended-plan demonstrations (150 scenes per new letter). Six held-out shapes (`digit3 digit4 digit7
+plus hash arrow`, same block system) were fixed before training and used only in the final test.
+
+**Budget, not method, was the bottleneck (D053).** With the ten-letter recipe (20k steps per round) the 96 px line
+levelled at about 24% of validation (rounds 1-12, A100). The same 20k steps shared by 27 shapes give each shape 2.7x
+less training per round, and the new letters had 5-8x fewer corrections. With 54k steps per round and 60 practice
+scenes per new letter it rose to 30% within two rounds and about 34-35% by round 44; the 17 new letters caught up with
+the earlier ten. The 192 px line (A100, frames streamed to disk for its 250 GB limit) reached 38% in its second round
+and then held at 34-37%.
+
+| Validation (of 1350; 50 scenes x 27 shapes) | 96 px | 192 px |
+| --- | --- | --- |
+| Start of the 26-letter run | 283 (21%) | 336 (25%) |
+| End of the old budget | 314-358 (23-27%) | - |
+| Best | 470 (35%, round 44) | 511 (38%, round 2) |
+
+**Final test (D051; 300 fresh scenes per shape, seeds 10000000 + 20*i, paired by scene; success %):**
+
+| Shapes | Original | Ten-letter 96 px | 26-letter 96 px | 26-letter 192 px |
+| --- | --- | --- | --- | --- |
+| Ten earlier shapes | 9.3 | 33.0 | 33.7 | 34.2 |
+| 17 new letters | 0.4 | 6.4 | 33.2 | 33.5 |
+| All 27 trained shapes | 3.7 | 16.3 | **33.4** | **33.8** |
+| 6 held-out shapes | 1.2 | 2.8 | 4.7 | 5.9 |
+| Final coverage, 27 shapes | 0.35 | 0.63 | 0.82 | 0.81 |
+
+Per held-out shape (26-letter 192 px): digit7 23.0% (original 2.0%), hash 7.3%, arrow 2.7%, digit3 1.7%, digit4 0.7%,
+plus 0.3%; mean final coverage 0.58 (original 0.43), and 20% of episodes reach 90% coverage at some point (original
+6%). T 46.0% -> 40.7% / 38.3% and near-T 37.3% -> 29.0% / 32.3% (wide intervals at 300 scenes). The 192 px pick's
+validation lead did not hold on fresh scenes. Charts: `training_26letters_full.png`, `final_test_26letters.png`
+(not in Git).
 
 ## Privileged signals and priors (disclosure)
 

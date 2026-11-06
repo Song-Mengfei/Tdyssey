@@ -928,3 +928,53 @@ D052 outcome (2026-11-02, 200 fresh scenes per letter, seeds 11000000 + 20*i, pa
 (original) to 6.6% (96 px, +6.3 [+5.5, +7.2]) and 10.6% (192 px, +10.4 [+9.3, +11.4]); mean final coverage from 0.33 to
 0.51 and 0.57. Best transfers: B 20.0% / 39.5%, O 18.5% / 22.5%, W 13.5% / 19.5%, R 11.5% / 15.0%. T on these 200 scenes:
 48.5%, 44.5%, 41.0% (within this test's +-7 points; the 1000-scene D049 test is the T result).
+
+## D053 — Larger per-round budget for the 26-letter lines (2026-11-03, before use)
+
+Agreed with the project lead after the 96 px 26-letter line (A100, rounds 1-12; validation 283 -> 358 of 1350) was
+diagnosed: the recipe is unchanged (intended-plan labels, the same teacher, correction rounds, 1e-4), but 20k steps
+shared by 27 shapes give each shape 190k training samples per round instead of 512k with ten shapes, and the 17 new
+letters had about 11k correction samples each against 53-93k for the earlier shapes. From then on each round trains
+54k steps (each shape again gets about 512k samples per round) and collects 60 practice scenes for each of the 17 new
+letters (30 for the ten earlier shapes); `chain_dagger_loop26c.sh`. Training seeds: 96 px i = 57700 + 70*k (rounds
+14-32), then i = 48440 + 70*k (rounds 33-50; 50750-51999); 192 px i = 52100 + 70*k (rounds 1-12); all below i = 60000.
+Machines (option A): the 96 px line on H100 job 1060647 from round 14 (start: the A100's round-13 student); the 192 px
+line on A100 job 1060656 from round 1 (start: `runs/dagger26h/round0`), with bc_train streaming its frames to local disk
+(`TDYSSEY_FRAMES_MMAP`; peak host memory 9.8 GB instead of 222 GB) because that job had 250 GB.
+
+D051 outcome (2026-11-05, 300 fresh scenes per shape, seeds 10000000 + 20*i, paired by scene;
+`runs/fairtest-d051/report-final.txt`). Candidates picked at 19:53 by the fixed rule: 96 px round 44 (validation 470 of
+1350), 192 px round 2 (511). Success %, original -> ten-letter 96 px -> 26-letter 96 px -> 26-letter 192 px:
+
+| Shapes | Original | Ten-letter 96 px | 26-letter 96 px | 26-letter 192 px |
+| --- | --- | --- | --- | --- |
+| Ten earlier shapes | 9.3 | 33.0 | 33.7 | 34.2 |
+| 17 new letters | 0.4 | 6.4 | 33.2 | 33.5 |
+| All 27 trained shapes | 3.7 | 16.3 | **33.4** (+29.8 [+28.7, +30.9]) | **33.8** (+30.1 [+29.0, +31.2]) |
+| 6 held-out shapes | 1.2 | 2.8 | 4.7 (+3.5 [+2.4, +4.6]) | 5.9 (+4.7 [+3.5, +5.9]) |
+| Final coverage, 27 shapes | 0.35 | 0.63 | 0.82 | 0.81 |
+
+One image policy covers all 26 capitals and near-T at 33-34% success with no loss on the ten earlier shapes; on the
+six never-seen shapes success rises with the number of training shapes (1.2% -> 2.8% -> 4.7-5.9%; digit7 2% -> 19-23%).
+T 46.0% -> 40.7% (96 px, -5.3 [-13.5, +2.9]) and 38.3% (192 px, -7.7 [-15.1, -0.2]); near-T 37.3% -> 29.0% / 32.3%.
+The 192 px pick's validation lead (511 vs 470) did not hold on fresh scenes (33.8% vs 33.4%).
+
+## D054 — 96 px line to round 50, then a fresh-scene check (fixed 2026-11-06, before it runs)
+
+Lead's decision: the 96 px line continues on A100 job 1083816 from round 45 (its practice data was collected before
+the D051 pick) to round 50 with the D053 recipe, then stops (seeds i = 48440 + 70*k, rounds 46-50). Validation trend
+over rounds 14-44: +0.17 points per round overall, +0.06 over the last ten. Check afterwards: the round-50 student
+against the D051 pick (round 44) on 200 fresh scenes per shape for all 33 shapes, seeds 12000000 + 20*i (i < 200,
+never used before), paired by scene; reported as the difference with a 95% interval. It replaces the D051 result only
+if better; either way D051 stays the pre-registered headline. (The first attempt's node ran out of host memory while
+loading round 45 in memory, about 145 GB of frames; the job was requeued and the line restarted with frames streamed
+to disk.)
+
+## D055 — 192 px line continues on the next H100 job (2026-11-06)
+
+Lead's decision: when the queued H100 job starts, the 192 px line continues from its newest student
+(`runs/dagger26h/round11/train/ema-step54000.pt`, next round 12) with the D053 recipe. Training seeds (60 scenes per
+round, all below i = 60000 and unused): round 12 i = 52100 + 70*k; rounds 13-19 i = 48590 + 70*k (49500-49979);
+rounds 20-29 i = 53900 + 70*k (55300-55989); rounds 30-39 i = 54200 + 70*k (56300-56989).
+The line stops 8 hours before that job ends; its best validation student then gets the D054 check on the same
+fresh scenes (seeds 12000000 + 20*i, 200 per shape, 33 shapes) against the D051 192 px pick (round 2).

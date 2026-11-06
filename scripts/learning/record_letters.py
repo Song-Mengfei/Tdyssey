@@ -55,6 +55,7 @@ def main():
     p.add_argument("--student", type=Path, required=True)
     p.add_argument("--label", default="ten-letter policy")
     p.add_argument("--letters", nargs="*", default=list(string.ascii_uppercase))
+    p.add_argument("--trained", nargs="*", default=None, help="Shapes the student trained on (default: the ten-letter set)")
     p.add_argument("--seed", type=int, default=100000)
     p.add_argument("--policy-seed", type=int, default=0)
     p.add_argument("--steps", type=int, default=300)
@@ -62,9 +63,13 @@ def main():
     p.add_argument("--fps", type=int, default=10)
     p.add_argument("--out", type=Path, required=True)
     a = p.parse_args()
+    global TRAINED
+    if a.trained is not None:
+        TRAINED = set(a.trained)
     a.out.mkdir(parents=True, exist_ok=False)
     agent, env_class = base_rollouts.build(str(a.student))
-    envs = {L: env_class(shape=L, legacy=True) for L in a.letters}
+    size = getattr(agent, "render_size", 96)                           # the student's camera (192 px students need 192 px)
+    envs = {L: env_class(shape=L, legacy=True, render_size=size) for L in a.letters}
     obs, records = matched_reset(envs, a.seed, {"reset_physics_substeps": 0})
     scene = records[-1]["seed"]
     print(f"common starting scene: seed {scene} (tried {len(records)})", flush=True)

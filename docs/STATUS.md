@@ -1,15 +1,14 @@
 # Shared project status
 
-Updated: 2026-11-02. Stage: one image policy for ten letter shapes. A planner teacher that reads the exact
-simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
-copies the teacher's intended plans and then learns from correction rounds (DAgger). On 1000 fresh scenes per letter,
-paired with the original policy (D049, D050), average success over T, near-T, Y, D, L, E, F, J, P and U rises from
-9.1% to 34.3% (96 px camera, same as the original) and 38.2% (192 px camera, a disclosed sensor change). T is not worse
-(42.2% -> 42.9%); near-T is the only shape below the original (39.8% -> 32.0%; 36.0% at 192 px). Every new letter
-gains 24-58 points. On the 17 untrained capitals (D052) pooled success rises from 0.2% to 6.6% (96 px) and
-10.6% (192 px). Next (D051): the 26-letter run with six held-out shapes. Its preparation is done (world model v3
-for 27 shapes; teacher 36-49 of 50 on the 17 new letters; teacher demonstrations); the 96 px line continues on an A100
-job and the 192 px line on the next H100 job. Work continues on `feat/wm-planning-teacher`.
+Updated: 2026-11-06. Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
+exact simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
+copies the teacher's intended plans and learns from correction rounds (DAgger). On 300 fresh scenes per shape (D051),
+success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
+(192 px, a disclosed sensor change); the ten earlier shapes stay at 33-34% and the 17 new letters reach 33%. On six
+never-seen shapes success rises with the number of training shapes: 1.2% -> 2.8% (ten letters) -> 4.7-5.9% (26
+letters). Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049). Next: the 96 px line runs to round
+50 with a fresh-scene check (D054); the 192 px line continues on the next H100 job (D055). Work continues on
+`feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -34,6 +33,9 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- 26-letter policy, 2026-11-02 to 2026-11-06 (H100 + A100; [learning findings](LEARNING_FINDINGS.md) section 8,
+  D051-D053): world model v3 for 27 shapes; a larger per-round budget; final test on 300 fresh scenes per shape as above.
 
 - Ten-letter policy, 2026-10-31 to 2026-11-02 (H100 NVL; [learning findings](LEARNING_FINDINGS.md) section 7,
   D046-D052): world model v2 for ten shapes; students trained on the teacher's intended plans (+68% over executed
