@@ -28,10 +28,10 @@ footnote with the test protocol and data source.
 
 | File | What it shows | Data | Suggested use |
 | --- | --- | --- | --- |
-| `curves_all_stages` | Whole training story: validation success per correction round (rounds completed, from 0 in every stage), 5 -> 10 -> 27 shapes on one axis, picks circled, round-50 model starred (fresh test), round-47 note, original policy dashed. | validation_rounds.csv; original levels and round 50 from final_tests_paired.csv/final_tests_by_shape.csv; picks in typed_in_numbers.json | story slide (main) |
-| `curves_all_stages_titled` | Same as above with a title for standalone reading. | validation_rounds.csv; original levels and round 50 from final_tests_paired.csv/final_tests_by_shape.csv; picks in typed_in_numbers.json | standalone use |
+| `curves_all_stages` | Whole training story: validation success per correction round (rounds completed, from 0 in every stage), 5 -> 10 -> 27 shapes on one axis, picks circled, round 50 starred (its own fresh test, 34.8%, D054), round-47 note. Original policy: dashed at its validation level on the same scenes (5 shapes 16.4%, 10 shapes 8.2%), dotted and labelled 'fresh test' for 27 shapes (3.7%, D051; it was never run on those validation scenes). | validation_rounds.csv; original validation levels and picks in typed_in_numbers.json; 27-shape original level and round 50 from final_tests_by_shape.csv | story slide (main) |
+| `curves_all_stages_titled` | Same as above with a title for standalone reading. | validation_rounds.csv; original validation levels and picks in typed_in_numbers.json; 27-shape original level and round 50 from final_tests_by_shape.csv | standalone use |
 | `curves_all_stages_smoothed` | Same story with faint raw lines and a rolling mean (3 rounds for 5 shapes, 5 rounds otherwise). | validation_rounds.csv | story slide, cleaner look |
-| `curves_all_stages_panels` | Same story as three side-by-side panels with a shared y-axis. | validation_rounds.csv | story slide / paper |
+| `curves_all_stages_panels` | Same story as three side-by-side panels with a shared y-axis (same original levels, circles and star). | validation_rounds.csv | story slide / paper |
 | `curves_26letters` | 26-letter lines (96 px 50 rounds, 192 px 13 rounds) with 95% bands, larger-budget start (round 14), the picked rounds (44 and 2) and the round-50 model (starred, fresh test). | validation_rounds.csv; round 50 from final_tests_by_shape.csv | 26-letter training slide |
 | `curves_26letters_titled` | Same as above with a title for standalone reading. | validation_rounds.csv; round 50 from final_tests_by_shape.csv | standalone use |
 | `curves_26letters_smoothed` | Same with a 5-round rolling mean. | validation_rounds.csv | 26-letter training slide |
@@ -44,21 +44,21 @@ footnote with the test protocol and data source.
 | `curves_heatmap_26letters_smoothed` | Same heatmap with a 5-round rolling mean per shape (less noise). | validation_rounds.csv | per-shape progress |
 | `curves_heatmap_26letters_coverage` | Shapes x rounds heatmap of mean final coverage, 26-letter 96 px line. | validation_rounds.csv | backup / paper |
 | `curves_heatmap_26letters_192` | Shapes x rounds heatmap of validation success, 26-letter 192 px line (13 rounds). | validation_rounds.csv | backup |
-| `final_grouped_bars` | HEADLINE final test by shape group (10 earlier, 17 newer, 27 trained, 6 never-seen) for the four policies, 95% Wilson intervals. | final_tests_by_shape.csv | results slide (main) |
+| `final_grouped_bars` | HEADLINE final test (D051) by shape group (10 earlier, 17 newer, 27 trained, 6 never-seen) for the four policies: original, ours 10 shapes, ours 27 shapes 96 px (round 44), ours 27 shapes 192 px (round 2); 95% Wilson intervals. | final_tests_by_shape.csv | results slide (main) |
 | `final_grouped_bars_titled` | Same as above with a title for standalone reading. | final_tests_by_shape.csv | standalone use |
 | `final_headline_bars` | Compact headline: 27 trained shapes and 6 never-seen shapes only. | final_tests_by_shape.csv | half-slide headline |
 | `final_stage_progression` | Each stage's fresh-scene test vs the original on the same scenes: success stays ~34% as shapes grow 5 -> 10 -> 27. | final_tests_paired.csv, final_tests_by_shape.csv | summary slide |
-| `final_per_shape_bars` | Horizontal bars for all 33 shapes (sorted), original vs 26-letter 96 px; never-seen shapes below the line. | final_tests_by_shape.csv | paper / tall slide |
+| `final_per_shape_bars` | Horizontal bars for all 33 shapes (sorted), original vs ours, 27 shapes, 96 px (round 44); never-seen shapes below the line. | final_tests_by_shape.csv | paper / tall slide |
 | `final_per_shape_bars_vertical` | Same as vertical bars across a 16:9 slide. | final_tests_by_shape.csv | per-shape slide |
 | `final_per_shape_bars_all_models` | Horizontal bars for all 33 shapes and all four policies. | final_tests_by_shape.csv | paper appendix |
-| `final_dumbbell` | Dumbbell per shape: original -> 26-letter 96 px (tall). | final_tests_by_shape.csv | paper |
+| `final_dumbbell` | Dumbbell per shape: original -> ours, 27 shapes, 96 px (round 44) (tall). | final_tests_by_shape.csv | paper / per-shape slide |
 | `final_dumbbell_vertical` | Dumbbell per shape across a 16:9 slide. | final_tests_by_shape.csv | per-shape slide |
-| `final_dumbbell_192` | Dumbbell per shape: original -> 26-letter 192 px. | final_tests_by_shape.csv | backup |
-| `final_scatter` | Original vs 26-letter 96 px success per shape with the no-change line. | final_tests_by_shape.csv | half-slide / paper |
+| `final_dumbbell_192` | Dumbbell per shape: original -> ours, 27 shapes, 192 px (round 2). | final_tests_by_shape.csv | backup |
+| `final_scatter` | Original vs ours (27 shapes, 96 px, round 44) success per shape with the no-change line. | final_tests_by_shape.csv | half-slide / paper |
 | `final_scatter_10shape` | Original vs 10-shape 96 px success per shape (17 newer letters barely move). | final_tests_by_shape.csv | backup |
 | `final_forest_groups` | Paired change vs original with 95% intervals per shape group for the three students. | final_tests_paired.csv | results slide |
-| `final_forest_shapes` | Paired change vs original with 95% intervals for every shape (26-letter 96 px and 192 px). | final_tests_paired.csv | paper appendix |
-| `final_10shapes_bars` | 10-shape final test per shape, 1000 fresh scenes per shape, original vs 96 px vs 192 px. | final_tests_by_shape.csv | 10-shape results slide |
+| `final_forest_shapes` | Paired change vs original with 95% intervals for every shape (27-shape students, 96 px round 44 and 192 px round 2). | final_tests_paired.csv | paper appendix |
+| `final_10shapes_bars` | 10-shape final test per shape, 1000 fresh scenes per shape, original vs 96 px (round 13) vs 192 px (round 6). | final_tests_by_shape.csv | 10-shape results slide |
 | `final_10shapes_forest` | 10-shape paired change vs original per shape with 95% intervals. | final_tests_paired.csv | backup / paper |
 | `final_5shapes_bars` | 5-shape final tests after 4 and 7 correction rounds vs original (two fresh pools). | final_tests_by_shape.csv | 5-shape slide |
 | `final_blends_5shapes` | First weight-blend test (D040, 5 shapes): small Y/D gains, T loss. | final_tests_by_shape.csv | backup (superseded by final_blends_all) |
@@ -69,11 +69,11 @@ footnote with the test protocol and data source.
 | `shapes_teacher_vs_student` | Teacher (exact state) vs camera student per shape, all 27 trained shapes, on the same 50 validation scenes (student: round 44). | teacher_validation.csv, validation_rounds.csv | teacher-gap slide |
 | `shapes_new_letters_dotplot` | 17 newer letters: original, 10-shape model (never saw them), 26-letter model (trained on them). | final_tests_by_shape.csv | transfer vs training slide |
 | `shapes_table_heatmap` | Table-like heatmap of success for 33 shapes x 4 policies with numbers. | final_tests_by_shape.csv | paper / backup |
-| `heldout_scaling` | Never-seen shapes: success and final coverage vs number of training shapes (1 -> 10 -> 27). | final_tests_by_shape.csv | generalisation slide (main) |
+| `heldout_scaling` | Never-seen shapes: success (1.2% -> 2.8% -> 4.7%; 192 px 5.9%, all labelled) and final coverage vs number of training shapes (1 -> 10 -> 27). | final_tests_by_shape.csv | generalisation slide (main) |
 | `heldout_scaling_titled` | Same as above with a title for standalone reading. | final_tests_by_shape.csv | standalone use |
 | `heldout_per_shape_bars` | Each never-seen shape for the four policies. | final_tests_by_shape.csv | generalisation slide |
 | `heldout_scaling_per_shape` | Small multiples: each never-seen shape vs number of training shapes. | final_tests_by_shape.csv | backup / paper |
-| `heldout_unseen_capitals` | 10-shape students on the 17 capitals they never trained on, per letter and pooled. | final_tests_by_shape.csv | transfer slide |
+| `heldout_unseen_capitals` | 10-shape students (96 px round 13, 192 px round 6) on the 17 capitals they never trained on, per letter and pooled (D052). | final_tests_by_shape.csv | transfer slide |
 | `coverage_final_hist` | Distribution of final goal coverage per episode, original vs 26-letter 96 px (27 trained shapes). | final_tests_episodes.csv | near-miss slide |
 | `coverage_peak_hist` | Distribution of peak goal coverage per episode, original vs 26-letter 96 px. | final_tests_episodes.csv | near-miss slide |
 | `coverage_cdf` | Cumulative distributions of final and peak coverage for the four policies. | final_tests_episodes.csv | backup / paper |
@@ -88,25 +88,26 @@ footnote with the test protocol and data source.
 | `analysis_round50_vs_44_shapes` | Round 50 minus round 44 for every shape. | final_tests_paired.csv | paper appendix |
 | `analysis_t_tradeoff` | T and near-T success of each student next to the original on the same scenes. | final_tests_by_shape.csv | trade-off slide |
 | `analysis_t_tradeoff_diff` | T and near-T paired change vs original with 95% intervals. | final_tests_paired.csv | trade-off slide |
-| `analysis_192_vs_96` | 192 px minus 96 px camera, paired by scene, 10-shape and 26-letter models. | final_tests_episodes.csv | camera slide |
+| `analysis_192_vs_96` | 192 px minus 96 px camera, paired by scene: 10-shape picks (round 6 vs 13) and 27-shape picks (round 2 vs 44); each pair also differs in training rounds. | final_tests_episodes.csv | camera slide |
 | `analysis_192_vs_96_shapes` | 192 px minus 96 px for every shape. | final_tests_episodes.csv | paper appendix |
-| `analysis_label_ab` | Typed-in matched A/B tests: plan labels, camera, demo count, network size. | typed-in (LEARNING_FINDINGS section 7) | design-choices slide |
+| `analysis_label_ab` | Typed-in matched A/B tests on validation (1000 episodes each): plan labels 7.7% -> 12.9%, camera, demo count, network size; success rates with 95% intervals, no relative gains. | typed-in (LEARNING_FINDINGS section 7) | design-choices slide |
 | `analysis_budget` | 26-letter budget diagnosis: samples per shape per round (typed-in) and validation before/after. | validation_rounds.csv; D053 typed-in | budget slide |
 | `analysis_plateau_noise` | Plateau rounds against the chance band: changes between late rounds look like noise. | validation_rounds.csv | backup / paper |
 | `analysis_selection_bias` | Validation at the picked round vs fresh-scene test for every picked student. | validation_rounds.csv, final_tests_by_shape.csv | methods slide / backup |
-| `rl_t_collapse` | Forward-process RL: T success before vs after for each step size (typed-in). | typed-in (EXPERIMENT_LOG section 2) | what did not work slide |
+| `rl_t_collapse` | Forward-process RL: T success before (55%) vs after for each step size, with the number of RL updates at the last evaluation (typed-in). | typed-in (EXPERIMENT_LOG section 2) | what did not work slide |
 | `rl_drift_vs_t` | Forward RL: the more the policy moved, the more T it lost (typed-in). | typed-in (EXPERIMENT_LOG section 2) | what did not work slide |
 | `rl_signal_variance` | Learning-signal diagnosis: plan share of score variance and split-half reliability (typed-in). | typed-in (LEARNING_FINDINGS section 2) | why RL failed slide |
 | `rl_candidate_ranking` | How well the trainer's score, a value function and one full rollout rank candidate plans (typed-in). | typed-in (EXPERIMENT_LOG section 3) | backup |
 | `method_teacher_success` | Original vs the first exact-state planner teacher vs the teacher reading the state with 1 px / 1° noise, on T, near-T, Y, D, L. | typed_in_numbers.json (LEARNING_FINDINGS sections 5-6) | method slide (teacher) |
-| `method_teacher_success_26letters` | Teacher vs 26-letter camera student for all 27 trained shapes on the same 50 validation scenes, plus the pooled rate; hatched teacher bars were checked with an older world model. Half-slide version: by shape group. | teacher_validation.csv, validation_rounds.csv | teacher-gap slide |
+| `method_teacher_success_26letters` | Teacher vs the 27-shape camera student (96 px, round 44) for all 27 trained shapes on the same 50 validation scenes, plus the pooled rate; hatched teacher bars were checked with an older world model. | teacher_validation.csv, validation_rounds.csv | teacher-gap slide |
+| `method_teacher_success_groups` | Teacher vs 26-letter camera student (round 44) by shape group on the same 50 validation scenes per shape: 10 earlier shapes, 17 newer letters, all 27. The teacher's 10-earlier-shapes number is the latest check per shape (teacher_validation.csv: 400 of 500, T, D and L re-checked with world model v3), not the 390 of 500 of the run that labelled the 10-shape students (world model v2, method_teacher_gap). | teacher_validation.csv, validation_rounds.csv | teacher-gap half slide |
 | `method_teacher_gap` | Teacher vs picked camera student on the same validation scenes: 5 shapes (76% vs 40%), 10 shapes, 27 shapes. | validation_rounds.csv; typed_in_numbers.json; teacher_validation.csv | half-slide |
-| `method_pipeline` | Method block diagram: rollouts -> structured world model -> sampling planner teacher -> demonstrations -> camera policy <-> correction rounds; training-only (privileged) boxes gold, deployed policy blue. Also SVG. | typed_in_numbers.json (method_pipeline) | method slide |
+| `method_pipeline` | Method block diagram: rollouts -> structured world model -> sampling planner teacher (scores 1,024 plans per control: 4 x 256 samples, 128 of the first 256 are structured pushes) -> demonstrations -> camera policy <-> correction rounds; training-only (privileged) boxes gold, deployed policy blue. Also SVG. | typed_in_numbers.json (method_pipeline) | method slide |
 | `method_pipeline_simple` | Four-box version of the method (rollouts, world model, planner teacher, camera policy) with the correction loop. Also SVG. | - | title / overview slide |
 | `policy_interface` | What the policy sees and outputs: two 96 px camera frames + pusher position -> network (100 denoising steps) -> 16 future targets, first 8 executed (red), rest pink; colours match the videos. Schematic scene. Also SVG. | typed_in_numbers.json (method_pipeline) | setup / method slide |
 | `wm_structure` | World model: what is copied from the simulator (pusher motion, contact gate) and what is learned (block motion in contact). Also SVG. | typed_in_numbers.json (method_pipeline) | method slide / backup |
 | `wm_accuracy` | World-model error: generic network vs structured model (median, 8 and 32 controls) and the structured model's typical vs rare errors (90th percentile; 1 in 20 windows >= 14 px near walls). | world_model_accuracy.csv | world-model slide / backup |
-| `teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes) and the estimator accuracy sweep on Y, D, L (20 scenes). | teacher_planner.csv | teacher slide / backup |
+| `teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes; gold shades = noise level) and the estimator accuracy sweep on Y, D, L (20 scenes; letters by grey shade, marker and direct label). | teacher_planner.csv | teacher slide / backup |
 | `method_planner_fixes` | Planner teacher development: first vs final planner per letter (20 scenes) and T coverage as each stall cause was fixed (12 scenes); stall causes in planner_fixes.tex. | teacher_planner.csv | backup |
 | `oracle_bon` | Simulator best-of-N (upper bound): Y 3 -> 8 of 20, and students imitating it within the original's noise. | early_attempts.csv | what we tried first / backup |
 | `distill_early` | Early planner distillation: first worse everywhere; training the encoder, longer training and DAgger gave the first D and L successes with lower T. | early_attempts.csv | what we tried first / backup |
@@ -114,59 +115,79 @@ footnote with the test protocol and data source.
 | `copying_gap` | D044: a student reading the exact state keeps only 30-41% of the teacher's successes; the camera student and the original on the same scenes. | early_attempts.csv | why corrections / backup |
 | `lastmile_and_replanning` | Last-mile variant (-3.8, -4.8, +0.0; no gain), re-planning every 4 controls (-13.6) and executing 12 or 15 steps (-16.1, -22.5) against the matched runs. | early_attempts.csv, final_tests_episodes.csv | ablation / backup |
 | `project_timeline` | Project timeline Oct 24 -> Nov 7: each approach as a bar over its days, coloured by outcome, with the result. | timeline.csv | overview / what we tried slide |
-| `data_growth` | Training examples per round by source (human T, teacher demonstrations, corrections), 5 shapes, 10 shapes and 26 letters (96 px lines). | training_rounds.csv | data slide / backup |
+| `data_growth` | Training examples per round by source (human T, teacher demonstrations, corrections), 5 shapes, 10 shapes and 26 letters (96 px lines); the human T band (24k examples, too thin to see) is labelled directly. | training_rounds.csv | data slide / backup |
 | `train_loss_rounds` | End-of-round training loss vs validation success per round (10 shapes, 26 letters): the loss keeps falling while validation plateaus. | training_rounds.csv, validation_rounds.csv | plateau slide / backup |
 | `train_loss_within_round` | Training loss within five rounds of the 26-letter 96 px line (rounds 1, 13: 20k steps; 14, 30, 50: 54k). | training_loss_curves.csv | backup |
-| `failure_categories` | Episodes split into solved / near miss (>= 90%) / partial (50-90%) / far (< 50%) by best and by final coverage: original vs the 26-letter student (rounds 44 and 50). | final_tests_episodes.csv | near-miss / limits slide |
+| `failure_categories` | Episodes split into solved / near miss (>= 90%) / partial (50-90%) / far (< 50%) by best and by final coverage. Top: original vs ours, 96 px (round 44) on the same final-test scenes (D051). Bottom, a separate labelled block: round 44 vs round 50 on their own different pool (D054). | final_tests_episodes.csv | near-miss / limits slide |
+
+## Reading the numbers
+
+- Model names. The headline final test (D051, 300 fresh scenes per shape) compares the original, ours with 10 shapes (96 px, round 13), and ours with 27 shapes (26 letters + near-T) at 96 px (round 44) and 192 px (round 2). Round 50, the model in the videos, was tested separately on another fresh pool (D054, 200 scenes per shape) only against round 44 (27 shapes: 32.9% -> 34.8%). Charts never put D051 and D054 numbers side by side: curves_all_stages marks round 50 as 'round 50, fresh test 34.8%'; failure_categories keeps it in its own labelled block.
+- Original policy on the training curves. Dashed = the original on the same 50 validation scenes per shape (5 shapes: 41 of 250 = 16.4%; 10 shapes: 41 of 500 = 8.2%; typed_in_numbers.json). It was never run on the 27-shape validation scenes, so the 27-shape level is its D051 fresh-test 3.7%, drawn dotted and labelled 'fresh test'.
+- Teacher on the 10 earlier shapes. method_teacher_success_26letters and slide_half/method_teacher_success_groups use the latest check per shape (teacher_validation.csv): 400 of 500 on the 10 earlier shapes, because T, D and L were re-checked with world model v3 (T 30, D 49, L 34) while near-T and Y keep their v1 checks and E, F, J, P, U their v2 checks. method_teacher_gap and curves_10shapes use 390 of 500, the single run (world model v2) whose teacher labelled the 10-shape students (DECISIONS.md D048). Both are on the same 50 validation scenes per shape.
+- Planner size. The teacher scores 1,024 plans per control: 4 iterations x 256 samples; the 128 structured push candidates replace 128 of the first iteration's 256 samples (scripts/learning/mpc_teacher.py), so they are not extra.
+- Validation vs fresh test. Validation numbers (50 fixed scenes per shape, used to pick checkpoints, e.g. analysis_label_ab) are not comparable with fresh-scene final tests.
 
 ## Slide versions (`figures/slide/`)
 
-6.3 x 3.5 in (full slide width at 16:9), every text at least 16 pt, no footnote and no title (say the protocol aloud or put it in the slide's footer). Same data as the default version, with shorter labels and sometimes fewer panels or value labels (for example final_blends_all shows T, Y and D; data_growth leaves out the 5-shape panel; the timeline keeps 8 rows).
+6.3 x 3.5 in (full slide width at 16:9) unless the table says otherwise, every text at least 16 pt, no footnote and no title (say the protocol aloud or put it in the slide's footer). Same data as the default version, with shorter labels and sometimes fewer panels or value labels (for example final_blends_all shows T, Y and D; data_growth leaves out the 5-shape panel; the timeline keeps 8 rows). final_dumbbell is 6.3 x 3.6 in so it fits height=0.8\textheight; curves_all_stages keeps 6.3 x 3.5 in (aspect 1.8), which also fits at that height.
 
 | File | Shows |
 | --- | --- |
-| `slide/method_pipeline_simple` | Four-box version of the method (rollouts, world model, planner teacher, camera policy) with the correction loop. Also SVG. |
-| `slide/method_pipeline` | Method block diagram: rollouts -> structured world model -> sampling planner teacher -> demonstrations -> camera policy <-> correction rounds; training-only (privileged) boxes gold, deployed policy blue. Also SVG. |
-| `slide/policy_interface` | What the policy sees and outputs: two 96 px camera frames + pusher position -> network (100 denoising steps) -> 16 future targets, first 8 executed (red), rest pink; colours match the videos. Schematic scene. Also SVG. |
-| `slide/wm_structure` | World model: what is copied from the simulator (pusher motion, contact gate) and what is learned (block motion in contact). Also SVG. |
-| `slide/wm_accuracy` | World-model error: generic network vs structured model (median, 8 and 32 controls) and the structured model's typical vs rare errors (90th percentile; 1 in 20 windows >= 14 px near walls). |
-| `slide/rl_t_collapse` | Forward-process RL: T success before vs after for each step size (typed-in). |
+| `slide/method_pipeline_simple` | Four-box version of the method (rollouts, world model, planner teacher, camera policy) with the correction loop. |
+| `slide/method_pipeline` | Method block diagram: rollouts -> structured world model -> sampling planner teacher (scores 1,024 plans per control: 4 x 256 samples, 128 of the first 256 are structured pushes) -> demonstrations -> camera policy <-> correction rounds; training-only (privileged) boxes gold, deployed policy blue. |
+| `slide/policy_interface` | What the policy sees and outputs: two 96 px camera frames + pusher position -> network (100 denoising steps) -> 16 future targets, first 8 executed (red), rest pink; colours match the videos. Schematic scene. |
+| `slide/wm_structure` | World model: what is copied from the simulator (pusher motion, contact gate) and what is learned (block motion in contact). |
+| `slide/wm_accuracy` | Median error 8 controls ahead (generic network vs ours = structured model) and the structured model's typical vs 1-in-10 errors per letter plus the rare large errors; the marks are explained inside the panel. |
+| `slide/rl_t_collapse` | T success after RL per setting, AdvantageFlow and NFT, against 55% before; right column = RL updates at the last evaluation. |
 | `slide/rl_signal_variance` | Learning-signal diagnosis: plan share of score variance and split-half reliability (typed-in). |
 | `slide/method_teacher_success` | Original vs the first exact-state planner teacher vs the teacher reading the state with 1 px / 1° noise, on T, near-T, Y, D, L. |
-| `slide/method_teacher_success_26letters` | Teacher vs 26-letter camera student for all 27 trained shapes on the same 50 validation scenes, plus the pooled rate; hatched teacher bars were checked with an older world model. Half-slide version: by shape group. |
-| `slide/teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes) and the estimator accuracy sweep on Y, D, L (20 scenes). |
-| `slide/curves_all_stages` | Whole training story: validation success per correction round (rounds completed, from 0 in every stage), 5 -> 10 -> 27 shapes on one axis, picks circled, round-50 model starred (fresh test), round-47 note, original policy dashed. |
+| `slide/method_teacher_success_26letters` | WIDE per-letter version: teacher vs camera student (96 px, round 44) for all 27 trained shapes on the same 50 validation scenes; pooled rates in the legend (88% vs 35% overall); no hatching (world-model version per shape: default version and teacher_validation.csv). |
+| `slide/teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes; gold shades = noise level) and the estimator accuracy sweep on Y, D, L (20 scenes; letters by grey shade, marker and direct label). |
+| `slide/curves_all_stages` | Whole training story on one axis with direct labels: stage names above the plot, 'executed' and 'plan labels' at the label switch (10 shapes), 'larger budget' (27 shapes), 96 px / 192 px tags; a legend for the circles (sent to a fresh test) and the star (round 50, fresh test 34.8%). Dashed: original on the same validation scenes; dotted 'original: fresh test' for 27 shapes (no validation run of the original there). |
 | `slide/curves_26letters` | 26-letter lines (96 px 50 rounds, 192 px 13 rounds) with 95% bands, larger-budget start (round 14), the picked rounds (44 and 2) and the round-50 model (starred, fresh test). |
-| `slide/data_growth` | Training examples per round by source (human T, teacher demonstrations, corrections), 5 shapes, 10 shapes and 26 letters (96 px lines). |
+| `slide/data_growth` | 10 shapes and 26 letters; bands labelled directly (corrections, teacher demos, human T: 24k) instead of a legend. |
 | `slide/train_loss_rounds` | End-of-round training loss vs validation success per round (10 shapes, 26 letters): the loss keeps falling while validation plateaus. |
-| `slide/final_grouped_bars` | HEADLINE final test by shape group (10 earlier, 17 newer, 27 trained, 6 never-seen) for the four policies, 95% Wilson intervals. |
+| `slide/final_grouped_bars` | HEADLINE final test (D051) by shape group; legend Original, Ours 10 shapes, Ours 96 px (round 44), Ours 192 px (round 2); one-decimal labels on the original and 96 px bars (3.7, 33.4, 0.4, ...). |
 | `slide/final_stage_progression` | Each stage's fresh-scene test vs the original on the same scenes: success stays ~34% as shapes grow 5 -> 10 -> 27. |
 | `slide/final_per_shape_bars_vertical` | Same as vertical bars across a 16:9 slide. |
 | `slide/final_forest_groups` | Paired change vs original with 95% intervals per shape group for the three students. |
-| `slide/heldout_scaling` | Never-seen shapes: success and final coverage vs number of training shapes (1 -> 10 -> 27). |
+| `slide/heldout_scaling` | Never-seen shapes: success (1.2% -> 2.8% -> 4.7%; 192 px 5.9%, all labelled) and final coverage vs number of training shapes (1 -> 10 -> 27). |
 | `slide/coverage_near_misses` | Episode outcomes: solved / near miss (peak 90-95%) / peak 80-90% / below, trained and never-seen shapes. |
-| `slide/failure_categories` | Episodes split into solved / near miss (>= 90%) / partial (50-90%) / far (< 50%) by best and by final coverage: original vs the 26-letter student (rounds 44 and 50). |
-| `slide/analysis_label_ab` | Typed-in matched A/B tests: plan labels, camera, demo count, network size. |
+| `slide/failure_categories` | Original vs ours, 96 px (round 44) on the same final-test scenes (D051) only; round 50 (other pool, D054) is in the default version's separate block. |
+| `slide/analysis_label_ab` | Typed-in matched A/B tests on validation (1000 episodes each): plan labels 7.7% -> 12.9%, camera, demo count, network size; success rates with 95% intervals, no relative gains. |
 | `slide/analysis_steps_executed` | Executing 8 (trained) vs 12 vs 15 planned steps per shape group with 95% intervals and paired changes. |
 | `slide/analysis_t_tradeoff` | T and near-T success of each student next to the original on the same scenes. |
-| `slide/final_blends_all` | Every pre-registered blend test, D040 -> D043: paired change per letter with intervals, non-inferiority margin, passed/failed. Two failed on T; the 50% encoder blend passed twice (D042, D043). |
+| `slide/final_blends_all` | Blend tests D040-D043 on T, Y and D, passed/failed; the dashed T line is explained in the legend (pass rule: T interval above -5). |
 | `slide/project_timeline` | Project timeline Oct 24 -> Nov 7: each approach as a bar over its days, coloured by outcome, with the result. |
+| `slide/final_dumbbell` | All 33 shapes along x (sorted; never-seen shapes right of the line), original vs ours 96 px (round 44); T and near-T labels bold. Taller canvas so it fits height=0.8\textheight. Canvas 6.3 x 3.6 in. |
+| `slide/oracle_bon` | Upper bound (simulator best-of-16 per letter, left) and the imitating students in one colour (right), one legend. |
+| `slide/analysis_round50_vs_44` | Round 50 minus round 44 per shape group on their own fresh pool (D054, 200 scenes per shape), 95% intervals; the two rates in a column (All 27: 32.9 -> 34.8%). |
+| `slide/analysis_192_vs_96` | 192 px minus 96 px, paired by scene; group headings name the compared picks (10 shapes: 192 px round 6 vs 96 px round 13; 27 shapes: round 2 vs round 44, also differs in training rounds). |
+| `slide/final_10shapes_bars` | 10-shape final test per shape (1000 fresh scenes each) and pooled: original, ours 96 px (round 13), 192 px (round 6). |
+| `slide/heldout_unseen_capitals` | 10-shape students (96 px round 13, 192 px round 6) on the 17 capitals they never trained on, per letter and pooled (0.2 / 6.6 / 10.6%). |
 
 ## Half-slide versions (`figures/slide_half/`)
 
-4.2 x 3.2 in for two-column slides, every text at least 14 pt, no footnote or title. Two-panel charts keep their main panel (heldout_scaling: success; coverage_near_misses: 27 trained shapes; analysis_budget: validation by phase; analysis_steps_executed: 27 trained and 6 unseen; method_teacher_success_26letters: by shape group).
+4.2 x 3.2 in for two-column slides, every text at least 14 pt, no footnote or title. Two-panel charts keep their main panel (heldout_scaling: success; coverage_near_misses: 27 trained shapes; analysis_budget: validation by phase; analysis_steps_executed: 27 trained and 6 unseen; oracle_bon: the best-of-N panel). The grouped teacher-vs-student chart is slide_half/method_teacher_success_groups; method_teacher_success_26letters has no half version, so \halffig falls back to the wide per-letter slide version.
 
 | File | Shows |
 | --- | --- |
-| `slide_half/analysis_label_ab` | Typed-in matched A/B tests: plan labels, camera, demo count, network size. |
+| `slide_half/analysis_label_ab` | Matched A/B tests (validation, 1000 episodes each) as success rates: plan labels 7.7% -> 12.9%, camera, demos, network size; no relative gain label. |
 | `slide_half/analysis_budget` | 26-letter budget diagnosis: samples per shape per round (typed-in) and validation before/after. |
 | `slide_half/analysis_steps_executed` | Executing 8 (trained) vs 12 vs 15 planned steps per shape group with 95% intervals and paired changes. |
-| `slide_half/heldout_scaling` | Never-seen shapes: success and final coverage vs number of training shapes (1 -> 10 -> 27). |
+| `slide_half/heldout_scaling` | Never-seen shapes: success (1.2% -> 2.8% -> 4.7%; 192 px 5.9%, all labelled) and final coverage vs number of training shapes (1 -> 10 -> 27). |
 | `slide_half/coverage_near_misses` | Episode outcomes: solved / near miss (peak 90-95%) / peak 80-90% / below, trained and never-seen shapes. |
-| `slide_half/rl_t_collapse` | Forward-process RL: T success before vs after for each step size (typed-in). |
+| `slide_half/rl_t_collapse` | T success after RL per setting, AdvantageFlow and NFT, against 55% before; right column = RL updates at the last evaluation. |
 | `slide_half/rl_signal_variance` | Learning-signal diagnosis: plan share of score variance and split-half reliability (typed-in). |
 | `slide_half/method_teacher_success` | Original vs the first exact-state planner teacher vs the teacher reading the state with 1 px / 1° noise, on T, near-T, Y, D, L. |
-| `slide_half/method_teacher_success_26letters` | Teacher vs 26-letter camera student for all 27 trained shapes on the same 50 validation scenes, plus the pooled rate; hatched teacher bars were checked with an older world model. Half-slide version: by shape group. |
+| `slide_half/method_teacher_success_groups` | Teacher vs camera student (round 44) by shape group: 10 earlier, 17 newer, all 27 (see the note on 400 vs 390 of 500 below). |
 | `slide_half/method_teacher_gap` | Teacher vs picked camera student on the same validation scenes: 5 shapes (76% vs 40%), 10 shapes, 27 shapes. |
-| `slide_half/final_headline_bars` | Compact headline: 27 trained shapes and 6 never-seen shapes only. |
+| `slide_half/final_headline_bars` | Compact headline (27 trained, 6 never-seen); one-decimal labels on the original and 96 px (round 44) bars. |
 | `slide_half/lastmile_and_replanning` | Last-mile variant (-3.8, -4.8, +0.0; no gain), re-planning every 4 controls (-13.6) and executing 12 or 15 steps (-16.1, -22.5) against the matched runs. |
+| `slide_half/oracle_bon` | Upper-bound panel only: original vs simulator best-of-16 per letter (Y 3 -> 8 of 20). |
+| `slide_half/final_blends_all` | Blend tests D040-D043 on T, Y and D, passed/failed; legend: pass rule (T interval above -5). |
+| `slide_half/analysis_round50_vs_44` | Round 50 minus round 44 per shape group (D054 pool), 95% intervals, rates in a column. |
+| `slide_half/analysis_192_vs_96` | 192 px minus 96 px: all 10 (round 6 vs 13), all 27 and 6 unseen (round 2 vs 44; also differs in training rounds). |
+| `slide_half/final_10shapes_bars` | 10-shape final test per shape and pooled (whole-number pooled labels). |
+| `slide_half/heldout_unseen_capitals` | 10-shape students on the 17 capitals they never trained on, per letter (two rows of labels) and pooled (whole numbers; 0.2 kept). |

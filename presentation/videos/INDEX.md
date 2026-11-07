@@ -209,4 +209,4 @@ Playback: 1 frame per control at 30 fps = 3x real time (the simulator runs 10 co
 | `world_model/imagined_vs_real_E.mp4` | E: what the world model imagines (red) vs the simulator, open-loop 32 controls | errors per window: data/world_model_examples.csv |
 | `world_model/imagined_vs_real_R.mp4` | R: what the world model imagines (red) vs the simulator, open-loop 32 controls | errors per window: data/world_model_examples.csv |
 | `world_model/imagined_vs_real_T.mp4` | T: what the world model imagines (red) vs the simulator, open-loop 32 controls | errors per window: data/world_model_examples.csv |
-| `training_data/dynamics_data_action_noise.mp4` | the world model's training data: original policy with 0/10/25/50 px noise on its targets | data collection, not a test |
+| `training_data/dynamics_data_action_noise.mp4` | the world model's training data: original policy with 0/10/25 px noise on its targets (plus a 50 px row for illustration only) | data collection, not a test |

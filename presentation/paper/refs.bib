@@ -1,8 +1,10 @@
 % References for paper/main.tex (natbib + plainnat).
-% Entries without a note were checked from memory of the published record, or against arXiv/PMLR/ICLR pages on
-% 2026-11-08 (DPPO, DSRL, DiffusionNFT, AdvantageFlow, GPC, SuperMimic, MPPI, Octo, OpenVLA, pi0).
-% Entries with note = {TODO: verify ...} still need a check; delete the note field once verified (it prints in the
-% bibliography on purpose so it cannot be missed).
+% Entries were checked from memory of the published record, or against arXiv/PMLR/ICLR/RSS pages on 2026-11-08
+% (DPPO, DSRL, DiffusionNFT, AdvantageFlow, GPC, SuperMimic, MPPI, Octo, OpenVLA, pi0). Second web check on
+% 2026-11-08: DiffusionNFT in the ICLR 2026 proceedings (proceedings.iclr.cc); GPC title, authors and RA-L acceptance
+% on arXiv 2502.00622 (v4) and its v1 title; SuperMimic title, authors and "Accepted at CoRL 2026 (Oral)" on arXiv
+% 2610.28480; Octo in RSS XX (p090); OpenVLA in PMLR 270; pi0 in RSS XXI (p010); Suh et al. read for the pushing claim.
+% A note = {TODO: verify ...} field prints in the bibliography on purpose; none is left.
 % Page numbers are left out where they were not certain.
 
 % ---------------------------------------------------------------- diffusion policies and imitation
@@ -90,8 +92,7 @@
   author    = {Zheng, Kaiwen and Chen, Huayu and Ye, Haotian and Wang, Haoxiang and Zhang, Qinsheng and Jiang, Kai and Su, Hang and Ermon, Stefano and Zhu, Jun and Liu, Ming-Yu},
   title     = {{DiffusionNFT}: Online Diffusion Reinforcement with Forward Process},
   booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2026},
-  note      = {arXiv:2509.16117. TODO: verify venue against the ICLR 2026 proceedings (taken from the arXiv comment ``ICLR 2026 Oral'')}
+  year      = {2026}
 }
 
 @misc{kveton2026advantageflow,
@@ -248,20 +249,23 @@
   doi       = {10.1109/ICRA.2017.7989202}
 }
 
+% RA-L volume and pages were not yet listed on 2026-11-08; add them once the paper appears in IEEE Xplore.
 @misc{qi2025gpc,
   author       = {Qi, Han and Yin, Haocheng and Zhu, Aris and Du, Yilun and Yang, Heng},
   title        = {Inference-Time Enhancement of Generative Robot Policies via Predictive World Modeling},
-  howpublished = {arXiv:2502.00622},
-  year         = {2025},
-  note         = {TODO: verify. Accepted to IEEE Robotics and Automation Letters per the arXiv comment (add volume/year); earlier arXiv versions may carry a different title and author list}
+  howpublished = {arXiv:2502.00622v4},
+  year         = {2026},
+  note         = {Accepted to IEEE Robotics and Automation Letters. First version (2025, Qi, Yin, Du and Yang):
+                  ``Strengthening Generative Robot Policies through Predictive World Modeling''}
 }
 
+% Switch to the CoRL 2026 (PMLR) entry once the proceedings are published.
 @misc{liao2026supermimic,
   author       = {Liao, Qiayuan and Shao, Yiyang and Long, Junfeng and Zakka, Kevin and Horowitz, Roberto and Abbeel, Pieter and Sreenath, Koushil},
   title        = {{SuperMimic}: Scaling Humanoid Whole-Body Control with One Differentiable World Model},
   howpublished = {arXiv:2610.28480},
   year         = {2026},
-  note         = {TODO: verify. Accepted at CoRL 2026 per the arXiv comment; switch to the proceedings entry once published}
+  note         = {Accepted at the Conference on Robot Learning (CoRL) 2026}
 }
 
 @inproceedings{suh2022differentiable,
@@ -296,15 +300,17 @@
   title     = {Octo: An Open-Source Generalist Robot Policy},
   booktitle = {Robotics: Science and Systems (RSS)},
   year      = {2024},
-  note      = {arXiv:2405.12213. TODO: verify the RSS 2024 venue (the arXiv page lists none)}
+  doi       = {10.15607/RSS.2024.XX.090}
 }
 
 @inproceedings{kim2024openvla,
   author    = {Kim, Moo Jin and Pertsch, Karl and Karamcheti, Siddharth and Xiao, Ted and Balakrishna, Ashwin and others},
   title     = {{OpenVLA}: An Open-Source Vision-Language-Action Model},
   booktitle = {Conference on Robot Learning (CoRL)},
-  year      = {2024},
-  note      = {arXiv:2406.09246. TODO: verify the CoRL 2024 venue (the arXiv page lists none)}
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {270},
+  pages     = {2679--2713},
+  year      = {2024}
 }
 
 @inproceedings{black2025pi0,
@@ -312,7 +318,7 @@
   title     = {{$\pi_0$}: A Vision-Language-Action Flow Model for General Robot Control},
   booktitle = {Robotics: Science and Systems (RSS)},
   year      = {2025},
-  note      = {arXiv:2410.24164 (first version 2024). TODO: verify venue (taken from the arXiv comment ``Published in RSS 2025'')}
+  doi       = {10.15607/RSS.2025.XXI.010}
 }
 
 % ---------------------------------------------------------------- statistics

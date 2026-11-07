@@ -1,10 +1,11 @@
 % Tdyssey talk: 10 minutes, structured as the course asks (problem and motivation; approach and implementation;
 % results and demonstration; discussion and conclusions), plus about 2.5 minutes for the image world-model path.
-% Build in this folder with pdflatex (twice), or on Overleaf: upload presentation/ without videos/ (see ../README.md)
+% Build in this folder with pdflatex (twice), or on Overleaf: upload the zip from scripts/overleaf_zip.py (see ../README.md)
 % and set slides/main.tex as the main file. Large-font figure versions in figures/slide*/ are used when they exist.
 % Clicking a video still opens the clip in the system player (local PDF viewers only; in PowerPoint embed the MP4).
+% For the talk itself, play videos/talk/demo_reel.mp4 (40 s) on the demo slide: it needs no PDF links.
 %
-% Timing (about 10:00, 21 slides; video slides take 15-25 s): title 0:15 | problem 0:40 | approach 2:50 |
+% Timing (about 10:00, 20 slides; video slides take 15-25 s): title 0:15 | problem 0:40 | approach 2:50 |
 %   results and demo 2:50 | image world model (teammates) 2:30 | discussion and close 1:00.  Backup after the appendix.
 % TODO: speakers per section.
 \documentclass[aspectratio=169,11pt]{beamer}
@@ -18,13 +19,14 @@
 \newcommand{\members}{TODO: member 1 \quad TODO: member 2 \quad TODO: member 3}
 
 % ---- where presentation/ is, so the deck builds from slides/ or from the project root
-\IfFileExists{../figures/README.md}{\def\root{../}}{\def\root{}}
-\graphicspath{{\root figures/}{\root images/}{\root videos/posters/}}
-\newcommand{\fig}[2][]{\IfFileExists{\root figures/slide/#2.pdf}{\includegraphics[#1]{\root figures/slide/#2.pdf}}{\includegraphics[#1]{\root figures/#2.pdf}}}
-\newcommand{\halffig}[2][]{\IfFileExists{\root figures/slide_half/#2.pdf}{\includegraphics[#1]{\root figures/slide_half/#2.pdf}}{\fig[#1]{#2}}}
-\newcommand{\video}[3]{\href{run:\root videos/#2}{\includegraphics[width=#3]{#1}}}
+\IfFileExists{../figures/README.md}{\def\presroot{../}}{\def\presroot{}}
+\graphicspath{{\presroot figures/}{\presroot images/}{\presroot videos/posters/}}
+\newcommand{\fig}[2][]{\IfFileExists{\presroot figures/slide/#2.pdf}{\includegraphics[#1]{\presroot figures/slide/#2.pdf}}{\includegraphics[#1]{\presroot figures/#2.pdf}}}
+\newcommand{\halffig}[2][]{\IfFileExists{\presroot figures/slide_half/#2.pdf}{\includegraphics[#1]{\presroot figures/slide_half/#2.pdf}}{\fig[#1]{#2}}}
+\newcommand{\video}[3]{\href{run:\presroot videos/#2}{\includegraphics[width=#3]{#1}}}
 \newcommand{\snote}[1]{{\footnotesize\color{tdgrey}#1}}
-\newcommand{\tab}[1]{\input{\root data/tables/#1}}
+\newcommand{\tab}[1]{\input{\presroot data/tables/#1}}
+\newcommand{\mdl}[2]{\href{run:\presroot videos/models/#1_9shapes.mp4}{\includegraphics[width=\linewidth]{models/#1_9shapes_end.png}}\\[-1mm]{\scriptsize #2}}
 
 % ---- look: plain, readable from the back of the room; the current part is shown at the top right
 \usetheme{default}
@@ -40,7 +42,7 @@
 
 \title{Tdyssey: one camera policy for every letter}
 \subtitle{Adapting a T-only Diffusion Policy to 26 letters without new human demonstrations}
-\author{Team \teamnumber\\[1mm]\members}
+\author[Team \teamnumber]{Team \teamnumber\\[1mm]\members}
 \institute{CS5478}
 \date{}
 
@@ -74,7 +76,7 @@
 % ==================================================================================== 2. approach
 \section{Approach and implementation}
 \begin{frame}{Approach at a glance}
-  \centering\fig[width=0.95\textwidth]{method_pipeline}
+  \centering\fig[height=0.6\textheight]{method_pipeline}
   \begin{itemize}
     \item No new human demonstrations; the deployed policy sees only the camera image and the pusher position.
     \item Exact simulator state is used \emph{only} by the teacher, to make training data (disclosed).
@@ -99,16 +101,16 @@
 \begin{frame}{The teacher: planning inside a learned world model}
   \begin{columns}[T]
     \column{0.44\textwidth}
-    \video{teacher_9shapes.png}{teacher/teacher_9shapes.mp4}{0.92\linewidth}\\
-    \snote{Red dot: next push; pink: rest of the planned path.}
+    \centering\href{run:\presroot videos/teacher/teacher_9shapes.mp4}{\includegraphics[height=0.62\textheight]{teacher_9shapes_mid.png}}\\
+    \snote{Red dots: next targets; pink: rest of the planned path.}
     \column{0.54\textwidth}
     \begin{itemize}
       \item World model of the pushing physics: pusher motion and contact geometry from the simulator, block motion
             in contact learned from machine rollouts.
-      \item Planner: about 1{,}150 candidate push plans per step, 48 steps ahead; re-plans after every push.
+      \item Planner: scores about 1{,}000 candidate plans per control, 48 steps ahead (128 of them structured
+            pushes); re-plans after every push.
       \item Solves 88\% of validation scenes over the 27 shapes, but reads exact state: a teacher, not a policy.
     \end{itemize}
-    \includegraphics[width=0.95\linewidth]{world_model/imagined_vs_real_E.png}
   \end{columns}
 \end{frame}
 
@@ -119,11 +121,11 @@
     \snote{Correction rounds: at states the policy reached itself, its own plans (blue) and the teacher's label (gold).}
     \column{0.48\textwidth}
     \begin{itemize}
-      \item Copy the teacher's \textbf{intended} 16-step plans, not its executed pushes: 129 vs 77 successes of 1000.
+      \item Copy the teacher's \textbf{intended} 16-step plans, not its executed pushes: 129 vs 77 successes of 1000
+            (validation).
       \item Correction rounds (DAgger): the policy drives, the teacher labels every state it visits, retrain.
       \item Equal share per shape; 54k steps and 60 practice scenes per new letter per round.
-      \item Official architecture and recipe (100-step DDPM, 16 planned / 8 executed); single NVIDIA data-center
-            GPUs; 5 $\rightarrow$ 10 $\rightarrow$ 27 shapes.
+      \item Official network and recipe; 5 $\rightarrow$ 10 $\rightarrow$ 27 shapes.
     \end{itemize}
   \end{columns}
 \end{frame}
@@ -142,7 +144,7 @@
 % ==================================================================================== 3. results
 \section{Results and demonstration}
 \begin{frame}{Training: 5 $\rightarrow$ 10 $\rightarrow$ 27 shapes}
-  \centering\fig[width=0.92\textwidth]{curves_all_stages}
+  \centering\fig[height=0.8\textheight]{curves_all_stages}
 \end{frame}
 
 \begin{frame}{26 letters: the per-shape budget was the bottleneck}
@@ -163,15 +165,17 @@
     \fig[width=\linewidth]{final_grouped_bars}
     \column{0.38\textwidth}
     \begin{itemize}
-      \item 27 trained shapes: \textbf{3.7\% $\rightarrow$ 33.4\%} (96 px camera), 33.8\% (192 px).
+      \item 27 trained shapes (26 letters + near-T): \textbf{3.7\% $\rightarrow$ 33.4\%} (96 px camera, round 44),
+            33.8\% (192 px).
       \item The 17 letters added last caught up with the earlier ten (33\%).
       \item Goal covered at the end: 0.35 $\rightarrow$ 0.82.
-      \item Six more rounds, on another fresh pool: 32.9\% $\rightarrow$ 34.8\%.
+      \item Six more rounds (round 50, the model in the videos), tested against round 44 on another fresh pool:
+            32.9\% $\rightarrow$ 34.8\%.
     \end{itemize}
   \end{columns}
 \end{frame}
 
-\begin{frame}{New letters improve most; T and near-T dip}
+\begin{frame}{New letters improve most; T and near-T drop 5--8 points}
   \centering\fig[height=0.8\textheight]{final_dumbbell}
 \end{frame}
 
@@ -185,18 +189,20 @@
     \video{compare_S_scene2.png}{compare/S_scene2.mp4}{\linewidth}
   \end{columns}
   \vspace{2mm}
+  \centering\href{run:\presroot videos/talk/demo_reel.mp4}{\textbf{\color{tdblue}Play the 40-second demo reel}}
+  (videos/talk/demo\_reel.mp4: legend, these scenes, then all 33 shapes)\\[1mm]
   \snote{Recorded examples where ours succeeds (it succeeds on about a third of fresh scenes; near misses in
          videos/near\_misses/). Interactive demo: the Hugging Face Space (TODO: link or screen recording).}
 \end{frame}
 
 \begin{frame}{Demo: the teacher and the camera policy that learned from it}
-  \centering\video{teacher_vs_student_E.png}{teacher_vs_student/E.mp4}{0.62\textwidth}\\
-  \snote{Same scene. Left: the teacher with exact state. Right: the camera policy (round 50). All 27 shapes:
-         videos/teacher\_vs\_student/.}
+  \centering\video{teacher_vs_student_K.png}{teacher_vs_student/K.mp4}{0.62\textwidth}\\
+  \snote{Same scene. The teacher (exact state) solves K in 24 moves; the camera policy (round 50) ends at 93.6\%:
+         the gap is final alignment. Teacher 88\% vs policy 35\% on validation. All 27 shapes: videos/teacher\_vs\_student/.}
 \end{frame}
 
 \begin{frame}{Demo: one scene through the whole project}
-  \centering\video{progression_E.png}{progression/E_across_models.mp4}{0.6\textwidth}\\
+  \centering\video{progression_E.png}{progression/E_across_models.mp4}{0.58\textwidth}\\
   \snote{Original policy, then the 5-shape, 10-shape and 26-letter models (rounds 0, 13, 50) on the same scene.}
 \end{frame}
 
@@ -204,10 +210,11 @@
   \begin{columns}[T]
     \column{0.5\textwidth}
     \halffig[width=\linewidth]{heldout_scaling}
-    \snote{Six shapes never trained on: success grows with the number of training shapes (1.2\% $\rightarrow$ 5.9\%).}
+    \snote{Six shapes never trained on: success grows with the number of training shapes (1.2\% $\rightarrow$ 4.7\% at
+           96 px, 5.9\% at 192 px).}
     \column{0.48\textwidth}
     \video{compare_digit7_scene2.png}{compare/digit7_scene2.mp4}{\linewidth}\\
-    \snote{Digit 7, never seen in training, solved (17--23\% of fresh scenes; original 2\%).}
+    \snote{Digit 7, never seen in training, solved: 19--23\% in the final test (original 2.0\%, same scenes).}
   \end{columns}
 \end{frame}
 
@@ -269,7 +276,7 @@
     \begin{itemize}\small
       \item Teacher uses exact state and hand-designed push candidates (training only).
       \item Final alignment: most failures are near misses.
-      \item T and near-T dip slightly; one run per setting; simulation only.
+      \item T and near-T drop 5--8 points; one run per setting; simulation only.
     \end{itemize}
     \column{0.32\textwidth}
     \textbf{Takeaways}
@@ -326,8 +333,25 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Backup: the world model's accuracy}
-  \centering\halffig[height=0.75\textheight]{wm_accuracy}
+\begin{frame}{Backup: the world model}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \halffig[width=\linewidth]{wm_structure}
+    \snote{Copied from the simulator: pusher motion and contact geometry. Learned: how the block moves in contact.}
+    \column{0.48\textwidth}
+    \halffig[width=\linewidth]{wm_accuracy}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup: what the world model imagines vs the simulator}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \video{imagined_vs_real_D.png}{world_model/imagined_vs_real_D.mp4}{\linewidth}\\
+    \snote{D: red outline = imagined, open-loop over 32 controls (error at most about 1.5 px).}
+    \column{0.5\textwidth}
+    \video{imagined_vs_real_E.png}{world_model/imagined_vs_real_E.mp4}{\linewidth}\\
+    \snote{E: open-loop errors can grow to tens of pixels, which is why the teacher re-plans after every push.}
+  \end{columns}
 \end{frame}
 
 
@@ -338,6 +362,7 @@
     \column{0.5\textwidth}
     \halffig[width=\linewidth]{analysis_192_vs_96}
   \end{columns}
+  \snote{192 px round 2 vs 96 px round 44: they also differ in the number of training rounds.}
 \end{frame}
 
 \begin{frame}{Backup: T and near-T}
@@ -354,13 +379,33 @@
 \end{frame}
 
 
-\begin{frame}{Backup: teacher per letter, and how it was fixed}
+\begin{frame}{Backup: teacher vs camera policy, per letter (same validation scenes)}
+  \centering\fig[width=0.95\textwidth,height=0.78\textheight,keepaspectratio]{method_teacher_success_26letters}\\
+  \snote{Hatched: teacher checked with an older world model. Ten earlier shapes: 400/500 at their latest check
+         (390/500 in the run that made the labels).}
+\end{frame}
+
+\begin{frame}{Backup: how the teacher was fixed (state noise)}
+  \centering\fig[height=0.78\textheight]{teacher_state_noise}
+\end{frame}
+
+\begin{frame}{Backup: every model we trained (same scene, 9 shapes)}
   \begin{columns}[T]
-    \column{0.5\textwidth}
-    \halffig[width=\linewidth]{method_teacher_success_26letters}
-    \column{0.5\textwidth}
-    \halffig[width=\linewidth]{teacher_state_noise}
+    \column{0.16\textwidth}\mdl{original}{Original (T only)}
+    \column{0.16\textwidth}\mdl{forward_rl}{Forward RL (degraded)}
+    \column{0.16\textwidth}\mdl{five_r7}{5 shapes, round 7}
+    \column{0.16\textwidth}\mdl{blend}{Encoder blend}
+    \column{0.16\textwidth}\mdl{ten_96}{10 shapes, 96 px}
+    \column{0.16\textwidth}\mdl{l26_r50}{26 letters, round 50}
   \end{columns}
+  \vspace{2mm}
+  \snote{Last frames; click to play. All 14 models (also copying the teacher, round 4, executed-push labels, 192 px,
+         26-letter rounds 0, 13, 44): videos/models/, outcomes in videos/INDEX.md.}
+\end{frame}
+
+\begin{frame}{Backup: how to read the videos}
+  \centering\includegraphics[height=0.75\textheight]{video_legend.png}\\
+  \snote{Playback: 3x real time (the simulator runs 10 controls per second); the demo reel runs at 6x.}
 \end{frame}
 
 
@@ -383,8 +428,9 @@
     \column{0.43\textwidth}
     \begin{itemize}
       \item Training ran on single NVIDIA data-center GPUs (H100 and A100).
-      \item A 26-letter round: about 1--1.7 hours of training (54k steps) plus about half an hour of practice scenes
-            and validation.
+      \item About 120 GPU-hours of policy training over 128 rounds (all stages), plus practice scenes and validation.
+      \item A 26-letter round: about 1--1.7 hours of training (54k steps) at 96 px, about 3 hours at 192 px, plus
+            about half an hour of practice scenes and validation.
       \item Per round: data/training\_rounds.csv, data/compute\_rounds.csv.
     \end{itemize}
   \end{columns}

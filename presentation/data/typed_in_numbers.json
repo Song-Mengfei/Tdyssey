@@ -5,6 +5,24 @@
   "of": 250,
   "source": "docs/DECISIONS.md D046 (T 20, near-T 17, Y 4, D 0, L 0 on the teacher's 50 validation scenes)"
  },
+ "original_on_validation_10shapes": {
+  "values": {
+   "T": 20,
+   "T_narrow": 17,
+   "Y": 4,
+   "D": 0,
+   "L": 0,
+   "E": 0,
+   "F": 0,
+   "J": 0,
+   "P": 0,
+   "U": 0
+  },
+  "successes": 41,
+  "of": 500,
+  "source": "docs/DECISIONS.md D046 and docs/LEARNING_FINDINGS.md section 6 (original: T 20, near-T 17, Y 4, D 0, L 0 of 50 on the validation scenes; 'The original policy scores 0 on all five new letters' E, F, J, P, U). The 10-shape validation uses the same 50 scenes per shape (seeds 400000 + 20*i) as the 5-shape stage.",
+  "note": "No run of the original policy on the 27-shape validation scenes exists (the 17 newer letters were never validated with it); charts that need an original level for 27 shapes use the D051 fresh-test value and say so."
+ },
  "teacher_first_planner_5shapes_total": {
   "successes": 124,
   "of": 250,
@@ -377,7 +395,8 @@
   "planner_random_search_iterations": 4,
   "planner_samples_per_iteration": 256,
   "planner_structured_pushes": 128,
-  "planner_candidates_per_step": 1152,
+  "planner_candidates_per_step": 1024,
+  "planner_candidates_note": "1024 = 4 iterations x 256 samples scored per control; the 128 structured push candidates are not extra: they replace the last 128 of the 256 samples in the first iteration (scripts/learning/mpc_teacher.py, plan(), acts[:, -args.pushes:] = pushes.sample(...) when it == 0)",
   "planner_horizon_controls": 48,
   "teacher_state_noise_px": 1,
   "teacher_angle_noise_deg": 1,
@@ -392,6 +411,6 @@
   "correction_scenes_per_new_letter_from_round_14": 60,
   "world_model_pd_substeps": 10,
   "world_model_pusher_check_px": 0.0001,
-  "source": "docs/LEARNING_FINDINGS.md sections 4 (dynamics data, wm2), 5 (planner: --pushes 128 --horizon 48 in Reproduce), 6 (1 px / 1 degree noise; DAgger: student drives with probability 0.7; 206 human T episodes); scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 + 128 = 1152 candidates per control); docs/LEARNING_FINDINGS.md Evaluation protocol (DDPM-100, 8 of 16 actions executed); docs/DECISIONS.md D048, D051, D053 (30 scenes per shape per round; 60 per new letter from round 14)"
+  "source": "docs/LEARNING_FINDINGS.md sections 4 (dynamics data, wm2), 5 (planner: --pushes 128 --horizon 48 in Reproduce), 6 (1 px / 1 degree noise; DAgger: student drives with probability 0.7; 206 human T episodes); scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 = 1024 candidates per control, 128 of the first iteration's 256 replaced by structured pushes); docs/LEARNING_FINDINGS.md Evaluation protocol (DDPM-100, 8 of 16 actions executed); docs/DECISIONS.md D048, D051, D053 (30 scenes per shape per round; 60 per new letter from round 14)"
  }
 }
