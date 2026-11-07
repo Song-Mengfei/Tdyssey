@@ -191,3 +191,33 @@ footnote with the test protocol and data source.
 | `slide_half/analysis_192_vs_96` | 192 px minus 96 px: all 10 (round 6 vs 13), all 27 and 6 unseen (round 2 vs 44; also differs in training rounds). |
 | `slide_half/final_10shapes_bars` | 10-shape final test per shape and pooled (whole-number pooled labels). |
 | `slide_half/heldout_unseen_capitals` | 10-shape students on the 17 capitals they never trained on, per letter (two rows of labels) and pooled (whole numbers; 0.2 kept). |
+
+## Deck versions (`figures/deck/`)
+
+Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; included at scale 1 / natural width), so chart text matches the slide's 11 pt body text: 10 pt labels, 9 pt ticks, nothing above 10.5 pt; no footnote or title (the slide says the protocol). Regenerate only these with --variant deck. curves_stages_1-3 and final_bars_1-2 are builds: the same axes with progressively more data, swapped with \only in the deck. The others follow the slide (full-width) or half-slide layout at the canvas given per file.
+
+| File | Shows |
+| --- | --- |
+| `deck/rl_t_collapse` | T success after RL per setting, AdvantageFlow and NFT, against 55% before; right column = RL updates at the last evaluation. Canvas 78 x 50 mm. |
+| `deck/curves_26letters` | 26-letter lines (96 px 50 rounds, 192 px 13 rounds) with 95% bands, larger-budget start (round 14), the picked rounds (44 and 2) and the round-50 model (starred, fresh test). Canvas 144 x 52 mm. |
+| `deck/analysis_label_ab` | Matched A/B tests (validation, 1000 episodes each) as success rates: plan labels 7.7% -> 12.9%, camera, demos, network size; no relative gain label. Canvas 70 x 56 mm. |
+| `deck/analysis_steps_executed` | Executing 8 (trained) vs 12 vs 15 planned steps per shape group with 95% intervals and paired changes. Canvas 70 x 56 mm. |
+| `deck/oracle_bon` | Upper-bound panel only: original vs simulator best-of-16 per letter (Y 3 -> 8 of 20). Canvas 70 x 60 mm. |
+| `deck/final_blends_all` | Blend tests D040-D043 on T, Y and D, passed/failed; the dashed T line is explained in the legend (pass rule: T interval above -5). Canvas 144 x 55 mm. |
+| `deck/wm_accuracy` | Median error 8 controls ahead (generic network vs ours = structured model) and the structured model's typical vs 1-in-10 errors per letter plus the rare large errors; the marks are explained inside the panel. Canvas 144 x 58 mm. |
+| `deck/analysis_round50_vs_44` | Round 50 minus round 44 per shape group (D054 pool), 95% intervals, rates in a column. Canvas 70 x 58 mm. |
+| `deck/analysis_192_vs_96` | 192 px minus 96 px: all 10 (round 6 vs 13), all 27 and 6 unseen (round 2 vs 44; also differs in training rounds). Canvas 70 x 58 mm. |
+| `deck/analysis_t_tradeoff` | T and near-T success of each student next to the original on the same scenes. Canvas 144 x 62 mm. |
+| `deck/final_10shapes_bars` | 10-shape final test per shape (1000 fresh scenes each) and pooled: original, ours 96 px (round 13), 192 px (round 6). Canvas 144 x 62 mm. |
+| `deck/heldout_unseen_capitals` | 10-shape students (96 px round 13, 192 px round 6) on the 17 capitals they never trained on, per letter and pooled (0.2 / 6.6 / 10.6%). Canvas 144 x 62 mm. |
+| `deck/method_teacher_success_26letters` | WIDE per-letter version: teacher vs camera student (96 px, round 44) for all 27 trained shapes on the same 50 validation scenes; pooled rates in the legend (88% vs 35% overall); no hatching (world-model version per shape: default version and teacher_validation.csv). Canvas 144 x 54 mm. |
+| `deck/teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes; gold shades = noise level) and the estimator accuracy sweep on Y, D, L (20 scenes; letters by grey shade, marker and direct label). Canvas 144 x 62 mm. |
+| `deck/data_growth` | 10 shapes and 26 letters; bands labelled directly (corrections, teacher demos, human T: 24k) instead of a legend. Canvas 144 x 42 mm. |
+| `deck/project_timeline` | Project timeline Oct 24 -> Nov 7: each approach as a bar over its days, coloured by outcome, with the result. Canvas 144 x 62 mm. |
+| `deck/curves_stages_1` | Build step 1 of the training story (validation success per correction round): only the 5-shape stage drawn; same axes, bands and stage names as steps 2 and 3. Canvas 144 x 52 mm. |
+| `deck/curves_stages_2` | Build step 2: 5- and 10-shape stages (executed vs plan labels, 96 px and 192 px lines). Canvas 144 x 52 mm. |
+| `deck/curves_stages_3` | Build step 3: all three stages, larger-budget line for 27 shapes, picks circled (sent to a fresh test), round 50 starred (its own fresh test, 34.8%); markers explained on the slide. Canvas 144 x 52 mm. |
+| `deck/final_bars_1` | Build step 1 of the headline final test (D051) by shape group: the original only (other bars transparent, legend entries hidden). Canvas 144 x 50 mm. |
+| `deck/final_bars_2` | Build step 2: original, ours 10 shapes, ours 96 px (round 44), ours 192 px (round 2); one-decimal labels on the original and 96 px bars; 95% Wilson intervals. Canvas 144 x 50 mm. |
+| `deck/heldout_success` | Six never-seen shapes (D051): success vs number of training shapes (1.2% -> 2.8% -> 4.7%; 192 px 5.9%), 95% intervals, labelled directly (no legend). Canvas 66 x 50 mm. |
+| `deck/final_dumbbell` | All 33 shapes along x (sorted; never-seen shapes right of the line), original vs ours 96 px (round 44), D051; T and near-T labels bold; one row of short shape names. Canvas 144 x 55 mm. |

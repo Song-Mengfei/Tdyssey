@@ -7,13 +7,13 @@ folder is how the whole team can see and show them.
 | Folder | What is in it |
 | --- | --- |
 | [`STORY.md`](STORY.md) | Talk plan (10 minutes, slide by slide with timing and visuals), paper outline, key numbers, likely questions |
-| [`slides/`](slides/) | `main.tex`: the Beamer deck (16:9). Build with `pdflatex main.tex` (twice) in `slides/`, or on Overleaf (see below) |
-| [`figures/`](figures/README.md) | Every graph as PDF (Beamer) and PNG (PowerPoint), plus large-font slide versions in `figures/slide/` and `figures/slide_half/`; [`figures/README.md`](figures/README.md) lists what each shows |
-| `images/` | Shape galleries, camera views, last-frame grids for every model, filmstrips (five moments of one episode) |
+| [`slides/`](slides/) | `main.tex`: the Beamer deck (16:9, 23 main slides with step-by-step builds, 18 backup). Build with `pdflatex main.tex` (twice) in `slides/`, on Overleaf (see below), or download the PDF that GitHub builds on every push (Actions -> Presentation PDFs -> `presentation-pdfs`) |
+| [`figures/`](figures/README.md) | Every graph as PDF (Beamer) and PNG (PowerPoint); `figures/deck/` holds the versions drawn at the exact size the deck uses them (including the build steps), `figures/slide/` and `figures/slide_half/` older large-font versions, `figures/tikz/overview.tex` the method overview (Figure 1, used by the deck and the paper); [`figures/README.md`](figures/README.md) lists what each shows |
+| `images/` | Shape galleries, camera views, last-frame grids for every model, filmstrips (five moments of one episode); `images/slide/` holds the crops the deck uses (built by `scripts/slide_images.py`) |
 | [`videos/`](videos/INDEX.md) | Demo videos; [`videos/INDEX.md`](videos/INDEX.md) lists every clip with its outcome; `videos/posters/` has a still of each (its last frame) |
 | `data/` | Everything the graphs are drawn from, so anyone can restyle them: `validation_rounds.csv` (every validation round of every stage, per shape), `final_tests_by_shape.csv`, `final_tests_paired.csv` (differences with 95% intervals), `final_tests_episodes.csv` (every final-test episode), `training_rounds.csv` (training examples by source and loss per round), `typed_in_numbers.json` (the few numbers taken from the docs, with sources) and `tables/*.tex` (booktabs tables for `\input`) |
 | [`paper/`](paper/README.md) | The paper draft (`main.tex`, `refs.bib`) and what is still to do |
-| `scripts/` | `build_data.py` (CSV tables from the saved test files), `make_figures.py` (all graphs), `make_videos.py` (episodes, videos, images, demo reel), `overleaf_zip.py` (small zip for Overleaf) |
+| `scripts/` | `build_data.py` (CSV tables from the saved test files), `make_figures.py` (all graphs), `make_videos.py` (episodes, videos, images, demo reel), `slide_images.py` (crops for the deck), `overleaf_zip.py` (small zip for Overleaf) |
 
 ## Which model is which
 
@@ -53,7 +53,7 @@ choose honestly (for instance one success and one near miss).
 
 ## Overleaf and PowerPoint
 
-- Overleaf limits uploads to about 50 MB. Build a small zip (about 6 MB) with only what the deck and paper use:
+- Overleaf limits uploads to about 50 MB. Build a small zip (about 6 MB, tested: both documents compile from it alone) with only what the deck and paper use:
   `python3 presentation/scripts/overleaf_zip.py --out presentation-overleaf.zip` (from the repository root; keep the
   zip out of Git). Upload it as a new project and set `slides/main.tex` (or `paper/main.tex`) as the main file; the
   deck finds its files whether Overleaf compiles from the project root or from `slides/`.
@@ -62,8 +62,8 @@ choose honestly (for instance one success and one near miss).
 - In the PDF, clicking a video still opens the clip only in local viewers that allow it (for example Acrobat, Okular)
   and only with `videos/` next to `slides/`; it does not work on Overleaf, in browsers or in macOS Preview. In
   PowerPoint, insert the MP4 files directly.
-- Large-font versions of the graphs for slides: `figures/slide/` (full width) and `figures/slide_half/` (two per
-  slide); the deck uses them automatically when they exist.
+- The deck uses graphs from `figures/deck/` (drawn at their exact size on the slide, so their text matches the slide
+  text): `make_figures.py --variant deck` rebuilds them.
 
 ## Rebuild
 
@@ -83,7 +83,6 @@ is already in this folder.
 
 ## Not here yet
 
-- Team number and members' names on the title slide (`\teamnumber` and `\members` at the top of `slides/main.tex`).
 - The two image world-model slides (placeholders for the teammates who built it; their published figures are in
   `images/image_world_model/`).
 - A screen recording and a screenshot of the interactive demo (needs a browser): record them from the Hugging Face
