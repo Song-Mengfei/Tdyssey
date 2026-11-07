@@ -1001,3 +1001,33 @@ D056 outcome (2026-11-07; 6600 paired episodes per setting, `runs/fairtest-d054/
 each plan is much worse on every shape. Success over the 27 trained shapes: 8 steps 34.8%, 12 steps 18.6% (-16.1
 [-17.1, -15.2]), 15 steps 12.2% (-22.5 [-23.7, -21.4]); final coverage 0.83 -> 0.76 -> 0.72; six held-out shapes
 4.4% -> 2.2% -> 1.3%; T 44.0% -> 23.5% -> 17.5%. The trained setting (8) stays; no confirmation run is needed.
+
+## D058 — 192 px line stopped; last-mile RL on the frozen policy (2026-11-08, before any result)
+
+Lead's decision: the 192 px line stops at round 12 (validation 476/1350, flat since round 2's 511; round 2 stays its
+tested model). The GPU goes to two new experiments, both kept separate from the D051 headline.
+
+Last-mile RL on top of the frozen 96 px round-50 policy. Start states: near-goal states recorded from that policy on
+training scenes (seeds 800000 + 20*i, i in [20000, 30000), reserved here; block coverage >= 0.80, episode not yet
+solved; exact simulator state plus the previous control's state for the two-frame camera input;
+`scripts/learning/lastmile_states.py`). Episodes: at most 48 controls (6 decisions of 8 executed targets) from a
+restored state. Reward per decision: coverage gain, minus a penalty on coverage lost, plus a one-time bonus when
+coverage first exceeds 0.95, which ends the episode; time-limit cut-offs bootstrap. Two methods on the same states and
+reward, both off-policy with the base frozen: (1) noise steering (DSRL): the actor chooses the 32-number starting noise
+of the deterministic 10-step DDIM sampler (shown equal to the 100-step sampler, 254 vs 244 of 675); (2) a bounded
+residual on the 8 executed targets. The actors read only the frozen policy's camera features and the pusher position;
+the critics may read exact simulator state (training only, disclosed). Tests: finishing rate from near-goal states of
+held-out scenes, then full episodes on an unused fresh pool (seeds 13000000 + 20*i), paired with round 50, with T and
+near-T reported.
+
+## D059 — New policy architecture (2026-11-08, before any result)
+
+Lead's decision: a new camera policy built with current methods at about 500M parameters, trained on the same data as
+the 26-letter line (teacher demonstrations with intended-plan labels, all correction records, the human T
+demonstrations; equal share per shape). Design, following the literature check of 2026-11-08: a DINOv2 image encoder
+(chosen over SigLIP: better on PushT in published comparisons and built for spatial detail), fine-tuned, on the two
+camera frames upsampled from 96 px, pooled to a small grid of spatial tokens; a transformer action head (DiT-style:
+self-attention over the 16 action tokens, cross-attention to image and pusher tokens, time by adaptive layer norm)
+trained with flow matching (pi0-style Beta time sampling), 10 Euler steps at inference; 16 predicted targets, 8
+executed, as before. Same fresh-scene test as D058, paired with round 50; correction rounds with the new policy only if
+time allows before the talk.
