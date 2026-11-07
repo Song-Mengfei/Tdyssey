@@ -1,0 +1,37 @@
+name: Presentation PDFs
+
+# Compiles the talk slides and the paper draft whenever presentation/ changes, so every author can download the
+# latest PDFs from the run's artifacts (Actions tab -> run -> "presentation-pdfs").
+on:
+  push:
+    paths: ["presentation/**", ".github/workflows/presentation-pdf.yml"]
+  pull_request:
+    paths: ["presentation/**", ".github/workflows/presentation-pdf.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile slides and paper (TeX Live, pdflatex via latexmk)
+        uses: xu-cheng/latex-action@v3
+        with:
+          working_directory: presentation
+          root_file: |
+            slides/main.tex
+            paper/main.tex
+          work_in_root_file_dir: true
+      - name: Name the PDFs
+        run: |
+          mkdir -p pdf
+          cp presentation/slides/main.pdf pdf/tdyssey-slides.pdf
+          cp presentation/paper/main.pdf pdf/tdyssey-paper.pdf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: presentation-pdfs
+          path: pdf/
+          if-no-files-found: error
