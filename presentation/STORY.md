@@ -37,23 +37,28 @@ demo or recorded video); discussion and conclusions; team number and all members
 | # | Part | Slide | Time | Visual |
 | --- | --- | --- | --- | --- |
 | 1 | Title | team number, members | 0:15 | `images/shape_gallery_33_upright.png` |
-| 2 | Problem and motivation | A pushing policy that only knows the T | 0:45 | `videos/compare/P.mp4` |
-| 3 | Approach | Approach at a glance | 0:40 | `figures/method_pipeline` |
-| 4 | Approach | First attempt: RL on the simulator | 0:40 | `figures/rl_t_collapse` |
-| 5 | Approach | The teacher: planning inside a learned world model | 0:50 | `videos/teacher/teacher_9shapes.mp4`, `images/world_model/imagined_vs_real_E.png` |
-| 6 | Approach | Teaching the camera policy | 0:50 | `images/training_data/correction_round_examples.png` |
-| 7 | Results | Training: 5 -> 10 -> 27 shapes | 0:35 | `figures/curves_all_stages` |
-| 8 | Results | Final test | 0:45 | `figures/final_grouped_bars` |
-| 9 | Results (demo) | Same scene, original vs ours | 0:40 | `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
-| 10 | Results | Never-seen shapes and the last millimetres | 0:30 | `figures/heldout_scaling`, `images/last_mile/near_miss_vs_solved_zoom.png` |
-| 11-12 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
-| 13 | Discussion and conclusions | Achievements, limitations, takeaways | 0:50 | text |
-| 14 | Close | Thank you + all 33 shapes | 0:10 | `videos/all_shapes/l26_r50_33shapes_wide.mp4` |
+| 2 | Problem and motivation | A pushing policy that only knows the T | 0:40 | `videos/compare/P.mp4` |
+| 3 | Approach | Approach at a glance | 0:35 | `figures/method_pipeline` |
+| 4 | Approach | First attempt: RL on the simulator | 0:35 | `figures/rl_t_collapse` |
+| 5 | Approach | The teacher: planning inside a learned world model | 0:40 | `videos/teacher/teacher_9shapes.mp4`, `images/world_model/imagined_vs_real_E.png` |
+| 6 | Approach | Teaching the camera policy | 0:35 | `images/training_data/correction_round_examples.png` |
+| 7 | Approach | Copy what the teacher intends, not what it did | 0:25 | `images/training_data/labels_intended_vs_executed.png`, `figures/analysis_label_ab` |
+| 8 | Results | Training: 5 -> 10 -> 27 shapes | 0:25 | `figures/curves_all_stages` |
+| 9 | Results | 26 letters: the per-shape budget | 0:20 | `figures/curves_26letters` |
+| 10 | Results | Final test | 0:35 | `figures/final_grouped_bars` |
+| 11 | Results | New letters improve most; T and near-T dip | 0:15 | `figures/final_dumbbell` |
+| 12 | Demo | Same scene, original vs ours | 0:30 | `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
+| 13 | Demo | Teacher and the camera policy | 0:20 | `videos/teacher_vs_student/E.mp4` |
+| 14 | Demo | One scene through the whole project | 0:20 | `videos/progression/E_across_models.mp4` |
+| 15 | Results | Never-seen shapes | 0:20 | `figures/heldout_scaling`, `videos/compare/digit7_scene2.mp4` |
+| 16 | Results | The last millimetres | 0:20 | `images/last_mile/near_miss_vs_solved_zoom.png`, `videos/near_misses/near_miss_M_400020.mp4` |
+| 17-18 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
+| 19 | Discussion and conclusions | Achievements, limitations, takeaways | 0:45 | text |
+| 20 | Close | Thank you + all 33 shapes | 0:10 | `videos/all_shapes/l26_r50_33shapes_wide.mp4` |
 
-Backup (18 slides): protocol and headline table, per shape (figure and table), 26-letter budget, what mattered, what
-else did not work, world-model accuracy, intended vs executed labels, round 50 vs 44 and 192 vs 96 px, T and near-T,
-ten shapes, teacher vs policy video, teacher per letter, progression video, digit 7, full disclosure, data and compute,
-timeline.
+Backup (12 slides): protocol and headline table, per-shape table, what mattered, what else did not work, world-model
+accuracy, round 50 vs 44 and 192 vs 96 px, T and near-T, ten shapes, teacher per letter, full disclosure, data and
+compute, timeline.
 
 ## Paper outline (one week after the talk)
 
