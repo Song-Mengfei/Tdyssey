@@ -28,34 +28,32 @@ that planner and then corrects its own mistakes.
 | Executing 12 or 15 of 16 planned steps instead of 8 | 18.6% and 12.2% vs 34.8% | steps test |
 | T after adapting | 46.0% -> 40.7% (96 px; interval includes 0) and 44.0% for round 50 | final tests |
 
-## Talk plan (10 minutes; matches slides/main.tex)
+## Talk plan (10 minutes; matches slides/main.tex and the course's required parts)
 
-| # | Slide | Time | Message | Visual |
+The course asks for: problem and motivation; approach and implementation; results and demonstration (with a brief
+demo or recorded video); discussion and conclusions; team number and all members' names on the title slide. About
+2.5 minutes are left for the image world-model path, presented by the teammates who built it (placeholder slides).
+
+| # | Part | Slide | Time | Visual |
 | --- | --- | --- | --- | --- |
-| 1 | Title | 0:15 | One camera policy for every letter | `images/shape_gallery_33_upright.png` |
-| 2 | The problem | 0:35 | The official policy only knows T: 3.7% on our 27 shapes | `videos/compare/P.mp4` |
-| 3 | Rules we set ourselves | 0:25 | No new human demos; camera-only policy; privileged state only for training data | `images/camera_views_512_192_96.png` |
-| 4 | First attempt: RL | 0:35 | Training signal mostly noise; larger steps destroyed T | `figures/rl_t_collapse`, `rl_signal_variance` |
-| 5 | What else did not work | 0:30 | Best-of-N re-ranking, weight blends, back-propagating through the world model | `figures/oracle_bon`, `final_blends_all` |
-| 6 | The teacher | 0:40 | World model + sampling planner with exact state solves most letters | `videos/teacher/teacher_9shapes.mp4`, `figures/method_teacher_success_26letters` |
-| 7 | How good is the world model | 0:30 | Accurate over a push; errors grow open-loop, so the teacher re-plans | `images/world_model/imagined_vs_real_E.png`, `figures/wm_accuracy` |
-| 8 | From teacher to camera policy | 0:40 | Copy intended 16-step plans, then correction rounds | `figures/method_pipeline` |
-| 9 | How the training data is made | 0:30 | Teacher labels states the policy reaches; intended plans are smooth | `images/training_data/*.png` |
-| 10 | Training story | 0:35 | 5 -> 10 -> 27 shapes | `figures/curves_all_stages` |
-| 11 | 26 letters: budget | 0:30 | Per-shape budget was the bottleneck (24% -> 35%) | `figures/curves_26letters` |
-| 12 | Final test | 0:45 | 3.7% -> 33.4% (96 px), 33.8% (192 px); round 50 +1.9 on another fresh pool | `figures/final_grouped_bars` |
-| 13 | Per shape | 0:25 | New letters improve most; T and near-T dip | `figures/final_dumbbell` |
-| 14 | Demos | 0:40 | Same scene, original vs ours | `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
-| 15 | Never-seen shapes and the gap | 0:35 | Small transfer that grows with training shapes; misses are within a camera pixel or two | `figures/heldout_scaling`, `images/last_mile/near_miss_vs_solved_zoom.png` |
-| 16 | What mattered | 0:30 | Intended-plan labels; executing more steps hurts | `figures/analysis_label_ab`, `analysis_steps_executed` |
-| 17 | Limitations and disclosure | 0:30 | Privileged teacher, hand-designed candidates, human T reuse, one run per setting, T/near-T dip | text |
-| 18 | Conclusion | 0:20 | One policy for all letters, no new human demos | text |
-| 19 | Try it (demo Space) | 0:15 | Screenshot or recording of the Space | TODO |
+| 1 | Title | team number, members | 0:15 | `images/shape_gallery_33_upright.png` |
+| 2 | Problem and motivation | A pushing policy that only knows the T | 0:45 | `videos/compare/P.mp4` |
+| 3 | Approach | Approach at a glance | 0:40 | `figures/method_pipeline` |
+| 4 | Approach | First attempt: RL on the simulator | 0:40 | `figures/rl_t_collapse` |
+| 5 | Approach | The teacher: planning inside a learned world model | 0:50 | `videos/teacher/teacher_9shapes.mp4`, `images/world_model/imagined_vs_real_E.png` |
+| 6 | Approach | Teaching the camera policy | 0:50 | `images/training_data/correction_round_examples.png` |
+| 7 | Results | Training: 5 -> 10 -> 27 shapes | 0:35 | `figures/curves_all_stages` |
+| 8 | Results | Final test | 0:45 | `figures/final_grouped_bars` |
+| 9 | Results (demo) | Same scene, original vs ours | 0:40 | `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
+| 10 | Results | Never-seen shapes and the last millimetres | 0:30 | `figures/heldout_scaling`, `images/last_mile/near_miss_vs_solved_zoom.png` |
+| 11-12 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
+| 13 | Discussion and conclusions | Achievements, limitations, takeaways | 0:50 | text |
+| 14 | Close | Thank you + all 33 shapes | 0:10 | `videos/all_shapes/l26_r50_33shapes_wide.mp4` |
 
-Backup slides: protocol and headline table; per-shape table; round 50 vs 44 and 192 vs 96 px; T and near-T; ten
-shapes; teacher vs camera policy (video); teacher per letter and state noise; the same scene through the project;
-digit 7 solved; data and compute; project timeline. Ongoing work (D058/D059: last-mile RL and a new flow-matching
-policy) can be added as one slide once it has fresh-test numbers.
+Backup (18 slides): protocol and headline table, per shape (figure and table), 26-letter budget, what mattered, what
+else did not work, world-model accuracy, intended vs executed labels, round 50 vs 44 and 192 vs 96 px, T and near-T,
+ten shapes, teacher vs policy video, teacher per letter, progression video, digit 7, full disclosure, data and compute,
+timeline.
 
 ## Paper outline (one week after the talk)
 
