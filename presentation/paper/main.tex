@@ -15,7 +15,7 @@
 \usepackage{adjustbox}
 \usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,calc}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 
@@ -23,7 +23,7 @@
 \DeclareRobustCommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{Tdyssey: Adapting a T-Only Visuomotor Diffusion Policy to 26 Letter Shapes without New Human Demonstrations}
-\author{\todo{three authors}}
+\author{Liang Wenzhong \quad Song Mengfei \quad Su Shenyi\\[1mm] Team 28, CS5478}
 \date{CS5478 course project \quad \todo{date}}
 
 \begin{document}
@@ -279,28 +279,15 @@ full new policy. % D044
 
 \begin{figure*}[t]
   \centering
-  \begin{tikzpicture}[node distance=6mm and 9mm,
-      box/.style={draw=blue!60!black, rounded corners, thick, align=center, minimum height=11mm, text width=33mm,
-        font=\small},
-      arr/.style={-{Stealth[length=2.5mm]}, thick, black!60}]
-    \node[box] (data) {Noisy rollouts of the\\original policy\\(no human demos)};
-    \node[box, right=of data] (wm) {Structured world model\\of pushing};
-    \node[box, right=of wm] (teacher) {Sampling planner teacher\\(reads simulator state)};
-    \node[box, right=of teacher] (demos) {Teacher demos labelled\\with \textbf{intended}\\16-step plans};
-    \node[box, below=10mm of demos] (student) {Camera student\\(official recipe;\\+206 human T demos)};
-    \node[box, left=of student] (rounds) {Correction rounds:\\student drives,\\teacher relabels};
-    \node[box, left=of rounds] (test) {Fresh-scene test\\(camera only)};
-    \draw[arr] (data) -- (wm);
-    \draw[arr] (wm) -- (teacher);
-    \draw[arr] (teacher) -- (demos);
-    \draw[arr] (demos) -- (student);
-    \draw[arr] (student.north west) to[bend right=20] (rounds.north east);
-    \draw[arr] (rounds.south east) to[bend right=20] node[below, font=\scriptsize] {retrain on all data} (student.south west);
-    \draw[arr] (rounds) -- (test);
-  \end{tikzpicture}
-  \caption{Overview. Exact simulator state is used only by the teacher to create training data; the tested policy sees
-  two camera frames and the pusher position, exactly like the original. \todo{check the diagram renders; align
-  with the slide version}}
+  \input{../figures/tikz/overview.tex}
+  \caption{Overview. (1) Machine data: rollouts of the original policy with random noise on its targets, no new human
+  demonstrations. (2) A structured world model copies the pusher's motion and the contact geometry from the simulator and
+  learns only how the block moves in contact. (3) A sampling planner inside that model scores 1,024 candidate plans per
+  control (128 of them structured pushes), 48 steps ahead, and re-plans after every push. (4) The camera policy (the
+  official Diffusion Policy) imitates the teacher's intended 16-step plans. (5) In correction rounds the policy drives, the
+  teacher labels the states it visits, and the policy is retrained. (6) The deployed policy sees only two camera frames and
+  the pusher position, exactly like the original. Gold, dashed: training only (exact simulator state); blue: camera
+  policy.}
   \label{fig:method}
 \end{figure*}
 

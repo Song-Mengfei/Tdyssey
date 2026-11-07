@@ -311,6 +311,15 @@ MODE = {"name": "default"}
 VARIANT_SIZE = {"slide": (6.3, 3.5), "half": (4.2, 3.2)}
 VARIANT_FLOOR = {"slide": 16, "half": 14}
 VARIANT_DIR = {"slide": "slide", "half": "slide_half"}
+# Deck versions (figures/deck/): drawn at exactly the size the Beamer deck places them (16:9 slide, 160 x 90 mm, 11 pt
+# body text) and included at scale 1, so chart text matches the slide text: 10 pt labels, 9 pt ticks, nothing above
+# 10.5 pt. "deck" follows the slide versions' layout, "deck_half" the half-slide layout; the canvas is set per figure
+# (DECK_FIGURES), so VARIANT_SIZE["deck"] / ["deck_half"] are overwritten for each job.
+MM = 1 / 25.4
+VARIANT_SIZE.update({"deck": (144 * MM, 60 * MM), "deck_half": (70 * MM, 56 * MM)})
+VARIANT_FLOOR.update({"deck": 9, "deck_half": 9})
+VARIANT_CEIL = {"deck": 10.5, "deck_half": 10.5}
+VARIANT_DIR.update({"deck": "deck", "deck_half": "deck"})
 
 
 def slide():
@@ -318,12 +327,17 @@ def slide():
 
 
 def half():
-    return MODE["name"] == "half"
+    return MODE["name"] in ("half", "deck_half")
+
+
+def deck():
+    return MODE["name"] in ("deck", "deck_half")
 
 
 def FS(size):
     """Font size respecting the variant's minimum (used where text is measured while the figure is built)."""
-    return max(size, VARIANT_FLOOR.get(MODE["name"], 0))
+    size = max(size, VARIANT_FLOOR.get(MODE["name"], 0))
+    return min(size, VARIANT_CEIL[MODE["name"]]) if deck() else size
 
 
 def wanted(name):
@@ -348,8 +362,9 @@ def _wrapped_note(fig, txt):
 
 
 def variant_size(fig, w, h):
-    """Ask for a different canvas than the variant's standard one (only used in the slide versions)."""
-    if slide():
+    """Ask for a different canvas than the variant's standard one (only used in the slide versions; the deck versions
+    take their canvas from DECK_FIGURES)."""
+    if slide() and not deck():
         fig._tdy_variant_size = (w, h)
 
 
@@ -366,6 +381,10 @@ def save_variant(fig, name, shows=""):
     for t in fig.findobj(Text):
         if t.get_text() and t.get_fontsize() < floor:
             t.set_fontsize(floor)
+        if deck() and t.get_text() and t.get_fontsize() > VARIANT_CEIL[mode]:
+            t.set_fontsize(VARIANT_CEIL[mode])
+    if deck():
+        _deck_marks(fig)
     out = FIG / VARIANT_DIR[mode]
     out.mkdir(parents=True, exist_ok=True)
     import warnings
@@ -375,11 +394,38 @@ def save_variant(fig, name, shows=""):
             fig.savefig(out / f"{name}.{ext}", dpi=200)
     if any("constrained_layout" in str(w.message) for w in caught):
         print(f"  WARNING {VARIANT_DIR[mode]}/{name}: content does not fit the canvas (constrained layout gave up)")
+    if deck():
+        shows = VARIANT_SHOWS.get(("half" if half() else "slide", name), shows).replace(" Also SVG.", "")
+        VARIANT_REGISTRY.append(("deck", name, shows + f" Canvas {size[0] / MM:.0f} x {size[1] / MM:.0f} mm."))
+        plt.close(fig)
+        return
     shows = VARIANT_SHOWS.get((mode, name), shows).replace(" Also SVG.", "")
     if tuple(size) != tuple(VARIANT_SIZE[mode]):
         shows += f" Canvas {size[0]:g} x {size[1]:g} in."
     VARIANT_REGISTRY.append((mode, name, shows))
     plt.close(fig)
+
+
+def _deck_marks(fig):
+    """Deck versions: the figure functions size markers and lines for 14-16 pt text; shrink them to match 9-10 pt."""
+    from matplotlib.collections import PathCollection
+    lines = [ln for ax in fig.axes for ln in ax.get_lines()]
+    lines += [h for leg in [ax.get_legend() for ax in fig.axes] + list(fig.legends) if leg is not None
+              for h in leg.legend_handles if isinstance(h, Line2D)]
+    for ln in lines:
+        ms = ln.get_markersize()
+        if ms > 4:
+            ln.set_markersize(4 + (ms - 4) * 0.45)
+        if ln.get_markeredgewidth() > 1:
+            ln.set_markeredgewidth(0.8)
+        if ln.get_linewidth() > 1.6:
+            ln.set_linewidth(1.6)
+    for ax in fig.axes:
+        for c in ax.collections:
+            if isinstance(c, PathCollection) and len(c.get_sizes()):
+                c.set_sizes(np.asarray(c.get_sizes()) * 0.35)
+                if np.size(c.get_linewidths()) and np.max(c.get_linewidths()) > 1:
+                    c.set_linewidths(0.7)
 
 
 def save(fig, name, shows, data, use, title=None, svg=False):
@@ -528,7 +574,7 @@ def slide_legend(fig, handles, labels, title=None, ncol=None):
     """Figure legend above the axes (constrained layout makes room); columns chosen to fit the canvas width."""
     from matplotlib.font_manager import FontProperties
     from matplotlib.textpath import TextToPath
-    fs = VARIANT_FLOOR[MODE["name"]]
+    fs = plt.rcParams["legend.fontsize"] if deck() else VARIANT_FLOOR[MODE["name"]]
     prop = FontProperties(family="sans-serif", size=fs)
     ttp = TextToPath()
     widths = [ttp.get_text_width_height_descent(str(l), prop, ismath=False)[0] + fs * (1.2 + 0.4 + 1.0)
@@ -834,10 +880,15 @@ def fig_curves_26letters(smooth=False):
                     arrowprops=dict(arrowstyle="-", color=INK2, lw=1))
     ym = main_model_rate()
     ax.plot(MAIN_ROUND, ym, **STAR)
-    ax.annotate(SL(f"round {MAIN_ROUND}: the 96 px model\n{ym:.1f}% on fresh test scenes\n(not validated)",
-                   f"round {MAIN_ROUND},\nfresh test\n{ym:.1f}%"), (MAIN_ROUND, ym),
-                xytext=(MAIN_ROUND - 0.5, 19.5), ha="right", va="bottom", fontsize=12, color=INK,
-                arrowprops=dict(arrowstyle="-", color=INK2, lw=1, shrinkB=7))
+    if deck():      # one line under the 96 px line, clear of its markers
+        ax.annotate(f"round {MAIN_ROUND}: fresh test {ym:.1f}%", (MAIN_ROUND, ym), xytext=(MAIN_ROUND + 0.4, 24.5),
+                    ha="right", va="center", fontsize=9.5, color=INK,
+                    arrowprops=dict(arrowstyle="-", color=INK2, lw=0.8, shrinkB=5))
+    else:
+        ax.annotate(SL(f"round {MAIN_ROUND}: the 96 px model\n{ym:.1f}% on fresh test scenes\n(not validated)",
+                       f"round {MAIN_ROUND},\nfresh test\n{ym:.1f}%"), (MAIN_ROUND, ym),
+                    xytext=(MAIN_ROUND - 0.5, 19.5), ha="right", va="bottom", fontsize=12, color=INK,
+                    arrowprops=dict(arrowstyle="-", color=INK2, lw=1, shrinkB=7))
     ax.set_xlim(-0.6, 50.8)
     ax.set_ylim(15, 46)
     ax.yaxis.set_major_formatter(PCT)
@@ -4051,7 +4102,14 @@ def write_readme():
                              "27 trained shapes; analysis_budget: validation by phase; analysis_steps_executed: 27 "
                              "trained and 6 unseen; oracle_bon: the best-of-N panel). The grouped teacher-vs-student chart "
                              "is slide_half/method_teacher_success_groups; method_teacher_success_26letters has no half "
-                             "version, so \\halffig falls back to the wide per-letter slide version.")):
+                             "version, so \\halffig falls back to the wide per-letter slide version."),
+                            ("deck", "Deck versions (`figures/deck/`)",
+                             "Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; included at "
+                             "scale 1 / natural width), so chart text matches the slide's 11 pt body text: 10 pt labels, "
+                             "9 pt ticks, nothing above 10.5 pt; no footnote or title (the slide says the protocol). "
+                             "Regenerate only these with --variant deck. curves_stages_1-3 and final_bars_1-2 are builds: "
+                             "the same axes with progressively more data, swapped with \\only in the deck. The others "
+                             "follow the slide (full-width) or half-slide layout at the canvas given per file.")):
         rows = [(n, sh) for m, n, sh in VARIANT_REGISTRY if m == mode]
         if not rows:
             continue
@@ -4061,15 +4119,245 @@ def write_readme():
     (FIG / "README.md").write_text("\n".join(lines) + "\n")
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Deck versions (figures/deck/): exact slide size, slide-size text
+# ----------------------------------------------------------------------------------------------------------------------
+DECK_RC = {"font.size": 10, "axes.labelsize": 10, "axes.titlesize": 10, "xtick.labelsize": 9, "ytick.labelsize": 9,
+           "legend.fontsize": 9.5, "legend.title_fontsize": 9.5, "lines.markersize": 4, "lines.linewidth": 1.6,
+           "axes.linewidth": 0.8, "xtick.major.width": 0.8, "ytick.major.width": 0.8, "xtick.major.size": 3,
+           "ytick.major.size": 3, "xtick.major.pad": 2.5, "ytick.major.pad": 2.5, "axes.labelpad": 3,
+           "grid.linewidth": 0.6, "legend.handlelength": 1.2, "legend.handletextpad": 0.4,
+           "legend.columnspacing": 1.2, "errorbar.capsize": 2, "savefig.bbox": None, "axes.titlepad": 4}
+
+
+def deck_fig(w, h, l, r, b, t):
+    """Canvas of w x h mm with one axes at fixed margins (mm): builds keep exactly the same axes on every step."""
+    fig = plt.figure(figsize=(w * MM, h * MM))
+    ax = fig.add_axes([l / w, b / h, (w - l - r) / w, (h - b - t) / h])
+    return fig, ax
+
+
+def save_deck(fig, name, shows):
+    out = FIG / "deck"
+    out.mkdir(parents=True, exist_ok=True)
+    for ext in ("pdf", "png"):
+        fig.savefig(out / f"{name}.{ext}", dpi=200)
+    w, h = fig.get_size_inches()
+    VARIANT_REGISTRY.append(("deck", name, f"{shows} Canvas {w / MM:.0f} x {h / MM:.0f} mm."))
+    plt.close(fig)
+
+
+def fig_deck_stages(upto):
+    """Whole training story (5 -> 10 -> 27 shapes) at 144 x 52 mm, revealed one stage at a time (upto = 1, 2, 3).
+    Same axes, bands, stage names and ticks on every step; only the data of the later stages is left out. Markers are
+    explained on the slide (circle: sent to a fresh test; star: round 50, fresh test)."""
+    lines = story_lines()
+    fig, ax = deck_fig(144, 52, l=12.5, r=1.5, b=9.5, t=5.5)
+    top = 52
+    names = ["5 shapes", "10 shapes", "26 letters + near-T"]
+    for i, (a, b) in enumerate(STAGE_SPAN):
+        ax.axvspan(a, b, color=BAND if i % 2 == 0 else "#fbfbf9", zorder=0, lw=0)
+        ax.text((a + b) / 2, 1.02, names[i], ha="center", va="bottom", fontsize=10, fontweight="bold",
+                color=INK if i < upto else MUTED, transform=ax.get_xaxis_transform(), clip_on=False)
+    t = dict(color=INK2, fontsize=9, clip_on=False)
+    orig = original_stage_levels()
+    for i, (a, b) in enumerate(STAGE_SPAN[:upto]):
+        v, validated = orig[i]
+        ax.plot([a + 0.3, b - 0.3], [v] * 2, color=ORIG_LINE, lw=1.1 if validated else 1.4,
+                ls=ORIG_VAL_LS if validated else ORIG_TEST_LS, zorder=1)
+    (o5, _), (o10, _), (o27, _) = orig
+    ax.text(STAGE_SPAN[0][0] + 0.4, o5 - 1.0, "original", ha="left", va="top", **t)
+    byk = {L["key"]: L for L in lines}
+    sw = STAGE_OFF[1] + 16                                         # label switch inside the 10-shape stage
+    bx = STAGE_OFF[2] + 13.5                                       # larger budget per round (27 shapes)
+    if upto >= 2:
+        ax.text(STAGE_SPAN[1][1] - 0.4, o10 - 1.0, "original", ha="right", va="top", **t)
+        ax.axvline(sw, color=INK2, lw=0.8, ymin=0.2, ymax=1, zorder=1)
+        ax.text(sw - 1.0, top - 0.8, "executed", ha="right", va="top", **t)
+        ax.text(sw + 1.0, top - 0.8, "plan labels", ha="left", va="top", **t)
+        L = byk["ten192"]
+        ax.text(STAGE_OFF[1] + L["x"][-1] + 0.8, L["y"][-1] + 0.4, "192 px", ha="left", va="bottom", **t)
+        L = byk["ten96"]
+        ax.text(STAGE_OFF[1] + L["x"][-1], min(L["y"][-6:]) - 2.2, "96 px", ha="right", va="top", **t)
+    if upto >= 3:
+        ax.text(STAGE_SPAN[2][1] - 0.2, o27 + 0.9, "original: fresh test", ha="right", va="bottom", **t)
+        ax.axvline(bx, color=INK2, lw=0.8, ymin=0.22, ymax=1, zorder=1)
+        ax.text(bx + 1.0, top - 0.8, "larger budget per round", ha="left", va="top", **t)
+        L = byk["m192"]
+        ax.text((STAGE_SPAN[2][0] + bx) / 2 - 0.4, max(L["y"]) + 2.0, "192 px", ha="center", va="bottom", **t)
+        L = byk["m96"]
+        j = int(np.argmin(np.abs(L["x"] - 33)))
+        ax.text(STAGE_OFF[2] + 33, min(L["y"][j - 3:j + 4]) - 2.2, "96 px", ha="center", va="top", **t)
+    for L in lines:
+        if L["stage"] < upto:
+            ax.plot(STAGE_OFF[L["stage"]] + L["x"], L["y"], color=L["color"], lw=1.3, marker="o", ms=2.0, zorder=3)
+    for key, x in PICKS:
+        L = byk[key]
+        if L["stage"] < upto:
+            i = int(np.where(L["x"] == x)[0][0])
+            ax.plot(STAGE_OFF[L["stage"]] + x, L["y"][i], marker="o", ms=7, mfc="none", mec=INK, mew=1.1, zorder=5)
+    if upto >= 3:
+        ax.plot(STAGE_OFF[2] + MAIN_ROUND, main_model_rate(), **(STAR | {"ms": 11, "mew": 0.8}))
+    ax.set_xlim(0, STAGE_SPAN[2][1] + 1.6)
+    ax.set_ylim(0, top)
+    ax.set_yticks([0, 10, 20, 30, 40, 50])
+    ax.yaxis.set_major_formatter(PCT)
+    ticks, labels = [], []
+    for st, vals in ((0, [0, 5]), (1, [0, 20, 40]), (2, [0, 25, 50])):
+        for v in vals:
+            ticks.append(STAGE_OFF[st] + v)
+            labels.append(str(v))
+    ax.set_xticks(ticks, labels)
+    ax.grid(False, axis="x")
+    ax.set_xlabel("Correction rounds completed (within each stage)")
+    ax.set_ylabel("Validation success")
+    return fig
+
+
+def fig_deck_final_bars(step):
+    """Headline final test (D051) by shape group at 144 x 50 mm; step 1 shows the original only, step 2 adds ours.
+    Hidden bars are drawn transparent, so both steps have the same axes and legend positions."""
+    groups = ("10 earlier shapes", "17 other letters", "27 trained shapes", "6 held-out shapes")
+    names = ["10 earlier\nshapes", "17 newer\nletters", "All 27\ntrained shapes", "6 never-seen\nshapes"]
+    keys = ["original", "ten96", "m96", "m192"]
+    fig, ax = deck_fig(144, 50, l=12.5, r=1, b=9.5, t=1.5)
+    w = 0.8 / len(keys)
+    R = {k: [rate("D051", D051[k], GROUP_SHAPES[g]) for g in groups] for k in keys}
+    for j, k in enumerate(keys):
+        show = step >= 2 or k == "original"
+        for gi in range(len(groups)):
+            r, _, _, lo, hi = R[k][gi]
+            x = gi - 0.4 + w * (j + 0.5)
+            ax.bar(x, r, w, color=col(k), edgecolor="white", linewidth=1.0, zorder=3, alpha=1.0 if show else 0.0)
+            if not show:
+                continue
+            errbars(ax, [x], [r], [lo], [hi], lw=0.9)
+            if k in ("original", "m96"):
+                top = max(hi, R["m192"][gi][4]) if k == "m96" and step >= 2 else hi
+                ax.text(x, top + 0.7, f"{r:.1f}", ha="center", va="bottom", fontsize=9.5, color=INK,
+                        fontweight="bold" if k == "m96" else None)
+    ax.set_xticks(range(len(groups)), names, fontsize=10)
+    ax.tick_params(axis="x", length=0, pad=3)
+    ax.set_xlim(-0.55, len(groups) - 0.45)
+    ax.set_ylim(0, 52)
+    ax.set_yticks([0, 10, 20, 30, 40])
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Success")
+    handles = [Patch(facecolor=col(k), edgecolor="white", label=LAB_SHORT[k]) for k in keys]
+    leg = ax.legend(handles=handles, loc="upper right", ncol=2, frameon=False, borderaxespad=0.1, labelspacing=0.3,
+                    columnspacing=1.6)
+    if step < 2:
+        for h, txt in zip(leg.legend_handles[1:], leg.get_texts()[1:]):
+            h.set_visible(False)
+            txt.set_visible(False)
+    return fig
+
+
+def fig_deck_dumbbell():
+    """All 33 shapes along x at 144 x 55 mm: original -> ours, 96 px (round 44), D051 final test; T and near-T bold."""
+    key = "m96"
+    order = _sorted_shapes(key)[::-1] + sorted(HELD, key=lambda s: -rate("D051", D051[key], [s])[0])
+    a = np.array([rate("D051", "original", [s])[0] for s in order])
+    b = np.array([rate("D051", D051[key], [s])[0] for s in order])
+    fig, ax = deck_fig(144, 55, l=12.5, r=1, b=5.5, t=7)
+    xs = np.arange(len(order))
+    ax.vlines(xs, a, b, color=tint(col(key), 0.5), lw=1.6, zorder=2)
+    ax.scatter(xs, a, s=18, color=ORIG_LINE, zorder=3, edgecolor="white", lw=0.6)
+    ax.scatter(xs, b, s=24, color=col(key), zorder=4, edgecolor="white", lw=0.6)
+    ax.set_xticks(xs, [SHORT.get(s, s) for s in order], fontsize=9)
+    ax.tick_params(axis="x", length=0, pad=3)
+    for tl, s_ in zip(ax.get_xticklabels(), order):
+        if s_ in ("T", "T_narrow"):
+            tl.set_fontweight("bold")
+            tl.set_color(INK)
+    ax.axvline(len(TRAINED27) - 0.5, color=INK2, lw=0.8)
+    ax.text(len(TRAINED27) - 0.1, 59, "never seen", fontsize=9, color=INK2, va="top", ha="left")
+    ax.set_xlim(-0.7, len(order) - 0.3)
+    ax.set_ylim(-2, 60)
+    ax.set_yticks([0, 20, 40, 60])
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_ylabel("Success")
+    ax.grid(False, axis="x")
+    handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=5, label=LAB_SHORT["original"]),
+               Line2D([], [], marker="o", color=col(key), ls="none", ms=5.5, label=LAB_SHORT[key])]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(12.5 / 144, 1.0), ncol=2, frameon=False,
+               borderaxespad=0.2)
+    return fig
+
+
+def fig_deck_heldout():
+    """Six never-seen shapes (D051) at 66 x 50 mm: success vs number of training shapes, labelled directly."""
+    fig, ax = deck_fig(66, 50, l=11, r=2, b=9.5, t=2)
+    xs, keys = [1, 10, 27], ("original", "ten96", "m96")
+    pts = [rate("D051", D051[k], HELD) for k in keys]
+    ax.plot(xs, [p[0] for p in pts], color=M96, lw=1.4, zorder=2)
+    for x, k, p in zip(xs, keys, pts):
+        ax.scatter([x], [p[0]], s=34, color=col(k), edgecolor="white", lw=0.7, zorder=4)
+        errbars(ax, [x], [p[0]], [p[3]], [p[4]], lw=0.9)
+    r192 = rate("D051", D051["m192"], HELD)
+    ax.scatter([30.5], [r192[0]], s=30, color=M192, edgecolor="white", lw=0.7, zorder=4, marker="D")
+    errbars(ax, [30.5], [r192[0]], [r192[3]], [r192[4]], lw=0.9)
+    t = dict(fontsize=9, color=INK)
+    ax.text(3.0, pts[0][0] - 0.35, f"original\n{pts[0][0]:.1f}%", ha="left", va="top", **t)
+    ax.text(11.4, pts[1][0] - 0.25, f"10 shapes\n{pts[1][0]:.1f}%", ha="left", va="top", **t)
+    ax.text(25.8, pts[2][0] + 0.1, f"96 px\n{pts[2][0]:.1f}%", ha="right", va="bottom", **t)
+    ax.text(30.5, r192[0] + 1.0, f"192 px\n{r192[0]:.1f}%", ha="center", va="bottom", **t)
+    ax.set_xticks(xs, ["1", "10", "27"])
+    ax.set_xlim(-2, 34)
+    ax.set_ylim(-0.9, 9.5)
+    ax.set_yticks([0, 2, 4, 6, 8])
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_xlabel("Shapes in training")
+    ax.set_ylabel("Success")
+    return fig
+
+
+# custom deck figures: (name, function, README text)
+DECK_CUSTOM = [
+    ("curves_stages_1", lambda: fig_deck_stages(1),
+     "Build step 1 of the training story (validation success per correction round): only the 5-shape stage drawn; "
+     "same axes, bands and stage names as steps 2 and 3."),
+    ("curves_stages_2", lambda: fig_deck_stages(2), "Build step 2: 5- and 10-shape stages (executed vs plan labels, "
+     "96 px and 192 px lines)."),
+    ("curves_stages_3", lambda: fig_deck_stages(3), "Build step 3: all three stages, larger-budget line for 27 shapes, "
+     "picks circled (sent to a fresh test), round 50 starred (its own fresh test, 34.8%); markers explained on the "
+     "slide."),
+    ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline final test (D051) by shape group: "
+     "the original only (other bars transparent, legend entries hidden)."),
+    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes, ours 96 px (round 44), "
+     "ours 192 px (round 2); one-decimal labels on the original and 96 px bars; 95% Wilson intervals."),
+    ("heldout_success", fig_deck_heldout, "Six never-seen shapes (D051): success vs number of training shapes "
+     "(1.2% -> 2.8% -> 4.7%; 192 px 5.9%), 95% intervals, labelled directly (no legend)."),
+    ("final_dumbbell", fig_deck_dumbbell, "All 33 shapes along x (sorted; never-seen shapes right of the line), "
+     "original vs ours 96 px (round 44), D051; T and near-T labels bold; one row of short shape names."),
+]
+# existing figures drawn at deck size: (name, layout mode, width mm, height mm)
+DECK_FIGURES = [
+    ("rl_t_collapse", "deck_half", 78, 50), ("curves_26letters", "deck", 144, 52),
+    ("analysis_label_ab", "deck_half", 70, 56), ("analysis_steps_executed", "deck_half", 70, 56),
+    ("oracle_bon", "deck_half", 70, 60), ("final_blends_all", "deck", 144, 55), ("wm_accuracy", "deck", 144, 58),
+    ("analysis_round50_vs_44", "deck_half", 70, 58), ("analysis_192_vs_96", "deck_half", 70, 58),
+    ("analysis_t_tradeoff", "deck", 144, 62), ("final_10shapes_bars", "deck", 144, 62),
+    ("heldout_unseen_capitals", "deck", 144, 62), ("method_teacher_success_26letters", "deck", 144, 54),
+    ("teacher_state_noise", "deck", 144, 62), ("data_growth", "deck", 144, 43), ("project_timeline", "deck", 144, 62),
+]
+
+
 def style_variant(mode):
     """Bigger fonts and an exact canvas for the slide versions; constrained layout keeps everything on the canvas."""
+    global FULL, HALF, TALL, BIG
     style()
+    if mode in ("deck", "deck_half"):
+        plt.rcParams.update(DECK_RC | {"figure.constrained_layout.use": True})
+        FULL = HALF = TALL = BIG = VARIANT_SIZE[mode]
+        return
     f = VARIANT_FLOOR[mode]
     plt.rcParams.update({"font.size": f, "axes.labelsize": f, "axes.titlesize": f, "xtick.labelsize": f,
                          "ytick.labelsize": f, "legend.fontsize": f, "legend.title_fontsize": f,
                          "figure.constrained_layout.use": True, "savefig.bbox": None, "lines.markersize": 5,
                          "legend.handlelength": 1.2, "legend.columnspacing": 1.0, "axes.titlepad": 4})
-    global FULL, HALF, TALL, BIG
     FULL = HALF = TALL = BIG = VARIANT_SIZE[mode]
 
 
@@ -4085,9 +4373,9 @@ E = "final_tests_episodes.csv"
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--only", nargs="*", default=[], help="figure name prefixes to regenerate")
-    ap.add_argument("--variant", choices=("all", "none", "slide"), default="all",
-                    help="all: default figures, slide versions, tables and README; none: default figures only; "
-                         "slide: only figures/slide/ and figures/slide_half/")
+    ap.add_argument("--variant", choices=("all", "none", "slide", "deck"), default="all",
+                    help="all: default figures, slide and deck versions, tables and README; none: default figures "
+                         "only; slide: only figures/slide/ and figures/slide_half/; deck: only figures/deck/")
     args = ap.parse_args()
     ONLY.extend(args.only)
     variant = args.variant
@@ -4373,6 +4661,25 @@ def main():
                     print(f"wrote {VARIANT_DIR[mode]}/{name}")
         MODE["name"] = "default"
         style()
+    if variant in ("all", "deck"):
+        for name, mode, w, h in DECK_FIGURES:
+            if wanted(name):
+                MODE["name"] = mode
+                VARIANT_SIZE[mode] = (w * MM, h * MM)
+                style_variant(mode)
+                _, fn, shows, *_ = byname[name]
+                save(fn(), name, shows, None, None)
+                print(f"wrote deck/{name}")
+        MODE["name"] = "deck"
+        style()
+        plt.rcParams.update(DECK_RC | {"figure.constrained_layout.use": False})
+        for name, fn, shows in DECK_CUSTOM:
+            if wanted(name):
+                save_deck(fn(), name, shows)
+                print(f"wrote deck/{name}")
+        MODE["name"] = "default"
+        style()
+        plt.rcParams["figure.constrained_layout.use"] = False
     if not ONLY and variant == "all":
         write_tables()
         write_readme()
