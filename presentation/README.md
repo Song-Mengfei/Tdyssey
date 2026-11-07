@@ -11,7 +11,7 @@ folder is how the whole team can see and show them.
 | [`figures/`](figures/README.md) | 72 graphs, each as PDF (Beamer) and PNG (PowerPoint); [`figures/README.md`](figures/README.md) lists what each shows and a suggested slide |
 | `images/` | Shape galleries, camera views, last-frame grids for every model, filmstrips (five moments of one episode) |
 | [`videos/`](videos/INDEX.md) | Demo videos; [`videos/INDEX.md`](videos/INDEX.md) lists every clip with its outcome; `videos/posters/` has a still of each (its last frame) |
-| `data/` | CSV tables behind the graphs (every validation round of every stage, every final test per shape and per episode, paired differences) and `data/tables/*.tex` (booktabs tables for `\input`) |
+| `data/` | Everything the graphs are drawn from, so anyone can restyle them: `validation_rounds.csv` (every validation round of every stage, per shape), `final_tests_by_shape.csv`, `final_tests_paired.csv` (differences with 95% intervals), `final_tests_episodes.csv` (every final-test episode), `training_rounds.csv` (training examples by source and loss per round), `typed_in_numbers.json` (the few numbers taken from the docs, with sources) and `tables/*.tex` (booktabs tables for `\input`) |
 | `scripts/` | `build_data.py` (CSV tables from the saved test files), `make_figures.py` (all graphs), `make_videos.py` (episodes, videos, images) |
 
 ## Videos
@@ -37,7 +37,7 @@ execute, pink dots = the rest of its 16-step plan, top-left inset = the camera i
 ```bash
 # from the repository root
 python3 presentation/scripts/build_data.py --raw <folder with the run store's runs/>        # tables (no GPU)
-MPLBACKEND=Agg .venv/bin/python presentation/scripts/make_figures.py                         # graphs (no GPU)
+MPLBACKEND=Agg .venv/bin/python presentation/scripts/make_figures.py                         # graphs from data/ only (no GPU); edit styles here
 .venv/bin/python -B presentation/scripts/make_videos.py rollouts                             # episodes (GPU, checkpoints)
 .venv/bin/python -B presentation/scripts/make_videos.py teacher                              # teacher episodes (GPU)
 .venv/bin/python -B presentation/scripts/make_videos.py stills                               # galleries and camera views

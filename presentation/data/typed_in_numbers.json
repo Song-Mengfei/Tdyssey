@@ -1,0 +1,302 @@
+{
+ "_about": "Numbers typed in from the project docs for charts without a CSV source. Edit values here; make_figures.py reads this file. Each entry names its source.",
+ "original_on_teacher_validation_5shapes": {
+  "successes": 41,
+  "of": 250,
+  "source": "docs/DECISIONS.md D046 (T 20, near-T 17, Y 4, D 0, L 0 on the teacher's 50 validation scenes)"
+ },
+ "teacher_first_planner_5shapes_total": {
+  "successes": 124,
+  "of": 250,
+  "source": "docs/LEARNING_FINDINGS.md section 5, final planner (T 5, near-T 12, Y 36, D 50, L 21)"
+ },
+ "teacher26_successes_of_50": {
+  "values": {
+   "A": 47,
+   "B": 49,
+   "C": 42,
+   "G": 44,
+   "H": 49,
+   "I": 47,
+   "K": 49,
+   "M": 49,
+   "N": 46,
+   "O": 49,
+   "Q": 49,
+   "R": 36,
+   "S": 49,
+   "V": 44,
+   "W": 47,
+   "X": 48,
+   "Z": 48,
+   "T": 30,
+   "D": 49,
+   "L": 34
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 7, 26-letter preparation (world model v3 teacher, 50 validation scenes per letter)"
+ },
+ "teacher5_successes_of_50": {
+  "values": {
+   "T": 5,
+   "T_narrow": 12,
+   "Y": 36,
+   "D": 50,
+   "L": 21
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 5, final planner"
+ },
+ "original_5shapes_final_pool_percent": {
+  "values": {
+   "T": 44.4,
+   "T_narrow": 41.9,
+   "Y": 9.4,
+   "D": 0.3,
+   "L": 0.1
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 5 (original policy, 1000-scene final-test pool)"
+ },
+ "teacher_commit_successes_of_500": {
+  "values": [
+   [
+    "re-plan\nevery push",
+    390
+   ],
+   [
+    "commit to\n4 pushes",
+    317
+   ],
+   [
+    "commit to\n8 pushes",
+    303
+   ]
+  ],
+  "source": "docs/DECISIONS.md D048, teacher outcome"
+ },
+ "teacher_totals": {
+  "values": {
+   "5 shapes": [
+    124,
+    250
+   ],
+   "10 shapes": [
+    390,
+    500
+   ]
+  },
+  "source": "docs/LEARNING_FINDINGS.md sections 5 and 7"
+ },
+ "label_ab_successes_of_1000": {
+  "values": [
+   [
+    "Copy the teacher's intended plan\ninstead of its executed pushes",
+    77,
+    129
+   ],
+   [
+    "Camera 192 px instead of 96 px",
+    111,
+    129
+   ],
+   [
+    "All teacher demonstrations\ninstead of half",
+    104,
+    111
+   ],
+   [
+    "Action network 990M instead of\n251M parameters (from scratch)",
+    138,
+    146
+   ]
+  ],
+  "columns": [
+   "change",
+   "without",
+   "with"
+  ],
+  "source": "docs/LEARNING_FINDINGS.md section 7, What helps (100 validation scenes x 10 shapes)"
+ },
+ "budget_samples_per_shape_per_round_thousands": {
+  "values": [
+   [
+    "10 shapes,\n20k steps",
+    512
+   ],
+   [
+    "27 shapes,\n20k steps",
+    190
+   ],
+   [
+    "27 shapes,\n54k steps",
+    512
+   ]
+  ],
+  "source": "docs/DECISIONS.md D053"
+ },
+ "rl_long_runs": {
+  "values": [
+   [
+    "dense, lr 1e-4",
+    0.15,
+    0.0,
+    "25"
+   ],
+   [
+    "dense, lr 3e-5",
+    0.0,
+    0.3,
+    "150"
+   ],
+   [
+    "dense, lr 1e-5",
+    0.3,
+    0.3,
+    "150"
+   ],
+   [
+    "dense, lr 3e-6",
+    0.6,
+    0.6,
+    "125"
+   ],
+   [
+    "LoRA, lr 3e-4",
+    0.4,
+    null,
+    "150"
+   ]
+  ],
+  "columns": [
+   "setting",
+   "AdvantageFlow last T success",
+   "NFT last T success",
+   "last update"
+  ],
+  "t_success_at_update_0": 0.55,
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs (small development evaluation)"
+ },
+ "rl_drift": {
+  "values": [
+   [
+    "AF",
+    0.65,
+    0.15
+   ],
+   [
+    "AF",
+    0.32,
+    0.3
+   ],
+   [
+    "AF",
+    19.0,
+    0.0
+   ],
+   [
+    "AF",
+    0.0085,
+    0.6
+   ],
+   [
+    "AF",
+    0.068,
+    0.4
+   ],
+   [
+    "AF",
+    0.076,
+    0.55
+   ],
+   [
+    "NFT",
+    1.5,
+    0.0
+   ],
+   [
+    "NFT",
+    0.11,
+    0.3
+   ],
+   [
+    "NFT",
+    0.9,
+    0.3
+   ],
+   [
+    "NFT",
+    0.01,
+    0.6
+   ]
+  ],
+  "columns": [
+   "method",
+   "T drift ratio",
+   "last-evaluation T success"
+  ],
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs"
+ },
+ "rl_signal_share": {
+  "values": [
+   [
+    "T",
+    0.33,
+    0.27
+   ],
+   [
+    "near-T",
+    0.17,
+    0.18
+   ],
+   [
+    "Y",
+    0.16,
+    0.14
+   ],
+   [
+    "D",
+    0.36,
+    0.29
+   ]
+  ],
+  "columns": [
+   "shape",
+   "plan share of score variance",
+   "split-half reliability"
+  ],
+  "source": "docs/LEARNING_FINDINGS.md section 2 (score_snr.py)"
+ },
+ "rl_candidate_ranking": {
+  "values": [
+   [
+    "T",
+    0.06,
+    0.04,
+    0.43
+   ],
+   [
+    "near-T",
+    0.15,
+    0.19,
+    0.47
+   ],
+   [
+    "Y",
+    0.24,
+    -0.08,
+    0.51
+   ],
+   [
+    "D",
+    -0.11,
+    0.12,
+    0.27
+   ]
+  ],
+  "columns": [
+   "shape",
+   "trainer 32-control score",
+   "value function",
+   "one full-episode draw"
+  ],
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 3 (correlation with the true full-episode return)"
+ }
+}
