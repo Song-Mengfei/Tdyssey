@@ -35,6 +35,8 @@ ALL33 = ["T", "T_narrow", "Y", "D", "L", "E", "F", "J", "P", "U"] + list("ABCGHI
 HELD = {"digit3", "digit4", "digit7", "plus", "hash", "arrow"}
 SEEDS = [400000, 400020]
 TILE = 384                                       # stored frame size (px)
+NOISE_RNG = np.random.default_rng(0)
+SPEED = "1 frame per control at 30 fps = 3x real time (the simulator runs 10 controls per second)"
 MODELS = {   # key: (title, checkpoint relative to runs/, None = original official policy, "all33" = record all 33 shapes)
     "original": ("Original policy (trained on T only)", None, True),
     "forward_rl": ("Forward RL, after 150 updates (degraded)", "long-s2/advantage_flow-dense-lr3e-5-seed42/advantage_flow-dense-lr3e-5-seed42/last.pt", False),
@@ -111,7 +113,7 @@ def frame(env, obs, plan, done_targets, execute, inset=True):
 
 
 @torch.no_grad()
-def rollout(agent, cls, shapes, seed, execute=8, noise_seed=42):
+def rollout(agent, cls, shapes, seed, execute=8, noise_seed=42, action_noise=0.0):
     from tdyssey.collection import derived_seed
     from tdyssey.envs.official import matched_reset
     from tdyssey.official import physical_metrics
@@ -131,6 +133,8 @@ def rollout(agent, cls, shapes, seed, execute=8, noise_seed=42):
         plans = agent.network.normalizer["action"].unnormalize(samples)[:, 1:].cpu().numpy()
         for i, lane in enumerate(active):
             for j, action in enumerate(actions[i][:min(execute, 300 - start)]):
+                if action_noise > 0:                      # as in the world-model data: Gaussian noise on each target
+                    action = np.clip(action + NOISE_RNG.normal(0, action_noise, 2), 0, 512)
                 obs, _, done, _ = lane["env"].step(action)
                 lane["history"].append(obs)
                 lane["frames"].append(frame(lane["env"], obs, plans[i], j + 1, execute))
@@ -164,7 +168,8 @@ def record(keys):
         torch.cuda.empty_cache()
 
 
-TEACHER_SHAPES = ["T", "T_narrow", "Y", "D", "L", "E", "K", "R", "W"]
+TEACHER_SHAPES = ["T", "T_narrow", "Y", "D", "L", "E", "K", "R", "W"]                # the 9-shape grid
+TRAINED27 = ["T", "T_narrow", "Y", "D", "L", "E", "F", "J", "P", "U"] + list("ABCGHIKMNOQRSVWXZ")
 TEACHER_ARGS = ["--select", "best", "--gate-margin", "0", "--pushes", "128", "--horizon", "48", "--knots", "8",
                 "--approach", "0", "--kp", "area", "--tight", "2", "--state-noise", "1", "--angle-noise", "1"]
 LETTERS27 = "T,T_narrow,Y,D,L,E,F,J,P,U,A,B,C,G,H,I,K,M,N,O,Q,R,S,V,W,X,Z"
@@ -210,6 +215,252 @@ def teacher(shapes):
         print(f"teacher {s}: {'solved' if lanes[s]['solved'] else 'not solved'} in {lanes[s]['moves']} moves", flush=True)
     CACHE.mkdir(parents=True, exist_ok=True)
     pickle.dump(lanes, open(CACHE / f"teacher_{SEEDS[0]}.pkl", "wb"))
+
+
+def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3):
+    """What the world model imagines vs what really happens: replay a recorded teacher episode in the simulator and, at
+    moments when the pusher is about to touch the block, roll the model forward open-loop over the next `horizon`
+    controls with the actions that were really executed. The predicted block outline (red, dashed) is drawn over the
+    real block; the caption gives the centre-of-mass error. Needs the world model (runs/wm2/v3) and teacher records."""
+    import math
+    from collections import defaultdict
+    os.environ["TDYSSEY_SHAPES"] = LETTERS27
+    import wm2
+    import teacher2
+    from tdyssey.envs.official import make_official_shape_env_class, matched_reset
+    from tdyssey.official import load_official_source
+    import pygame
+    dev = "cuda" if torch.cuda.is_available() else "cpu"
+    geo = teacher2.Geometry(dev)
+    blob = torch.load(WORK / "runs/wm2/v3/model.pt", map_location=dev, weights_only=True)
+    wm2.check_shapes(blob)
+    model = wm2.WM2(geo.rects, blob["width"], blob["depth"]).to(dev); model.load_state_dict(blob["state_dict"]); model.eval()
+    cls = make_official_shape_env_class(load_official_source(REPO / "third_party" / "diffusion_policy"))
+    V = OUT / "videos" / "world_model"; I = OUT / "images" / "world_model"
+    V.mkdir(parents=True, exist_ok=True); I.mkdir(parents=True, exist_ok=True)
+    summary = []
+    for s in shapes:
+        z = np.load(WORK / "slides_data" / "teacher" / f"{s}.npz")
+        n = int(z["mask"][0].sum())
+        k_sh = wm2.SHAPES.index(s)
+        sh = torch.tensor([k_sh], device=dev)
+        st, pv, act, con = z["state"][0], z["pusher_velocity"][0], z["action"][0], z["contacts"][0]
+        starts, t0 = [], 0                                     # window starts: a few controls before contact begins
+        while t0 < n - horizon - 1 and len(starts) < windows:
+            if con[t0 + 1:t0 + 9].max() > 0 and con[max(0, t0 - 4):t0 + 1].max() == 0:
+                starts.append(t0); t0 += horizon
+            else:
+                t0 += 1
+        partner = "L" if s == "T" else s
+        frames_out, stills_out = [], []
+        for t0 in starts:
+            envs = {"T": cls(shape="T", legacy=True), partner: cls(shape=partner, legacy=True)}
+            matched_reset(envs, int(z["seed"][0]), defaultdict(int))
+            env = envs[s]
+            for k in range(t0):
+                env.step(act[k])
+            raw = torch.tensor([[*st[t0, :6], *st[t0, 6:8], *pv[t0]]], device=dev, dtype=torch.float32)
+            s0 = wm2.to_cog(raw, sh, geo.cogs)
+            with torch.no_grad():
+                pred = model.rollout(s0, torch.tensor(act[None, t0:t0 + horizon], device=dev, dtype=torch.float32), sh, hard=True)[0].cpu().numpy()
+            cog = geo.cogs[k_sh].cpu().numpy()
+            local = [[(float(v.x), float(v.y)) for v in shp.get_vertices()] for shp in env.block.shapes]
+            for k in range(horizon + 1):
+                if k > 0:
+                    env.step(act[t0 + k - 1])
+                env._get_obs()
+                img = np.ascontiguousarray(np.transpose(pygame.surfarray.array3d(env.screen), (1, 0, 2)))
+                real = wm2.to_cog(torch.tensor([[*st[t0 + k, :6], 0, 0, 0, 0]], device=dev, dtype=torch.float32), sh, geo.cogs)[0].cpu().numpy()
+                if k > 0:
+                    px, py, th = pred[k - 1, 0], pred[k - 1, 1], pred[k - 1, 2]
+                    ox, oy = cog[0] * math.cos(th) - cog[1] * math.sin(th), cog[0] * math.sin(th) + cog[1] * math.cos(th)
+                    bx, by = px - ox, py - oy                             # body origin from the predicted centre of mass
+                    for poly in local:
+                        pts = np.array([[bx + x * math.cos(th) - y * math.sin(th), by + x * math.sin(th) + y * math.cos(th)] for x, y in poly], np.int32)
+                        cv2.polylines(img, [pts], True, (220, 40, 40), 2, cv2.LINE_AA)
+                    err = math.hypot(px - real[0], py - real[1]); aerr = abs((th - real[2] + math.pi) % (2 * math.pi) - math.pi) * 180 / math.pi
+                    cap = f"{k} controls ahead: error {err:.1f} px, {aerr:.1f} deg"
+                else:
+                    err = aerr = 0.0; cap = "start of the prediction"
+                img = cv2.resize(img, (TILE, TILE), interpolation=cv2.INTER_AREA)
+                bar = text_bar(TILE, 40, [(f"{label(s)}: world model (red) vs simulator (grey)", 0.48, (20, 20, 20)), (cap, 0.45, (90, 90, 90))])
+                frame_img = np.vstack([bar, img])
+                frames_out.append(frame_img)
+                if k in (0, 8, 16, 32):
+                    stills_out.append(frame_img)
+                if k in (8, 32):
+                    summary.append((s, t0, k, round(err, 2), round(aerr, 2)))
+            for e in envs.values():
+                e.close()
+        with writer(V / f"imagined_vs_real_{s}.mp4", fps=15) as w:   # half speed: 15 controls per second
+            for f in frames_out:
+                w.append_data(pad16(f))
+        if stills_out:
+            rows = [np.hstack(stills_out[i:i + 4]) for i in range(0, len(stills_out) - len(stills_out) % 4, 4)]
+            cv2.imwrite(str(I / f"imagined_vs_real_{s}.png"), cv2.cvtColor(np.vstack(rows), cv2.COLOR_RGB2BGR))
+        print(f"world model {s}: {len(starts)} windows", flush=True)
+    with open(OUT / "data" / "world_model_examples.csv", "w") as f:
+        f.write("shape,window_start,controls_ahead,centre_error_px,angle_error_deg\n")
+        for r in summary:
+            f.write(",".join(map(str, r)) + "\n")
+
+
+def dataviews():
+    """How training data is made: (1) correction-round records - at a state the camera policy reached, its own 8 sampled
+    plans vs the teacher's label; (2) the teacher's intended 16-step plan vs the 16 pushes it actually executed (it
+    re-plans after every push, so executed pushes stitch pieces of different plans)."""
+    import glob
+    from collections import defaultdict
+    import pygame
+    from tdyssey.envs.official import make_official_shape_env_class, matched_reset
+    from tdyssey.official import load_official_source
+    I = OUT / "images" / "training_data"; I.mkdir(parents=True, exist_ok=True)
+    sd = torch.load(REPO / "checkpoints/official-dp/ema_policy.pt", map_location="cpu", weights_only=True)["state_dict"]
+    scale = sd["normalizer.params_dict.action.scale"].numpy(); offset = sd["normalizer.params_dict.action.offset"].numpy()
+    unnorm = lambda x: (np.asarray(x, np.float32) - offset) / scale
+    tiles = []
+    for s in ["K", "R", "E", "W", "A", "D"]:
+        files = sorted(glob.glob(str(WORK / "runs/mpc-data/dagger26m-r50/data" / f"{s}-*.npz")))
+        if not files:
+            continue
+        z = np.load(files[0])
+        k = len(z["control"]) // 2                                   # a state in the middle of the episode
+        cam = z["image"][k, -1].transpose(1, 2, 0)                    # latest camera frame (96 px)
+        img = cv2.resize(cam, (384, 384), interpolation=cv2.INTER_NEAREST)
+        f = 384 / 512
+        for j in range(8):                                            # the policy's own samples
+            pts = (unnorm(z["candidate_x"][k, j]) * f).astype(np.int32)
+            cv2.polylines(img, [pts], False, (90, 140, 230), 1, cv2.LINE_AA)
+        lab = (unnorm(z["candidate_x"][k, 8]) * f).astype(np.int32)  # the teacher's label
+        cv2.polylines(img, [lab], False, (230, 160, 20), 3, cv2.LINE_AA)
+        for q in lab:
+            cv2.circle(img, tuple(int(v) for v in q), 3, (230, 160, 20), -1, cv2.LINE_AA)
+        bar = text_bar(384, 40, [(f"{label(s)}, control {int(z['control'][k])}", 0.5, (20, 20, 20)),
+                                 ("blue: policy's 8 samples, gold: teacher's label", 0.42, (90, 90, 90))])
+        tiles.append(np.vstack([bar, img]))
+    if tiles:
+        rows = [np.hstack(tiles[i:i + 3]) for i in range(0, len(tiles) - len(tiles) % 3, 3)]
+        cv2.imwrite(str(I / "correction_round_examples.png"), cv2.cvtColor(np.vstack(rows), cv2.COLOR_RGB2BGR))
+    cls = make_official_shape_env_class(load_official_source(REPO / "third_party" / "diffusion_policy"))
+    tiles, jumps = [], []
+    for s in ["T", "Y", "E", "R"]:
+        path = WORK / "slides_data" / "teacher" / f"{s}.npz"
+        if not path.exists():
+            continue
+        z = np.load(path); n = int(z["mask"][0].sum()); act, plan = z["action"][0], z["plan"][0]
+        for t0 in (n // 4,):
+            partner = "L" if s == "T" else s
+            envs = {"T": cls(shape="T", legacy=True), partner: cls(shape=partner, legacy=True)}
+            matched_reset(envs, int(z["seed"][0]), defaultdict(int))
+            env = envs[s]
+            for k in range(t0):
+                env.step(act[k])
+            env._get_obs()
+            img = np.ascontiguousarray(np.transpose(pygame.surfarray.array3d(env.screen), (1, 0, 2)))
+            intended = plan[t0].astype(np.int32); executed = act[t0:t0 + 16].astype(np.int32)
+            cv2.polylines(img, [executed], False, (200, 60, 60), 2, cv2.LINE_AA)
+            for q in executed:
+                cv2.circle(img, tuple(int(v) for v in q), 4, (200, 60, 60), -1, cv2.LINE_AA)
+            cv2.polylines(img, [intended], False, (230, 160, 20), 3, cv2.LINE_AA)
+            for q in intended:
+                cv2.circle(img, tuple(int(v) for v in q), 4, (230, 160, 20), -1, cv2.LINE_AA)
+            img = cv2.resize(img, (384, 384), interpolation=cv2.INTER_AREA)
+            step = np.linalg.norm(np.diff(executed.astype(float), axis=0), axis=1).max()
+            step_i = np.linalg.norm(np.diff(intended.astype(float), axis=0), axis=1).max()
+            jumps.append((s, t0, round(float(step_i), 1), round(float(step), 1)))
+            bar = text_bar(384, 40, [(f"{label(s)}: gold intended plan, red executed pushes", 0.45, (20, 20, 20)),
+                                     (f"largest step: {step_i:.0f} px intended vs {step:.0f} px executed", 0.42, (90, 90, 90))])
+            tiles.append(np.vstack([bar, img]))
+            for e in envs.values():
+                e.close()
+    if tiles:
+        cv2.imwrite(str(I / "labels_intended_vs_executed.png"), cv2.cvtColor(np.hstack(tiles), cv2.COLOR_RGB2BGR))
+        with open(OUT / "data" / "label_smoothness_examples.csv", "w") as f:
+            f.write("shape,control,intended_max_step_px,executed_max_step_px\n" + "".join(",".join(map(str, r)) + "\n" for r in jumps))
+    print("wrote training-data images", flush=True)
+
+
+def extras():
+    """Last-mile close-ups (camera-pixel grid), a near-miss gallery and the video legend card."""
+    I = OUT / "images"; (I / "last_mile").mkdir(parents=True, exist_ok=True)
+    lanes = []
+    for seed in SEEDS:
+        if have("l26_r50", seed):
+            lanes += [(seed, l) for l in lanes_of("l26_r50", seed, ALL33)]
+    near = sorted([(seed, l) for seed, l in lanes if not l["solved"] and l["peak"] >= 0.9 and l["shape_name"] not in HELD],
+                  key=lambda x: -x[1]["peak"])
+    solved = [(seed, l) for seed, l in lanes if l["solved"]]
+
+    def zoom(l, k):
+        img = decode(l["frames"][k]).copy()
+        img[:132, :132] = 255                                         # hide the camera inset in the corner
+        g = img[96:288, 96:288]                                       # centre of the table (the goal area)
+        g = cv2.resize(g, (576, 576), interpolation=cv2.INTER_NEAREST)
+        step = 576 / 192 * (384 / 96)                                 # one 96 px camera pixel = 4 frame px = 12 zoomed px
+        for x in np.arange(0, 576, step):
+            cv2.line(g, (int(x), 0), (int(x), 575), (200, 200, 200), 1)
+            cv2.line(g, (0, int(x)), (575, int(x)), (200, 200, 200), 1)
+        return g
+    tiles = []
+    for (seed, l), tag in ([(near[0], "near miss")] if near else []) + ([(solved[0], "solved")] if solved else []):
+        k = l["peak_move"] if tag == "near miss" else len(l["frames"]) - 1
+        cov = l["coverage"][k]
+        tiles.append(np.vstack([text_bar(576, 40, [(f"{tag}: {label(l['shape_name'])}, {100 * cov:.1f}% covered", 0.6, (20, 20, 20)),
+                                                   ("grid: one 96 px camera pixel (about 5 simulator px)", 0.48, (90, 90, 90))]), zoom(l, k)]))
+    if tiles:
+        cv2.imwrite(str(I / "last_mile" / "near_miss_vs_solved_zoom.png"), cv2.cvtColor(np.hstack(tiles), cv2.COLOR_RGB2BGR))
+    gal = []
+    for seed, l in near[:12]:
+        k = l["peak_move"]
+        img = cv2.resize(decode(l["frames"][k]), (240, 240), interpolation=cv2.INTER_AREA)
+        gal.append(np.vstack([text_bar(240, 30, [(f"{label(l['shape_name'])}: best {100 * l['peak']:.1f}%", 0.45, (150, 40, 40))]), img]))
+    if gal:
+        blank = np.full_like(gal[0], 255)
+        rows = [np.hstack(gal[i:i + 6] + [blank] * (6 - len(gal[i:i + 6]))) for i in range(0, len(gal), 6)]
+        cv2.imwrite(str(I / "last_mile" / "near_miss_gallery.png"), cv2.cvtColor(np.vstack(rows), cv2.COLOR_RGB2BGR))
+    card = np.full((300, 760, 3), 255, np.uint8)
+    items = [((144, 238, 144), "rect", "goal outline"), ((119, 136, 153), "rect", "block (the letter)"),
+             ((65, 105, 225), "circle", "pusher"), ((230, 60, 60), "dot", "next targets the policy will execute"),
+             ((240, 165, 165), "dot", "rest of its 16-step plan (replaced when it plans again)"),
+             ((50, 50, 50), "inset", "top-left inset: the camera image the policy sees")]
+    for i, (col, kind, text) in enumerate(items):
+        y = 30 + i * 45
+        if kind == "rect":
+            cv2.rectangle(card, (20, y - 12), (60, y + 12), col, -1)
+        elif kind == "circle":
+            cv2.circle(card, (40, y), 14, col, -1, cv2.LINE_AA)
+        elif kind == "dot":
+            cv2.circle(card, (40, y), 7, col, -1, cv2.LINE_AA)
+        else:
+            cv2.rectangle(card, (22, y - 14), (58, y + 14), col, 2)
+        cv2.putText(card, text, (80, y + 7), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (30, 30, 30), 1, cv2.LINE_AA)
+    cv2.imwrite(str(I / "video_legend.png"), cv2.cvtColor(card, cv2.COLOR_RGB2BGR))
+    print(f"wrote last-mile images ({len(near)} near misses) and the legend", flush=True)
+
+
+def dynamics():
+    """The world model's training data: the original policy with Gaussian noise on its targets (0, 10, 25, 50 px)."""
+    agent, cls = load("original")
+    shapes = ["T", "D", "K", "E"]
+    lanes = []
+    for noise in (0.0, 10.0, 25.0, 50.0):
+        d = rollout(agent, cls, shapes, 600000, action_noise=noise)
+        for s in shapes:
+            d[s]["shape_name"] = s; d[s]["noise"] = noise
+            lanes.append(d[s])
+    for l in lanes:
+        l["frames"] = l["frames"]
+    V = OUT / "videos" / "training_data"
+    n = max(len(l["frames"]) for l in lanes) + 30
+    with writer(V / "dynamics_data_action_noise.mp4") as w:
+        for i in range(n):
+            rows = []
+            for r, noise in enumerate((0, 10, 25, 50)):
+                tiles = [tile_at(l, i, 192, name=f"{label(l['shape_name'])}, noise {noise} px") for l in lanes[r * 4:(r + 1) * 4]]
+                rows.append(np.hstack(tiles))
+            body = np.vstack(rows)
+            w.append_data(pad16(np.vstack([header_bar(body.shape[1], ("World-model training data", "the original policy with random noise on its targets (rows: 0, 10, 25, 50 px)")), body])))
+    print("wrote dynamics-data video", flush=True)
 
 
 def stills():
@@ -290,7 +541,7 @@ def text_bar(width, height, lines, size=0.6, color=(25, 25, 25), bg=255):
 def outcome(lane):
     if lane["solved"]:
         return f"solved in {lane['moves']} moves"
-    return f"not solved, best {lane['peak']:.0%}"
+    return f"not solved, best {100 * lane['peak']:.1f}%"
 
 
 def tile_at(lane, i, size, caption=True, name=None):
@@ -324,6 +575,12 @@ def pad16(img):
     return cv2.copyMakeBorder(img, 0, -h % 16, 0, -w % 16, cv2.BORDER_CONSTANT, value=(255, 255, 255))
 
 
+def header_bar(width, header):
+    if isinstance(header, tuple):
+        return text_bar(width, 56, [(header[0], 0.75, (15, 15, 15)), (header[1], 0.55, (90, 90, 90))])
+    return text_bar(width, 44, [(header, 0.8, (15, 15, 15))])
+
+
 def grid_video(path, lanes, cols, size, header):
     n = max(len(l["frames"]) for l in lanes) + 45
     with writer(path) as w:
@@ -333,7 +590,7 @@ def grid_video(path, lanes, cols, size, header):
             rows = [np.hstack(tiles[r * cols:(r + 1) * cols] + [blank] * (cols - len(tiles[r * cols:(r + 1) * cols])))
                     for r in range((len(tiles) + cols - 1) // cols)]
             body = np.vstack(rows)
-            w.append_data(pad16(np.vstack([text_bar(body.shape[1], 44, [(header, 0.8, (15, 15, 15))]), body])))
+            w.append_data(pad16(np.vstack([header_bar(body.shape[1], header), body])))
 
 
 def grid_image(path, lanes, cols, size, header, which):
@@ -389,6 +646,10 @@ def compose():
             if key == "original" and seed == SEEDS[0]:
                 grid_image(I / "all_shapes" / "start_positions_33shapes.png", lanes, 6, 192, "Starting scene for all 33 shapes", "start")
             index.append((p, f"{title}: all 33 shapes", f"solved {sum(l['solved'] for l in lanes)}/33"))
+            if seed == SEEDS[0]:
+                p = V / "all_shapes" / f"{key}_33shapes_wide.mp4"             # 11 x 3: fits a 16:9 slide
+                grid_video(p, lanes, 11, 160, f"{title}: all 33 shapes")
+                index.append((p, f"{title}: all 33 shapes, wide layout", f"solved {sum(l['solved'] for l in lanes)}/33"))
     # 3. original vs main model, side by side, every shape and both scenes
     for seed in SEEDS:
         if not (have("original", seed) and have("l26_r50", seed)):
@@ -418,30 +679,50 @@ def compose():
                     body = np.vstack([np.hstack(tiles[:3]), np.hstack(tiles[3:])])
                     w.append_data(pad16(np.vstack([text_bar(body.shape[1], 44, [(f"{label(s)}: the same scene through the project", 0.8, (15, 15, 15))]), body])))
             index.append((p, f"{label(s)} across 6 models", " | ".join(f"{nm}: {outcome(l)}" for nm, l in zip(names, lanes))))
-    # 5. near misses and held-out shapes of the main model
+    # 5. near misses (trained shapes) and every never-seen shape of the main model
     for seed in SEEDS:
         if not have("l26_r50", seed):
             continue
         for l in lanes_of("l26_r50", seed, ALL33):
             s = l["shape_name"]
-            near = (not l["solved"]) and l["peak"] >= 0.9
+            near = (not l["solved"]) and l["peak"] >= 0.9 and s not in HELD
             if near or s in HELD:
                 kind = "near_miss" if near else "held_out"
-                p = V / "failures" / f"{kind}_{s}_{seed}.mp4"
+                folder = "near_misses" if near else "held_out"
+                p = V / folder / f"{kind}_{s}_{seed}.mp4"
                 with writer(p) as w:
                     for i in range(len(l["frames"]) + 45):
                         w.append_data(pad16(tile_at(l, i, TILE)))
                 index.append((p, f"main model, {label(s)} ({kind.replace('_', ' ')})", outcome(l)))
-    # 6. the planner teacher (privileged; training only)
+    # 6. the planner teacher (privileged; training only), and teacher vs main model on the same scene
     if (CACHE / f"teacher_{SEEDS[0]}.pkl").exists():
         d = pickle.load(open(CACHE / f"teacher_{SEEDS[0]}.pkl", "rb"))
-        lanes = []
-        for s in TEACHER_SHAPES:
-            if s in d:
-                d[s]["shape_name"] = s; lanes.append(d[s])
+        for s in d:
+            d[s]["shape_name"] = s
+        head = ("Planner teacher", "reads exact simulator state; used only to make training data")
+        lanes = [d[s] for s in TEACHER_SHAPES if s in d]
         p = V / "teacher" / "teacher_9shapes.mp4"
-        grid_video(p, lanes, 3, 256, "Planner teacher (reads exact simulator state; used only to make training data)")
+        grid_video(p, lanes, 3, 256, head)
         index.append((p, "planner teacher, 9 shapes", " ".join(f"{label(l['shape_name'])}={'Y' if l['solved'] else 'n'}" for l in lanes)))
+        all27 = [d[s] for s in TRAINED27 if s in d]
+        if len(all27) == 27:
+            p = V / "teacher" / "teacher_27shapes.mp4"
+            grid_video(p, all27, 9, 192, head)
+            index.append((p, "planner teacher, all 27 trained shapes", f"solved {sum(l['solved'] for l in all27)}/27"))
+        if have("l26_r50", SEEDS[0]):
+            student = {l["shape_name"]: l for l in lanes_of("l26_r50", SEEDS[0], ALL33)}
+            for s in TRAINED27:
+                if s not in d or s not in student:
+                    continue
+                la, lb = d[s], student[s]
+                p = V / "teacher_vs_student" / f"{s}.mp4"
+                n = max(len(la["frames"]), len(lb["frames"])) + 45
+                with writer(p) as w:
+                    for i in range(n):
+                        body = np.hstack([tile_at(la, i, TILE, name="Teacher (exact state)"), tile_at(lb, i, TILE, name="Camera policy (round 50)")])
+                        w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(f"{label(s)}: teacher vs the camera policy that learned from it", 0.65, (15, 15, 15))]), body])))
+                index.append((p, f"{label(s)}: teacher vs main model, same scene", f"teacher {outcome(la)} | policy {outcome(lb)}"))
+        lanes = all27 if len(all27) == 27 else lanes
         for l in lanes:
             p = V / "teacher" / f"teacher_{l['shape_name']}.mp4"
             with writer(p) as w:
@@ -468,9 +749,17 @@ def compose():
         d = pickle.load(open(CACHE / f"teacher_{SEEDS[0]}.pkl", "rb"))
         for s, l in d.items():
             filmstrip(I / "filmstrips" / "teacher" / f"{s}.png", l, f"Planner teacher, {label(s)}: {outcome(l)}")
+    for v in sorted((V / "world_model").glob("*.mp4")):
+        index.append((v, f"{v.stem.replace('imagined_vs_real_', '')}: what the world model imagines (red) vs the simulator, open-loop 32 controls",
+                      "errors per window: data/world_model_examples.csv"))
+    for v in sorted((V / "training_data").glob("*.mp4")):
+        index.append((v, "the world model's training data: original policy with 0/10/25/50 px noise on its targets", "data collection, not a test"))
     # index
     with open(V / "INDEX.md", "w") as f:
-        f.write("# Video index (generated by make_videos.py)\n\n| File | What | Outcome |\n| --- | --- | --- |\n")
+        f.write("# Video index (generated by make_videos.py)\n\n"
+                f"Playback: {SPEED}; world-model clips run at half that speed. Clips are examples from validation scenes "
+                "(seeds 400000 and 400020), which were also used to pick checkpoints; success rates come from the fresh-scene "
+                "tests in ../data. Legend: ../images/video_legend.png.\n\n| File | What | Outcome |\n| --- | --- | --- |\n")
         for p, what, res in index:
             f.write(f"| `{p.relative_to(V)}` | {what} | {res} |\n")
     print(f"wrote {len(index)} videos")
@@ -482,10 +771,13 @@ def posters():
     compare_<shape>, progression_<shape> or the video's own file name."""
     import imageio.v2 as imageio
     V = OUT / "videos"; P = V / "posters"; P.mkdir(parents=True, exist_ok=True)
+    for old in P.glob("*.png"):
+        old.unlink()
     n = 0
     for v in sorted(V.rglob("*.mp4")):
         folder, stem = v.parent.name, v.stem
-        name = f"compare_{stem}" if folder == "compare" else (f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
+        name = (f"compare_{stem}" if folder == "compare" else f"teacher_vs_student_{stem}" if folder == "teacher_vs_student"
+                else f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
         r = imageio.get_reader(v)
         last = None
         for last in r:
@@ -500,9 +792,17 @@ if __name__ == "__main__":
     if sys.argv[1] == "rollouts":
         record(sys.argv[2:] or list(MODELS))
     elif sys.argv[1] == "teacher":
-        teacher(sys.argv[2:] or TEACHER_SHAPES)
+        teacher(sys.argv[2:] or TRAINED27)
     elif sys.argv[1] == "stills":
         stills()
+    elif sys.argv[1] == "worldmodel":
+        worldmodel()
+    elif sys.argv[1] == "dataviews":
+        dataviews()
+    elif sys.argv[1] == "extras":
+        extras()
+    elif sys.argv[1] == "dynamics":
+        dynamics()
     elif sys.argv[1] == "compose":
         compose()
     elif sys.argv[1] == "posters":

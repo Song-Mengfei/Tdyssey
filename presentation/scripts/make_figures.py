@@ -6,14 +6,21 @@ No GPU, simulator or network. Needs matplotlib and numpy only.
     MPLBACKEND=Agg python presentation/scripts/make_figures.py            # everything
     MPLBACKEND=Agg python presentation/scripts/make_figures.py --only final_ heldout_
 
-Every figure is written twice into presentation/figures/: a vector PDF (Beamer) and a 200 dpi PNG (PowerPoint).
-Tables go to presentation/data/tables/*.tex (booktabs). A few small charts use numbers typed in from
-docs/LEARNING_FINDINGS.md, docs/LEARNING_EXPERIMENT_LOG.md and docs/DECISIONS.md; each such block is marked TYPED-IN
-with the document section it comes from.
+Every figure is written twice into presentation/figures/: a vector PDF (Beamer) and a 200 dpi PNG (PowerPoint); the
+method diagrams also as SVG. Slide versions without footnote or title go to figures/slide/ (6.3 x 3.5 in, full slide
+width at 16:9, fonts >= 16 pt) and figures/slide_half/ (4.2 x 3.2 in, two-column slides, fonts >= 14 pt):
+
+    MPLBACKEND=Agg python presentation/scripts/make_figures.py --variant slide      # only the slide versions
+    MPLBACKEND=Agg python presentation/scripts/make_figures.py --variant none       # only the default versions
+
+Tables go to presentation/data/tables/*.tex (booktabs). Every number a chart uses lives in presentation/data/: the CSV
+tables built from the saved test files, typed_in_numbers.json and the typed-in tables (early_attempts.csv,
+teacher_validation.csv, teacher_planner.csv, world_model_accuracy.csv, dataset_sizes.csv, timeline.csv), each row with
+the document section it comes from (docs/LEARNING_FINDINGS.md, docs/LEARNING_EXPERIMENT_LOG.md, docs/DECISIONS.md).
 
 Colours follow the model in every figure (validated with the dataviz palette checker, white surface):
-original = light grey, 5-shape students = raspberry, 10-shape students = orange (192 px camera: dark orange),
-26-letter 96 px = blue, 26-letter 192 px = aqua, planning teacher = gold.
+original = grey, 5-shape students = raspberry, 10-shape students = orange (192 px camera: dark orange),
+26-letter 96 px = blue, 26-letter 192 px = green, planning teacher = gold, forward RL = violet.
 """
 import argparse
 import csv
@@ -26,13 +33,14 @@ from pathlib import Path
 import os
 os.environ.setdefault("SOURCE_DATE_EPOCH", "0")      # reproducible PDFs: no creation time, so reruns do not change files
 import matplotlib
+matplotlib.rcParams["svg.hashsalt"] = "tdyssey"      # reproducible SVG ids
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 from matplotlib.colors import LinearSegmentedColormap  # noqa: E402
 from matplotlib.lines import Line2D  # noqa: E402
-from matplotlib.patches import Patch  # noqa: E402
+from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch, Patch, Polygon, Rectangle  # noqa: E402
 from matplotlib.text import Text  # noqa: E402
 from matplotlib.ticker import FuncFormatter, MultipleLocator, PercentFormatter  # noqa: E402
 from matplotlib.transforms import Bbox  # noqa: E402
@@ -48,7 +56,7 @@ TAB = DATA / "tables"
 # ----------------------------------------------------------------------------------------------------------------------
 INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
 GRID, AXIS, BAND = "#e1e0d9", "#c3c2b7", "#f4f3ef"
-ORIG, ORIG_LINE = "#b4b2ab", "#8f8d86"          # original policy: fills / lines and markers
+ORIG = ORIG_LINE = "#8f8d86"                    # original policy (3.3:1 on white; was #b4b2ab, 2.1:1)
 FIVE = "#c2408a"                                  # 5-shape students
 TEN, TEN192 = "#eb6834", "#a8431a"                # 10-shape students, 96 px / 192 px camera
 M96, M192 = "#2a78d6", "#1baf7a"                  # 26-letter students, 96 px / 192 px camera
@@ -98,9 +106,21 @@ NEW17 = list("ABCGHIKMNOQRSVWXZ")
 HELD = ["digit3", "digit4", "digit7", "plus", "hash", "arrow"]
 TRAINED27 = OLD10 + NEW17
 ALL33 = TRAINED27 + HELD
-GROUP_LABEL = {"10 earlier shapes": "10 earlier shapes", "17 other letters": "17 newer letters",
-               "27 trained shapes": "All 27 trained shapes", "6 held-out shapes": "6 never-seen shapes",
-               "5 first shapes": "5 first shapes"}
+class _SlideDict(dict):
+    """Long labels by default; the short ones in the slide versions."""
+    def __init__(self, long, short):
+        super().__init__(long)
+        self.short = short
+
+    def __getitem__(self, k):
+        return self.short[k] if MODE["name"] != "default" and k in self.short else dict.__getitem__(self, k)
+
+
+GROUP_LABEL = _SlideDict({"10 earlier shapes": "10 earlier shapes", "17 other letters": "17 newer letters",
+                          "27 trained shapes": "All 27 trained shapes", "6 held-out shapes": "6 never-seen shapes",
+                          "5 first shapes": "5 first shapes"},
+                         {"10 earlier shapes": "10 earlier", "17 other letters": "17 newer", "27 trained shapes": "All 27",
+                          "6 held-out shapes": "6 unseen", "5 first shapes": "5 first"})
 GROUP_SHAPES = {"5 first shapes": FIVE_SHAPES, "10 earlier shapes": OLD10, "17 other letters": NEW17,
                 "27 trained shapes": TRAINED27, "6 held-out shapes": HELD}
 DISP = {"T_narrow": "near-T", "digit3": "digit 3", "digit4": "digit 4", "digit7": "digit 7"}
@@ -127,8 +147,17 @@ D049 = {"original": "original", "ten96": "10-shape 96 px", "ten192": "10-shape 1
 TEST_NOTE = "final test, 300 fresh scenes per shape"
 
 
+LAB_SHORT = {"original": "Original", "five": "5 shapes", "ten96": "10 shapes", "ten192": "10 shapes, 192 px",
+             "m96": "26 letters", "m192": "26 letters, 192 px", "teacher": "Teacher"}
+
+
 def lab(key):
-    return LAB[key][0]
+    return LAB_SHORT[key] if slide() else LAB[key][0]
+
+
+def SL(default, short):
+    """Pick the short text in the slide versions."""
+    return short if slide() else default
 
 
 def col(key):
@@ -267,25 +296,85 @@ def wilson_band(ks, ns):
 # Output helpers
 # ----------------------------------------------------------------------------------------------------------------------
 REGISTRY = []
+VARIANT_REGISTRY = []     # (mode, name, what it shows) for the slide and half-slide versions
 ONLY = []
+# Output mode: "default" (figures/), "slide" (figures/slide/, 6.3 x 3.5 in, fonts >= 16 pt, no footnote or title) or
+# "half" (figures/slide_half/, 4.2 x 3.2 in, fonts >= 14 pt). Figure functions check slide() to drop clutter.
+MODE = {"name": "default"}
+VARIANT_SIZE = {"slide": (6.3, 3.5), "half": (4.2, 3.2)}
+VARIANT_FLOOR = {"slide": 16, "half": 14}
+VARIANT_DIR = {"slide": "slide", "half": "slide_half"}
+
+
+def slide():
+    return MODE["name"] != "default"
+
+
+def half():
+    return MODE["name"] == "half"
+
+
+def FS(size):
+    """Font size respecting the variant's minimum (used where text is measured while the figure is built)."""
+    return max(size, VARIANT_FLOOR.get(MODE["name"], 0))
 
 
 def wanted(name):
     return not ONLY or any(name.startswith(p) for p in ONLY)
 
 
-def save(fig, name, shows, data, use, title=None):
-    """Write <name>.pdf/.png; with title also write <name>_titled.* carrying that title."""
+def _wrapped_note(fig, txt):
+    """Footnote wrapped so it never extends past the drawing's right edge, placed just below everything else."""
+    fig.canvas.draw()
+    r = fig.canvas.get_renderer()
+    bb = fig.get_tightbbox(r)
+    w, h = fig.get_size_inches()
+    x0 = max(bb.x0, 0)
+    right = bb.x1
+    t = fig.text(x0 / w, (bb.y0 - 0.06) / h, "", fontsize=12, color=INK2, ha="left", va="top")
+    width = max(40, int((right - x0) * 12.5))
+    while True:
+        t.set_text(textwrap.fill(txt, width=width))
+        if t.get_window_extent(r).x1 / fig.dpi <= right - 0.02 or width <= 30:
+            break
+        width -= 2
+
+
+def save_variant(fig, name, shows=""):
+    """Slide / half-slide version: exact size, constrained layout, every text at least the variant's floor."""
+    mode = MODE["name"]
+    floor = VARIANT_FLOOR[mode]
+    fig.set_size_inches(*VARIANT_SIZE[mode])
+    for ax in fig.axes:      # "Success\n(final test, 300 fresh scenes per shape)" -> "Success"
+        for get, set_ in ((ax.get_ylabel, ax.set_ylabel), (ax.get_xlabel, ax.set_xlabel)):
+            if "\n(" in get():
+                set_(get().split("\n(")[0])
+    for t in fig.findobj(Text):
+        if t.get_text() and t.get_fontsize() < floor:
+            t.set_fontsize(floor)
+    out = FIG / VARIANT_DIR[mode]
+    out.mkdir(parents=True, exist_ok=True)
+    import warnings
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        for ext in ("pdf", "png"):
+            fig.savefig(out / f"{name}.{ext}", dpi=200)
+    if any("constrained_layout" in str(w.message) for w in caught):
+        print(f"  WARNING {VARIANT_DIR[mode]}/{name}: content does not fit the canvas (constrained layout gave up)")
+    VARIANT_REGISTRY.append((mode, name, shows))
+    plt.close(fig)
+
+
+def save(fig, name, shows, data, use, title=None, svg=False):
+    """Write <name>.pdf/.png (and .svg); with title also write <name>_titled.* carrying that title."""
+    if slide():
+        return save_variant(fig, name, shows)
     FIG.mkdir(parents=True, exist_ok=True)
     txt = getattr(fig, "_tdy_note", None)
-    if txt:   # footnote: wrapped to the drawing's width and placed just below everything else
-        fig.canvas.draw()
-        bb = fig.get_tightbbox(fig.canvas.get_renderer())
-        w, h = fig.get_size_inches()
-        fig.text(max(bb.x0, 0) / w, (bb.y0 - 0.06) / h, textwrap.fill(txt, width=max(40, int(bb.width * 12.5))),
-                 fontsize=12, color=INK2, ha="left", va="top")
-    for ext in ("pdf", "png"):
-        fig.savefig(FIG / f"{name}.{ext}", dpi=200)
+    if txt:
+        _wrapped_note(fig, txt)
+    for ext in ("pdf", "png") + (("svg",) if svg else ()):
+        fig.savefig(FIG / f"{name}.{ext}", dpi=200, **({"metadata": {"Date": None}} if ext == "svg" else {}))
     REGISTRY.append((name, shows, data, use))
     if title:
         fig.canvas.draw()
@@ -301,7 +390,8 @@ def save(fig, name, shows, data, use, title=None):
 
 
 def note(fig, text, y=None):
-    fig._tdy_note = text
+    if not slide():          # slide versions carry no footnote
+        fig._tdy_note = text
 
 
 LABEL_NEAR = [(5, 3, "left", "bottom"), (5, -3, "left", "top"), (-5, 3, "right", "bottom"), (-5, -3, "right", "top"),
@@ -334,7 +424,7 @@ def place_labels(ax, names, xs, ys, size=12, only=None, text=disp):
         for far, cands in ((False, LABEL_NEAR), (True, LABEL_FAR)):
             for dx, dy, ha, va in cands:
                 t = ax.annotate(text(nm), (xs[i], ys[i]), xytext=(dx, dy), textcoords="offset points", ha=ha, va=va,
-                                fontsize=size, color=INK, zorder=6,
+                                fontsize=FS(size), color=INK, zorder=6,
                                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8, shrinkA=1, shrinkB=4) if far else None)
                 t.update_positions(r)
                 bb = Text.get_window_extent(t, r)
@@ -389,9 +479,44 @@ def errbars(ax, x, y, lo, hi, horizontal=False, color=INK2, lw=1.2):
 
 
 def legend_top(ax, handles=None, ncol=4, y=1.02, **kw):
+    if slide():   # one legend across the top of the canvas, as many columns as fit
+        if handles is None:
+            handles, labels = ax.get_legend_handles_labels()
+        else:
+            labels = [h.get_label() for h in handles]
+        return slide_legend(ax.figure, handles, labels, title=kw.get("title"))
     kw.setdefault("loc", "lower left")
     kw.setdefault("columnspacing", 1.4)
     return ax.legend(handles=handles, ncol=ncol, bbox_to_anchor=(0, y), handletextpad=0.5, **kw)
+
+
+def stagger(labels):
+    """Alternate tick labels between two rows (slide versions with many narrow categories)."""
+    return [("\n" if i % 2 else "") + str(t) for i, t in enumerate(labels)] if slide() else list(labels)
+
+
+def slide_legend(fig, handles, labels, title=None, ncol=None):
+    """Figure legend above the axes (constrained layout makes room); columns chosen to fit the canvas width."""
+    from matplotlib.font_manager import FontProperties
+    from matplotlib.textpath import TextToPath
+    fs = VARIANT_FLOOR[MODE["name"]]
+    prop = FontProperties(family="sans-serif", size=fs)
+    ttp = TextToPath()
+    widths = [ttp.get_text_width_height_descent(str(l), prop, ismath=False)[0] + fs * (1.2 + 0.4 + 1.0)
+              for l in labels]
+    avail = VARIANT_SIZE[MODE["name"]][0] * 72 - 8
+    if ncol is None:
+        ncol = len(labels)
+        while ncol > 1:      # matplotlib fills columns with heights [q + 1] * r + [q] * (ncol - r)
+            q, r = divmod(len(labels), ncol)
+            heights = [q + 1] * r + [q] * (ncol - r)
+            starts = np.cumsum([0] + heights)
+            cols = [max(widths[starts[c]:starts[c + 1]] or [0]) for c in range(ncol)]
+            if 1.05 * sum(cols) <= avail:
+                break
+            ncol -= 1
+    return fig.legend(handles, labels, loc="outside upper center", ncol=ncol, frameon=False, title=title,
+                      handletextpad=0.4, columnspacing=1.0, borderaxespad=0.1)
 
 
 def patch(key_or_color, label=None, hatch=None):
@@ -409,10 +534,15 @@ def fmt_signed(v, nd=1):
 # curves_*: validation success over training
 # ----------------------------------------------------------------------------------------------------------------------
 def story_lines():
-    """All validation lines placed on one x-axis: stage 1 at 1-10, stage 2 at 13-55, stage 3 at 59-108."""
+    """All validation lines placed on one x-axis (rounds completed within each stage, shifted by STAGE_OFF)."""
     out = []
     s, y, k, n = val_line("5 shapes", "correction rounds")
-    out.append(dict(key="five", label="5 shapes", color=FIVE, stage=0, x=s, y=y, k=k, n=n))
+    # round 0 of the 5-shape stage: the copy-the-teacher student the correction rounds started from (typed_in JSON)
+    r0 = TYPED["five_shape_round0"]
+    s0, y0, k0, n0 = val_line(r0["stage"], r0["line"])
+    i0 = list(s0).index(r0["step"])
+    out.append(dict(key="five", label="5 shapes", color=FIVE, stage=0, x=np.r_[0, s], y=np.r_[y0[i0], y],
+                    k=np.r_[k0[i0], k], n=np.r_[n0[i0], n]))
     s, y, k, n = val_line("10 shapes", "correction rounds, executed-push labels")
     out.append(dict(key="exec", label="10 shapes, executed-push labels", color=tint(TEN, 0.45), stage=1, x=s - 1, y=y,
                     k=k, n=n))
@@ -429,12 +559,20 @@ def story_lines():
     return out
 
 
-STAGE_OFF = [0, 13, 59]
-STAGE_SPAN = [(0.5, 10.5), (12.5, 55.5), (58.5, 108.5)]
+STAGE_OFF = [1, 14, 60]
+STAGE_SPAN = [(0.5, 11.5), (13.5, 56.5), (59.5, 110.8)]
 STAGE_NAME = ["5 shapes", "10 shapes", "27 shapes (26 letters + near-T)"]
-# picks that went to a fresh-scene test: (line key, within-line x)
-PICKS = [("five", 4), ("five", 7), ("ten96", 21 + 13), ("ten192", 21 + 6), ("m96", 44), ("m192", 2)]
-# original policy on each stage's shapes, fresh-scene tests (D047 pool, D049 pool, D051 pool)
+# picks that went to a fresh-scene test: (line key, within-line x); rounds from typed_in_numbers.json "picked_rounds"
+_PR = TYPED["picked_rounds"]["values"]
+PICKS = [("five", _PR["5-shape round 4"][2]), ("five", _PR["5-shape round 7"][2]),
+         ("ten96", 21 + _PR["10-shape 96 px"][2]), ("ten192", 21 + _PR["10-shape 192 px"][2]),
+         ("m96", _PR["26-letter 96 px (round 44)"][2]), ("m192", _PR["26-letter 192 px (round 2)"][2])]
+MAIN_ROUND = _PR["26-letter 96 px round 50 (main model)"][2]
+
+
+def main_model_rate():
+    """Round-50 student (the 96 px model) on the 27 trained shapes, D054 fresh-scene test."""
+    return rate("D054", "26-letter 96 px round 50", TRAINED27)[0]
 
 
 def original_stage_levels():
@@ -443,53 +581,93 @@ def original_stage_levels():
             paired_row("D051", "original", "26-letter 96 px (round 44)", "27 trained shapes")["base_rate"]]
 
 
+STAR = dict(marker="*", ms=17, mfc=M96, mec=INK, mew=1.1, ls="none", zorder=6)
+
+
 def fig_curves_all_stages(smooth=False):
     lines = story_lines()
+    sl = slide()
     fig, ax = plt.subplots(figsize=FULL)
+    top = 52 if not sl else 60
+    names = ["5\nshapes", "10 shapes", "26 letters\n+ near-T"] if sl else STAGE_NAME
     for i, (a, b) in enumerate(STAGE_SPAN):
         ax.axvspan(a, b, color=BAND if i % 2 == 0 else "#fbfbf9", zorder=0, lw=0)
-        ax.text((a + b) / 2, 51.5, STAGE_NAME[i], ha="center", va="top", fontsize=14, fontweight="bold", color=INK)
+        ax.text((a + b) / 2, top - 0.5, names[i], ha="center", va="top", fontsize=14, fontweight="bold", color=INK)
     orig = original_stage_levels()
     for i, (a, b) in enumerate(STAGE_SPAN):
         ax.plot([a + 0.3, b - 0.3], [orig[i]] * 2, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)), zorder=1)
-    ax.text(STAGE_SPAN[2][1] - 0.5, orig[2] + 0.8, "original policy", ha="right", va="bottom", fontsize=12,
-            color=INK2)
-    ax.text(STAGE_SPAN[1][1] - 0.5, orig[1] - 0.8, "original policy", ha="right", va="top", fontsize=12,
-            color=INK2)
+    if sl:
+        ax.text(STAGE_SPAN[1][0] + 1, orig[1] - 0.8, "original policy", ha="left", va="top", fontsize=12, color=INK2)
+    else:
+        ax.text(STAGE_SPAN[2][1] - 0.5, orig[2] + 0.8, "original policy", ha="right", va="bottom", fontsize=12,
+                color=INK2)
+        ax.text(STAGE_SPAN[1][1] - 0.5, orig[1] - 0.8, "original policy", ha="right", va="top", fontsize=12,
+                color=INK2)
     # sub-phases of stage 2 (labels at the bottom, where the plot is empty)
     for cx in (16, 20.5):
         ax.axvline(STAGE_OFF[1] + cx, color=AXIS, lw=0.9, ymax=0.9, zorder=1)
-    for cx, y, t in ((7.5, 1.0, "executed-push\nlabels"), (18.3, 11.5, "plan\nlabels"), (32, 1.0, "96 px and\n192 px lines")):
-        ax.text(STAGE_OFF[1] + cx, y, t, ha="center", va="bottom", fontsize=12, color=INK2)
+    if not sl:
+        for cx, y, t in ((7.5, 1.0, "executed-push\nlabels"), (18.3, 11.5, "plan\nlabels"),
+                         (32, 1.0, "96 px and\n192 px lines")):
+            ax.text(STAGE_OFF[1] + cx, y, t, ha="center", va="bottom", fontsize=12, color=INK2)
     bx = STAGE_OFF[2] + 13.5
     ax.axvline(bx, color=AXIS, lw=0.9, ymax=0.9, zorder=1)
-    ax.text(bx + 0.8, 7.0, "larger training\nbudget per round", ha="left", va="bottom", fontsize=12, color=INK2)
+    if not sl:
+        ax.text(bx + 0.8, 7.0, "larger training\nbudget per round", ha="left", va="bottom", fontsize=12, color=INK2)
     for L in lines:
         pos = STAGE_OFF[L["stage"]] + L["x"]
         if smooth:
             ax.plot(pos, L["y"], color=L["color"], lw=1.2, alpha=0.35, zorder=2)
-            w = 3 if len(L["y"]) <= 10 else 5
+            w = 3 if len(L["y"]) <= 11 else 5
             ax.plot(pos, rolling(L["y"], w), color=L["color"], lw=2.8, zorder=3, label=L["label"])
         else:
-            ax.plot(pos, L["y"], color=L["color"], lw=2.0, marker="o", ms=3.6, zorder=3, label=L["label"])
+            ax.plot(pos, L["y"], color=L["color"], lw=1.6 if sl else 2.0, marker="o", ms=2.6 if sl else 3.6, zorder=3,
+                    label=L["label"])
+    byk = {L["key"]: L for L in lines}
     if not smooth:
-        byk = {L["key"]: L for L in lines}
         for key, x in PICKS:
             L = byk[key]
             i = int(np.where(L["x"] == x)[0][0])
-            ax.plot(STAGE_OFF[L["stage"]] + x, L["y"][i], marker="o", ms=11, mfc="none", mec=INK, mew=1.6, zorder=5)
-    ax.set_xlim(0, 109.5)
-    ax.set_ylim(0, 52)
+            ax.plot(STAGE_OFF[L["stage"]] + x, L["y"][i], marker="o", ms=9 if sl else 11, mfc="none", mec=INK,
+                    mew=1.6, zorder=5)
+    # round 50: the 96 px model; never validated (the line stopped after training it), so its fresh-scene test is shown
+    xm, ym = STAGE_OFF[2] + MAIN_ROUND, main_model_rate()
+    ax.plot(xm, ym, **(STAR | ({"ms": 14} if sl else {})))
+    if not sl:
+        ax.annotate(f"round {MAIN_ROUND}: the 96 px model\n({ym:.1f}% on fresh test scenes)", (xm, ym),
+                    xytext=(xm - 1.5, 44.5), ha="right", va="bottom", fontsize=12, color=INK,
+                    arrowprops=dict(arrowstyle="-", color=INK2, lw=1, shrinkB=7))
+    if not smooth and not sl:
+        m96 = byk["m96"]
+        ib = int(np.argmax(m96["y"]))
+        xb, yb = STAGE_OFF[2] + m96["x"][ib], m96["y"][ib]
+        ax.annotate(f"round {int(m96['x'][ib])}: most validation successes;\nthe final-test pick was fixed by rule "
+                    f"at round {_PR['26-letter 96 px (round 44)'][2]}", (xb, yb), xytext=(xb + 1, 20.5), ha="right",
+                    va="top", fontsize=11.5, color=INK2, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.9,
+                                                                         shrinkB=4))
+    ax.set_xlim(0, STAGE_SPAN[2][1] + 0.5)
+    ax.set_ylim(0, top)
     ax.yaxis.set_major_formatter(PCT)
+    if sl:
+        ax.set_yticks([0, 10, 20, 30, 40, 50])
     ticks, labels = [], []
-    for st, vals in ((0, [1, 5, 10]), (1, [0, 10, 20, 30, 40]), (2, [0, 10, 20, 30, 40, 49])):
+    for st, vals in ((0, [0, 5] if sl else [0, 5, 10]), (1, [0, 20, 40] if sl else [0, 10, 20, 30, 40]),
+                     (2, [0, 25, 50] if sl else [0, 10, 20, 30, 40, 50])):
         for v in vals:
             ticks.append(STAGE_OFF[st] + v)
             labels.append(str(v))
     ax.set_xticks(ticks, labels)
     ax.grid(False, axis="x")
-    ax.set_xlabel("Correction round (counted within each stage)")
+    ax.set_xlabel("Correction rounds completed (within each stage)")
     ax.set_ylabel("Validation success")
+    if sl:
+        # direct labels instead of a legend
+        for key, dx, dy, txt in (("m192", 4.0, 3.5, "192 px"), ("m96", 30, -9, "96 px")):
+            L = byk[key]
+            j = len(L["x"]) // 2 if key == "exec" else 2
+            ax.text(STAGE_OFF[L["stage"]] + L["x"][j] + dx, L["y"][j] + dy, txt, fontsize=12, color=INK2,
+                    ha="left" if key != "m96" else "center", va="bottom")
+        return fig
     handles = [Line2D([], [], color=FIVE, lw=2.4, label="5 shapes"),
                Line2D([], [], color=tint(TEN, 0.45), lw=2.4, label="10 shapes, executed-push labels"),
                Line2D([], [], color=TEN, lw=2.4, label="10 shapes, plan labels, 96 px"),
@@ -499,15 +677,18 @@ def fig_curves_all_stages(smooth=False):
     if not smooth:
         handles.append(Line2D([], [], marker="o", ms=10, mfc="none", mec=INK, mew=1.6, ls="none",
                               label="sent to a fresh-scene test"))
+    handles.append(Line2D([], [], **(STAR | {"ms": 13}), label="96 px model (round 50), fresh test"))
     legend_top(ax, handles=handles, ncol=4 if not smooth else 3, fontsize=12, columnspacing=1.0)
-    note(fig, "Validation: 50 fixed scenes per shape, averaged over the stage's own shapes. Dashed: original policy "
-              "on fresh test scenes of the same shapes.")
+    note(fig, "Validation: 50 fixed scenes per shape, averaged over the stage's own shapes; x = correction rounds completed "
+              "in that stage (round 0 = the student before any correction round; for 5 shapes, the copy-the-teacher "
+              "student the rounds started from). Dashed: original policy on fresh test scenes of the same shapes. Round "
+              "50 was never validated, so the star is its fresh-scene test (D054).")
     return fig
 
 
 def fig_curves_all_stages_panels():
     lines = story_lines()
-    fig, axes = plt.subplots(1, 3, figsize=FULL, sharey=True, gridspec_kw={"width_ratios": [14, 43, 50], "wspace": 0.06})
+    fig, axes = plt.subplots(1, 3, figsize=FULL, sharey=True, gridspec_kw={"width_ratios": [15, 43, 52], "wspace": 0.06})
     orig = original_stage_levels()
     for st, ax in enumerate(axes):
         for L in [L for L in lines if L["stage"] == st]:
@@ -515,29 +696,31 @@ def fig_curves_all_stages_panels():
         ax.axhline(orig[st], color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
         ax.set_title(STAGE_NAME[st].replace(" (26 letters + near-T)", ""), loc="left", fontsize=15)
         ax.grid(False, axis="x")
-    axes[0].set_xticks([1, 5, 10])
-    axes[0].set_xlim(0.3, 10.7)
+    axes[0].set_xticks([0, 5, 10])
+    axes[0].set_xlim(-0.7, 10.7)
     axes[1].set_xticks([0, 10, 20, 30, 40])
     axes[1].set_xlim(-1, 43)
     axes[1].axvline(16, color=AXIS, lw=0.9)
     axes[1].axvline(20.5, color=AXIS, lw=0.9)
     axes[1].text(8, 2, "executed-push\nlabels", ha="center", fontsize=12, color=INK2)
     axes[1].text(31.5, 2, "96 px / 192 px lines", ha="center", fontsize=12, color=INK2)
-    axes[2].set_xticks([0, 10, 20, 30, 40, 49])
-    axes[2].set_xlim(-1, 50)
+    axes[2].set_xticks([0, 10, 20, 30, 40, 50])
+    axes[2].set_xlim(-1, 51.5)
     axes[2].axvline(13.5, color=AXIS, lw=0.9)
     axes[2].text(14.3, 6, "larger budget\nper round", fontsize=12, color=INK2)
     axes[2].text(49, orig[2] + 0.8, "original", ha="right", va="bottom", fontsize=12, color=INK2)
+    axes[2].plot(MAIN_ROUND, main_model_rate(), **(STAR | {"ms": 15}))
     axes[0].set_ylim(0, 47)
     axes[0].yaxis.set_major_formatter(PCT)
     axes[0].set_ylabel("Validation success")
-    fig.supxlabel("Correction round (counted within each stage)", fontsize=16, y=0.0)
+    fig.supxlabel("Correction rounds completed (within each stage)", fontsize=16, y=0.0)
     handles = [Line2D([], [], color=FIVE, lw=2.4, label="5 shapes"),
                Line2D([], [], color=tint(TEN, 0.45), lw=2.4, label="10 shapes, executed-push labels"),
                Line2D([], [], color=TEN, lw=2.4, label="10 shapes, plan labels / 96 px"),
                Line2D([], [], color=TEN192, lw=2.4, label="10 shapes, 192 px"),
                Line2D([], [], color=M96, lw=2.4, label="26 letters, 96 px"),
-               Line2D([], [], color=M192, lw=2.4, label="26 letters, 192 px")]
+               Line2D([], [], color=M192, lw=2.4, label="26 letters, 192 px"),
+               Line2D([], [], **(STAR | {"ms": 13}), label="round 50 (96 px model), fresh test")]
     axes[0].legend(handles=handles, ncol=3, loc="lower left", bbox_to_anchor=(0, 1.1), fontsize=12)
     return fig
 
@@ -545,9 +728,13 @@ def fig_curves_all_stages_panels():
 def fig_curves_26letters(smooth=False):
     fig, ax = plt.subplots(figsize=FULL)
     ax.axvspan(-0.6, 13.5, color=BAND, lw=0, zorder=0)
-    ax.text(6.5, 45.5, "old budget:\n20k training steps per round", ha="center", va="top", fontsize=12, color=INK2)
-    ax.text(14.2, 45.5, "54k steps per round + 60 practice scenes per new letter (from round 14)", ha="left", va="top",
-            fontsize=12, color=INK2)
+    if slide():
+        ax.text(6.5, 16, "20k steps", ha="center", va="bottom", fontsize=16, color=INK2)
+        ax.text(14.2, 16, "54k steps per round", ha="left", va="bottom", fontsize=16, color=INK2)
+    else:
+        ax.text(6.5, 45.5, "old budget:\n20k training steps per round", ha="center", va="top", fontsize=12, color=INK2)
+        ax.text(14.2, 45.5, "54k steps per round + 60 practice scenes per new letter (from round 14)", ha="left",
+                va="top", fontsize=12, color=INK2)
     for key, line, c in (("m96", "96 px line", M96), ("m192", "192 px line", M192)):
         s, y, k, n = val_line("27 shapes", line)
         x = s - 1
@@ -558,22 +745,33 @@ def fig_curves_26letters(smooth=False):
             ax.plot(x, rolling(y, 5), color=c, lw=2.8, label=lab(key))
         else:
             ax.plot(x, y, color=c, lw=2.0, marker="o", ms=4, label=lab(key))
-    for key, line, x, txt, dy in (("m96", "96 px line", 44, "picked for the final test\n(round 44, 34.8%)", 5.5),
-                                  ("m192", "192 px line", 2, "picked (round 2, 37.9%)", 3.0)):
+    for key, line, x, txt, dy in (("m96", "96 px line", _PR["26-letter 96 px (round 44)"][2],
+                                   SL("picked for the final test\n(round 44, 34.8%)", "picked"), 5.5),
+                                  ("m192", "192 px line", _PR["26-letter 192 px (round 2)"][2],
+                                   SL("picked (round 2, 37.9%)", "picked"), 3.0)):
         s, y, *_ = val_line("27 shapes", line)
         v = y[list(s - 1).index(x)]
         ax.plot(x, v, marker="o", ms=12, mfc="none", mec=INK, mew=1.6, zorder=5)
         ax.annotate(txt, (x, v), xytext=(x + (-2 if key == "m96" else 3), v + dy), fontsize=12, color=INK,
                     ha="right" if key == "m96" else "left", va="bottom",
                     arrowprops=dict(arrowstyle="-", color=INK2, lw=1))
-    ax.set_xlim(-0.6, 49.6)
+    ym = main_model_rate()
+    ax.plot(MAIN_ROUND, ym, **STAR)
+    ax.annotate(SL(f"round {MAIN_ROUND}: the 96 px model\n{ym:.1f}% on fresh test scenes\n(not validated)",
+                   f"round {MAIN_ROUND}:\n{ym:.1f}% on\nfresh scenes"), (MAIN_ROUND, ym),
+                xytext=(MAIN_ROUND - 0.5, 19.5), ha="right", va="bottom", fontsize=12, color=INK,
+                arrowprops=dict(arrowstyle="-", color=INK2, lw=1, shrinkB=7))
+    ax.set_xlim(-0.6, 50.8)
     ax.set_ylim(15, 46)
     ax.yaxis.set_major_formatter(PCT)
     ax.xaxis.set_major_locator(MultipleLocator(5))
     ax.grid(False, axis="x")
     ax.set_xlabel("Correction rounds completed")
     ax.set_ylabel("Validation success (27 shapes)")
-    ax.legend(loc="lower right")
+    if slide():
+        legend_top(ax)
+    else:
+        ax.legend(loc="lower right", bbox_to_anchor=(0.86, 0))
     note(fig, "50 fixed validation scenes per shape (1350 per round). Shaded bands: 95% binomial intervals."
          + (" Thick lines: 5-round rolling mean." if smooth else ""))
     return fig
@@ -644,16 +842,18 @@ def fig_curves_10shapes():
     ax.set_title("Plan labels: camera resolution", loc="left", fontsize=15)
     ax.set_xlabel("Correction rounds completed")
     ax.set_xlim(-0.8, 21.8)
+    tk, tn = TYPED["teacher_totals"]["values"]["10 shapes"]
+    tp = 100 * tk / tn
     for ax in axes:
-        ax.axhline(78, color=TEACHER, lw=1.8, ls=(0, (4, 3)))
+        ax.axhline(tp, color=TEACHER, lw=1.8, ls=(0, (4, 3)))
         ax.grid(False, axis="x")
         ax.legend(loc="lower right", fontsize=12)
-    axes[0].text(0, 76, "teacher (reads exact state): 78%", fontsize=12, color=INK2, va="top")
+    axes[0].text(0, tp - 2, f"teacher (reads exact state): {tp:.0f}%", fontsize=12, color=INK2, va="top")
     axes[0].set_ylim(0, 82)
     axes[0].yaxis.set_major_formatter(PCT)
     axes[0].set_ylabel("Validation success (10 shapes)")
-    note(fig, "50 fixed validation scenes per shape. Teacher 390 of 500 on the same scenes (LEARNING_FINDINGS.md "
-              "section 7).")
+    note(fig, f"50 fixed validation scenes per shape. Teacher {tk} of {tn} on the same scenes (LEARNING_FINDINGS.md "
+              "section 7; typed_in_numbers.json).")
     return fig
 
 
@@ -668,31 +868,39 @@ def fig_curves_5shapes():
     ax.set_title("Copy the teacher, no corrections", loc="left", fontsize=15)
     ax.set_xlim(0, 155)
     ax = axes[1]
-    s, y, *_ = val_line("5 shapes", "correction rounds")
-    ax.plot(s, y, color=FIVE, marker="o", ms=5, label="correction rounds")
-    for x in (4, 7):
-        ax.plot(x, y[x - 1], marker="o", ms=12, mfc="none", mec=INK, mew=1.6, zorder=5)
+    L5 = story_lines()[0]          # 5-shape line with round 0 = the first-run student at 30k steps it started from
+    ax.plot(L5["x"], L5["y"], color=FIVE, marker="o", ms=5, label="correction rounds")
+    ax.plot(L5["x"][0], L5["y"][0], marker="o", ms=7, mfc="white", mec=FIVE, mew=1.6, zorder=4)
+    axes[0].plot(TYPED["five_shape_round0"]["step"] / 1000, L5["y"][0], marker="o", ms=7, mfc="white", mec=FIVE,
+                 mew=1.6, zorder=4)
+    for _, x in [p for p in PICKS if p[0] == "five"]:
+        ax.plot(x, L5["y"][list(L5["x"]).index(x)], marker="o", ms=12, mfc="none", mec=INK, mew=1.6, zorder=5)
     ax.plot([], [], marker="o", ms=10, mfc="none", mec=INK, mew=1.6, ls="none", label="sent to fresh-scene test")
-    ax.set_xlabel("Correction round")
+    ax.set_xlabel("Correction rounds completed")
     ax.set_title("With correction rounds", loc="left", fontsize=15)
-    ax.set_xticks(range(1, 11))
-    ax.set_xlim(0.5, 10.5)
-    # TYPED-IN: DECISIONS.md D046 (original on the teacher's 50 validation scenes: 20+17+4+0+0 of 250) and
-    # LEARNING_FINDINGS.md section 5 (final planner, same 50 scenes: 5+12+36+50+21 = 124 of 250).
-    o5 = TYPED["original_on_teacher_validation_5shapes"]; t5 = TYPED["teacher_first_planner_5shapes_total"]
+    ax.set_xticks(range(0, 11))
+    ax.set_xlim(-0.5, 10.5)
+    ax.annotate("start: first run\nat 30k steps", (0, L5["y"][0]), xytext=(0.3, L5["y"][0] - 9), fontsize=12,
+                color=INK2, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.9, shrinkB=4))
+    # TYPED-IN (typed_in_numbers.json): DECISIONS.md D046 (original on the teacher's 50 validation scenes: 20+17+4+0+0
+    # of 250) and LEARNING_FINDINGS.md section 6 (the teacher that labelled these students: exact state read with 1 px /
+    # 1 degree noise, 34+22+46+50+39 = 191 of 250 on the same scenes).
+    o5 = TYPED["original_on_teacher_validation_5shapes"]; t5 = TYPED["teacher_noisy_planner_5shapes"]
     o5p, t5p = o5["successes"] / o5["of"] * 100, t5["successes"] / t5["of"] * 100
     for ax in axes:
         ax.axhline(o5p, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
         ax.axhline(t5p, color=TEACHER, lw=1.8, ls=(0, (4, 3)))
         ax.grid(False, axis="x")
-        ax.legend(loc="lower right", fontsize=12)
-    axes[0].text(152, t5p + 1, f"teacher (exact state) {t5p:.1f}%", fontsize=12, color=INK2, ha="right")
+        ax.legend(loc="upper right", bbox_to_anchor=(1, 0.89), fontsize=12)
+    axes[0].text(152, t5p - 1.5, f"teacher (exact state + 1 px noise) {t5p:.1f}%", fontsize=12, color=INK2, ha="right",
+                 va="top")
     axes[0].text(152, o5p - 1.2, f"original {o5p:.1f}%", fontsize=12, color=INK2, ha="right", va="top")
-    axes[0].set_ylim(0, 55)
+    axes[0].set_ylim(0, 82)
     axes[0].yaxis.set_major_formatter(PCT)
     axes[0].set_ylabel("Validation success (5 shapes)")
     note(fig, "T, near-T, Y, D, L; 50 fixed validation scenes per shape. Original and teacher on the same scenes "
-              "(DECISIONS.md D046; LEARNING_FINDINGS.md section 5).")
+              f"({o5['successes']} and {t5['successes']} of 250; DECISIONS.md D046, LEARNING_FINDINGS.md section 6). The "
+              "teacher here is the one that labelled these students, not the first exact-state planner (124 of 250).")
     return fig
 
 
@@ -766,7 +974,7 @@ def fig_curves_small_multiples():
 # final_*: fresh-scene final tests
 # ----------------------------------------------------------------------------------------------------------------------
 def grouped_bars(ax, groups, keys, values, lo=None, hi=None, labels=True, width=0.8, fmt="{:.1f}", size=12,
-                 colors=None, hatches=None):
+                 colors=None, hatches=None, label_keys=None):
     nk = len(keys)
     w = width / nk
     xs = np.arange(len(groups))
@@ -777,10 +985,11 @@ def grouped_bars(ax, groups, keys, values, lo=None, hi=None, labels=True, width=
                       hatch=hatches[j] if hatches else None)
         if lo is not None:
             errbars(ax, x, values[j], lo[j], hi[j])
-        if labels:
+        if labels and (label_keys is None or k in label_keys):
             tops = np.asarray(hi[j]) if hi is not None else np.asarray(values[j])
+            f = "{:.0f}" if slide() and nk * len(groups) > 6 else fmt
             for xi, t, v in zip(x, tops, values[j]):
-                ax.text(xi, t + 0.6, fmt.format(v), ha="center", va="bottom", fontsize=size, color=INK)
+                ax.text(xi, t + 0.6, f.format(v), ha="center", va="bottom", fontsize=size, color=INK)
     ax.set_xticks(xs, groups)
     ax.grid(False, axis="x")
     return xs
@@ -801,7 +1010,8 @@ def fig_final_grouped_bars(groups=("10 earlier shapes", "17 other letters", "27 
         vals.append(v); los.append(lo); his.append(hi)
     fig, ax = plt.subplots(figsize=size)
     if metric == "success":
-        grouped_bars(ax, [GROUP_LABEL[g] for g in groups], keys, vals, los, his)
+        grouped_bars(ax, [GROUP_LABEL[g] for g in groups], keys, vals, los, his,
+                     label_keys=("original", "m96") if slide() and len(groups) > 2 else None)
         ax.set_ylabel(f"Success\n({TEST_NOTE})")
         ax.set_ylim(0, 42)
     else:
@@ -815,9 +1025,10 @@ def fig_final_grouped_bars(groups=("10 earlier shapes", "17 other letters", "27 
 
 def fig_final_stage_progression():
     # fresh-scene tests at each stage, each paired with the original on the same scenes
-    rows = [("5 shapes\n(round 7)", "D047", "5-shape round 7", "5 first shapes", "five"),
-            ("10 shapes\n(96 px)", "D049/D050", "10-shape 96 px", "10 earlier shapes", "ten96"),
-            ("27 shapes\n(26 letters, 96 px)", "D051", "26-letter 96 px (round 44)", "27 trained shapes", "m96")]
+    rows = [(SL("5 shapes\n(round 7)", "5 shapes"), "D047", "5-shape round 7", "5 first shapes", "five"),
+            (SL("10 shapes\n(96 px)", "10 shapes"), "D049/D050", "10-shape 96 px", "10 earlier shapes", "ten96"),
+            (SL("27 shapes\n(26 letters, 96 px)", "27 shapes"), "D051", "26-letter 96 px (round 44)", "27 trained shapes",
+             "m96")]
     fig, ax = plt.subplots(figsize=FULL)
     xs = np.arange(len(rows))
     w = 0.36
@@ -835,9 +1046,9 @@ def fig_final_stage_progression():
     ax.grid(False, axis="x")
     ax.set_ylim(0, 42)
     ax.yaxis.set_major_formatter(PCT)
-    ax.set_ylabel("Success on the stage's shapes\n(fresh-scene final test)")
-    legend_top(ax, handles=[patch("original", "Original (T demos only)"), patch("five", "Ours, 5 shapes"),
-                            patch("ten96", "Ours, 10 shapes"), patch("m96", "Ours, 26 letters")], ncol=4, fontsize=12)
+    ax.set_ylabel(SL("Success on the stage's shapes\n(fresh-scene final test)", "Success"))
+    legend_top(ax, handles=[patch("original", SL("Original (T demos only)", "Original")), patch("five"), patch("ten96"),
+                            patch("m96")], ncol=4, fontsize=12)
     note(fig, "1000 fresh scenes per shape (5 and 10 shapes) and 300 per shape (27 shapes); bars paired with the "
               "original on the same scenes. 95% intervals.")
     return fig
@@ -882,9 +1093,9 @@ def fig_final_per_shape_bars_vertical():
     for j, k in enumerate(keys):
         v = [rate("D051", D051[k], [s])[0] for s in order]
         ax.bar(xs - w / 2 + w * j, v, w, color=col(k), edgecolor="white", lw=1.0, zorder=3, label=lab(k))
-    ax.set_xticks(xs, [SHORT.get(s, s) for s in order], fontsize=13)
+    ax.set_xticks(xs, stagger([SHORT.get(s, s) for s in order]), fontsize=13)
     ax.axvline(len(TRAINED27) - 0.5, color=INK2, lw=1)
-    ax.text(len(TRAINED27) - 0.2, 57, "never seen\nin training", fontsize=12, color=INK2, va="top")
+    ax.text(len(TRAINED27) - 0.2, 57, SL("never seen\nin training", "unseen"), fontsize=12, color=INK2, va="top")
     ax.grid(False, axis="x")
     ax.set_xlim(-0.7, len(order) - 0.3)
     ax.set_ylim(0, 60)
@@ -1004,7 +1215,8 @@ def fig_final_forest_groups():
     rows = [(GROUP_LABEL[g], [paired_row("D051", "original", D051[k], g) for k in keys]) for g in groups]
     fig, ax = plt.subplots(figsize=FULL)
     forest(ax, rows, [col(k) for k in keys], labels=[lab(k) for k in keys], offsets=[-0.22, 0, 0.22])
-    ax.set_xlabel("Change in success vs. the original (points), same scenes, 95% interval")
+    ax.set_xlabel(SL("Change in success vs. the original (points), same scenes, 95% interval",
+                     "Change vs. original (points)"))
     ax.set_xlim(-2, 37)
     for i, g in enumerate(groups):
         d = rows[i][1][1]
@@ -1105,8 +1317,8 @@ def fig_final_blends():
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success\n(1000 fresh scenes per shape)")
     legend_top(ax, handles=[patch(c, l) for _, c, l in keys], ncol=3, fontsize=12)
-    note(fig, "Early attempt: blending a planner-copying student's weights into the original. Small gains on Y and D, "
-              "a loss on T.")
+    note(fig, "Early attempt (D040): blending a planner-copying student's weights into the original. Small gains on Y and "
+              "D, a loss on T. The later blend tests (D041-D043) are in final_blends_all.")
     return fig
 
 
@@ -1166,35 +1378,58 @@ def fig_shapes_validation_vs_test():
     return fig
 
 
-# TYPED-IN: LEARNING_FINDINGS.md section 7, "26-letter preparation (D051)": teacher (world model wm2 v3) successes of
-# 50 validation scenes per letter. Earlier ten-letter shapes other than T, D and L were not re-checked.
-TEACHER26 = TYPED["teacher26_successes_of_50"]["values"]
+# TYPED-IN (teacher_validation.csv): the planner teacher on the 50 validation scenes per shape for all 27 trained shapes,
+# with the world-model version of each check (wm2 v3 for the 17 new letters and T, D, L; v2 for E, F, J, P, U; v1 for
+# near-T and Y). LEARNING_FINDINGS.md sections 6 and 7.
+TEACHER_VAL = {r["shape"]: (int(r["teacher_successes"]), int(r["of"]), r["world_model_version"])
+               for r in read("teacher_validation.csv")}
+assert sorted(TEACHER_VAL) == sorted(TRAINED27)
 # TYPED-IN: LEARNING_FINDINGS.md section 5 table "Final planner (50)": first sampling-planner teacher, 50 validation
 # scenes per letter; and the original policy on the 1000-scene final-test pool (same section, last column).
 TEACHER5 = TYPED["teacher5_successes_of_50"]["values"]
+TEACHER5_NOISY = TYPED["teacher_noisy_planner_5shapes"]["values"]
 ORIG5_FINALPOOL = TYPED["original_5shapes_final_pool_percent"]["values"]
+STUDENT_VAL_ROUND = _PR["26-letter 96 px (round 44)"][2]       # picked round; round 50 was never validated
+
+
+def student_val(shapes, rnd=None):
+    """26-letter 96 px student on the same 50 validation scenes per shape as the teacher: {shape: (successes, n)}."""
+    step = (STUDENT_VAL_ROUND if rnd is None else rnd) + 1      # validation step k evaluates the round k-1 student
+    out = {}
+    for r in VAL:
+        if r["stage"] == "27 shapes" and r["line"] == "96 px line" and int(r["step"]) == step and r["shape"] in shapes:
+            out[r["shape"]] = (int(r["successes"]), int(r["episodes"]))
+    return out
 
 
 def fig_shapes_teacher_vs_student():
-    shapes = list(TEACHER26)
-    x = np.array([TEACHER26[s] * 2 for s in shapes], dtype=float)
-    y = np.array([rate("D051", D051["m96"], [s])[0] for s in shapes])
+    shapes = TRAINED27
+    sv = student_val(shapes)
+    x = np.array([100 * TEACHER_VAL[s][0] / TEACHER_VAL[s][1] for s in shapes])
+    y = np.array([100 * sv[s][0] / sv[s][1] for s in shapes])
     fig, ax = plt.subplots(figsize=(7.5, 7.5))
     ax.plot([0, 100], [0, 100], color=AXIS, lw=1.2)
     ax.text(70, 74, "student = teacher", ha="right", va="bottom", fontsize=12, color=INK2)
-    ax.scatter(x, y, s=75, color=M96, edgecolor="white", lw=1.4, zorder=3)
-    ax.text(3, 97, f"the student keeps {np.mean(y) / np.mean(x) * 100:.0f}% of the teacher's success\n"
-                   f"(mean {np.mean(y):.0f}% vs {np.mean(x):.0f}%, these 20 letters)", fontsize=12, color=INK2, va="top")
+    for grp, mk in ((OLD10, "o"), (NEW17, "s")):
+        m = np.isin(shapes, grp)
+        ax.scatter(x[m], y[m], s=75, marker=mk, color=M96 if mk == "s" else tint(M96, 0.45), edgecolor="white", lw=1.4,
+                   zorder=3, label="17 newer letters" if mk == "s" else "10 earlier shapes")
+    kt = sum(TEACHER_VAL[s][0] for s in shapes); nt = sum(TEACHER_VAL[s][1] for s in shapes)
+    ks = sum(sv[s][0] for s in shapes); ns = sum(sv[s][1] for s in shapes)
+    ax.text(3, 97, f"the student keeps {100 * (ks / ns) / (kt / nt):.0f}% of the teacher's successes\n"
+                   f"({ks} vs {kt} of {nt}, same 50 scenes per shape)", fontsize=12, color=INK2, va="top")
     ax.set_xlim(0, 101)
     ax.set_ylim(0, 101)
     ax.set_aspect("equal")
     ax.grid(True, axis="both")
     ax.xaxis.set_major_formatter(PCT)
     ax.yaxis.set_major_formatter(PCT)
+    ax.legend(loc="lower right", fontsize=12, frameon=True, facecolor="white", edgecolor="none")
     place_labels(ax, shapes, x, y)
-    ax.set_xlabel("Planning teacher, reads exact state\n(50 validation scenes)")
-    ax.set_ylabel("Camera student, 26 letters\n(300 fresh test scenes)")
-    note(fig, "Teacher numbers typed in from LEARNING_FINDINGS.md section 7; different scene pools.")
+    ax.set_xlabel("Planning teacher, reads exact state\n(50 validation scenes per shape)")
+    ax.set_ylabel(f"Camera student, 26 letters, round {STUDENT_VAL_ROUND}\n(same 50 scenes)")
+    note(fig, "Teacher from teacher_validation.csv (LEARNING_FINDINGS.md sections 6-7; world model v1-v3 by shape); "
+              f"student = the round-{STUDENT_VAL_ROUND} pick, the best validation round, so it is slightly flattered.")
     return fig
 
 
@@ -1251,9 +1486,13 @@ def fig_shapes_table_heatmap():
 # heldout_*: never-seen shapes
 # ----------------------------------------------------------------------------------------------------------------------
 def fig_heldout_scaling():
-    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"wspace": 0.32})
+    if half():
+        fig, ax0 = plt.subplots(figsize=HALF)
+        axes = [ax0]
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"wspace": 0.32})
     xs = [1, 10, 27]
-    for ax, metric in ((axes[0], "success"), (axes[1], "coverage")):
+    for ax, metric in zip(axes, ("success", "coverage")):
         pts = []
         for key in ("original", "ten96", "m96"):
             if metric == "success":
@@ -1278,21 +1517,24 @@ def fig_heldout_scaling():
         for x, v in zip(xs + [27.9], y + [r]):
             ax.text(x + (-1.2 if x == 27 else 0.8), v + (0.4 if metric == "success" else 0.8), f"{v:.1f}",
                     fontsize=12, ha="right" if x == 27 else "left", va="bottom", color=INK)
-        ax.set_xticks(xs, ["1\n(original:\nT only)", "10", "27"])
+        ax.set_xticks(xs, [SL("1\n(original:\nT only)", "1"), "10", "27"])
         ax.set_xlim(-1, 31)
         ax.grid(False, axis="x")
         ax.yaxis.set_major_formatter(PCT)
         ax.set_xlabel("Shapes in training")
     axes[0].set_ylim(0, 8)
-    axes[0].set_ylabel("Success on 6 never-seen shapes")
-    axes[1].set_ylim(40, 62)
-    axes[1].yaxis.set_major_locator(MultipleLocator(5))
-    axes[1].set_ylabel("Mean final goal coverage")
+    axes[0].set_ylabel(SL("Success on 6 never-seen shapes", "Success, 6 unseen"))
+    if not half():
+        axes[1].set_ylim(40, 62)
+        axes[1].yaxis.set_major_locator(MultipleLocator(5))
+        axes[1].set_ylabel(SL("Mean final goal coverage", "Final coverage"))
     handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=10, label="Original"),
-               Line2D([], [], marker="o", color=TEN, ls="none", ms=10, label="Ours, 10 shapes"),
-               Line2D([], [], marker="o", color=M96, ls="none", ms=10, label="Ours, 26 letters"),
-               Line2D([], [], marker="D", color=M192, ls="none", ms=9, label="Ours, 26 letters, 192 px")]
-    axes[0].legend(handles=handles, ncol=4, loc="lower left", bbox_to_anchor=(0, 1.02), fontsize=12)
+               Line2D([], [], marker="o", color=TEN, ls="none", ms=10, label=SL("Ours, 10 shapes", "10 shapes")),
+               Line2D([], [], marker="o", color=M96, ls="none", ms=10, label=SL("Ours, 26 letters", "26 letters")),
+               Line2D([], [], marker="D", color=M192, ls="none", ms=9, label=SL("Ours, 26 letters, 192 px", "192 px"))]
+    if half():
+        handles[3].set_label("192 px")
+    legend_top(axes[0], handles=handles, ncol=4, fontsize=12)
     note(fig, "digits 3, 4, 7, plus, hash, arrow; 300 fresh scenes per shape; 95% intervals.")
     return fig
 
@@ -1444,9 +1686,14 @@ def _outcome_shares(test, model, shapes):
 
 
 def fig_coverage_near_misses():
-    fig, axes = plt.subplots(1, 2, figsize=FULL, sharey=True, gridspec_kw={"wspace": 0.16})
+    if half():
+        fig, ax0 = plt.subplots(figsize=HALF)
+        axes = [ax0]
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=FULL, sharey=True, gridspec_kw={"wspace": 0.16})
     keys = KEYS4[::-1]
-    for ax, shapes, title in ((axes[0], TRAINED27, "27 trained shapes"), (axes[1], HELD, "6 never-seen shapes")):
+    for ax, shapes, title in zip(axes, (TRAINED27, HELD), (SL("27 trained shapes", "27 trained"),
+                                                           SL("6 never-seen shapes", "6 unseen"))):
         for i, k in enumerate(keys):
             parts = _outcome_shares("D051", D051[k], shapes)
             c = col(k) if k != "original" else ORIG_LINE
@@ -1454,7 +1701,7 @@ def fig_coverage_near_misses():
             left = 0
             for j, (v, cc) in enumerate(zip(parts, colors)):
                 ax.barh(i, v, left=left, color=cc, edgecolor="white", lw=1.5, height=0.7, zorder=3)
-                if v >= 6:
+                if v >= (6 if not slide() else 10 if not half() else 12):
                     ax.text(left + v / 2, i, f"{v:.0f}", ha="center", va="center", fontsize=12,
                             color="white" if j == 0 and k != "original" else INK)
                 left += v
@@ -1463,12 +1710,12 @@ def fig_coverage_near_misses():
         ax.xaxis.set_major_formatter(PCT)
         ax.grid(False)
         ax.set_xlabel("Share of episodes")
-    axes[0].set_yticks(range(len(keys)), [lab(k).replace(", 192 px camera", ",\n192 px camera") for k in keys],
-                       fontsize=12)
-    shades = [Patch(facecolor=M96, label="solved (>95% coverage)"),
-              Patch(facecolor=tint(M96, 0.5), label="near miss: peak 90-95%"),
+    axes[0].set_yticks(range(len(keys)), [lab(k).replace(", 192 px camera", ",\n192 px camera").replace(
+        "26 letters, 192 px", "192 px") for k in keys], fontsize=12)
+    shades = [Patch(facecolor=M96, label=SL("solved (>95% coverage)", "solved")),
+              Patch(facecolor=tint(M96, 0.5), label=SL("near miss: peak 90-95%", "peak 90-95%")),
               Patch(facecolor=tint(M96, 0.78), label="peak 80-90%"),
-              Patch(facecolor="#efeee9", label="peak below 80%")]
+              Patch(facecolor="#efeee9", label=SL("peak below 80%", "below 80%"))]
     legend_top(axes[0], handles=shades, ncol=4, fontsize=12, y=1.1)
     note(fig, f"{TEST_NOTE.capitalize()}. 'Peak' is the best coverage reached at any moment of the episode; "
               "shades of each policy's colour show the same four outcomes.")
@@ -1544,6 +1791,8 @@ def fig_coverage_steps_executed():
 # ----------------------------------------------------------------------------------------------------------------------
 def fig_analysis_steps_executed():
     groups = ["10 earlier shapes", "17 other letters", "27 trained shapes", "6 held-out shapes"]
+    if half():
+        groups = groups[2:]
     models = ["execute 8 (trained)", "execute 12", "execute 15"]
     vals, los, his = [], [], []
     for m in models:
@@ -1554,7 +1803,7 @@ def fig_analysis_steps_executed():
         vals.append(v); los.append(lo); his.append(hi)
     fig, ax = plt.subplots(figsize=FULL)
     grouped_bars(ax, [GROUP_LABEL[g] for g in groups], models, vals, los, his, colors=BLUE_RAMP[::-1])
-    for gi, g in enumerate(groups):
+    for gi, g in enumerate(groups if not slide() else []):
         for j, m in enumerate(models[1:], start=1):
             d = paired_row("D056", "execute 8 (trained)", m, g)
             if d["model_rate"] < 6:
@@ -1564,7 +1813,7 @@ def fig_analysis_steps_executed():
     ax.set_ylim(0, 42)
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success\n(200 fresh scenes per shape)")
-    legend_top(ax, handles=[patch(BLUE_RAMP[2], "execute 8 of 16 planned steps (as trained)"),
+    legend_top(ax, handles=[patch(BLUE_RAMP[2], SL("execute 8 of 16 planned steps (as trained)", "execute 8 (trained)")),
                             patch(BLUE_RAMP[1], "execute 12"), patch(BLUE_RAMP[0], "execute 15")], ncol=3, fontsize=12)
     note(fig, "26-letter 96 px student (round 50), same scenes for every setting. Numbers at the bar foot: change vs 8 "
               "(points).")
@@ -1675,9 +1924,11 @@ def fig_analysis_t_tradeoff(diff=False):
     axes[0].set_yticks(ys, [e[0] for e in entries])
     axes[0].set_ylim(len(entries) - 0.5, -0.6)
     if diff:
-        fig.supxlabel("Change vs. the original on the same scenes (points, 95% interval)", fontsize=16, y=0.0)
+        fig.supxlabel(SL("Change vs. the original on the same scenes (points, 95% interval)", "Change vs. original"),
+                      fontsize=16, y=None if slide() else 0.0)
     else:
-        fig.supxlabel("Fresh-scene success (95% interval)", fontsize=16, y=0.0)
+        fig.supxlabel(SL("Fresh-scene success (95% interval)", "Fresh-scene success"), fontsize=16,
+                      y=None if slide() else 0.0)
         legend_top(axes[0], handles=[Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=8,
                                             label="original, same scenes"),
                                      Line2D([], [], marker="o", color=INK2, ls="none", ms=10,
@@ -1726,27 +1977,33 @@ def fig_analysis_192_vs_96(per_shape=False):
 LABEL_AB = TYPED["label_ab_successes_of_1000"]["values"]
 
 
+LABEL_AB_SHORT = ["Intended-plan labels", "192 px camera", "All teacher demos", "990M network"]
+
+
 def fig_analysis_label_ab():
     fig, ax = plt.subplots(figsize=FULL)
     ys = np.arange(len(LABEL_AB))
     h = 0.36
-    for j, (lbl, c) in enumerate((("without the change", tint(TEN, 0.6)), ("with the change", TEN))):
+    for j, (lbl, c) in enumerate(((SL("without the change", "without"), tint(TEN, 0.6)),
+                                  (SL("with the change", "with"), TEN))):
         v = [r[1 + j] / 10 for r in LABEL_AB]
         lo, hi = zip(*[wilson(r[1 + j], 1000) for r in LABEL_AB])
         y = ys - h / 2 + h * j
         ax.barh(y, v, h, color=c, edgecolor="white", lw=1.5, zorder=3, label=lbl)
         errbars(ax, y, v, lo, hi, horizontal=True)
         for yi, vi, hh in zip(y, v, hi):
-            ax.text(hh + 0.3, yi, f"{vi:.1f}", va="center", fontsize=12)
-    ax.set_yticks(ys, [r[0] for r in LABEL_AB], fontsize=12.5)
+            ax.text(hh + 0.3, yi, f"{vi:.1f}" if not half() else f"{vi:.0f}", va="center", fontsize=12)
+    ax.set_yticks(ys, [r[0] for r in LABEL_AB] if not slide() else LABEL_AB_SHORT, fontsize=12.5)
     ax.invert_yaxis()
     ax.grid(True, axis="x")
     ax.grid(False, axis="y")
-    ax.set_xlim(0, 19.5)
-    ax.xaxis.set_major_locator(MultipleLocator(4))
+    ax.set_xlim(0, 19.5 if not slide() else 23)
+    ax.xaxis.set_major_locator(MultipleLocator(4 if not slide() else 5 if not half() else 10))
     ax.xaxis.set_major_formatter(PCT)
-    ax.set_xlabel("Validation success (100 scenes x 10 shapes), 95% interval")
-    ax.text(17.0, 0.18, "+68%", fontsize=14, fontweight="bold", color=TEN192, va="center")
+    ax.set_xlabel(SL("Validation success (100 scenes x 10 shapes), 95% interval", "Validation success"))
+    gain = 100 * (LABEL_AB[0][2] / LABEL_AB[0][1] - 1)
+    ax.text(17.0 if not slide() else wilson(LABEL_AB[0][2], 1000)[1] + 3.6, 0.18, f"+{gain:.0f}%", fontsize=14,
+            fontweight="bold", color=TEN192, va="center")
     legend_top(ax, ncol=2, fontsize=12)
     note(fig, "Matched A/B tests, 30k steps from the official checkpoint (last row: 50k steps from scratch). Typed in "
               "from LEARNING_FINDINGS.md section 7.")
@@ -1754,24 +2011,29 @@ def fig_analysis_label_ab():
 
 
 def fig_analysis_budget():
-    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.5], "wspace": 0.35})
-    # TYPED-IN: DECISIONS.md D053: training samples per shape per correction round.
-    ax = axes[0]
-    (l1, n1), (l2, n2), (l3, n3) = TYPED["budget_samples_per_shape_per_round_thousands"]["values"]
-    rows = [(l1, n1, TEN), (l2, n2, tint(M96, 0.5)), (l3, n3, M96)]
-    x = np.arange(len(rows))
-    ax.bar(x, [r[1] for r in rows], 0.6, color=[r[2] for r in rows], edgecolor="white", zorder=3)
-    for xi, r in zip(x, rows):
-        ax.text(xi, r[1] + 10, f"{r[1]}k", ha="center", fontsize=13)
-    ax.set_xticks(x, [r[0] for r in rows], fontsize=12)
-    ax.set_ylabel("Training samples per shape\nper round (thousands)")
-    ax.set_ylim(0, 600)
-    ax.grid(False, axis="x")
-    ax = axes[1]
+    if half():      # the half-slide version shows only the validation panel
+        fig, ax = plt.subplots(figsize=HALF)
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.5], "wspace": 0.35})
+        # TYPED-IN: DECISIONS.md D053: training samples per shape per correction round.
+        ax = axes[0]
+        (l1, n1), (l2, n2), (l3, n3) = TYPED["budget_samples_per_shape_per_round_thousands"]["values"]
+        rows = [(l1, n1, TEN), (l2, n2, tint(M96, 0.5)), (l3, n3, M96)]
+        x = np.arange(len(rows))
+        ax.bar(x, [r[1] for r in rows], 0.6, color=[r[2] for r in rows], edgecolor="white", zorder=3)
+        for xi, r in zip(x, rows):
+            ax.text(xi, r[1] + 10, f"{r[1]}k", ha="center", fontsize=13)
+        ax.set_xticks(x, [r[0] for r in rows], fontsize=12)
+        ax.set_ylabel("Training samples per shape\nper round (thousands)")
+        ax.set_ylim(0, 600)
+        ax.grid(False, axis="x")
+        ax = axes[1]
     s, *_ = val_line("27 shapes", "96 px line")
     phases = [("start\n(round 0)", [1]), ("old budget\n(rounds 10-13)", [11, 12, 13, 14]),
               ("larger budget\n(rounds 40-49)", list(range(41, 51)))]
-    groups = [("10 earlier shapes", OLD10), ("17 newer letters", NEW17)]
+    if half():
+        phases = [("start", [1]), ("old budget", [11, 12, 13, 14]), ("larger", list(range(41, 51)))]
+    groups = [(SL("10 earlier shapes", "10 earlier"), OLD10), (SL("17 newer letters", "17 newer"), NEW17)]
     w = 0.26
     for j, (pn, steps) in enumerate(phases):
         v, lo, hi = [], [], []
@@ -1792,7 +2054,7 @@ def fig_analysis_budget():
     ax.set_xticks(range(len(groups)), [g for g, _ in groups])
     ax.set_ylim(0, 45)
     ax.yaxis.set_major_formatter(PCT)
-    ax.set_ylabel("Validation success (26-letter, 96 px)")
+    ax.set_ylabel(SL("Validation success (26-letter, 96 px)", "Validation success"))
     ax.grid(False, axis="x")
     legend_top(ax, ncol=1, fontsize=12)
     note(fig, "Left: typed in from DECISIONS.md D053. Right: pooled validation rounds (50 scenes per shape per round).")
@@ -1882,14 +2144,15 @@ def fig_rl_t_collapse():
     fig, ax = plt.subplots(figsize=FULL)
     ys = np.arange(len(RL_LONG))
     ax.axvline(RL_T0 * 100, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
-    ax.text(RL_T0 * 100 + 1, -0.75, "T success before RL: 55%", fontsize=12, color=INK2, va="bottom")
+    ax.text(RL_T0 * 100 + 1, -0.75, SL(f"T success before RL: {RL_T0 * 100:.0f}%", f"before: {RL_T0 * 100:.0f}%"),
+            fontsize=12, color=INK2, va="bottom")
     for i, (name, af, nft, upd) in enumerate(RL_LONG):
         for v, mk, off in ((af, "o", -0.12), (nft, "s", 0.12)):
             if v is None:
                 continue
             ax.plot([RL_T0 * 100, v * 100], [i + off, i + off], color=tint(RL, 0.6), lw=2, zorder=2)
             ax.plot(v * 100, i + off, mk, color=RL, ms=10, mec="white", mew=1.4, zorder=3)
-        ax.text(102, i, f"update {upd}", va="center", fontsize=12, color=INK2)
+        ax.text(102, i, f"update {upd}" if not half() else upd, va="center", fontsize=12, color=INK2)
     ax.set_yticks(ys, [r[0] for r in RL_LONG])
     ax.set_ylim(len(RL_LONG) - 0.4, -0.9)
     ax.set_xlim(-3, 115)
@@ -1897,10 +2160,11 @@ def fig_rl_t_collapse():
     ax.xaxis.set_major_formatter(PCT)
     ax.grid(True, axis="x")
     ax.grid(False, axis="y")
-    ax.set_xlabel("T success at the last evaluation")
-    legend_top(ax, handles=[Line2D([], [], marker="o", color=RL, ls="none", ms=9, label="AdvantageFlow, after RL"),
-                            Line2D([], [], marker="s", color=RL, ls="none", ms=9, label="NFT, after RL")], ncol=2,
-               fontsize=12, y=1.06)
+    ax.set_xlabel(SL("T success at the last evaluation", "T success after RL"))
+    legend_top(ax, handles=[Line2D([], [], marker="o", color=RL, ls="none", ms=9,
+                                   label=SL("AdvantageFlow, after RL", "AdvantageFlow")),
+                            Line2D([], [], marker="s", color=RL, ls="none", ms=9, label=SL("NFT, after RL", "NFT"))],
+               ncol=2, fontsize=12, y=1.06)
     note(fig, "Forward-process RL on the physical simulator, up to ~1M controls per run; small development "
               "evaluation. Typed in from LEARNING_EXPERIMENT_LOG.md section 2.")
     return fig
@@ -1927,13 +2191,14 @@ def fig_rl_drift_vs_t():
 def fig_rl_signal():
     fig, axes = plt.subplots(1, 2, figsize=FULL, sharey=True, gridspec_kw={"wspace": 0.1})
     x = np.arange(len(RL_SNR))
-    for ax, j, title in ((axes[0], 1, "Share of the training score\nexplained by the plan itself"),
-                         (axes[1], 2, "Split-half reliability\nof the score")):
+    for ax, j, title in ((axes[0], 1, "Share of the training score\nexplained by the plan itself" if not half() else
+                          "Plan's share"), (axes[1], 2, "Split-half reliability\nof the score" if not half() else
+                                            "Reliability")):
         v = [r[j] * 100 for r in RL_SNR]
         ax.bar(x, v, 0.6, color=RL, edgecolor="white", zorder=3)
         for xi, vi in zip(x, v):
             ax.text(xi, vi + 1.5, f"{vi:.0f}%", ha="center", fontsize=13)
-        ax.set_xticks(x, [r[0] for r in RL_SNR])
+        ax.set_xticks(x, [r[0].replace("near-T", "nT") if half() else r[0] for r in RL_SNR])
         ax.set_title(title, loc="left", fontsize=14)
         ax.grid(False, axis="x")
         ax.axhline(100, color=AXIS, lw=1)
@@ -1974,75 +2239,1227 @@ def fig_method_teacher_5shapes():
     fig, ax = plt.subplots(figsize=FULL)
     shapes = FIVE_SHAPES
     x = np.arange(len(shapes))
-    w = 0.38
+    w = 0.27
     v_o = [ORIG5_FINALPOOL[s] for s in shapes]
-    v_t = [TEACHER5[s] * 2 for s in shapes]
-    lo_t, hi_t = zip(*[wilson(TEACHER5[s], 50) for s in shapes])
-    ax.bar(x - w / 2, v_o, w, color=ORIG, edgecolor="white", lw=1.5, zorder=3, label="Original (1000 test scenes)")
-    ax.bar(x + w / 2, v_t, w, color=TEACHER, edgecolor="white", lw=1.5, zorder=3,
-           label="Planning teacher in the world model (50 validation scenes)")
-    errbars(ax, x + w / 2, v_t, lo_t, hi_t)
-    for xi, v in zip(x - w / 2, v_o):
-        ax.text(xi, v + 1, f"{v:.1f}", ha="center", fontsize=12)
-    for xi, v, h in zip(x + w / 2, v_t, hi_t):
-        ax.text(xi, h + 1, f"{v:.0f}", ha="center", fontsize=12, fontweight="bold")
+    series = [(TEACHER5, tint(TEACHER, 0.55), SL("First planner teacher, exact state (50 validation scenes)",
+                                                  "first planner (exact state)")),
+              (TEACHER5_NOISY, TEACHER, SL("Teacher reading the state with 1 px / 1° noise (same scenes)",
+                                           "teacher, 1 px / 1° noise"))]
+    ax.bar(x - w, v_o, w, color=ORIG, edgecolor="white", lw=1.5, zorder=3,
+           label=SL("Original policy (1000 test scenes)", "original"))
+    for xi, v in zip(x - w, v_o):
+        ax.text(xi, v + 1, f"{v:.0f}" if slide() else f"{v:.1f}", ha="center", fontsize=12)
+    if half():
+        for t in ax.texts:
+            t.set_visible(False)
+    for j, (vals, c, lbl) in enumerate(series):
+        v_t = [vals[s] * 2 for s in shapes]
+        lo_t, hi_t = zip(*[wilson(vals[s], 50) for s in shapes])
+        if slide():
+            hi_t = v_t
+        ax.bar(x + w * j, v_t, w, color=c, edgecolor="white", lw=1.5, zorder=3, label=lbl)
+        if not slide():
+            errbars(ax, x + w * j, v_t, lo_t, hi_t)
+        for xi, v, h in zip(x + w * j, v_t, hi_t):
+            if slide() and j == 0:
+                continue
+            ax.text(xi, h + 1, f"{v:.0f}", ha="center", fontsize=12, fontweight="bold" if j == 1 else None)
     ax.set_xticks(x, [disp(s) for s in shapes])
     ax.grid(False, axis="x")
     ax.set_ylim(0, 112)
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success")
     legend_top(ax, ncol=1, fontsize=12)
-    note(fig, "First sampling-planner teacher; reads exact simulator state, plans in the learned world model. Typed in "
-              "from LEARNING_FINDINGS.md section 5.")
+    note(fig, "Both teachers read the simulator's exact state and plan in the learned world model (training data only). "
+              "Small state noise stopped the planner repeating the same nearly-right push (LEARNING_FINDINGS.md sections "
+              "5-6; typed_in_numbers.json).")
     return fig
 
 
+def _teacher_student_rows(shapes):
+    sv = student_val(shapes)
+    t = [(TEACHER_VAL[s][0], TEACHER_VAL[s][1]) for s in shapes]
+    st = [sv[s] for s in shapes]
+    return t, st
+
+
+TEACHER_HATCH = {"wm2 v3": None, "wm2 v2": "//", "wm2 v1": ".."}
+
+
 def fig_method_teacher_26():
-    shapes = sorted(TEACHER26, key=lambda s: -TEACHER26[s])
-    fig, ax = plt.subplots(figsize=FULL)
+    if half():
+        return _teacher_26_summary()
+    shapes = sorted(TRAINED27, key=lambda s: (-TEACHER_VAL[s][0], s))
+    t, st = _teacher_student_rows(shapes)
+    fig, (ax, axp) = plt.subplots(1, 2, figsize=FULL, sharey=True, gridspec_kw={"width_ratios": [27, 2.6], "wspace": 0.03})
     x = np.arange(len(shapes))
-    w = 0.27
-    v_o = [rate("D051", "original", [s])[0] for s in shapes]
-    v_s = [rate("D051", D051["m96"], [s])[0] for s in shapes]
-    v_t = [TEACHER26[s] * 2 for s in shapes]
-    ax.bar(x - w, v_o, w, color=ORIG, edgecolor="white", lw=1, zorder=3, label="Original (test)")
-    ax.bar(x, v_s, w, color=M96, edgecolor="white", lw=1, zorder=3, label="Ours, 26 letters (test)")
-    ax.bar(x + w, v_t, w, color=TEACHER, edgecolor="white", lw=1, zorder=3, label="Teacher (validation)")
-    ax.set_xticks(x, [disp(s) for s in shapes], fontsize=13)
+    w = 0.4
+    for i, s in enumerate(shapes):
+        ax.bar(x[i] - w / 2, 100 * t[i][0] / t[i][1], w, color=TEACHER, edgecolor="white", lw=0.8, zorder=3,
+               hatch=TEACHER_HATCH[TEACHER_VAL[s][2]])
+    ax.bar(x + w / 2, [100 * k / n for k, n in st], w, color=M96, edgecolor="white", lw=0.8, zorder=3)
+    ax.set_xticks(x, stagger([SHORT.get(s, s) if slide() else disp(s).replace("near-T", "nT") for s in shapes]),
+                  fontsize=12 if not slide() else None)
+    ax.set_xlim(-0.6, len(shapes) - 0.4)
     ax.grid(False, axis="x")
-    ax.set_ylim(0, 105)
+    kt, nt = sum(a for a, _ in t), sum(b for _, b in t)
+    ks, ns = sum(a for a, _ in st), sum(b for _, b in st)
+    for j, (k, n, c) in enumerate(((kt, nt, TEACHER), (ks, ns, M96))):
+        v = 100 * k / n
+        lo, hi = wilson(k, n)
+        axp.bar(j, v, 0.8, color=c, edgecolor="white", zorder=3)
+        errbars(axp, [j], [v], [lo], [hi])
+        axp.text(j, hi + 1.5, f"{v:.0f}", ha="center", fontsize=13, fontweight="bold")
+    axp.set_xticks([0.5], ["All 27"])
+    axp.set_xlim(-0.6, 1.6)
+    axp.spines["left"].set_visible(False)
+    axp.tick_params(axis="y", left=False)
+    axp.grid(False, axis="x")
+    ax.set_ylim(0, 108)
     ax.yaxis.set_major_formatter(PCT)
-    ax.set_ylabel("Success")
-    legend_top(ax, ncol=3, fontsize=12)
-    note(fig, "Teacher: 50 validation scenes per letter (typed in from LEARNING_FINDINGS.md section 7). Original and "
-              f"ours: {TEST_NOTE}.")
+    ax.set_ylabel("Validation success\n(same 50 scenes per shape)" if not slide() else "Validation success")
+    handles = [patch(TEACHER, "Planning teacher (reads exact state)"),
+               patch(M96, f"Camera student, 26 letters (round {STUDENT_VAL_ROUND})")]
+    if not slide():
+        handles += [Patch(facecolor=TEACHER, edgecolor="white", hatch="//", label="teacher checked with world model v2"),
+                    Patch(facecolor=TEACHER, edgecolor="white", hatch="..", label="... with world model v1")]
+    legend_top(ax, handles=handles, ncol=2, fontsize=12)
+    note(fig, "Teacher: teacher_validation.csv (LEARNING_FINDINGS.md sections 6-7); plain bars = world model v3 (26-letter "
+              "check), hatched = earlier checks not repeated with v3. Student: the round-"
+              f"{STUDENT_VAL_ROUND} pick on the same scenes (validation_rounds.csv); round 50 was never validated. "
+              "nT = near-T.")
+    return fig
+
+
+def _teacher_26_summary():
+    groups = [("10 earlier", OLD10), ("17 newer", NEW17), ("All 27", TRAINED27)]
+    fig, ax = plt.subplots(figsize=HALF)
+    w = 0.38
+    for gi, (gname, shapes) in enumerate(groups):
+        t, st = _teacher_student_rows(shapes)
+        for j, (k, n, c) in enumerate(((sum(a for a, _ in t), sum(b for _, b in t), TEACHER),
+                                       (sum(a for a, _ in st), sum(b for _, b in st), M96))):
+            v = 100 * k / n
+            ax.bar(gi - w / 2 + w * j, v, w, color=c, edgecolor="white", zorder=3)
+            ax.text(gi - w / 2 + w * j, v + 2, f"{v:.0f}", ha="center", fontsize=14)
+    ax.set_xticks(range(len(groups)), [g for g, _ in groups])
+    ax.set_ylim(0, 112)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Validation success")
+    legend_top(ax, handles=[patch(TEACHER, "teacher"), patch(M96, "camera student")], ncol=2)
     return fig
 
 
 def fig_method_teacher_gap():
-    # TYPED-IN: teacher totals (LEARNING_FINDINGS.md sections 5 and 7); students from validation_rounds.csv
+    # teacher totals: typed_in_numbers.json (5 and 10 shapes) and teacher_validation.csv (27 shapes, summed);
+    # students: the picked validation round of each stage (validation_rounds.csv)
     tt = TYPED["teacher_totals"]["values"]
-    rows = [("5 shapes", tt["5 shapes"][0] / tt["5 shapes"][1] * 100, "5 shapes", "correction rounds", 7, FIVE),
-            ("10 shapes", tt["10 shapes"][0] / tt["10 shapes"][1] * 100, "10 shapes", "96 px main line", 14, TEN)]
+    k27 = sum(v[0] for v in TEACHER_VAL.values()); n27 = sum(v[1] for v in TEACHER_VAL.values())
+    rows = [("5 shapes", tt["5 shapes"], "5 shapes", "correction rounds", _PR["5-shape round 7"][2], FIVE),
+            ("10 shapes", tt["10 shapes"], "10 shapes", "96 px main line", _PR["10-shape 96 px"][2] + 1, TEN),
+            ("27 shapes", (k27, n27), "27 shapes", "96 px line", STUDENT_VAL_ROUND + 1, M96)]
     fig, ax = plt.subplots(figsize=HALF)
     x = np.arange(len(rows))
     w = 0.36
-    for i, (name, t, stage, line, step, c) in enumerate(rows):
+    for i, (name, (tk, tn), stage, line, step, c) in enumerate(rows):
         s, y, *_ = val_line(stage, line)
         v = y[list(s).index(step)]
+        t = 100 * tk / tn
         ax.bar(i - w / 2, t, w, color=TEACHER, edgecolor="white", zorder=3)
         ax.bar(i + w / 2, v, w, color=c, edgecolor="white", zorder=3)
         ax.text(i - w / 2, t + 1.5, f"{t:.0f}", ha="center", fontsize=13)
         ax.text(i + w / 2, v + 1.5, f"{v:.0f}", ha="center", fontsize=13)
     ax.set_xticks(x, [r[0] for r in rows])
-    ax.set_ylim(0, 90)
+    ax.set_ylim(0, 100)
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
     ax.set_ylabel("Validation success")
-    ax.legend(handles=[patch(TEACHER, "teacher (exact state)"), patch(FIVE, "camera student, 5 shapes"),
-                       patch(TEN, "camera student, 10 shapes")], loc="upper left", fontsize=12)
-    note(fig, "Students: best validation round (round 7; round 13). Teacher totals typed in from "
-              "LEARNING_FINDINGS.md sections 5 and 7.")
+    if slide():
+        for xx, t, c in ((-w / 2, "teacher", INK), (w / 2, "student", "white")):
+            ax.text(xx, 4, t, rotation=90, ha="center", va="bottom", color=c, fontsize=14)
+    else:
+        legend_top(ax, handles=[patch(TEACHER, "teacher (exact state)"), patch(FIVE, "student, 5"),
+                                patch(TEN, "student, 10"), patch(M96, "student, 26 letters")], ncol=2, fontsize=12)
+    note(fig, "Same 50 validation scenes per shape for teacher and camera student. Teachers: the noisy-state planner that "
+              "labelled each stage (5 shapes 191/250, 10 shapes 390/500; 27 shapes: latest check per shape, "
+              "teacher_validation.csv). Students: the picked round of each stage (rounds 7, 13, 44).")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Typed-in tables (every number from the docs lives in presentation/data/, each row with its source)
+# ----------------------------------------------------------------------------------------------------------------------
+EARLY = read("early_attempts.csv")
+WMACC = read("world_model_accuracy.csv")
+TPLAN = read("teacher_planner.csv")
+TIMELINE = read("timeline.csv")
+DSIZES = read("dataset_sizes.csv")
+TRAIN = read("training_rounds.csv")
+LOSS = read("training_loss_curves.csv")
+MF = TYPED["method_pipeline"]
+
+
+def _f(x):
+    return None if x in ("", None) else float(x)
+
+
+def ea_conditions(attempt):
+    out = []
+    for r in EARLY:
+        if r["attempt"] == attempt and r["condition"] not in out:
+            out.append(r["condition"])
+    return out
+
+
+def ea(attempt, condition, shape, metric, field="value"):
+    rows = [r for r in EARLY if r["attempt"] == attempt and r["condition"] == condition and r["shape"] == shape
+            and r["metric"] == metric]
+    assert len(rows) == 1, (attempt, condition, shape, metric, len(rows))
+    return _f(rows[0][field])
+
+
+def ea_row(attempt, condition, shape, metric):
+    rows = [r for r in EARLY if r["attempt"] == attempt and r["condition"] == condition and r["shape"] == shape
+            and r["metric"] == metric]
+    assert len(rows) == 1, (attempt, condition, shape, metric, len(rows))
+    return rows[0]
+
+
+def tp(experiment, condition=None, shape=None):
+    return [r for r in TPLAN if r["experiment"] == experiment and (condition is None or r["condition"] == condition)
+            and (shape is None or r["shape"] == shape)]
+
+
+def tp_conditions(experiment):
+    out = []
+    for r in TPLAN:
+        if r["experiment"] == experiment and r["condition"] not in out:
+            out.append(r["condition"])
+    return out
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# final_blends_all: every pre-registered blend test (D040-D043)
+# ----------------------------------------------------------------------------------------------------------------------
+BLEND_LABEL = {"D040 primary": ("D040: 70% blend, whole network", "D040 whole 70%"),
+               "D040 secondary": ("D040, 2nd look: 70% encoder", "D040 enc. 70%"),
+               "D041": ("D041: 70% encoder, fresh pool", "D041 enc. 70%"),
+               "D042: original action network + 30%": ("D042: 30% encoder, fresh pool", "D042 enc. 30%"),
+               "D042: original action network + 50%": ("D042: 50% encoder, fresh pool", "D042 enc. 50%"),
+               "D043": ("D043: 50% encoder, replication", "D043 enc. 50%")}
+
+
+def _blend_label(cond, short=False):
+    for k, v in BLEND_LABEL.items():
+        if cond.startswith(k):
+            return v[1 if short else 0]
+    return cond
+
+
+def fig_final_blends_all():
+    tests = ea_conditions("blend_tests")
+    shapes = FIVE_SHAPES if not slide() else ["T", "Y", "D"]
+    lims = {"T": (-10, 8), "T_narrow": (-10, 8), "Y": (-1, 13), "D": (-1, 7), "L": (-1.2, 1.2)}
+    ratios = {"T": 18, "T_narrow": 18, "Y": 14, "D": 8 if not slide() else 10, "L": 5}
+    fig, axes = plt.subplots(1, len(shapes), figsize=FULL, sharey=True,
+                             gridspec_kw={"width_ratios": [ratios[s] for s in shapes], "wspace": 0.12})
+    ys = np.arange(len(tests))
+    for ax, s in zip(axes, shapes):
+        for i, t in enumerate(tests):
+            passed = ea("blend_tests", t, "all", "passed") == 1
+            r = ea_row("blend_tests", t, s, "difference_pts")
+            d, lo, hi = _f(r["value"]), _f(r["ci_low"]), _f(r["ci_high"])
+            c = FIVE if passed else ORIG_LINE
+            if lo is not None:
+                ax.plot([lo, hi], [i, i], color=c, lw=2.2, solid_capstyle="butt", zorder=3)
+            ax.plot(d, i, "o", ms=8 if not slide() else 7, mfc=c if passed else "white", mec=c, mew=1.8, zorder=4)
+        ax.axvline(0, color=INK2, lw=1.0, zorder=2)
+        if s in ("T", "T_narrow"):
+            ax.axvline(-5, color=INK2, lw=1.0, ls=(0, (3, 2)), zorder=2)
+            if s == "T" and not slide():
+                ax.text(-4.7, len(tests) - 0.5, "margin −5", ha="left", va="bottom", fontsize=11, color=INK2)
+        ax.set_xlim(*lims[s])
+        ax.set_title(disp(s), loc="center", fontsize=15)
+        ax.grid(True, axis="x")
+        ax.grid(False, axis="y")
+        ax.xaxis.set_major_formatter(SIGNED)
+        ax.xaxis.set_major_locator(MultipleLocator({"T": 5, "T_narrow": 5, "Y": 5, "D": 3, "L": 1}[s] if not slide()
+                                                   else {"T": 10, "Y": 10, "D": 5}[s]))
+        if s != "T":
+            ax.tick_params(axis="y", left=False)
+    axes[0].set_yticks(ys, [_blend_label(t, short=slide()) for t in tests], fontsize=None if slide() else 12)
+    axes[0].set_ylim(len(tests) - 0.5, -0.6)
+    for i, t in enumerate(tests):
+        passed = ea("blend_tests", t, "all", "passed") == 1
+        axes[-1].text(1.15, i, "passed" if passed else "failed", transform=axes[-1].get_yaxis_transform(), va="center",
+                      ha="left", fontsize=12, fontweight="bold" if passed else None, color=INK if passed else INK2)
+    fig.supxlabel(SL("Change in success vs. the original policy (points), paired by scene", "Change vs. original (points)"),
+                  fontsize=14 if not slide() else 16, y=0.0 if not slide() else None)
+    note(fig, "Pre-registered rule (D040): T and near-T lower bounds at least −5 points, at least one of Y, D, L clearly "
+              "better, none clearly worse. 1000 fresh scenes per letter (D040), 2000 on new pools (D041-D043); 95% "
+              "intervals (D042: 97.5%, two candidates). Filled = passed. Data: early_attempts.csv (D040 also in "
+              "final_tests_paired.csv).")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Diagrams: method pipeline, policy interface, world model structure (numbers from typed_in_numbers.json)
+# ----------------------------------------------------------------------------------------------------------------------
+KIND = {"privileged": (tint(TEACHER, 0.78), TEACHER), "deployed": (tint(M96, 0.82), M96),
+        "data": ("#f1f0eb", AXIS), "copied": ("#f1f0eb", INK2), "learned": (tint(TEACHER, 0.78), TEACHER),
+        "io": ("white", AXIS)}
+
+
+def _diagram_axes(size=None):
+    """Axes filling the whole canvas, 100 units wide, equal aspect (1 unit = 1% of the width)."""
+    if slide():
+        size = VARIANT_SIZE[MODE["name"]]
+    fig = plt.figure(figsize=size or FULL, layout="none")
+    ax = fig.add_axes([0, 0, 1, 1])
+    w, h = fig.get_size_inches()
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100 * h / w)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    return fig, ax
+
+
+def _units_per_pt(ax):
+    return 100 / (ax.figure.get_size_inches()[0] * 72)
+
+
+def _box(ax, x, y, w, h, title, body="", kind="data", title_fs=13, body_fs=11, lw=1.6):
+    fc, ec = KIND[kind]
+    title_fs, body_fs = FS(title_fs), FS(body_fs)
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0,rounding_size=1.6", fc=fc, ec=ec, lw=lw, zorder=2))
+    if body:
+        u = _units_per_pt(ax)
+        pad = 0.55 * title_fs * u
+        th = title.count("\n") + 1
+        ax.text(x + w / 2, y + h - pad, title, ha="center", va="top", fontsize=title_fs, fontweight="bold", color=INK,
+                zorder=3, linespacing=1.1)
+        top = y + h - pad - th * 1.18 * title_fs * u
+        ax.text(x + w / 2, (top + y + 0.4 * pad) / 2, body, ha="center", va="center", fontsize=body_fs, color=INK,
+                zorder=3, linespacing=1.22)
+    else:
+        ax.text(x + w / 2, y + h / 2, title, ha="center", va="center", fontsize=title_fs, fontweight="bold", color=INK,
+                zorder=3, linespacing=1.15)
+
+
+def _arrow(ax, p0, p1, label=None, lpos=None, rad=0.0, color=INK2, fs=11.5, ha="center", va="bottom", lw=1.6):
+    ax.add_patch(FancyArrowPatch(p0, p1, arrowstyle="-|>", mutation_scale=15, lw=lw, color=color, zorder=4,
+                                 connectionstyle=f"arc3,rad={rad}", shrinkA=0, shrinkB=0))
+    if label:
+        x, y = lpos if lpos else ((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2 + 0.8)
+        ax.text(x, y, label, ha=ha, va=va, fontsize=fs, color=INK2, zorder=5, linespacing=1.15)
+
+
+def _kind_legend(ax, items, x, y, dy=4.2, fs=12, horizontal=False, dx=None):
+    for i, (kind, text) in enumerate(items):
+        fc, ec = KIND[kind]
+        xx, yy = (x + i * dx, y) if horizontal else (x, y - i * dy)
+        ax.add_patch(FancyBboxPatch((xx, yy - 1.2), 3.6, 2.4, boxstyle="round,pad=0,rounding_size=0.6", fc=fc, ec=ec,
+                                    lw=1.4, zorder=2))
+        ax.text(xx + 4.8, yy, text, ha="left", va="center", fontsize=fs, color=INK, zorder=3)
+
+
+def fig_method_pipeline():
+    m = MF
+    fig, ax = _diagram_axes()
+    cand = f"{round(m['planner_candidates_per_step'], -1):,.0f}"
+    if slide():
+        bw, bh = 31, 21
+        X = [0.5, 34.5, 68.5]
+        yt, yb = 32.5, 7
+        _box(ax, X[0], yt, bw, bh, "Rollouts", "original policy\n+ action noise", "data")
+        _box(ax, X[1], yt, bw, bh, "World model", "exact pusher,\nlearned block", "privileged")
+        _box(ax, X[2], yt, bw, bh, "Planner teacher", f"≈{cand} plans per\nstep, exact state", "privileged")
+        _box(ax, X[2], yb, bw, bh, "Demos", f"intended\n{m['plan_steps']}-step plans", "data")
+        _box(ax, X[1], yb, bw, bh, "Camera policy", f"{m['camera_frames']} frames + pusher\n→ {m['plan_steps']} steps, "
+             f"runs {m['executed_steps']}", "deployed")
+        _box(ax, X[0], yb, bw, bh, "Corrections", "policy drives,\nteacher labels", "privileged")
+        my = yt + bh / 2
+        _arrow(ax, (X[0] + bw, my), (X[1], my))
+        _arrow(ax, (X[1] + bw, my), (X[2], my))
+        _arrow(ax, (X[2] + bw / 2, yt), (X[2] + bw / 2, yb + bh))
+        _arrow(ax, (X[2], yb + bh * 0.5), (X[1] + bw, yb + bh * 0.5))
+        _arrow(ax, (X[1], yb + bh * 0.72), (X[0] + bw, yb + bh * 0.72))
+        _arrow(ax, (X[0] + bw, yb + bh * 0.28), (X[1], yb + bh * 0.28))
+        _arrow(ax, (X[2] + 4, yt), (X[0] + bw - 5, yb + bh), color=TEACHER)
+        _kind_legend(ax, [("privileged", "training only"), ("deployed", "deployed"), ("data", "data")], 1.5, 2.6,
+                     horizontal=True, dx=33, fs=16)
+        return fig
+    yt, ht = 30, 24
+    tops = [(0.5, 21, "Machine rollouts",
+             f"original policy +\naction noise ({'/'.join(str(v) for v in m['action_noise_px'])} px):\n"
+             f"{m['dynamics_episodes']:,} episodes, {m['dynamics_controls_thousands']}k\ncontrols; no human demos", "data"),
+            (26.5, 21, "Structured\nworld model", "pusher motion: exact\ncontact gate: exact\nblock motion: learned",
+             "privileged"),
+            (52.5, 24, "Sampling planner\nteacher",
+             f"scores ≈{cand} candidate\nplans per step in the world\nmodel ({m['planner_random_search_iterations']} × "
+             f"{m['planner_samples_per_iteration']} random search +\n{m['planner_structured_pushes']} structured pushes, "
+             f"{m['planner_horizon_controls']} steps);\nreads the exact state with\n{m['teacher_state_noise_px']} px / "
+             f"{m['teacher_angle_noise_deg']}° noise", "privileged"),
+            (81.5, 18, "Teacher\ndemos", f"runs in the\nsimulator; labels\n= its intended\n{m['plan_steps']}-step plans",
+             "data")]
+    for x, w, t, b, k in tops:
+        _box(ax, x, yt, w, ht, t, b, k)
+    my = yt + ht / 2
+    for (x0, w0, *_), (x1, *_) in zip(tops[:-1], tops[1:]):
+        _arrow(ax, (x0 + w0, my), (x1, my))
+    ax.text(24.0, my + 1.0, "fit", ha="center", va="bottom", fontsize=11, color=INK2)
+    yb, hb = 2, 21
+    _box(ax, 71, yb, 28.5, hb, "Camera policy (deployed)",
+         f"official Diffusion Policy recipe:\n{m['camera_frames']} frames {m['camera_px']} × {m['camera_px']} + pusher "
+         f"position\n→ {m['plan_steps']} future targets,\nexecutes the first {m['executed_steps']}", "deployed")
+    _box(ax, 29, yb, 33, hb, "Correction rounds (repeated)",
+         f"the policy drives; the teacher takes\n"
+         f"{m['teacher_share_of_decisions_in_corrections']:.0%} of decisions and labels every\nvisited state; retrain "
+         f"on everything so\nfar, incl. {m['human_T_episodes']} human T demos", "privileged")
+    _arrow(ax, (90.5, yt), (90.5, yb + hb), "copy the\nplans", (91.7, (yt + yb + hb) / 2), ha="left", va="center")
+    _arrow(ax, (71, yb + hb * 0.66), (62, yb + hb * 0.66), "drives new\nscenes", (66.5, yb + hb * 0.66 + 0.8), fs=11)
+    _arrow(ax, (62, yb + hb * 0.24), (71, yb + hb * 0.24), "retrain", (66.5, yb + hb * 0.24 - 0.8), va="top", fs=11)
+    _arrow(ax, (59, yt), (53, yb + hb), "labels\nvisited states", (58.6, (yt + yb + hb) / 2 + 0.2), ha="left",
+           va="center", color=TEACHER, fs=11)
+    _kind_legend(ax, [("privileged", "training only:\nreads exact simulator\nstate"), ("deployed", "deployed:\ncamera only"),
+                      ("data", "data")], 1.0, 20.0, dy=7.6, fs=11.5)
+    return fig
+
+
+def fig_method_pipeline_simple():
+    fig, ax = _diagram_axes((10, 3.4) if not slide() else None)
+    if slide():
+        ax.set_ylim(0, 100 * VARIANT_SIZE[MODE["name"]][1] / VARIANT_SIZE[MODE["name"]][0])
+    H = ax.get_ylim()[1]
+    n = 4
+    gap = 4.5
+    bw = (100 - 1 - gap * (n - 1)) / n
+    bh = 15 if not slide() else 20
+    y0 = (H - bh) / 2 + (2.5 if not slide() else 4)
+    items = [("Machine\nrollouts", "data"), ("World\nmodel", "privileged"), ("Planner\nteacher", "privileged"),
+             (SL("Camera policy,\n26 letters", "Camera\npolicy"), "deployed")]
+    xs = [0.5 + i * (bw + gap) for i in range(n)]
+    for x, (t, k) in zip(xs, items):
+        _box(ax, x, y0, bw, bh, t, kind=k, title_fs=17 if not slide() else 16)
+    for i in range(n - 1):
+        _arrow(ax, (xs[i] + bw, y0 + bh / 2), (xs[i + 1], y0 + bh / 2), lw=2)
+    # correction loop between teacher and policy
+    a, b = xs[2] + bw / 2, xs[3] + bw / 2
+    ax.add_patch(FancyArrowPatch((b, y0), (a, y0), arrowstyle="-|>", mutation_scale=16, lw=2, color=TEACHER,
+                                 connectionstyle="arc3,rad=-0.45", zorder=4))
+    ax.text((a + b) / 2, y0 - (7.5 if not slide() else 9.5), "correction rounds", ha="center", va="top",
+            fontsize=14 if not slide() else 16, color=INK2)
+    if not slide():
+        ax.text(xs[1] + bw + gap / 2, y0 + bh + 2.5, "training only (reads exact simulator state)", ha="center",
+                va="bottom", fontsize=13, color=INK2)
+        ax.plot([xs[1], xs[2] + bw], [y0 + bh + 1.6] * 2, color=TEACHER, lw=2)
+        ax.text(xs[3] + bw / 2, y0 + bh + 2.5, "deployed: camera only", ha="center", va="bottom", fontsize=13,
+                color=INK2)
+        ax.plot([xs[3], xs[3] + bw], [y0 + bh + 1.6] * 2, color=M96, lw=2)
+    else:
+        ax.text(xs[1] + bw + gap / 2, y0 + bh + 2, "training only", ha="center", va="bottom", fontsize=16, color=INK2)
+        ax.plot([xs[1], xs[2] + bw], [y0 + bh + 1.2] * 2, color=TEACHER, lw=2)
+        ax.text(xs[3] + bw / 2, y0 + bh + 2, "deployed", ha="center", va="bottom", fontsize=16, color=INK2)
+        ax.plot([xs[3], xs[3] + bw], [y0 + bh + 1.2] * 2, color=M96, lw=2)
+    return fig
+
+
+# PushT-style T block (two rectangles), in block coordinates; used only for schematic camera frames
+T_POLY = np.array([(-60, 0), (60, 0), (60, 30), (15, 30), (15, 120), (-15, 120), (-15, 30), (-60, 30)], float)
+T_POLY[:, 1] -= 45
+
+
+def _t_poly(cx, cy, ang_deg, scale):
+    a = math.radians(ang_deg)
+    R = np.array([[math.cos(a), -math.sin(a)], [math.sin(a), math.cos(a)]])
+    return (T_POLY * scale) @ R.T + np.array([cx, cy])
+
+
+SCENE = dict(goal=(48, 46, 45), block=(42, 58, 15), scale=0.19)
+
+
+def _scene(ax, pusher, plan=None, executed=8, dot=11):
+    ax.set_xlim(0, 96)
+    ax.set_ylim(0, 96)
+    ax.set_aspect("equal")
+    ax.add_patch(Rectangle((0, 0), 96, 96, fc="#f6f6f3", ec=AXIS, lw=1.2, zorder=0))
+    gx, gy, ga = SCENE["goal"]
+    bx, by, ba = SCENE["block"]
+    ax.add_patch(Polygon(_t_poly(gx, gy, ga, SCENE["scale"]), closed=True, fc="none", ec="#2fa84f", lw=1.8, zorder=1))
+    ax.add_patch(Polygon(_t_poly(bx, by, ba, SCENE["scale"]), closed=True, fc="#9a9993", ec="none", zorder=2))
+    if plan is not None:
+        ax.scatter(plan[executed:, 0], plan[executed:, 1], s=dot, color="#f3a6c0", zorder=3, lw=0)
+        ax.scatter(plan[:executed, 0], plan[:executed, 1], s=dot * 1.2, color="#d6232a", zorder=4, lw=0)
+    ax.add_patch(Circle(pusher, 3.0, fc="#2a62d6", ec="white", lw=0.8, zorder=5))
+    ax.set_xticks([])
+    ax.set_yticks([])
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+
+
+def _plan_points(start, n):
+    t = np.linspace(0, 1, n + 1)[1:]
+    p0, p1, p2 = np.array(start), np.array([23, 50]), np.array([35, 52])
+    pts = ((1 - t) ** 2)[:, None] * p0 + (2 * (1 - t) * t)[:, None] * p1 + (t ** 2)[:, None] * p2
+    return pts
+
+
+def fig_policy_interface():
+    m = MF
+    sl = slide()
+    fig, ax = _diagram_axes((10, 3.9) if not sl else None)
+    H = ax.get_ylim()[1]
+    pusher0, pusher1 = (20, 30), (22, 34)
+    plan = _plan_points(pusher1, m["plan_steps"])
+    handles = [Line2D([], [], marker="o", color="#d6232a", ls="none", ms=8, label=f"executed (first {m['executed_steps']})"),
+               Line2D([], [], marker="o", color="#f3a6c0", ls="none", ms=8, label="rest of the plan"),
+               Line2D([], [], marker="o", color="#2a62d6", ls="none", ms=9, label="pusher"),
+               Line2D([], [], color="#2fa84f", lw=2, label="goal"),
+               Patch(facecolor="#9a9993", label="block")]
+    if sl:
+        fw, fy = 25, 20
+        for (x, y), p in zip(((4.0, fy + 3.0), (0.5, fy)), (pusher0, pusher1)):
+            _scene(ax.inset_axes([x, y, fw, fw], transform=ax.transData), p)
+        ax.text(0.5 + fw / 2 + 1.5, fy - 1.0, f"{m['camera_frames']} frames\n+ pusher position", ha="center", va="top",
+                fontsize=16, color=INK)
+        x_net, nw = 36, 26
+        _box(ax, x_net, fy + 3, nw, fw - 3, "Policy", f"{m['denoising_steps']} denoising\nsteps", "deployed")
+        _arrow(ax, (x_net - 6, fy + fw / 2), (x_net - 0.8, fy + fw / 2), lw=2)
+        x_out = x_net + nw + 5.5
+        _arrow(ax, (x_net + nw + 0.5, fy + fw / 2), (x_out - 0.6, fy + fw / 2), lw=2)
+        fo = 100 - x_out - 0.5
+        _scene(ax.inset_axes([x_out, fy + fw - fo, fo, fo], transform=ax.transData), pusher1, plan,
+               executed=m["executed_steps"], dot=24)
+        ax.text(x_out + fo / 2, fy + fw + 0.8, f"{m['plan_steps']} targets", ha="center", va="bottom", fontsize=16,
+                color=INK)
+        ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, 0.0), ncol=3, handletextpad=0.3,
+                  columnspacing=0.8, borderaxespad=0.2)
+        return fig
+    fw = 20
+    fy = H - fw - 6
+    for i, (x, p) in enumerate(zip([1, 1 + fw + 2], (pusher0, pusher1))):
+        _scene(ax.inset_axes([x, fy, fw, fw], transform=ax.transData), p)
+        ax.text(x + fw / 2, fy + fw + 1, "camera frame t−1" if i == 0 else "camera frame t", ha="center",
+                va="bottom", fontsize=12, color=INK2)
+    ax.text(1 + fw + 1, fy - 2.5, f"{m['camera_frames']} frames, {m['camera_px']} × {m['camera_px']} px\n"
+            f"+ pusher position (x, y)", ha="center", va="top", fontsize=13, color=INK)
+    x_net, nw = 1 + 2 * fw + 2 + 6, 22
+    _box(ax, x_net, fy + fw * 0.12, nw, fw * 0.76, "Diffusion policy",
+         f"image encoder + U-Net\n{m['denoising_steps']} denoising steps", "deployed", title_fs=13, body_fs=12)
+    _arrow(ax, (x_net - 5.5, fy + fw / 2), (x_net - 0.5, fy + fw / 2), lw=2)
+    x_out = x_net + nw + 6
+    _arrow(ax, (x_net + nw + 0.5, fy + fw / 2), (x_out - 0.5, fy + fw / 2), lw=2)
+    _scene(ax.inset_axes([x_out, fy, fw, fw], transform=ax.transData), pusher1, plan, executed=m["executed_steps"],
+           dot=18)
+    ax.text(x_out + fw / 2, fy + fw + 1, f"output: {m['plan_steps']} future pusher targets", ha="center",
+            va="bottom", fontsize=12, color=INK2)
+    ax.text(x_out + fw + 2, fy + fw * 0.62, f"first {m['executed_steps']} executed,\nthen plan again\n"
+            f"(every {m['executed_steps']} controls)", ha="left", va="center", fontsize=12, color=INK)
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.02), ncol=5, fontsize=12, handletextpad=0.4,
+              columnspacing=1.2)
+    return fig
+
+
+def fig_wm_structure():
+    m = MF
+    sl = slide()
+    fig, ax = _diagram_axes((10, 4.0) if not sl else None)
+    H = ax.get_ylim()[1]
+    if sl:
+        bw, bh = 31, 18
+        X = [0.5, 34.5, 68.5]
+        yt, yb = H - bh - 1, 6
+        _box(ax, X[0], yt, bw, bh, "State + action", kind="io", title_fs=16)
+        _box(ax, X[1], yt, bw, bh, "Pusher motion", "copied, exact", "copied")
+        _box(ax, X[2], yt, bw, bh, "Contact gate", "copied, exact", "copied")
+        _box(ax, X[2], yb, bw, bh, "Block motion", "learned", "learned")
+        _box(ax, X[1], yb, bw, bh, "Next state", kind="io", title_fs=16)
+        _arrow(ax, (X[0] + bw, yt + bh / 2), (X[1], yt + bh / 2))
+        _arrow(ax, (X[1] + bw, yt + bh / 2), (X[2], yt + bh / 2))
+        _arrow(ax, (X[2] + bw * 0.7, yt), (X[2] + bw * 0.7, yb + bh), "contact", (X[2] + bw * 0.7 - 1.2, (yt + yb + bh) / 2),
+               ha="right", va="center", fs=16)
+        _arrow(ax, (X[2], yb + bh / 2), (X[1] + bw, yb + bh / 2))
+        _arrow(ax, (X[2] + bw * 0.2, yt), (X[1] + bw * 0.8, yb + bh), "no contact", (X[1] + bw * 0.55, (yt + yb + bh) / 2),
+               ha="right", va="center", fs=16)
+        _kind_legend(ax, [("copied", "copied"), ("learned", "learned")], 1.5, yb + bh - 4, dy=8, fs=16)
+        return fig
+    bh = 21
+    y = H - bh - 4.5
+    _box(ax, 0.5, y, 15, bh, "Now", "block pose\nand speed,\npusher position\n+ pusher target", "io")
+    _box(ax, 20, y, 21, bh, "Pusher motion",
+         f"copied from the simulator:\nPD law, {m['world_model_pd_substeps']} substeps\n(matches it to 0.0001 px)",
+         "copied")
+    _box(ax, 45.5, y, 21, bh, "Contact gate",
+         "copied: exact distance from\nthe pusher to the letter's\nrectangles; no contact →\nthe block does not move",
+         "copied", body_fs=11)
+    _box(ax, 71, y, 21, bh, "Block motion",
+         "learned: small network in\nthe block's own frame,\nonly while in contact", "learned")
+    _box(ax, 94, y, 5.5, bh, "Next", kind="io", title_fs=12)
+    for x0, x1 in ((15.5, 20), (41, 45.5), (66.5, 71), (92, 94)):
+        _arrow(ax, (x0, y + bh / 2), (x1, y + bh / 2))
+    _arrow(ax, (56, y), (96.75, y), "no contact: motion exactly zero", (76, y - 5.4), rad=0.18, va="top")
+    ax.text(81.5, y + bh + 1, f"trained on {m['dynamics_episodes']:,} machine rollouts of the original policy\n"
+            f"({m['dynamics_controls_thousands']}k controls, action noise "
+            f"{', '.join(str(v) for v in m['action_noise_px'])} px; no human demos)", ha="center", va="bottom",
+            fontsize=11, color=INK2)
+    _kind_legend(ax, [("copied", "copied from the simulator (exact)"), ("learned", "learned from data"),
+                      ("io", "input / output state")], 1, 2.5, horizontal=True, dx=33, fs=12)
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# World-model accuracy (world_model_accuracy.csv, LEARNING_FINDINGS.md section 4 and Open problems)
+# ----------------------------------------------------------------------------------------------------------------------
+def wm(item, model=None, shape=None, horizon=None, statistic=None, unit=None):
+    rows = [r for r in WMACC if r["item"] == item and (model is None or r["model"] == model)
+            and (shape is None or r["shape"] == shape) and (horizon is None or int(r["horizon_controls"]) == horizon)
+            and (statistic is None or r["statistic"] == statistic) and (unit is None or r["unit"] == unit)]
+    return rows
+
+
+def wm1(*a, **k):
+    rows = wm(*a, **k)
+    assert len(rows) == 1, (a, k, len(rows))
+    return float(rows[0]["value"])
+
+
+def fig_wm_accuracy():
+    sl = slide()
+    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.7], "wspace": 0.32})
+    need = wm1("requirement", shape="all", unit="px")
+    ax = axes[0]
+    S = "structured (wm2 v1)"
+    w = 0.36
+    for j, h in enumerate((8, 32) if not sl else (8,)):
+        g = wm1("contact_error", model="generic MLP", horizon=h, statistic="median", unit="px")
+        per = [wm1("contact_error", model=S, shape=s, horizon=h, statistic="median", unit="px") for s in FIVE_SHAPES]
+        xg, xs_ = (j - w / 2, j + w / 2) if not sl else (0, 1)
+        ww = w if not sl else 0.6
+        ax.bar(xg, g, ww, color=ORIG, edgecolor="white", zorder=3)
+        ax.bar(xs_, np.mean(per), ww, color=TEACHER, edgecolor="white", zorder=3)
+        ax.scatter(np.full(5, xs_), per, s=14, color=INK2, zorder=4, lw=0)
+        ax.text(xg, g + 0.08, f"{g:.2f}" if not sl else f"{g:.1f}", ha="center", va="bottom", fontsize=12)
+        ax.text(xs_, max(per) + 0.08, f"{min(per):.2f}-\n{max(per):.2f}" if not sl else f"{np.mean(per):.1f}",
+                ha="center", va="bottom", fontsize=11.5)
+    ax.axhline(need, color=INK, lw=1.1, ls=(0, (3, 2)))
+    if sl:
+        ax.set_xticks([0, 1], ["generic", "struct."])
+        ax.set_xlim(-0.5, 1.5)
+        ax.set_ylim(0, 2.9)
+        ax.text(1.5, need + 0.06, f"≈{need:g} px\nneeded", ha="right", va="bottom", fontsize=16, color=INK2)
+        ax.set_ylabel("Median error (px)")
+        ax.set_title("8 controls ahead", loc="left")
+    else:
+        ax.set_xticks([0, 1], ["8 controls", "32 controls"])
+        ax.set_xlim(-0.6, 1.6)
+        ax.set_ylim(0, 4.9)
+        ax.set_ylabel("Median contact error (px)")
+        ax.set_title("Typical error", loc="left", fontsize=15)
+        legend_top(ax, handles=[patch(ORIG, "generic network"), patch(TEACHER, "structured (dots: shapes)"),
+                                Line2D([], [], color=INK, lw=1.1, ls=(0, (3, 2)),
+                                       label=f"≈{need:g} px needed for success")], ncol=1, fontsize=12, y=1.08)
+    ax.grid(False, axis="x")
+    ax = axes[1]
+    xs = np.arange(len(FIVE_SHAPES) + 1)
+    for j, (h, c) in enumerate(((8, TEACHER), (32, tint(TEACHER, 0.45)))):
+        if sl and h == 32:
+            continue
+        off = (-0.16 + 0.32 * j) if not sl else 0
+        for i, s in enumerate(FIVE_SHAPES):
+            md = wm1("contact_error", model=S, shape=s, horizon=h, statistic="median", unit="px")
+            p9 = wm1("contact_error", model=S, shape=s, horizon=h, statistic="p90", unit="px")
+            ax.plot([i + off, i + off], [md, p9], color=c, lw=3, solid_capstyle="butt", zorder=3)
+            ax.plot(i + off, md, "o", color=c, ms=7, mec="white", mew=1, zorder=4)
+            ax.plot(i + off, p9, "_", color=INK2, ms=10, mew=2, zorder=4)
+    i = len(FIVE_SHAPES)
+    md = wm1("rare_large_errors", statistic="median")
+    p95 = wm1("rare_large_errors", statistic="95th percentile (1 in 20 at or above)")
+    worst = wm1("rare_large_errors", statistic="worst")
+    ax.plot([i, i], [md, worst], color=ORIG, lw=3, solid_capstyle="butt", zorder=3)
+    ax.plot(i, md, "o", color=ORIG, ms=7, mec="white", zorder=4)
+    for v, t in ((p95, f"1 in 20 ≥ {p95:g} px"), (worst, f"worst {worst:g} px"))[:2 if not sl else 1]:
+        ax.plot(i, v, "_", color=INK2, ms=10, mew=2, zorder=4)
+        ax.text(i - 0.12, v, t, ha="right", va="center", fontsize=11.5, color=INK2)
+    ax.axhline(need, color=INK, lw=1.1, ls=(0, (3, 2)))
+    ax.set_yscale("log")
+    ax.set_ylim(0.08, 150)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}"))
+    ax.set_xticks(xs, [disp(s).replace("near-T", "nT") for s in FIVE_SHAPES] + ["all,\nnear walls" if not sl else "all"])
+    ax.set_xlim(-0.6, len(xs) - 0.3)
+    ax.grid(False, axis="x")
+    ax.set_ylabel(SL("Contact error (px, log scale)", "Error (px, log)"))
+    ax.set_title(SL("Structured model: typical and rare errors", "Rare errors"), loc="left",
+                 fontsize=15)
+    if not sl:
+        legend_top(ax, handles=[Line2D([], [], color=TEACHER, lw=3, marker="o", label="8 controls"),
+                                Line2D([], [], color=tint(TEACHER, 0.45), lw=3, marker="o", label="32 controls"),
+                                Line2D([], [], color=INK2, marker="_", ls="none", ms=10, mew=2,
+                                       label="dot: median, bar: 90th percentile"),
+                                Line2D([], [], color=ORIG, lw=3, marker="o", label="500 16-control windows")],
+                   ncol=2, fontsize=12, y=1.08)
+    note(fig, f"Held-out base-policy rollouts with real contact (world_model_accuracy.csv; LEARNING_FINDINGS.md section 4 "
+              f"and Open problems). Near the goal the one-step error is {wm1('near_goal_one_step'):g} px; for the "
+              f"planner's own best push the model matched the simulator within 1 px in "
+              f"{wm1('planner_push_check', statistic='trials within 1 px'):.0f} of 15 trials. Large errors happen mostly "
+              "when the letter touches the arena wall, which the model has no input for.")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Earlier approaches (early_attempts.csv)
+# ----------------------------------------------------------------------------------------------------------------------
+EARLY_RAMP = [tint(FIVE, 0.62), tint(FIVE, 0.42), tint(FIVE, 0.22), FIVE, "#8a2c62"]
+
+
+def fig_oracle_bon():
+    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1.15, 1], "wspace": 0.42})
+    ax = axes[0]
+    shapes = FIVE_SHAPES
+    for i, s in enumerate(shapes):
+        n = ea("oracle_bon", "base policy", s, "successes", "of")
+        b = ea("oracle_bon", "base policy", s, "successes")
+        o = ea("oracle_bon", "simulator best-of-N (upper bound)", s, "successes")
+        ax.plot([100 * b / n, 100 * o / n], [i, i], color=tint(TEACHER, 0.4), lw=2.4, zorder=2)
+        ax.plot(100 * b / n, i, "o", color=ORIG, ms=10, mec="white", zorder=3)
+        ax.plot(100 * o / n, i, "D", color=TEACHER, ms=9, mec="white", zorder=4)
+        ax.text(max(100 * o / n, 100 * b / n) + 4, i, f"{b:.0f} → {o:.0f} of {n:.0f}", va="center", fontsize=12)
+    ax.set_yticks(range(len(shapes)), [disp(s) for s in shapes])
+    ax.set_ylim(len(shapes) - 0.5, -0.7)
+    ax.set_xlim(-3, 100)
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.set_xlabel("Success (same validation scenes)")
+    ax.set_title("Pick the best of 16 own plans\nwith the true simulator", loc="left", fontsize=14)
+    ax.legend(handles=[Line2D([], [], marker="o", color=ORIG, ls="none", ms=9, label="original policy"),
+                       Line2D([], [], marker="D", color=TEACHER, ls="none", ms=8, label="simulator best-of-N")],
+              loc="lower right", fontsize=12)
+    ax = axes[1]
+    conds = ea_conditions("oracle_imitation")
+    base = [c for c in conds if c.startswith("base")]
+    studs = [c for c in conds if not c.startswith("base")]
+    sh3 = ["T", "T_narrow", "Y"]
+    for i, s in enumerate(sh3):
+        bv = [ea("oracle_imitation", c, s, "successes") for c in base]
+        ax.add_patch(Rectangle((i - 0.38, min(bv) - 0.4), 0.76, max(bv) - min(bv) + 0.8, fc=tint(ORIG, 0.6), ec="none",
+                               zorder=1))
+        for j, c in enumerate(studs):
+            v = ea("oracle_imitation", c, s, "successes")
+            ax.plot(i - 0.27 + 0.18 * j, v, "o", color=EARLY_RAMP[j + 1], ms=8, mec="white", zorder=3)
+    ax.set_xticks(range(3), [disp(s) for s in sh3])
+    ax.set_xlim(-0.6, 2.6)
+    ax.set_ylim(0, 78)
+    ax.yaxis.set_major_locator(MultipleLocator(10))
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Successes of 100 (monitor test)")
+    ax.set_title("Imitating those choices", loc="left", fontsize=14)
+    ax.legend(handles=[Patch(facecolor=tint(ORIG, 0.6), label="original, two noise seeds")] +
+              [Line2D([], [], marker="o", color=EARLY_RAMP[j + 1], ls="none", ms=8, label=c.replace("dense, ", ""))
+               for j, c in enumerate(studs)], loc="upper right", fontsize=11.5, ncol=1)
+    note(fig, "Left: an upper bound that uses the real simulator at decision time, not a policy (LEARNING_FINDINGS.md "
+              "section 3). Right: students imitating its choices stay inside the original's run-to-run range; D and L "
+              "stay at 0. The original's own plans are too similar to contain new behaviour. Data: early_attempts.csv.")
+    return fig
+
+
+def fig_distill_early():
+    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.6], "wspace": 0.22})
+    ax = axes[0]
+    sh3 = ["T", "T_narrow", "Y"]
+    studs = ["lr 3e-5", "lr 1e-4", "lr 3e-5 + 0.1 anchor"]
+    for i, s in enumerate(sh3):
+        b = ea("distill_round1", "base", s, "successes")
+        ax.plot([i - 0.38, i + 0.38], [b, b], color=ORIG, lw=3, zorder=2)
+        for j, st in enumerate(studs):
+            x = i - 0.22 + 0.22 * j
+            v10 = ea("distill_round1", f"{st}, epoch 10", s, "successes")
+            v20 = ea("distill_round1", f"{st}, epoch 20", s, "successes")
+            ax.plot([x, x], [v10, v20], color=EARLY_RAMP[j + 1], lw=1.4, zorder=2)
+            ax.plot(x, v10, "o", mfc="white", mec=EARLY_RAMP[j + 1], mew=1.6, ms=7, zorder=3)
+            ax.plot(x, v20, "o", color=EARLY_RAMP[j + 1], ms=8, mec="white", zorder=4)
+    ax.set_xticks(range(3), [disp(s) for s in sh3])
+    ax.set_xlim(-0.55, 2.55)
+    ax.set_ylim(0, 64)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Successes of 100")
+    ax.set_title("1. First distillation\n(validation)", loc="left", fontsize=14)
+    ax.legend(handles=[Line2D([], [], color=ORIG, lw=3, label="original")] +
+              [Line2D([], [], marker="o", color=EARLY_RAMP[j + 1], ls="none", ms=8, label=st)
+               for j, st in enumerate(studs)] +
+              [Line2D([], [], marker="o", mfc="white", mec=INK2, ls="none", ms=7, label="hollow: epoch 10")],
+              loc="upper right", fontsize=11, ncol=1)
+    ax = axes[1]
+    conds = ea_conditions("distill_round3_4_dagger")
+    base, studs = conds[0], conds[1:]
+    nice = {"round 3, encoder trained, 30 epochs": "round 3: train the encoder too",
+            "round 3, frozen encoder, stronger anchor": "round 3: frozen encoder",
+            "round 4, encoder trained, 60 epochs (r4e60)": "round 4: encoder, 60 epochs",
+            "DAgger iteration 1": "DAgger iteration 1", "DAgger iteration 2": "DAgger iteration 2"}
+    for i, s in enumerate(FIVE_SHAPES):
+        r = ea_row("distill_round3_4_dagger", base, s, "successes")
+        lo, hi = float(r["value"]), float(r["value_high"] or r["value"])
+        ax.add_patch(Rectangle((i - 0.42, lo - 0.4), 0.84, hi - lo + 0.8, fc=tint(ORIG, 0.6), ec="none", zorder=1))
+        for j, c in enumerate(studs):
+            r = ea_row("distill_round3_4_dagger", c, s, "successes")
+            v, vh = float(r["value"]), _f(r["value_high"])
+            x = i - 0.32 + 0.16 * j
+            if vh is not None:
+                ax.plot([x, x], [v, vh], color=EARLY_RAMP[j], lw=2.5, zorder=3)
+            ax.plot(x, v if vh is None else (v + vh) / 2, "o", color=EARLY_RAMP[j], ms=7.5, mec="white", zorder=4)
+    ax.set_xticks(range(5), [disp(s) for s in FIVE_SHAPES])
+    ax.set_xlim(-0.55, 4.55)
+    ax.set_ylim(0, 64)
+    ax.grid(False, axis="x")
+    ax.set_title("2. Train the encoder, longer, DAgger (monitor test)", loc="left", fontsize=14)
+    ax.legend(handles=[Patch(facecolor=tint(ORIG, 0.6), label="original (two seeds)")] +
+              [Line2D([], [], marker="o", color=EARLY_RAMP[j], ls="none", ms=8, label=nice.get(c, c))
+               for j, c in enumerate(studs)], loc="upper left", bbox_to_anchor=(0.01, 1.0), fontsize=11, ncol=2,
+              columnspacing=0.8)
+    ax.annotate("first real D and L\nsuccesses from images", (3.0, 5.5), xytext=(2.35, 20), fontsize=12, color=INK,
+                ha="center", arrowprops=dict(arrowstyle="-", color=INK2, lw=1))
+    note(fig, "Distilling the planner teacher into the camera policy with the policy's own loss (5 shapes, Oct 26-27). "
+              "First every student was worse than the original, also on the letters the teacher solves; training the "
+              "image encoder too, longer training and DAgger gave the first D and L successes but 10-15 points less T. "
+              "Data: early_attempts.csv (LEARNING_FINDINGS.md section 6).")
+    return fig
+
+
+def fig_bptt_teacher():
+    fig, ax = plt.subplots(figsize=(10, 4.8) if not slide() else FULL)
+    runs = ea_conditions("bptt_teacher")
+    for i, s in enumerate(FIVE_SHAPES):
+        cs = [ea("bptt_teacher", r, s, "final_coverage") for r in runs]
+        ax.plot([min(cs), max(cs)], [i, i], color=INK2, lw=6, alpha=0.25, solid_capstyle="round", zorder=2)
+        ax.scatter(cs, [i] * len(cs), s=26, color=INK2, zorder=3, lw=0)
+        o = float(BYSHAPE[("D040", "original")][s]["mean_final_coverage"])
+        p = ea("sampling_planner", "sampling planner teacher (final, exact state)", s, "final_coverage")
+        ax.plot(o, i, "o", color=ORIG, ms=11, mec="white", zorder=4)
+        ax.plot(p, i, "D", color=TEACHER, ms=10, mec="white", zorder=4)
+    ax.axvline(0.95, color=INK, lw=1.1, ls=(0, (3, 2)))
+    ax.text(0.945, -0.75, "success needs >95%", ha="right", va="bottom", fontsize=12, color=INK2)
+    ax.set_yticks(range(5), [disp(s) for s in FIVE_SHAPES])
+    ax.set_ylim(4.5, -0.9)
+    ax.set_xlim(0, 1.0)
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{100 * v:.0f}%"))
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.set_xlabel("Mean final goal coverage in the real simulator")
+    legend_top(ax, handles=[Line2D([], [], marker="o", color=INK2, ls="none", ms=6,
+                                   label=f"gradient-based teacher ({len(runs)} runs, 250-2000 iterations)"),
+                            Line2D([], [], marker="o", color=ORIG, ls="none", ms=10, label="original policy"),
+                            Line2D([], [], marker="D", color=TEACHER, ls="none", ms=9, label="sampling planner teacher")],
+               ncol=2 if not slide() else 1, fontsize=12)
+    note(fig, "Training a teacher network by backpropagating through the learned world model (SuperMimic-style BPTT): it "
+              "learned to approach the block but never pushed it anywhere (0 of 20 successes per shape in every run). "
+              "The sampling planner in the same model solves most D, Y and L scenes. Data: early_attempts.csv "
+              "(LEARNING_EXPERIMENT_LOG.md section 6, LEARNING_FINDINGS.md section 5); original: final_tests_by_shape.csv "
+              "(D040 pool).")
+    return fig
+
+
+def fig_copying_gap():
+    conds = ea_conditions("copying_gap")
+    pick = [(conds[0], TEACHER, "teacher (exact state + 1 px noise)", None),
+            (conds[4], "white", "student reading exact state, re-plans every control", INK),
+            (conds[3], INK2, "student reading exact state, 8 controls per plan", None),
+            (conds[7], FIVE, "camera student, official recipe (30k steps)", None),
+            (conds[1], ORIG, "original camera policy", None)]
+    groups = FIVE_SHAPES + ["all"]
+    fig, ax = plt.subplots(figsize=FULL)
+    nk = len(pick)
+    w = 0.84 / nk
+    totals = []
+    for j, (c, fc, lbl, ec) in enumerate(pick):
+        vals = [ea("copying_gap", c, s, "successes") for s in FIVE_SHAPES]
+        tot = int(sum(vals))
+        totals.append(tot)
+        v = [100 * x / 50 for x in vals] + [100 * tot / 250]
+        x = np.arange(len(groups)) - 0.42 + w * (j + 0.5)
+        ax.bar(x, v, w, color=fc, edgecolor=ec or "white", lw=1.3 if ec else 1.0, zorder=3, label=lbl)
+        ax.text(x[-1], v[-1] + 1.2, f"{v[-1]:.0f}", ha="center", va="bottom", fontsize=12,
+                fontweight="bold" if j == 0 else None)
+    ax.axvline(len(FIVE_SHAPES) - 0.5, color=AXIS, lw=1)
+    ax.set_xticks(range(len(groups)), [disp(s) for s in FIVE_SHAPES] + ["All 5"])
+    ax.set_ylim(0, 112)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Validation success\n(same 50 scenes per shape)")
+    legend_top(ax, ncol=2, fontsize=12)
+    note(fig, f"D044: even a student that reads the exact state, like the teacher, keeps only {totals[2]} or {totals[1]} of "
+              f"the teacher's {totals[0]} successes ({100 * totals[2] / totals[0]:.0f}-{100 * totals[1] / totals[0]:.0f}%): "
+              "most of the skill is lost in copying, not in seeing. Data: early_attempts.csv (LEARNING_FINDINGS.md "
+              "section 6).")
+    return fig
+
+
+def fig_lastmile_replanning():
+    rows = []
+    for c in ea_conditions("lastmile"):
+        r = [x for x in EARLY if x["attempt"] == "lastmile" and x["condition"] == c][0]
+        lbl = (SL(f"last-mile vs plain, comparison {c.split('comparison ')[1][0]}",
+                  f"last-mile {c.split('comparison ')[1][0]}") if "comparison" in c
+               else SL(f"last-mile, 26-letter pool, check {c[-1]}", f"last-mile, 26 l. {c[-1]}"))
+        rows.append((lbl, _f(r["value"]), _f(r["ci_low"]), _f(r["ci_high"]), FIVE))
+    r = [x for x in EARLY if x["attempt"] == "replanning"][0]
+    rows.append((SL("re-plan every 4 controls (5 shapes)", "re-plan every 4"), _f(r["value"]), _f(r["ci_low"]),
+                 _f(r["ci_high"]), FIVE))
+    for k in (12, 15):
+        d = paired_row("D056", "execute 8 (trained)", f"execute {k}", "27 trained shapes")
+        rows.append((SL(f"execute {k} of 16 steps (26 letters)", f"execute {k}"), d["difference"], d["ci95_low"],
+                     d["ci95_high"], M96))
+    fig, ax = plt.subplots(figsize=(10, 4.8) if not slide() else FULL)
+    for i, (lbl, d, lo, hi, c) in enumerate(rows):
+        if lo is not None:
+            ax.plot([lo, hi], [i, i], color=c, lw=2.4, solid_capstyle="butt", zorder=3)
+            ax.plot(d, i, "o", color=c, ms=9, mec="white", mew=1.4, zorder=4)
+        else:
+            ax.plot(d, i, "o", mfc="white", mec=c, mew=1.8, ms=9, zorder=4)
+        ax.text((hi if hi is not None else d) + (0.8 if not slide() else 1.8), i, f"{d:+.1f}".replace("-", "−"),
+                va="center", fontsize=12)
+    ax.axvline(0, color=INK2, lw=1.1)
+    ax.axhline(4.5, color=AXIS, lw=1)
+    ax.set_yticks(range(len(rows)), [r[0] for r in rows], fontsize=None if slide() else 12.5)
+    ax.set_ylim(len(rows) - 0.5, -0.6)
+    ax.set_xlim(-26, 11)
+    ax.xaxis.set_major_formatter(SIGNED)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.set_xlabel(SL("Change in success (points) vs. the matched plain run, 95% interval", "Change (points)"))
+    if slide():
+        ax.set_xticks([-20, -10, 0, 10])
+    if not slide():
+        ax.text(10.5, 1.0, "near-goal steps 3x,\ntwice the corrections:\nno detectable gain", ha="right", va="center",
+                fontsize=12, color=INK2)
+        ax.text(10.5, 6.0, "executing 8 planned\nsteps is best in\nboth directions", ha="right", va="center",
+                fontsize=12, color=INK2)
+    note(fig, "Hollow: the interval includes zero but its bounds were not recorded. Last-mile and re-planning: 5-shape "
+              "students, 100 validation scenes per letter (early_attempts.csv, LEARNING_FINDINGS.md section 6). Executing "
+              "12 or 15 steps: round-50 26-letter student, 200 fresh scenes per shape (final_tests_episodes.csv, D056).")
+    return fig
+
+
+VERDICT_COLOR = {"worked": M96, "partly": tint(M96, 0.55), "did not work": ORIG, "diagnosis": "white"}
+
+
+def fig_project_timeline():
+    import datetime as dt
+    rows = [r for r in TIMELINE if not slide() or r["on_slide"] == "1"]
+    d0 = dt.date(2026, 10, 24)
+    day = lambda s: (dt.date.fromisoformat(s) - d0).days
+    sl = slide()
+    fig, ax = plt.subplots(figsize=(10, 6.4) if not sl else FULL)
+    for i, r in enumerate(rows):
+        a, b = day(r["start"]), day(r["end"]) + 1
+        fc = VERDICT_COLOR[r["verdict"]]
+        ax.barh(i, b - a, left=a, height=0.62, color=fc, edgecolor=INK2 if r["verdict"] == "diagnosis" else "white",
+                lw=1.2, zorder=3)
+        if not sl:
+            ax.text(15.3, i, r["outcome"].replace("->", "→"), va="center", ha="left", fontsize=11.5, color=INK)
+    ax.set_yticks(range(len(rows)), [r["slide_label"] if sl else r["approach"] for r in rows], fontsize=None if sl else 12)
+    ax.set_ylim(len(rows) - 0.5, -0.6)
+    ticks = list(range(0, 15, 4))
+    ax.set_xticks(ticks, [(d0 + dt.timedelta(days=t)).strftime("%b %-d") for t in ticks])
+    ax.xaxis.set_minor_locator(MultipleLocator(1))
+    ax.set_xlim(0, 15 if sl else 15.2)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    if not sl:
+        ax.set_xlabel("Date (2026)", x=0.33)
+    handles = [Patch(facecolor=VERDICT_COLOR[k], edgecolor=INK2 if k == "diagnosis" else "white", label=k)
+               for k in ("worked", "partly", "did not work", "diagnosis") if any(r["verdict"] == k for r in rows)]
+    legend_top(ax, handles=handles, ncol=4, fontsize=12)
+    if not sl:
+        fig.subplots_adjust(left=0.3, right=0.585)
+    note(fig, "Each bar spans the days the approach was worked on (inclusive). Data: timeline.csv (dates from "
+              "LEARNING_EXPERIMENT_LOG.md timeline, LEARNING_FINDINGS.md and DECISIONS.md D033-D056).")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Teacher: state noise and planner fixes (teacher_planner.csv)
+# ----------------------------------------------------------------------------------------------------------------------
+GOLD_RAMP = [tint(TEACHER, 0.6), TEACHER, "#a26e00"]       # ordinal light -> dark (more state noise)
+
+
+def fig_teacher_state_noise():
+    sl = slide()
+    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.15] if not sl else [1, 1],
+                                                                "wspace": 0.28})
+    ax = axes[0]
+    conds = tp_conditions("state_noise_50")
+    shapes = ["T", "T_narrow", "L"]
+    w = 0.8 / len(conds)
+    for j, c in enumerate(conds):
+        k = [int(tp("state_noise_50", c, s)[0]["successes"]) for s in shapes]
+        v = [2 * x for x in k]
+        lo, hi = zip(*[wilson(x, 50) for x in k])
+        x = np.arange(3) - 0.4 + w * (j + 0.5)
+        ax.bar(x, v, w, color=GOLD_RAMP[j], edgecolor="white", zorder=3,
+               label={"exact simulator state": "exact state"}.get(c, c.replace(", ", " / ").replace(" deg", "°")))
+        if not sl:
+            errbars(ax, x, v, lo, hi)
+        for xi, vi, h in zip(x, v, hi if not sl else []):
+            ax.text(xi, h + 1.5, f"{vi:.0f}", ha="center", va="bottom", fontsize=12)
+    ax.set_xticks(range(3), [disp(s) for s in shapes])
+    ax.set_ylim(0, 105)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Planner success (validation)")
+    ax.set_title("50 scenes per shape" if not sl else "Noise helps", loc="left", fontsize=15)
+    legend_top(ax, ncol=1 if not sl else 3, fontsize=12, y=1.08 if not sl else 1.12,
+               title="state the planner reads:" if not sl else None, title_fontsize=12)
+    ax = axes[1]
+    conds = tp_conditions("state_noise_20")
+    xpos = {"exact simulator state": 0, "0.5 px, 0.5 deg": 0.5, "1 px, 1 deg": 1, "2 px, 2 deg": 2, "4 px, 4 deg": 4}
+    styles = {"Y": (GOLD_RAMP[1], "o", "-"), "D": (GOLD_RAMP[2], "s", "-"), "L": (GOLD_RAMP[0], "^", "-")}
+    for s, (c, mk, ls) in styles.items():
+        xs = [xpos[cc] for cc in conds if cc in xpos]
+        ys = [100 * int(tp("state_noise_20", cc, s)[0]["successes"]) / 20 for cc in conds if cc in xpos]
+        ax.plot(xs, ys, color=c, marker=mk, ls=ls, lw=2.2, ms=8, mec="white", zorder=3)
+        ax.text(4.12, ys[-1], disp(s), ha="left", va="center", fontsize=13, color=INK, fontweight="bold")
+    ax.axvspan(-0.15, 2.15, color=BAND, lw=0, zorder=0)
+    if not sl:
+        ax.text(1.0, 6, "no loss up to\n2 px / 2°", ha="center", va="bottom", fontsize=12, color=INK2)
+        ax.set_xticks([0, 0.5, 1, 2, 4], ["exact", "0.5", "1", "2", "4"])
+    else:
+        ax.set_xticks([0, 1, 2, 4], ["0", "1", "2", "4"])
+    ax.set_xlim(-0.25, 4.5)
+    ax.set_ylim(0, 105)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_xlabel(SL("Noise per reading (px and degrees)", "Noise (px and °)"))
+    ax.set_title("Estimator accuracy sweep, 20 scenes" if not sl else "Accuracy needed", loc="left", fontsize=15)
+    note(fig, "The planner teacher reads the simulator state with independent Gaussian noise each control. Left: 1 px / "
+              "1 degree noise turns T from 5 into 34 of 50 (the exact-state planner repeats the same nearly-right push). "
+              "Right: an image-based estimator would need about 2 px / 2 degrees (0.4 of a 96 px camera pixel). Data: "
+              "teacher_planner.csv (LEARNING_FINDINGS.md section 6).")
+    return fig
+
+
+FIX_SHORT = ["start", "gate\nmargin 0", "push\ncand.", "horizon\n48", "no dist.\npenalty", "sharp\nkernel",
+             "area\npoints"]
+
+
+def fig_method_planner_fixes():
+    sl = slide()
+    fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.75], "wspace": 0.3})
+    ax = axes[0]
+    order = ["D", "Y", "L", "T_narrow", "T"]
+    first, final = tp_conditions("first_vs_final_planner")[:2]
+    for i, s in enumerate(order):
+        a = tp("first_vs_final_planner", first, s)[0]
+        b = tp("first_vs_final_planner", final, s)[0]
+        va, vb = 100 * int(a["successes"]) / int(a["of"]), 100 * int(b["successes"]) / int(b["of"])
+        ax.plot([va, vb], [i, i], color=tint(TEACHER, 0.45), lw=2.4, zorder=2)
+        ax.plot(va, i, "o", mfc="white", mec=TEACHER, mew=1.8, ms=9, zorder=3)
+        ax.plot(vb, i, "o", color=TEACHER, ms=10, mec="white", zorder=4)
+        ax.text(vb + 7, i, f"{a['successes']} → {b['successes']} of {b['of']}", va="center", fontsize=12)
+    ax.set_yticks(range(len(order)), [disp(s) for s in order])
+    ax.set_ylim(len(order) - 0.5, -0.7)
+    ax.set_xlim(-4, 150 if not sl else 165)
+    ax.set_xticks([0, 50, 100])
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.set_xlabel("Success, 20 validation scenes")
+    ax.set_title("First → final planner", loc="left", fontsize=15)
+    ax = axes[1]
+    rows = tp("t_fix_progression")
+    cov = [100 * float(r["final_coverage"]) for r in rows]
+    x = np.arange(len(rows))
+    ax.plot(x, cov, color=TEACHER, marker="o", ms=8, mec="white", lw=2.2, zorder=3)
+    for xi, r, c in zip(x, rows, cov):
+        if int(r["successes"]) > 0:
+            ax.text(xi, c - 1.6, f"{r['successes']}/{r['of']}\nsolved", ha="center", va="top", fontsize=11.5,
+                    color=INK)
+    ax.axhline(95, color=INK, lw=1.1, ls=(0, (3, 2)))
+    ax.text(0, 95.4, "success needs >95%", ha="left", va="bottom", fontsize=12, color=INK2)
+    ax.set_xticks(x, FIX_SHORT if not sl else [str(i) for i in x], fontsize=11.5 if not sl else None)
+    ax.set_ylim(60, 101)
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("T final coverage (12 scenes)")
+    ax.set_title("T: one fix per measured stall cause", loc="left", fontsize=15)
+    note(fig, "Each fix on the right removed one stall cause the logs showed (planner_fixes.tex): random paths never go "
+              "around the letter, the elite average blurred distinct pushes, phantom pushes while hovering, a distance "
+              "penalty that made going around too costly, a weak reward for the last 1-2 px, and a pose error measured at "
+              "corners. Data: teacher_planner.csv (LEARNING_EXPERIMENT_LOG.md section 7, LEARNING_FINDINGS.md section 5).")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Data and training (training_rounds.csv, training_loss_curves.csv)
+# ----------------------------------------------------------------------------------------------------------------------
+TRAIN_LINES_SHOW = [("5 shapes", "correction rounds", "5 shapes"), ("10 shapes", "96 px main line", "10 shapes (96 px)"),
+                    ("27 shapes", "96 px line", "26 letters + near-T (96 px)")]
+SOURCE_COLORS = [("human_T_examples", ORIG, "human T demonstrations (original data)"),
+                 ("teacher_examples", TEACHER, "teacher demonstrations"),
+                 ("correction_examples", M96, "corrections (policy's own states, teacher labels)")]
+
+
+def train_rows(stage, line):
+    rows = [r for r in TRAIN if r["stage"] == stage and r["line"] == line]
+    return sorted(rows, key=lambda r: int(r["round"]))
+
+
+def complete_round(stage, line, rnd, steps):
+    n = sum(1 for r in LOSS if r["stage"] == stage and r["line"] == line and int(r["round"]) == rnd)
+    return n * 500 >= int(steps)
+
+
+def fig_data_growth():
+    sl = slide()
+    show = TRAIN_LINES_SHOW if not sl else TRAIN_LINES_SHOW[1:]
+    widths = [len(train_rows(s, l)) + 1 for s, l, _ in show]
+    fig, axes = plt.subplots(1, len(show), figsize=FULL, sharey=True, gridspec_kw={"width_ratios": widths, "wspace": 0.08})
+    for ax, (stage, line, title) in zip(axes, show):
+        rows = train_rows(stage, line)
+        x = np.array([int(r["round"]) for r in rows])
+        ys = [np.array([int(r[c]) for r in rows]) / 1e6 for c, _, _ in SOURCE_COLORS]
+        ax.stackplot(x, *ys, colors=[c for _, c, _ in SOURCE_COLORS], edgecolor="white", lw=0.8, zorder=2)
+        ax.set_title(title if not sl else title.split(" (")[0].replace(" + near-T", ""), loc="left", fontsize=14)
+        ax.set_xlim(x[0], x[-1])
+        ax.grid(False, axis="x")
+        tot = sum(y[-1] for y in ys)
+        ax.text(x[-1], tot + 0.05, f"{tot:.1f}M", ha="right", va="bottom", fontsize=12, color=INK)
+        if stage == "27 shapes":
+            ax.axvline(13.5, color=INK2, lw=1, ls=(0, (3, 2)), zorder=3)
+            if not sl:
+                ax.text(14.2, 3.45, "60 practice scenes per\nnew letter from round 14", fontsize=11.5, color=INK2,
+                        va="top")
+    axes[0].set_ylim(0, 3.6)
+    axes[0].yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:g}M" if v else "0"))
+    axes[0].set_ylabel("Training examples")
+    fig.supxlabel("Training round", fontsize=16, y=0.0 if not sl else None)
+    legend_top(axes[0], handles=[patch(c, l if not sl else l.split(" (")[0]) for _, c, l in SOURCE_COLORS[::-1]],
+               ncol=3 if not sl else 2, fontsize=12, y=1.1)
+    note(fig, "Examples are training samples (one per recorded step). Every round retrains on everything collected so far: "
+              "the teacher's demonstrations, all correction rounds of all stages and the 206 original human T "
+              "demonstrations. Each stage starts with the corrections of the stage before. Data: training_rounds.csv.")
+    return fig
+
+
+def fig_train_loss_rounds():
+    sl = slide()
+    cols = [("10 shapes", "96 px main line", "10 shapes, 96 px", TEN), ("27 shapes", "96 px line", "26 letters, 96 px", M96)]
+    if sl:
+        cols = cols[1:]
+    fig, axes = plt.subplots(2, len(cols), figsize=(10, 6.2) if not sl else FULL, sharex="col",
+                             gridspec_kw={"hspace": 0.12, "wspace": 0.22, "width_ratios": [23, 51][-len(cols):]},
+                             squeeze=False)
+    for j, (stage, line, title, c) in enumerate(cols):
+        rows = [r for r in train_rows(stage, line) if r["loss_last_1000"] and int(r["round"]) > 0
+                and complete_round(stage, line, int(r["round"]), r["steps"])]
+        x = np.array([int(r["round"]) for r in rows])
+        y = np.array([float(r["loss_last_1000"]) for r in rows])
+        ax = axes[0, j]
+        ax.plot(x, y, color=c, marker="o", ms=3.5, lw=2)
+        ax.set_title(title, loc="left", fontsize=15)
+        ax.grid(False, axis="x")
+        ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.3f}"))
+        s, v, k, n = val_line(stage, line)
+        ax2 = axes[1, j]
+        ax2.plot(s - 1, v, color=c, lw=1, alpha=0.45, marker="o", ms=2.5)
+        ax2.plot(s - 1, rolling(v, 5), color=c, lw=2.6)
+        ax2.yaxis.set_major_formatter(PCT)
+        ax2.grid(False, axis="x")
+        ax2.set_ylim(0, 45)
+        ax2.set_xlabel("Correction rounds completed")
+        if stage == "27 shapes":
+            for a in (ax, ax2):
+                a.axvline(13.5, color=INK2, lw=1, ls=(0, (3, 2)))
+            if not sl:
+                ax.text(14.2, ax.get_ylim()[1], "54k steps per round from round 14", va="top", fontsize=11.5,
+                        color=INK2)
+    axes[0, 0].set_ylabel("Training loss\n(end of round)")
+    axes[1, 0].set_ylabel("Validation\nsuccess")
+    note(fig, "Top: mean training loss over the last 1000 steps of each round (round 0, a 30k-step retraining from the "
+              "previous stage's student, and rounds that stopped early are left out). "
+              "Bottom: validation success (faint) and its 5-round rolling mean. The loss keeps falling while validation "
+              "stops improving: the student fits its training data better without acting better on new scenes. Data: "
+              "training_rounds.csv, validation_rounds.csv.")
+    return fig
+
+
+def fig_train_loss_within_round():
+    stage, line = "27 shapes", "96 px line"
+    picks = [1, 13, 14, 30, 50]
+    cols = [SEQ(v) for v in np.linspace(0.38, 1.0, len(picks))]
+    fig, ax = plt.subplots(figsize=FULL if slide() else (10, 5))
+    for rnd, c in zip(picks, cols):
+        rows = [r for r in LOSS if r["stage"] == stage and r["line"] == line and int(r["round"]) == rnd]
+        x = np.array([int(r["step_end"]) for r in rows]) / 1000
+        y = np.array([float(r["mean_loss"]) for r in rows])
+        ax.plot(x, y, color=c, lw=2.2, label=f"round {rnd}")
+        ax.text(x[-1] + 0.6, y[-1], f"round {rnd}", va="center", fontsize=12, color=INK)
+    ax.axvline(20, color=AXIS, lw=1)
+    if not slide():
+        ax.text(19.5, ax.get_ylim()[1], "rounds 1-13 end\nat 20k steps", ha="right", va="top", fontsize=11.5, color=INK2)
+    ax.set_xlim(0, 62)
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda v, _: f"{v:.3f}"))
+    ax.grid(False, axis="x")
+    ax.set_xlabel("Training steps within the round (thousands)")
+    ax.set_ylabel("Training loss (mean per 500 steps)")
+    note(fig, "26-letter 96 px line. Each round restarts the learning-rate schedule (500 warm-up steps, cosine decay; "
+              "scripts/learning/bc_train.py) from the previous round's student. Data: training_loss_curves.csv.")
+    return fig
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# failure_categories: how far the unsolved episodes got (final_tests_episodes.csv)
+# ----------------------------------------------------------------------------------------------------------------------
+FAIL_BINS = [("solved", None), ("near miss: ≥ 90%", 0.9), ("partial: 50-90%", 0.5), ("far: < 50%", 0.0)]
+
+
+def _fail_shares(test, model, shapes, which):
+    d = eps(test, model, shapes)
+    n = len(d["success"])
+    solved = d["success"] == 1
+    v = d[which]
+    near = (~solved) & (v >= 0.9)
+    part = (~solved) & (v >= 0.5) & (v < 0.9)
+    far = (~solved) & (v < 0.5)
+    return [100 * m.sum() / n for m in (solved, near, part, far)], n
+
+
+def fig_failure_categories():
+    sl = slide()
+    entries = [("Original", "D051", "original", ORIG_LINE),
+               ("Ours, round 44", "D051", D051["m96"], M96),
+               ("Ours, round 50", "D054", "26-letter 96 px round 50", M96)]
+    if sl:
+        entries = [entries[0], entries[2]]
+    entries = entries[::-1]
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.4) if not sl else FULL, sharey=True, gridspec_kw={"wspace": 0.2})
+    for ax, which, title in ((axes[0], "peak", SL("Best coverage reached", "Best coverage")),
+                             (axes[1], "final", SL("Coverage at the end", "Final coverage"))):
+        for i, (name, test, model, c) in enumerate(entries):
+            parts, n = _fail_shares(test, model, TRAINED27, which)
+            shades = [c, tint(c, 0.45), tint(c, 0.72), "#efeee9"]
+            left = 0
+            for j, (v, cc) in enumerate(zip(parts, shades)):
+                ax.barh(i, v, left=left, color=cc, edgecolor="white", lw=1.5, height=0.66, zorder=3)
+                if v >= (6 if not sl else 9):
+                    ax.text(left + v / 2, i, f"{v:.0f}", ha="center", va="center", fontsize=12,
+                            color="white" if j == 0 and c != ORIG_LINE else INK)
+                left += v
+        ax.set_title(title, loc="left", fontsize=15)
+        ax.set_xlim(0, 100)
+        ax.xaxis.set_major_formatter(PCT)
+        ax.grid(False)
+        ax.set_xlabel(SL("Share of episodes, 27 trained shapes", "Share of episodes"))
+        if sl:
+            ax.set_xticks([0, 50, 100])
+    axes[0].set_yticks(range(len(entries)), [e[0] for e in entries])
+    shades = [Patch(facecolor=INK2, label="solved (> 95%)"), Patch(facecolor=tint(INK2, 0.45), label="near miss ≥ 90%"),
+              Patch(facecolor=tint(INK2, 0.72), label="partial 50-90%"), Patch(facecolor="#efeee9", label="far < 50%")]
+    legend_top(axes[0], handles=shades, ncol=4 if not sl else 2, fontsize=12, y=1.12)
+    d44 = _fail_shares("D051", D051["m96"], TRAINED27, "peak")[0]
+    note(fig, f"Unsolved episodes split by coverage: of the round-44 student's unsolved episodes, "
+              f"{100 * d44[1] / (100 - d44[0]):.0f}% got within 90% coverage at some moment. Original and round 44: final "
+              "test (D051), 300 fresh scenes per shape; round 50: its own fresh test (D054), 200 per shape. Shades of each "
+              "policy's colour show the same four outcomes. Data: final_tests_episodes.csv.")
     return fig
 
 
@@ -2051,6 +3468,144 @@ def fig_method_teacher_gap():
 # ----------------------------------------------------------------------------------------------------------------------
 def _ci(d):
     return f"{fmt_signed(d['difference'])} [{fmt_signed(d['ci95_low'])}, {fmt_signed(d['ci95_high'])}]"
+
+
+def _tex(s):
+    return (str(s).replace("\\", "\\textbackslash{}").replace("&", "\\&").replace("%", "\\%").replace("_", "\\_")
+            .replace("#", "\\#").replace("→", "$\\rightarrow$").replace("≥", "$\\geq$").replace("≈", "$\\approx$")
+            .replace("°", "$^\\circ$").replace("×", "$\\times$").replace("−", "$-$"))
+
+
+def write_new_tables(head):
+    # world model accuracy
+    S = "structured (wm2 v1)"
+    lines = [head, "\\begin{tabular}{lrrrrrr}", "\\toprule",
+             "& \\multicolumn{4}{c}{8 controls} & \\multicolumn{2}{c}{32 controls} \\\\",
+             "\\cmidrule(lr){2-5}\\cmidrule(lr){6-7}",
+             "Model, shape & median px & p90 px & median deg & p90 deg & median px & p90 px \\\\", "\\midrule"]
+    g = [wm1("contact_error", model="generic MLP", horizon=h, statistic="median", unit=u) for h, u in
+         ((8, "px"), (8, "deg"), (32, "px"))]
+    lines.append(f"Generic network, all 5 shapes & {g[0]:.2f} & -- & {g[1]:.2f} & -- & {g[2]:.2f} & -- \\\\")
+    lines.append("\\midrule")
+    for s in FIVE_SHAPES:
+        v = [wm1("contact_error", model=S, shape=s, horizon=h, statistic=st, unit=u) for h, st, u in
+             ((8, "median", "px"), (8, "p90", "px"), (8, "median", "deg"), (8, "p90", "deg"), (32, "median", "px"),
+              (32, "p90", "px"))]
+        lines.append(f"Structured, {disp(s)} & " + " & ".join(f"{x:.2f}" for x in v) + " \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}",
+              f"% Held-out contact error (LEARNING_FINDINGS.md section 4). Near the goal: one-step error "
+              f"{wm1('near_goal_one_step'):g} px. Planner's best push: {wm1('planner_push_check', statistic='trials within 1 px'):.0f} "
+              f"of 15 within 1 px. 500 16-control windows: median {wm1('rare_large_errors', statistic='median'):g} px, "
+              f"1 in 20 at or above {wm1('rare_large_errors', statistic='95th percentile (1 in 20 at or above)'):g} px, "
+              f"worst {wm1('rare_large_errors', statistic='worst'):g} px (mostly at the arena wall). Success needs about "
+              f"{wm1('requirement', shape='all', unit='px'):g} px."]
+    (TAB / "world_model.tex").write_text("\n".join(lines) + "\n")
+
+    # earlier approaches (one line each)
+    def blend_cell(t):
+        d = {s: ea("blend_tests", t, s, "difference_pts") for s in ("T", "Y", "D")}
+        lo = ea("blend_tests", t, "T", "difference_pts", "ci_low")
+        ok = ea("blend_tests", t, "all", "passed") == 1
+        return (f"Y {fmt_signed(d['Y'])}, D {fmt_signed(d['D'])}, T {fmt_signed(d['T'])} (lower bound "
+                f"{fmt_signed(lo)})", "passed" if ok else "failed (T)")
+    ob = {s: (ea("oracle_bon", "base policy", s, "successes"), ea("oracle_bon", "simulator best-of-N (upper bound)", s,
+                                                                    "successes"), ea("oracle_bon", "base policy", s,
+                                                                                     "successes", "of"))
+          for s in ("Y", "T_narrow")}
+    bp = [ea("bptt_teacher", r, s, "final_coverage") for r in ea_conditions("bptt_teacher") for s in FIVE_SHAPES]
+    cg = {c: sum(ea("copying_gap", c, s, "successes") for s in FIVE_SHAPES) for c in ea_conditions("copying_gap")}
+    cgk = ea_conditions("copying_gap")
+    lm = [ea("lastmile", c, "5 first shapes", "difference_pts") for c in ea_conditions("lastmile")
+          if "comparison" in c]
+    rp = [r for r in EARLY if r["attempt"] == "replanning"][0]
+    d1 = [ea("distill_round1", f"{st}, epoch {e}", "T", "successes") for st in ("lr 3e-5", "lr 1e-4",
+                                                                                "lr 3e-5 + 0.1 anchor") for e in (10, 20)]
+    dd = {s: max(ea("distill_round3_4_dagger", c, s, "successes") for c in ea_conditions("distill_round3_4_dagger")[1:])
+          for s in ("D", "L")}
+    rows = [("Simulator best-of-N (upper bound)", "Oct 25",
+             f"Y {ob['Y'][0]:.0f} $\\rightarrow$ {ob['Y'][1]:.0f} of {ob['Y'][2]:.0f}, near-T {ob['T_narrow'][0]:.0f} "
+             f"$\\rightarrow$ {ob['T_narrow'][1]:.0f} of {ob['T_narrow'][2]:.0f}; imitation within noise", "no new skill"),
+            ("First planner distillation", "Oct 26",
+             f"T {min(d1):.0f}-{max(d1):.0f} of 100 vs {ea('distill_round1', 'base', 'T', 'successes'):.0f}; worse everywhere",
+             "failed"),
+            ("Train encoder, longer, DAgger", "Oct 26-27",
+             f"first D and L successes (up to {dd['D']:.0f} and {dd['L']:.0f} of 100); T 10-15 points lower", "partly"),
+            ("Gradient-based teacher (BPTT)", "Oct 26", f"real coverage {min(bp):.2f}-{max(bp):.2f}, 0 of 20 solved",
+             "failed")]
+    for t in ea_conditions("blend_tests"):
+        cell, out = blend_cell(t)
+        day = int(ea_row("blend_tests", t, "all", "passed")["date"][-2:])
+        rows.append((_blend_label(t), f"Oct {day}", cell, out))
+    rows += [("State-input student (D044)", "Oct 30",
+              f"keeps {cg[cgk[3]]:.0f}-{cg[cgk[4]]:.0f} of the teacher's {cg[cgk[0]]:.0f} successes", "diagnosis"),
+             ("Last-mile variant", "Oct 31", ", ".join(fmt_signed(v) for v in lm) + " points (intervals include 0)",
+              "no gain"),
+             ("Re-plan every 4 controls", "Oct 31",
+              f"{fmt_signed(float(rp['value']))} [{fmt_signed(float(rp['ci_low']))}, {fmt_signed(float(rp['ci_high']))}] "
+              "points", "worse")]
+    lines = [head, "\\begin{tabular}{llp{7.2cm}l}", "\\toprule", "Approach & When & Result & Outcome \\\\", "\\midrule"]
+    lines += [f"{_tex(a)} & {b} & {c} & {d} \\\\" for a, b, c, d in rows]
+    lines += ["\\bottomrule", "\\end{tabular}",
+              "% Typed in from docs/LEARNING_FINDINGS.md sections 3-6 and docs/DECISIONS.md D040-D044 "
+              "(presentation/data/early_attempts.csv). Blend rows: paired change vs. the original in points; D042 uses "
+              "97.5% intervals."]
+    (TAB / "early_attempts.tex").write_text("\n".join(lines) + "\n")
+
+    # blend tests in full
+    lines = [head, "\\begin{tabular}{lrrrrrl}", "\\toprule", "Test & T & near-T & Y & D & L & Outcome \\\\", "\\midrule"]
+    for t in ea_conditions("blend_tests"):
+        cells = [fmt_signed(ea("blend_tests", t, s, "difference_pts")) for s in FIVE_SHAPES]
+        lines.append(f"{_tex(_blend_label(t))} & " + " & ".join(cells) + " & "
+                     + ("passed" if ea("blend_tests", t, "all", "passed") == 1 else "failed") + " \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}", "% Paired change in success vs. the original policy (points); 1000 "
+              "(D040) or 2000 (D041-D043) fresh scenes per letter. Intervals in presentation/data/early_attempts.csv."]
+    (TAB / "blend_tests.tex").write_text("\n".join(lines) + "\n")
+
+    # datasets
+    lines = [head, "\\begin{tabular}{p{6.4cm}lrrr}", "\\toprule", "Data & Stage & Episodes & Examples & Per shape \\\\",
+             "\\midrule"]
+    for r in DSIZES:
+        ep = f"{int(r['episodes']):,}" if r["episodes"] else "--"
+        ex = f"{int(r['examples']):,}" if r["examples"] else "--"
+        ps = r["per_shape"]
+        ps = (f"{int(ps) // 1000}k" if ps.isdigit() and int(ps) >= 10000 else _tex(ps)) or "--"
+        lines.append(f"{_tex(r['item'])} & {_tex(r['stage'])} & {ep} & {ex} & {ps} \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}", "% presentation/data/dataset_sizes.csv (sources per row): episodes = "
+              "scenes, examples = training samples (one per recorded step); per shape = episodes, scenes per round or "
+              "samples per round as the row says."]
+    (TAB / "datasets.tex").write_text("\n".join(lines) + "\n")
+
+    # teacher vs student per shape on the same validation scenes
+    sv = student_val(TRAINED27)
+    lines = [head, "\\begin{tabular}{lrrl@{\\hspace{1.5em}}lrrl}", "\\toprule",
+             "Shape & Teacher & Student & WM & Shape & Teacher & Student & WM \\\\", "\\midrule"]
+    order = OLD10 + NEW17
+    half_n = math.ceil(len(order) / 2)
+    for i in range(half_n):
+        cells = []
+        for blk in (order[:half_n], order[half_n:]):
+            if i < len(blk):
+                s = blk[i]
+                cells.append(f"{disp(s)} & {TEACHER_VAL[s][0]} & {sv[s][0]} & {TEACHER_VAL[s][2].replace('wm2 ', '')}")
+            else:
+                cells.append(" & & & ")
+        lines.append(" & ".join(cells) + " \\\\")
+    kt = sum(v[0] for v in TEACHER_VAL.values()); ks = sum(v[0] for v in sv.values())
+    lines += ["\\midrule", f"\\multicolumn{{8}}{{l}}{{All 27: teacher {kt}, student {ks} of 1350}} \\\\",
+              "\\bottomrule", "\\end{tabular}",
+              f"% Successes of 50 validation scenes per shape (seeds 400000 + 20*i). Teacher: teacher_validation.csv; "
+              f"WM = world-model version of the teacher check. Student: 26-letter 96 px round {STUDENT_VAL_ROUND}."]
+    (TAB / "teacher_vs_student.tex").write_text("\n".join(lines) + "\n")
+
+    # planner fixes (stall causes)
+    lines = [head, "\\begin{tabular}{p{6.2cm}p{6.2cm}rr}", "\\toprule",
+             "Change (cumulative) & Stall cause it removed & T solved & T coverage \\\\", "\\midrule"]
+    for r in tp("t_fix_progression"):
+        lines.append(f"{_tex(r['condition'].split(': ', 1)[1])} & {_tex(r['note']) or '--'} & {r['successes']}/{r['of']} & "
+                     f"{float(r['final_coverage']):.3f} \\\\")
+    lines += ["\\bottomrule", "\\end{tabular}", "% 12 T validation scenes per row (LEARNING_EXPERIMENT_LOG.md section 7); "
+              "stall causes from LEARNING_FINDINGS.md section 5 (presentation/data/teacher_planner.csv)."]
+    (TAB / "planner_fixes.tex").write_text("\n".join(lines) + "\n")
 
 
 def write_tables():
@@ -2167,6 +3722,7 @@ def write_tables():
     lines += ["\\bottomrule", "\\end{tabular}", "% Validation success %, 100 scenes x 10 shapes; typed in from "
               "docs/LEARNING_FINDINGS.md section 7."]
     (TAB / "label_ab.tex").write_text("\n".join(lines) + "\n")
+    write_new_tables(head)
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -2175,20 +3731,56 @@ def write_tables():
 def write_readme():
     lines = ["# Presentation figures", "",
              "Generated by `presentation/scripts/make_figures.py` (do not edit by hand). Every figure exists as a vector",
-             "PDF (for Beamer) and a 200 dpi PNG (for PowerPoint) with the same name. Regenerate with:", "",
-             "```bash", "MPLBACKEND=Agg python presentation/scripts/make_figures.py", "```", "",
-             "Colours follow the model everywhere: original = light grey, 5-shape students = raspberry, 10-shape",
-             "students = orange (192 px camera: dark orange), 26-letter 96 px = blue, 26-letter 192 px = aqua,",
+             "PDF (for Beamer) and a 200 dpi PNG (for PowerPoint) with the same name; the method diagrams also as SVG.",
+             "Regenerate with:", "",
+             "```bash", "MPLBACKEND=Agg python presentation/scripts/make_figures.py                 # everything",
+             "MPLBACKEND=Agg python presentation/scripts/make_figures.py --variant slide # only figures/slide*/",
+             "```", "",
+             "Colours follow the model everywhere: original = grey, 5-shape students = raspberry, 10-shape",
+             "students = orange (192 px camera: dark orange), 26-letter 96 px = blue, 26-letter 192 px = green,",
              "planning teacher = gold, forward RL = violet. \"Validation\" = 50 fixed scenes per shape used to pick",
              "checkpoints; \"final test\" = fresh scenes never used before, paired by scene with the original.",
-             "Charts marked *typed-in* use numbers copied from the project docs (the script cites the section).", "",
-             "LaTeX tables (booktabs) are in `presentation/data/tables/`: `final_headline.tex`, `final_per_shape.tex`,",
-             "`final_per_shape_compact.tex`, `final_10shapes.tex`, `round50_vs_44.tex`, `steps_executed.tex`,",
-             "`unseen_capitals.tex`, `label_ab.tex`.", "",
+             "Every number a chart uses lives in `presentation/data/`: the tables built from the saved test files",
+             "(`validation_rounds.csv`, `final_tests_*.csv`, `training_rounds.csv`, `training_loss_curves.csv`) and the",
+             "typed-in tables, each row with the document section it comes from (`typed_in_numbers.json`,",
+             "`early_attempts.csv`, `teacher_validation.csv`, `teacher_planner.csv`, `world_model_accuracy.csv`,",
+             "`dataset_sizes.csv`, `timeline.csv`). Restyle a chart from those files alone.", "",
+             "LaTeX tables (booktabs) are in `presentation/data/tables/`: " + ", ".join(
+                 f"`{p.name}`" for p in sorted(TAB.glob("*.tex"))) + ".", "",
+             "## Default versions (`figures/`)", "",
+             "Sized for the paper and for standalone reading (10 x 5.6 in for full-width charts); most carry a short",
+             "footnote with the test protocol and data source.", "",
              "| File | What it shows | Data | Suggested use |", "| --- | --- | --- | --- |"]
     for name, shows, data, use in REGISTRY:
         lines.append(f"| `{name}` | {shows} | {data} | {use} |")
+    for mode, head, txt in (("slide", "Slide versions (`figures/slide/`)",
+                             "6.3 x 3.5 in (full slide width at 16:9), every text at least 16 pt, no footnote and no title "
+                             "(say the protocol aloud or put it in the slide's footer). Same data as the default version, "
+                             "with shorter labels and sometimes fewer panels or value labels (for example final_blends_all "
+                             "shows T, Y and D; data_growth leaves out the 5-shape panel; the timeline keeps 8 rows)."),
+                            ("half", "Half-slide versions (`figures/slide_half/`)",
+                             "4.2 x 3.2 in for two-column slides, every text at least 14 pt, no footnote or title. "
+                             "Two-panel charts keep their main panel (heldout_scaling: success; coverage_near_misses: "
+                             "27 trained shapes; analysis_budget: validation by phase; analysis_steps_executed: 27 "
+                             "trained and 6 unseen; method_teacher_success_26letters: by shape group).")):
+        rows = [(n, sh) for m, n, sh in VARIANT_REGISTRY if m == mode]
+        if not rows:
+            continue
+        lines += ["", f"## {head}", "", txt, "", "| File | Shows |", "| --- | --- |"]
+        lines += [f"| `{VARIANT_DIR[mode]}/{n}` | {sh} |" for n, sh in rows]
     (FIG / "README.md").write_text("\n".join(lines) + "\n")
+
+
+def style_variant(mode):
+    """Bigger fonts and an exact canvas for the slide versions; constrained layout keeps everything on the canvas."""
+    style()
+    f = VARIANT_FLOOR[mode]
+    plt.rcParams.update({"font.size": f, "axes.labelsize": f, "axes.titlesize": f, "xtick.labelsize": f,
+                         "ytick.labelsize": f, "legend.fontsize": f, "legend.title_fontsize": f,
+                         "figure.constrained_layout.use": True, "savefig.bbox": None, "lines.markersize": 5,
+                         "legend.handlelength": 1.2, "legend.columnspacing": 1.0, "axes.titlepad": 4})
+    global FULL, HALF, TALL, BIG
+    FULL = HALF = TALL = BIG = VARIANT_SIZE[mode]
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -2203,12 +3795,19 @@ E = "final_tests_episodes.csv"
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--only", nargs="*", default=[], help="figure name prefixes to regenerate")
-    ONLY.extend(ap.parse_args().only)
+    ap.add_argument("--variant", choices=("all", "none", "slide"), default="all",
+                    help="all: default figures, slide versions, tables and README; none: default figures only; "
+                         "slide: only figures/slide/ and figures/slide_half/")
+    args = ap.parse_args()
+    ONLY.extend(args.only)
+    variant = args.variant
     style()
     jobs = [
         ("curves_all_stages", lambda: fig_curves_all_stages(),
-         "Whole training story: validation success per correction round, 5 -> 10 -> 27 shapes on one axis, picks circled, "
-         "original policy dashed.", f"{V}; original levels from {P}", "story slide (main)",
+         "Whole training story: validation success per correction round (rounds completed, from 0 in every stage), 5 -> "
+         "10 -> 27 shapes on one axis, picks circled, round-50 model starred (fresh test), round-47 note, original "
+         "policy dashed.", f"{V}; original levels and round 50 from {P}/{S}; picks in typed_in_numbers.json",
+         "story slide (main)",
          "Validation success through all three stages"),
         ("curves_all_stages_smoothed", lambda: fig_curves_all_stages(smooth=True),
          "Same story with faint raw lines and a rolling mean (3 rounds for 5 shapes, 5 rounds otherwise).", V,
@@ -2216,8 +3815,9 @@ def main():
         ("curves_all_stages_panels", fig_curves_all_stages_panels,
          "Same story as three side-by-side panels with a shared y-axis.", V, "story slide / paper", None),
         ("curves_26letters", lambda: fig_curves_26letters(),
-         "26-letter lines (96 px 50 rounds, 192 px 13 rounds) with 95% bands, larger-budget start (round 14) and the "
-         "picked rounds (44 and 2).", V, "26-letter training slide", "Training on all 26 letters"),
+         "26-letter lines (96 px 50 rounds, 192 px 13 rounds) with 95% bands, larger-budget start (round 14), the "
+         "picked rounds (44 and 2) and the round-50 model (starred, fresh test).", f"{V}; round 50 from {S}",
+         "26-letter training slide", "Training on all 26 letters"),
         ("curves_26letters_smoothed", lambda: fig_curves_26letters(smooth=True),
          "Same with a 5-round rolling mean.", V, "26-letter training slide", None),
         ("curves_26letters_groups", fig_curves_26letters_groups,
@@ -2231,8 +3831,9 @@ def main():
          "10-shape stage: executed-push vs intended-plan labels (left) and 96 px vs 192 px lines (right); teacher's 78% "
          "dashed.", f"{V}; teacher typed-in", "10-shape slide", None),
         ("curves_5shapes", fig_curves_5shapes,
-         "5-shape stage: copying the teacher without corrections vs training steps (left), correction rounds (right); "
-         "original and teacher on the same scenes dashed.", f"{V}; reference lines typed-in", "5-shape slide", None),
+         "5-shape stage: copying the teacher without corrections vs training steps (left), correction rounds from round 0 "
+         "(right); original (16.4%) and the 1 px-noise teacher that labelled these students (76.4%) dashed.",
+         f"{V}; reference lines from typed_in_numbers.json", "5-shape slide", None),
         ("curves_heatmap_26letters", lambda: fig_heatmap_26(),
          "Shapes x rounds heatmap of validation success, 26-letter 96 px line.", V, "per-shape progress / paper", None),
         ("curves_heatmap_26letters_smoothed", lambda: fig_heatmap_26(smooth=True),
@@ -2281,7 +3882,12 @@ def main():
         ("final_5shapes_bars", fig_final_5shapes_bars,
          "5-shape final tests after 4 and 7 correction rounds vs original (two fresh pools).", S, "5-shape slide", None),
         ("final_blends_5shapes", fig_final_blends,
-         "Early weight-blend attempt (5 shapes): small Y/D gains, T loss.", S, "what did not work / backup", None),
+         "First weight-blend test (D040, 5 shapes): small Y/D gains, T loss.", S, "backup (superseded by final_blends_all)",
+         None),
+        ("final_blends_all", fig_final_blends_all,
+         "Every pre-registered blend test, D040 -> D043: paired change per letter with intervals, non-inferiority margin, "
+         "passed/failed. Two failed on T; the 50% encoder blend passed twice (D042, D043).", "early_attempts.csv",
+         "what we tried first / backup", None),
         ("shapes_96_vs_192", fig_shapes_96_vs_192,
          "Per-shape success, 26-letter 96 px vs 192 px camera.", S, "camera slide / backup", None),
         ("shapes_10_vs_26", fig_shapes_10_vs_26,
@@ -2291,8 +3897,8 @@ def main():
          "Per-shape validation (round 44) vs final test success: how noisy 50-scene validation is.", f"{V}, {S}",
          "methods / backup", None),
         ("shapes_teacher_vs_student", fig_shapes_teacher_vs_student,
-         "Teacher (exact state) vs camera student success per letter.", f"{S}; teacher typed-in", "teacher-gap slide",
-         None),
+         "Teacher (exact state) vs camera student per shape, all 27 trained shapes, on the same 50 validation scenes "
+         "(student: round 44).", f"teacher_validation.csv, {V}", "teacher-gap slide", None),
         ("shapes_new_letters_dotplot", fig_shapes_new_letters_dotplot,
          "17 newer letters: original, 10-shape model (never saw them), 26-letter model (trained on them).", S,
          "transfer vs training slide", None),
@@ -2370,25 +3976,106 @@ def main():
          "How well the trainer's score, a value function and one full rollout rank candidate plans (typed-in).",
          "typed-in (EXPERIMENT_LOG section 3)", "backup", None),
         ("method_teacher_success", fig_method_teacher_5shapes,
-         "First planning teacher vs original on T, near-T, Y, D, L (typed-in).", "typed-in (LEARNING_FINDINGS "
-         "section 5)", "method slide (teacher)", None),
+         "Original vs the first exact-state planner teacher vs the teacher reading the state with 1 px / 1° noise, on T, "
+         "near-T, Y, D, L.", "typed_in_numbers.json (LEARNING_FINDINGS sections 5-6)", "method slide (teacher)", None),
         ("method_teacher_success_26letters", fig_method_teacher_26,
-         "26-letter teacher (typed-in) vs original and the 26-letter student per letter.", f"{S}; teacher typed-in",
-         "teacher-gap slide", None),
+         "Teacher vs 26-letter camera student for all 27 trained shapes on the same 50 validation scenes, plus the pooled "
+         "rate; hatched teacher bars were checked with an older world model. Half-slide version: by shape group.",
+         f"teacher_validation.csv, {V}", "teacher-gap slide", None),
         ("method_teacher_gap", fig_method_teacher_gap,
-         "Teacher vs best camera student on validation, 5 and 10 shapes.", f"{V}; teacher typed-in", "half-slide",
-         None),
+         "Teacher vs picked camera student on the same validation scenes: 5 shapes (76% vs 40%), 10 shapes, 27 shapes.",
+         f"{V}; typed_in_numbers.json; teacher_validation.csv", "half-slide", None),
+        ("method_pipeline", fig_method_pipeline,
+         "Method block diagram: rollouts -> structured world model -> sampling planner teacher -> demonstrations -> camera "
+         "policy <-> correction rounds; training-only (privileged) boxes gold, deployed policy blue. Also SVG.",
+         "typed_in_numbers.json (method_pipeline)", "method slide", None),
+        ("method_pipeline_simple", fig_method_pipeline_simple,
+         "Four-box version of the method (rollouts, world model, planner teacher, camera policy) with the correction loop. "
+         "Also SVG.", "-", "title / overview slide", None),
+        ("policy_interface", fig_policy_interface,
+         "What the policy sees and outputs: two 96 px camera frames + pusher position -> network (100 denoising steps) -> "
+         "16 future targets, first 8 executed (red), rest pink; colours match the videos. Schematic scene. Also SVG.",
+         "typed_in_numbers.json (method_pipeline)", "setup / method slide", None),
+        ("wm_structure", fig_wm_structure,
+         "World model: what is copied from the simulator (pusher motion, contact gate) and what is learned (block motion in "
+         "contact). Also SVG.", "typed_in_numbers.json (method_pipeline)", "method slide / backup", None),
+        ("wm_accuracy", fig_wm_accuracy,
+         "World-model error: generic network vs structured model (median, 8 and 32 controls) and the structured model's "
+         "typical vs rare errors (90th percentile; 1 in 20 windows >= 14 px near walls).", "world_model_accuracy.csv",
+         "world-model slide / backup", None),
+        ("teacher_state_noise", fig_teacher_state_noise,
+         "Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes) and the estimator "
+         "accuracy sweep on Y, D, L (20 scenes).", "teacher_planner.csv", "teacher slide / backup", None),
+        ("method_planner_fixes", fig_method_planner_fixes,
+         "Planner teacher development: first vs final planner per letter (20 scenes) and T coverage as each stall cause "
+         "was fixed (12 scenes); stall causes in planner_fixes.tex.", "teacher_planner.csv", "backup", None),
+        ("oracle_bon", fig_oracle_bon,
+         "Simulator best-of-N (upper bound): Y 3 -> 8 of 20, and students imitating it within the original's noise.",
+         "early_attempts.csv", "what we tried first / backup", None),
+        ("distill_early", fig_distill_early,
+         "Early planner distillation: first worse everywhere; training the encoder, longer training and DAgger gave the "
+         "first D and L successes with lower T.", "early_attempts.csv", "what we tried first / backup", None),
+        ("bptt_teacher", fig_bptt_teacher,
+         "Gradient-based (BPTT) teacher: real-simulator coverage 0.04-0.12 vs the sampling planner's 0.93-0.97.",
+         f"early_attempts.csv; original from {S} (D040)", "what we tried first / backup", None),
+        ("copying_gap", fig_copying_gap,
+         "D044: a student reading the exact state keeps only 30-41% of the teacher's successes; the camera student and "
+         "the original on the same scenes.", "early_attempts.csv", "why corrections / backup", None),
+        ("lastmile_and_replanning", fig_lastmile_replanning,
+         "Last-mile variant (-3.8, -4.8, +0.0; no gain), re-planning every 4 controls (-13.6) and executing 12 or 15 "
+         "steps (-16.1, -22.5) against the matched runs.", f"early_attempts.csv, {E}", "ablation / backup", None),
+        ("project_timeline", fig_project_timeline,
+         "Project timeline Oct 24 -> Nov 7: each approach as a bar over its days, coloured by outcome, with the result.",
+         "timeline.csv", "overview / what we tried slide", None),
+        ("data_growth", fig_data_growth,
+         "Training examples per round by source (human T, teacher demonstrations, corrections), 5 shapes, 10 shapes and "
+         "26 letters (96 px lines).", "training_rounds.csv", "data slide / backup", None),
+        ("train_loss_rounds", fig_train_loss_rounds,
+         "End-of-round training loss vs validation success per round (10 shapes, 26 letters): the loss keeps falling "
+         "while validation plateaus.", f"training_rounds.csv, {V}", "plateau slide / backup", None),
+        ("train_loss_within_round", fig_train_loss_within_round,
+         "Training loss within five rounds of the 26-letter 96 px line (rounds 1, 13: 20k steps; 14, 30, 50: 54k).",
+         "training_loss_curves.csv", "backup", None),
+        ("failure_categories", fig_failure_categories,
+         "Episodes split into solved / near miss (>= 90%) / partial (50-90%) / far (< 50%) by best and by final coverage: "
+         "original vs the 26-letter student (rounds 44 and 50).", E, "near-miss / limits slide", None),
     ]
-    for name, fn, shows, data, use, title in jobs:
-        if not wanted(name):
-            continue
-        fig = fn()
-        save(fig, name, shows, data, use, title)
-        print("wrote", name)
-    if not ONLY:
+    byname = {j[0]: j for j in jobs}
+    if variant in ("all", "none"):
+        for name, fn, shows, data, use, title in jobs:
+            if not wanted(name):
+                continue
+            fig = fn()
+            save(fig, name, shows, data, use, title, svg=name in SVG_FIGURES)
+            print("wrote", name)
+    if variant in ("all", "slide"):
+        for mode, names in (("slide", SLIDE_FIGURES), ("half", HALF_FIGURES)):
+            MODE["name"] = mode
+            style_variant(mode)
+            for name in names:
+                if wanted(name):
+                    _, fn, shows, *_ = byname[name]
+                    save(fn(), name, shows, None, None)
+                    print(f"wrote {VARIANT_DIR[mode]}/{name}")
+        MODE["name"] = "default"
+        style()
+    if not ONLY and variant == "all":
         write_tables()
         write_readme()
         print("wrote tables and README")
+
+
+SVG_FIGURES = {"method_pipeline", "method_pipeline_simple", "policy_interface", "wm_structure"}
+# slide versions: full slide width (6.3 x 3.5 in, >= 16 pt) and half slide (4.2 x 3.2 in, >= 14 pt)
+SLIDE_FIGURES = ["method_pipeline_simple", "method_pipeline", "policy_interface", "wm_structure", "wm_accuracy",
+                 "rl_t_collapse", "rl_signal_variance", "method_teacher_success", "method_teacher_success_26letters",
+                 "teacher_state_noise", "curves_all_stages", "curves_26letters", "data_growth", "train_loss_rounds",
+                 "final_grouped_bars", "final_stage_progression", "final_per_shape_bars_vertical", "final_forest_groups",
+                 "heldout_scaling", "coverage_near_misses", "failure_categories", "analysis_label_ab",
+                 "analysis_steps_executed", "analysis_t_tradeoff", "final_blends_all", "project_timeline"]
+HALF_FIGURES = ["analysis_label_ab", "analysis_budget", "analysis_steps_executed", "heldout_scaling",
+                "coverage_near_misses", "rl_t_collapse", "rl_signal_variance", "method_teacher_success",
+                "method_teacher_success_26letters", "method_teacher_gap", "final_headline_bars", "lastmile_and_replanning"]
 
 
 if __name__ == "__main__":

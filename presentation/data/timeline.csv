@@ -1,0 +1,16 @@
+start,end,approach,slide_label,outcome,verdict,decisions,on_slide,source
+2026-10-24,2026-10-25,Forward RL on the simulator,Forward RL,no learning; larger steps destroyed T (0.55 -> 0.05),did not work,D033-D035,1,docs/LEARNING_EXPERIMENT_LOG.md timeline; docs/LEARNING_FINDINGS.md section 1; docs/DECISIONS.md D035
+2026-10-25,2026-10-25,Why RL failed: signal check,,only 16-36% of the score comes from the plan,diagnosis,"D035, D036",0,docs/LEARNING_FINDINGS.md section 2; docs/DECISIONS.md D035-D036
+2026-10-25,2026-10-25,Simulator best-of-N + imitation,Best-of-N,Y 3 -> 8 of 20 as an upper bound; imitation within noise,did not work,D037,1,docs/LEARNING_FINDINGS.md section 3; docs/DECISIONS.md D037
+2026-10-25,2026-10-26,Structured world model,World model,about 0.2 px error over 8 controls,worked,D038,1,docs/LEARNING_EXPERIMENT_LOG.md timeline; docs/LEARNING_FINDINGS.md section 4; docs/DECISIONS.md D038
+2026-10-26,2026-10-26,Gradient-based teacher (BPTT),,coverage stayed 0.04-0.12,did not work,D039,0,docs/LEARNING_FINDINGS.md section 5; docs/DECISIONS.md D039
+2026-10-26,2026-10-26,Sampling planner teacher,Planner teacher,"D 50, Y 36, L 21 of 50 scenes",worked,D039,1,docs/LEARNING_FINDINGS.md section 5; docs/DECISIONS.md D039
+2026-10-26,2026-10-27,Distilling the planner + DAgger,,"first worse; then first D/L successes, T 10-15 points low",partly,D039,0,docs/LEARNING_EXPERIMENT_LOG.md timeline; docs/LEARNING_FINDINGS.md section 6
+2026-10-27,2026-10-28,"Weight blends, 4 pre-registered tests",Weight blends,2 failed on T; 50% encoder blend passed twice (Y 8.6 -> 14.8%),partly,D040-D043,1,docs/LEARNING_FINDINGS.md sections 6; docs/DECISIONS.md D040-D043
+2026-10-30,2026-10-30,Can a student copy the teacher?,,state-input student keeps 1/3-1/2: copying is the gap,diagnosis,D044,0,docs/LEARNING_FINDINGS.md section 6; docs/DECISIONS.md D044
+2026-10-30,2026-10-31,Teacher reads state with 1 px noise,,5 shapes: 124 -> 191 of 250 scenes,worked,D044-D045,0,"docs/LEARNING_FINDINGS.md section 6 (state-noise follow-up, undated, between D044 and D045)"
+2026-10-31,2026-10-31,"Copy the teacher + correction rounds, 5 shapes",5 shapes + corrections,5 shapes 18.5% -> 32-34% on fresh scenes,worked,D045-D047,1,docs/LEARNING_FINDINGS.md section 6; docs/DECISIONS.md D045-D047
+2026-10-31,2026-10-31,Last-mile variant; re-plan more often,,no gain; every 4 controls -13.6 points,did not work,,0,"docs/LEARNING_FINDINGS.md section 6 (parallel H200 session, 2026-10-31)"
+2026-10-31,2026-11-02,"10 shapes: plan labels, 96 / 192 px",10 shapes,"9.1% -> 34.3% (96 px), 38.2% (192 px)",worked,"D048-D050, D052",1,docs/LEARNING_FINDINGS.md section 7; docs/DECISIONS.md D048-D052
+2026-11-02,2026-11-05,26 letters (budget fix from round 14),26 letters,"27 shapes 3.7% -> 33.4% (final test, Nov 5)",worked,"D051, D053",1,"docs/LEARNING_FINDINGS.md section 8; docs/DECISIONS.md D051, D053"
+2026-11-06,2026-11-07,Six more rounds; steps executed per plan,,round 50: 34.8%; executing 12 or 15 steps much worse,worked,"D054, D056",0,"docs/LEARNING_FINDINGS.md section 8; docs/DECISIONS.md D054, D056"

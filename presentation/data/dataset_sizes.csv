@@ -1,0 +1,14 @@
+item,stage,episodes,examples,per_shape,note,source
+"human T demonstrations (original dataset, not new)",all stages,206,24208,T only,reused in every training round,docs/LEARNING_FINDINGS.md Privileged signals (206 human T episodes); examples from training_rounds.csv (human_T_examples)
+"teacher demonstrations, 5 shapes (noisy-state teacher, every step)",5 shapes,500,154170,,"T, near-T, Y, D, L","docs/LEARNING_FINDINGS.md section 6 (D044: 500 teacher episodes); examples from training_rounds.csv (5 shapes, teacher_examples); run store dagger-loop/round1/info.json (teacher-noisy-demos, -demos2)"
+"teacher demonstrations for the 5 added letters, executed-push labels",10 shapes,500,,100,"E, F, J, P, U; training seeds i = 46000-46099",docs/LEARNING_FINDINGS.md section 6 ('the new letters' from training seeds i = 46000-46099')
+"teacher demonstrations with intended 16-step plans, 10 shapes",10 shapes,2500,357660,250,"50 + 100 + 100 per shape (teacher-plan-demos, -demos2, -demos3)","docs/DECISIONS.md D048 (i = 56200-56299 = teacher-plan-demos3); run store dagger10m/round0/train/info.json args.demos and teacher-plan-demos*/<shape>-*.json counts; examples from training_rounds.csv (10 shapes, 96 px main line)"
+teacher demonstrations with intended plans for the 17 new letters,27 shapes,2550,312144,150,training seeds i = 50600-50749,"docs/DECISIONS.md D051 (i = 50600-50749); docs/LEARNING_FINDINGS.md section 8 (150 scenes per new letter); run store teacher-plan-demos26 counts; examples = 669,804 - 357,660 from training_rounds.csv"
+"teacher demonstrations, all 27 shapes",27 shapes,5050,669804,,,"training_rounds.csv (27 shapes, teacher_examples)"
+correction scenes per shape per round,10 and 27 shapes,,,30,"student drives, teacher labels every visited state","docs/DECISIONS.md D048 (30 scenes per letter per round), D051 (30 training scenes per shape)"
+"correction scenes per new letter per round, from round 14",27 shapes,,,60,30 for the ten earlier shapes,docs/DECISIONS.md D053
+correction examples after round 50 (26-letter 96 px line),27 shapes,,2511488,,all correction rounds of all stages so far,"training_rounds.csv (27 shapes, 96 px line, round 50)"
+all training examples in round 50 (26-letter 96 px line),27 shapes,,3205500,,"teacher 669,804 + corrections 2,511,488 + human T 24,208",training_rounds.csv
+"training samples per shape per round, 10 shapes, 20k steps",10 shapes,,,512000,20k steps x 256 batch / 10 shapes,docs/DECISIONS.md D053
+"training samples per shape per round, 27 shapes, 20k steps",27 shapes,,,190000,rounds 1-13 of the 96 px line,docs/DECISIONS.md D053
+"training samples per shape per round, 27 shapes, 54k steps",27 shapes,,,512000,from round 14 (96 px) and round 1 (192 px),docs/DECISIONS.md D053

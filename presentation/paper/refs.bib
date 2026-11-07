@@ -1,0 +1,327 @@
+% References for paper/main.tex (natbib + plainnat).
+% Entries without a note were checked from memory of the published record, or against arXiv/PMLR/ICLR pages on
+% 2026-11-08 (DPPO, DSRL, DiffusionNFT, AdvantageFlow, GPC, SuperMimic, MPPI, Octo, OpenVLA, pi0).
+% Entries with note = {TODO: verify ...} still need a check; delete the note field once verified (it prints in the
+% bibliography on purpose so it cannot be missed).
+% Page numbers are left out where they were not certain.
+
+% ---------------------------------------------------------------- diffusion policies and imitation
+@inproceedings{chi2023diffusion,
+  author    = {Chi, Cheng and Feng, Siyuan and Du, Yilun and Xu, Zhenjia and Cousineau, Eric and Burchfiel, Benjamin and Song, Shuran},
+  title     = {Diffusion Policy: Visuomotor Policy Learning via Action Diffusion},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2023}
+}
+
+@inproceedings{ho2020ddpm,
+  author    = {Ho, Jonathan and Jain, Ajay and Abbeel, Pieter},
+  title     = {Denoising Diffusion Probabilistic Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {33},
+  pages     = {6840--6851},
+  year      = {2020}
+}
+
+@inproceedings{song2021ddim,
+  author    = {Song, Jiaming and Meng, Chenlin and Ermon, Stefano},
+  title     = {Denoising Diffusion Implicit Models},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021}
+}
+
+@inproceedings{florence2021implicit,
+  author    = {Florence, Pete and Lynch, Corey and Zeng, Andy and Ramirez, Oscar A. and Wahid, Ayzaan and Downs, Laura and Wong, Adrian and Lee, Johnny and Mordatch, Igor and Tompson, Jonathan},
+  title     = {Implicit Behavioral Cloning},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {164},
+  year      = {2021}
+}
+
+@inproceedings{mandlekar2021robomimic,
+  author    = {Mandlekar, Ajay and Xu, Danfei and Wong, Josiah and Nasiriany, Soroush and Wang, Chen and Kulkarni, Rohun and Fei-Fei, Li and Savarese, Silvio and Zhu, Yuke and Mart{\'\i}n-Mart{\'\i}n, Roberto},
+  title     = {What Matters in Learning from Offline Human Demonstrations for Robot Manipulation},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {164},
+  year      = {2021}
+}
+
+@inproceedings{he2016resnet,
+  author    = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  title     = {Deep Residual Learning for Image Recognition},
+  booktitle = {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2016}
+}
+
+@inproceedings{ronneberger2015unet,
+  author    = {Ronneberger, Olaf and Fischer, Philipp and Brox, Thomas},
+  title     = {{U-Net}: Convolutional Networks for Biomedical Image Segmentation},
+  booktitle = {Medical Image Computing and Computer-Assisted Intervention (MICCAI)},
+  year      = {2015}
+}
+
+% ---------------------------------------------------------------- RL fine-tuning of diffusion policies
+@inproceedings{ren2025dppo,
+  author    = {Ren, Allen Z. and Lidard, Justin and Ankile, Lars L. and Simeonov, Anthony and Agrawal, Pulkit and Majumdar, Anirudha and Burchfiel, Benjamin and Dai, Hongkai and Simchowitz, Max},
+  title     = {Diffusion Policy Policy Optimization},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2025}
+}
+
+@inproceedings{black2024ddpo,
+  author    = {Black, Kevin and Janner, Michael and Du, Yilun and Kostrikov, Ilya and Levine, Sergey},
+  title     = {Training Diffusion Models with Reinforcement Learning},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@inproceedings{wagenmaker2025dsrl,
+  author    = {Wagenmaker, Andrew and Zhang, Yunchu and Nakamoto, Mitsuhiko and Park, Seohong and Yagoub, Waleed and Nagabandi, Anusha and Gupta, Abhishek and Levine, Sergey},
+  title     = {Steering Your Diffusion Policy with Latent Space Reinforcement Learning},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {305},
+  pages     = {258--282},
+  year      = {2025}
+}
+
+@inproceedings{zheng2026diffusionnft,
+  author    = {Zheng, Kaiwen and Chen, Huayu and Ye, Haotian and Wang, Haoxiang and Zhang, Qinsheng and Jiang, Kai and Su, Hang and Ermon, Stefano and Zhu, Jun and Liu, Ming-Yu},
+  title     = {{DiffusionNFT}: Online Diffusion Reinforcement with Forward Process},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2026},
+  note      = {arXiv:2509.16117. TODO: verify venue against the ICLR 2026 proceedings (taken from the arXiv comment ``ICLR 2026 Oral'')}
+}
+
+@misc{kveton2026advantageflow,
+  author       = {Kveton, Branislav and Rao, Anup and Mukherjee, Subhojyoti and Singh, Krishna Kumar and Lai, Viet Dac},
+  title        = {{AdvantageFlow}: Regularized Advantage-Weighted {RL} in Flow Models},
+  howpublished = {arXiv:2605.26013},
+  year         = {2026}
+}
+
+@misc{schulman2017ppo,
+  author       = {Schulman, John and Wolski, Filip and Dhariwal, Prafulla and Radford, Alec and Klimov, Oleg},
+  title        = {Proximal Policy Optimization Algorithms},
+  howpublished = {arXiv:1707.06347},
+  year         = {2017}
+}
+
+@inproceedings{hu2022lora,
+  author    = {Hu, Edward J. and Shen, Yelong and Wallis, Phillip and Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and Wang, Lu and Chen, Weizhu},
+  title     = {{LoRA}: Low-Rank Adaptation of Large Language Models},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022}
+}
+
+@inproceedings{wortsman2022wiseft,
+  author    = {Wortsman, Mitchell and Ilharco, Gabriel and Kim, Jong Wook and Li, Mike and Kornblith, Simon and Roelofs, Rebecca and Gontijo Lopes, Raphael and Hajishirzi, Hannaneh and Farhadi, Ali and Namkoong, Hongseok and Schmidt, Ludwig},
+  title     = {Robust Fine-Tuning of Zero-Shot Models},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year      = {2022}
+}
+
+% ---------------------------------------------------------------- privileged teachers and DAgger
+@inproceedings{ross2011dagger,
+  author    = {Ross, St{\'e}phane and Gordon, Geoffrey J. and Bagnell, J. Andrew},
+  title     = {A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning},
+  booktitle = {International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {15},
+  pages     = {627--635},
+  year      = {2011}
+}
+
+@inproceedings{chen2019lbc,
+  author    = {Chen, Dian and Zhou, Brady and Koltun, Vladlen and Kr{\"a}henb{\"u}hl, Philipp},
+  title     = {Learning by Cheating},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {100},
+  year      = {2019}
+}
+
+@inproceedings{kahn2017plato,
+  author    = {Kahn, Gregory and Zhang, Tianhao and Levine, Sergey and Abbeel, Pieter},
+  title     = {{PLATO}: Policy Learning using Adaptive Trajectory Optimization},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  year      = {2017}
+}
+
+@article{levine2016end,
+  author    = {Levine, Sergey and Finn, Chelsea and Darrell, Trevor and Abbeel, Pieter},
+  title     = {End-to-End Training of Deep Visuomotor Policies},
+  journal   = {Journal of Machine Learning Research},
+  volume    = {17},
+  number    = {39},
+  pages     = {1--40},
+  year      = {2016}
+}
+
+@inproceedings{pinto2018asymmetric,
+  author    = {Pinto, Lerrel and Andrychowicz, Marcin and Welinder, Peter and Zaremba, Wojciech and Abbeel, Pieter},
+  title     = {Asymmetric Actor Critic for Image-Based Robot Learning},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2018}
+}
+
+@article{lee2020quadruped,
+  author    = {Lee, Joonho and Hwangbo, Jemin and Wellhausen, Lorenz and Koltun, Vladlen and Hutter, Marco},
+  title     = {Learning Quadrupedal Locomotion over Challenging Terrain},
+  journal   = {Science Robotics},
+  volume    = {5},
+  number    = {47},
+  pages     = {eabc5986},
+  year      = {2020}
+}
+
+% ---------------------------------------------------------------- world models, planning, pushing
+@inproceedings{chua2018pets,
+  author    = {Chua, Kurtland and Calandra, Roberto and McAllister, Rowan and Levine, Sergey},
+  title     = {Deep Reinforcement Learning in a Handful of Trials using Probabilistic Dynamics Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2018}
+}
+
+@inproceedings{hafner2019planet,
+  author    = {Hafner, Danijar and Lillicrap, Timothy and Fischer, Ian and Villegas, Ruben and Ha, David and Lee, Honglak and Davidson, James},
+  title     = {Learning Latent Dynamics for Planning from Pixels},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2019}
+}
+
+@inproceedings{hafner2020dreamer,
+  author    = {Hafner, Danijar and Lillicrap, Timothy and Ba, Jimmy and Norouzi, Mohammad},
+  title     = {Dream to Control: Learning Behaviors by Latent Imagination},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2020}
+}
+
+@inproceedings{ha2018worldmodels,
+  author    = {Ha, David and Schmidhuber, J{\"u}rgen},
+  title     = {Recurrent World Models Facilitate Policy Evolution},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2018}
+}
+
+@inproceedings{janner2019mbpo,
+  author    = {Janner, Michael and Fu, Justin and Zhang, Marvin and Levine, Sergey},
+  title     = {When to Trust Your Model: Model-Based Policy Optimization},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2019}
+}
+
+@inproceedings{hansen2024tdmpc2,
+  author    = {Hansen, Nicklas and Su, Hao and Wang, Xiaolong},
+  title     = {{TD-MPC2}: Scalable, Robust World Models for Continuous Control},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2024}
+}
+
+@article{rubinstein1999cem,
+  author    = {Rubinstein, Reuven Y.},
+  title     = {The Cross-Entropy Method for Combinatorial and Continuous Optimization},
+  journal   = {Methodology and Computing in Applied Probability},
+  volume    = {1},
+  number    = {2},
+  pages     = {127--190},
+  year      = {1999}
+}
+
+@article{deboer2005tutorial,
+  author    = {de Boer, Pieter-Tjerk and Kroese, Dirk P. and Mannor, Shie and Rubinstein, Reuven Y.},
+  title     = {A Tutorial on the Cross-Entropy Method},
+  journal   = {Annals of Operations Research},
+  volume    = {134},
+  number    = {1},
+  pages     = {19--67},
+  year      = {2005}
+}
+
+@inproceedings{williams2017mppi,
+  author    = {Williams, Grady and Wagener, Nolan and Goldfain, Brian and Drews, Paul and Rehg, James M. and Boots, Byron and Theodorou, Evangelos A.},
+  title     = {Information Theoretic {MPC} for Model-Based Reinforcement Learning},
+  booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
+  pages     = {1714--1721},
+  year      = {2017},
+  doi       = {10.1109/ICRA.2017.7989202}
+}
+
+@misc{qi2025gpc,
+  author       = {Qi, Han and Yin, Haocheng and Zhu, Aris and Du, Yilun and Yang, Heng},
+  title        = {Inference-Time Enhancement of Generative Robot Policies via Predictive World Modeling},
+  howpublished = {arXiv:2502.00622},
+  year         = {2025},
+  note         = {TODO: verify. Accepted to IEEE Robotics and Automation Letters per the arXiv comment (add volume/year); earlier arXiv versions may carry a different title and author list}
+}
+
+@misc{liao2026supermimic,
+  author       = {Liao, Qiayuan and Shao, Yiyang and Long, Junfeng and Zakka, Kevin and Horowitz, Roberto and Abbeel, Pieter and Sreenath, Koushil},
+  title        = {{SuperMimic}: Scaling Humanoid Whole-Body Control with One Differentiable World Model},
+  howpublished = {arXiv:2610.28480},
+  year         = {2026},
+  note         = {TODO: verify. Accepted at CoRL 2026 per the arXiv comment; switch to the proceedings entry once published}
+}
+
+@inproceedings{suh2022differentiable,
+  author    = {Suh, Hyung Ju Terry and Simchowitz, Max and Zhang, Kaiqing and Tedrake, Russ},
+  title     = {Do Differentiable Simulators Give Better Policy Gradients?},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {162},
+  year      = {2022}
+}
+
+@article{mason1986mechanics,
+  author    = {Mason, Matthew T.},
+  title     = {Mechanics and Planning of Manipulator Pushing Operations},
+  journal   = {The International Journal of Robotics Research},
+  volume    = {5},
+  number    = {3},
+  pages     = {53--71},
+  year      = {1986}
+}
+
+% ---------------------------------------------------------------- generalist manipulation
+@inproceedings{brohan2023rt1,
+  author    = {Brohan, Anthony and others},
+  title     = {{RT-1}: Robotics Transformer for Real-World Control at Scale},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2023}
+}
+
+@inproceedings{octo2024,
+  author    = {{Octo Model Team} and Ghosh, Dibya and Walke, Homer and Pertsch, Karl and Black, Kevin and Mees, Oier and others},
+  title     = {Octo: An Open-Source Generalist Robot Policy},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2024},
+  note      = {arXiv:2405.12213. TODO: verify the RSS 2024 venue (the arXiv page lists none)}
+}
+
+@inproceedings{kim2024openvla,
+  author    = {Kim, Moo Jin and Pertsch, Karl and Karamcheti, Siddharth and Xiao, Ted and Balakrishna, Ashwin and others},
+  title     = {{OpenVLA}: An Open-Source Vision-Language-Action Model},
+  booktitle = {Conference on Robot Learning (CoRL)},
+  year      = {2024},
+  note      = {arXiv:2406.09246. TODO: verify the CoRL 2024 venue (the arXiv page lists none)}
+}
+
+@inproceedings{black2025pi0,
+  author    = {Black, Kevin and Brown, Noah and Driess, Danny and Esmail, Adnan and Equi, Michael and others},
+  title     = {{$\pi_0$}: A Vision-Language-Action Flow Model for General Robot Control},
+  booktitle = {Robotics: Science and Systems (RSS)},
+  year      = {2025},
+  note      = {arXiv:2410.24164 (first version 2024). TODO: verify venue (taken from the arXiv comment ``Published in RSS 2025'')}
+}
+
+% ---------------------------------------------------------------- statistics
+@article{wilson1927probable,
+  author    = {Wilson, Edwin B.},
+  title     = {Probable Inference, the Law of Succession, and Statistical Inference},
+  journal   = {Journal of the American Statistical Association},
+  volume    = {22},
+  number    = {158},
+  pages     = {209--212},
+  year      = {1927}
+}
