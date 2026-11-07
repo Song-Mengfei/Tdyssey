@@ -9,7 +9,7 @@ A camera policy that only knew how to push a T now pushes all 26 capital letters
 demonstrations; a planner that cheats with exact simulator state teaches it, and the camera policy learns to imitate
 that planner and then corrects its own mistakes.
 
-## Key numbers (all on fresh test scenes never used for training or model selection)
+## Key numbers (fresh test scenes never used for training or model selection, unless marked otherwise)
 
 | Claim | Number | Source |
 | --- | --- | --- |
@@ -18,15 +18,15 @@ that planner and then corrects its own mistakes.
 | Our 26-letter policy, sharper camera (192 px) | 33.8% | final test |
 | 17 letters added last | 0.4% -> 33.2% | final test |
 | Ten earlier shapes | 9.3% -> 33.7% (no loss from adding 17 letters) | final test |
-| Six never-seen shapes | 1.2% -> 2.8% (10 shapes) -> 4.7-5.9% (27 shapes); digit 7 2% -> 17-23% | final test |
+| Six never-seen shapes | 1.2% -> 2.8% (10 shapes) -> 4.7% (27 shapes, 96 px) / 5.9% (192 px); digit 7 2.0% -> 19% (96 px) / 23% (192 px), same scenes | final test |
 | Goal covered at the end, 27 shapes | 0.35 -> 0.82 | final test |
 | Ten-shape model on its ten shapes | 9.1% -> 34.3% (96 px), 38.2% (192 px) | 1000 scenes per shape |
-| Teacher on validation scenes | 390/500 (10 shapes); 36-49/50 on most new letters | validation |
+| Teacher on validation scenes | 1192/1350 = 88% on all 27 shapes vs 35% for the camera policy on the same scenes; 390/500 in the ten-shape labelling run | validation (not fresh) |
 | Forward RL (what we tried first) | T success 0.55 -> 0.05 with larger steps; only 16-36% of the training score comes from the plan itself | learning findings, sections 1-2 |
-| Intended-plan labels vs executed pushes | 129 vs 77 successes of 1000 (largest single gain) | label A/B |
-| Bigger per-shape budget (54k steps, 60 scenes per new letter) | plateau ~24% -> ~35% validation | 26-letter run |
+| Intended-plan labels vs executed pushes | 129 vs 77 successes of 1000 (largest single gain) | label A/B (validation) |
+| Bigger per-shape budget (54k steps, 60 scenes per new letter) | plateau ~24% -> ~35% | 26-letter run (validation) |
 | Executing 12 or 15 of 16 planned steps instead of 8 | 18.6% and 12.2% vs 34.8% | steps test |
-| T after adapting | 46.0% -> 40.7% (96 px; interval includes 0) and 44.0% for round 50 | final tests |
+| T and near-T after adapting | T 46.0% -> 40.7% (96 px, interval includes 0), 38.3% (192 px, -7.7 [-15.1, -0.2]); near-T 37.3% -> 29.0% (96 px, -8.3 [-15.9, -0.7]). Separate pool (no original run there): round 50 44.0% vs round 44 38.0% on T | final tests |
 
 ## Talk plan (10 minutes; matches slides/main.tex and the course's required parts)
 
@@ -40,15 +40,15 @@ demo or recorded video); discussion and conclusions; team number and all members
 | 2 | Problem and motivation | A pushing policy that only knows the T | 0:40 | `videos/compare/P.mp4` |
 | 3 | Approach | Approach at a glance | 0:35 | `figures/method_pipeline` |
 | 4 | Approach | First attempt: RL on the simulator | 0:35 | `figures/rl_t_collapse` |
-| 5 | Approach | The teacher: planning inside a learned world model | 0:40 | `videos/teacher/teacher_9shapes.mp4`, `images/world_model/imagined_vs_real_E.png` |
+| 5 | Approach | The teacher: planning inside a learned world model | 0:40 | `videos/teacher/teacher_9shapes.mp4` |
 | 6 | Approach | Teaching the camera policy | 0:35 | `images/training_data/correction_round_examples.png` |
 | 7 | Approach | Copy what the teacher intends, not what it did | 0:25 | `images/training_data/labels_intended_vs_executed.png`, `figures/analysis_label_ab` |
 | 8 | Results | Training: 5 -> 10 -> 27 shapes | 0:25 | `figures/curves_all_stages` |
 | 9 | Results | 26 letters: the per-shape budget | 0:20 | `figures/curves_26letters` |
 | 10 | Results | Final test | 0:35 | `figures/final_grouped_bars` |
 | 11 | Results | New letters improve most; T and near-T dip | 0:15 | `figures/final_dumbbell` |
-| 12 | Demo | Same scene, original vs ours | 0:30 | `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
-| 13 | Demo | Teacher and the camera policy | 0:20 | `videos/teacher_vs_student/E.mp4` |
+| 12 | Demo | Same scene, original vs ours | 0:30 | `videos/talk/demo_reel.mp4` (40 s, plays without PDF links), or `videos/compare/A.mp4`, `M.mp4`, `S_scene2.mp4` |
+| 13 | Demo | Teacher and the camera policy | 0:20 | `videos/teacher_vs_student/K.mp4` |
 | 14 | Demo | One scene through the whole project | 0:20 | `videos/progression/E_across_models.mp4` |
 | 15 | Results | Never-seen shapes | 0:20 | `figures/heldout_scaling`, `videos/compare/digit7_scene2.mp4` |
 | 16 | Results | The last millimetres | 0:20 | `images/last_mile/near_miss_vs_solved_zoom.png`, `videos/near_misses/near_miss_M_400020.mp4` |
@@ -56,9 +56,10 @@ demo or recorded video); discussion and conclusions; team number and all members
 | 19 | Discussion and conclusions | Achievements, limitations, takeaways | 0:45 | text |
 | 20 | Close | Thank you + all 33 shapes | 0:10 | `videos/all_shapes/l26_r50_33shapes_wide.mp4` |
 
-Backup (12 slides): protocol and headline table, per-shape table, what mattered, what else did not work, world-model
-accuracy, round 50 vs 44 and 192 vs 96 px, T and near-T, ten shapes, teacher per letter, full disclosure, data and
-compute, timeline.
+Backup (16 slides): protocol and headline table, per-shape table, what mattered, what else did not work, the world
+model (structure and accuracy; imagined vs simulator videos), round 50 vs 44 and 192 vs 96 px, T and near-T, ten
+shapes, teacher vs policy per letter, how the teacher was fixed, every model we trained, how to read the videos, full
+disclosure, data and compute, timeline.
 
 ## Paper outline (one week after the talk)
 
@@ -84,12 +85,14 @@ compute, timeline.
   mostly noise, and larger steps destroyed the T skill.
 - *Does it generalize to new shapes?* Only a little (4.7-5.9% on six never-seen shapes), but it grows with the number
   of training shapes; it is adaptation with machine-generated data, not zero-shot transfer.
-- *Did T get worse?* Slightly at 96 px in the final test (46.0% -> 40.7%, interval includes zero); round 50 reaches
-  44.0% on its own fresh test.
+- *Did T get worse?* Yes, by 5-8 points: T 46.0% -> 40.7% at 96 px (interval includes zero) and -7.7 points at
+  192 px; near-T -8.3 points at 96 px (both intervals exclude zero). On a separate fresh pool, round 50 scored 44.0% on
+  T against round 44's 38.0% (the original was not run on that pool).
 - *Why is success only about 35%?* Blocks usually end close (82% coverage on average, 91% at the best moment), but
   success needs 95%: the last millimetres of alignment are the open problem (one 96 px camera pixel is about 5
   simulator pixels).
-- *How much compute?* Single GPUs (H100, A100), several 3-day jobs; about 54k training steps per correction round.
+- *How much compute?* About 120 GPU-hours of policy training over 128 rounds (single H100 or A100 GPUs), plus
+  practice scenes and validation (about 36 h logged for the 27-shape rounds) and the teacher's demonstrations.
 
 ## Figure plan for the paper
 
@@ -105,7 +108,7 @@ Draft in `paper/main.tex` (build notes in `paper/README.md`). Paths are relative
 | 5 Method: pipeline and world model | TikZ diagram in `main.tex`; `images/world_model/imagined_vs_real_D.png` | The whole recipe in one picture; the world model tracks the simulator over 8-32 controls |
 | 5 Method: teacher and labels | `figures/method_teacher_success_26letters.pdf`; `images/training_data/labels_intended_vs_executed.png` | How strong the teacher is per letter; why intended-plan labels beat executed pushes |
 | 6 Results: training | `figures/curves_all_stages_panels.pdf`; `figures/analysis_budget.pdf` | 5 -> 10 -> 27 shapes on one page; the per-shape budget that fixed the 27-shape plateau |
-| 6 Results: final tests | `data/tables/final_headline.tex`; `figures/final_dumbbell.pdf`; `data/tables/final_10shapes.tex` | The pre-registered headline; every shape improves except T and near-T; the ten-shape test on 1000 scenes per shape |
+| 6 Results: final tests | `data/tables/final_headline.tex`; `figures/final_dumbbell.pdf`; `data/tables/final_10shapes.tex` | The pre-registered headline; every trained shape improves except T and near-T; the ten-shape test on 1000 scenes per shape |
 | 6 Results: held-out shapes | `figures/heldout_scaling.pdf`; `data/tables/unseen_capitals.tex` (appendix) | Never-seen shapes improve a little as training shapes grow (1 -> 10 -> 27) |
 | 6 Results: remaining failures | `figures/coverage_near_misses.pdf`; `images/last_mile/near_miss_vs_solved_zoom.png` | Most failures end close; the gap between 94.9% and 95.2% is smaller than one camera pixel |
 | 6 Results: ablations | `data/tables/label_ab.tex`; `figures/analysis_steps_executed.pdf` | Labels are the largest single gain; executing 12 or 15 of 16 steps is much worse |
