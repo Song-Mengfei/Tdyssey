@@ -936,10 +936,11 @@ diagnosed: the recipe is unchanged (intended-plan labels, the same teacher, corr
 shared by 27 shapes give each shape 190k training samples per round instead of 512k with ten shapes, and the 17 new
 letters had about 11k correction samples each against 53-93k for the earlier shapes. From then on each round trains
 54k steps (each shape again gets about 512k samples per round) and collects 60 practice scenes for each of the 17 new
-letters (30 for the ten earlier shapes); `chain_dagger_loop26c.sh`. Training seeds: 96 px i = 57700 + 70*k (rounds
+letters (30 for the ten earlier shapes);
+`scripts/learning/experiments/chain_dagger_loop26c.sh`. Training seeds: 96 px i = 57700 + 70*k (rounds
 14-32), then i = 48440 + 70*k (rounds 33-50; 50750-51999); 192 px i = 52100 + 70*k (rounds 1-12); all below i = 60000.
-Machines (option A): the 96 px line on H100 job 1060647 from round 14 (start: the A100's round-13 student); the 192 px
-line on A100 job 1060656 from round 1 (start: `runs/dagger26h/round0`), with bc_train streaming its frames to local disk
+Machines (option A): the 96 px line on the H100 job from round 14 (start: the A100's round-13 student); the 192 px
+line on the A100 job from round 1 (start: `runs/dagger26h/round0`), with bc_train streaming its frames to local disk
 (`TDYSSEY_FRAMES_MMAP`; peak host memory 9.8 GB instead of 222 GB) because that job had 250 GB.
 
 D051 outcome (2026-11-05, 300 fresh scenes per shape, seeds 10000000 + 20*i, paired by scene;
@@ -961,7 +962,7 @@ The 192 px pick's validation lead (511 vs 470) did not hold on fresh scenes (33.
 
 ## D054 — 96 px line to round 50, then a fresh-scene check (fixed 2026-11-06, before it runs)
 
-Lead's decision: the 96 px line continues on A100 job 1083816 from round 45 (its practice data was collected before
+Lead's decision: the 96 px line continues on the next A100 job from round 45 (its practice data was collected before
 the D051 pick) to round 50 with the D053 recipe, then stops (seeds i = 48440 + 70*k, rounds 46-50). Validation trend
 over rounds 14-44: +0.17 points per round overall, +0.06 over the last ten. Check afterwards: the round-50 student
 against the D051 pick (round 44) on 200 fresh scenes per shape for all 33 shapes, seeds 12000000 + 20*i (i < 200,
@@ -985,3 +986,13 @@ round, all below i = 60000 and unused): round 12 i = 52100 + 70*k; rounds 13-19 
 rounds 20-29 i = 53900 + 70*k (55300-55989); rounds 30-39 i = 54200 + 70*k (56300-56989).
 The line stops 8 hours before that job ends; its best validation student then gets the D054 check on the same
 fresh scenes (seeds 12000000 + 20*i, 200 per shape, 33 shapes) against the D051 192 px pick (round 2).
+
+## D056 — Steps executed per plan: 8 against 12 and 15 (fixed 2026-11-07, before it runs)
+
+The lead noticed in the demo that executing more of each 16-step plan (12 or 15 steps instead of 8 before planning
+again) may solve more often. Test: the 96 px round-50 student with the tested sampler (100 DDPM steps) executing 12 and
+15 steps, on the D054 scenes (200 per shape, 33 shapes, seeds 12000000 + 20*i, same policy-noise seed), paired by scene
+with its existing 8-step results; reported as differences with 95% intervals for every setting, whatever the outcome.
+The network always plans 16 steps and the first lines up with the current moment, so 15 is the most it can execute.
+The policy was trained with 8; these scenes already decided round 50 against round 44, so a setting that wins here
+needs a confirmation on unused scenes (seeds 13000000 + 20*i) before it replaces 8 in any headline result.
