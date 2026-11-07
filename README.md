@@ -34,12 +34,13 @@ learning settings.
 
 ## Start here
 
+- [Main results: one camera policy for all 26 letters, and what did not work](docs/LEARNING_FINDINGS.md)
+- [Every learning run, including failed ones](docs/LEARNING_EXPERIMENT_LOG.md) and [the run scripts with their seeds](scripts/learning/experiments/README.md)
 - [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
 - [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
 - [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
 - [Move to a training machine and view live training](docs/TRAINING_MACHINE.md)
 - [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
-- [Policy learning findings: RL diagnosis, oracle and world-model planning teacher](docs/LEARNING_FINDINGS.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
