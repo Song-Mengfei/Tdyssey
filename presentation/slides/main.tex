@@ -13,6 +13,7 @@
 \usepackage{lmodern}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{adjustbox}
 
 % ---- fill these in (the course asks for the team number and all members' names on the title slide)
 \newcommand{\teamnumber}{TODO}
@@ -32,7 +33,7 @@
 \usetheme{default}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}[frame number]
-\setbeamertemplate{headline}{\vskip2mm\hfill{\color{tdgrey}\footnotesize\insertsectionhead}\hspace*{4mm}}
+\setbeamertemplate{headline}{\leavevmode\hbox to \paperwidth{\hfill\raisebox{-4mm}[0pt][0pt]{\color{tdgrey}\footnotesize\insertsectionhead}\hspace*{4mm}}}
 \definecolor{tdblue}{HTML}{2A78D6}
 \definecolor{tdgrey}{HTML}{6B6B6B}
 \setbeamercolor{frametitle}{fg=tdblue}
@@ -306,12 +307,12 @@
           run, all policies on the same scenes, 95\% intervals on paired differences.
     \item Success: more than 95\% of the goal covered within 300 controls.
   \end{itemize}
-  \centering\resizebox{\textwidth}{!}{\tab{final_headline.tex}}
+  \centering\adjustbox{max width=\textwidth,max totalheight=0.55\textheight}{\tab{final_headline.tex}}
 \end{frame}
 
 
 \begin{frame}{Backup: per-shape table}
-  \centering\resizebox{!}{0.82\textheight}{\tab{final_per_shape_compact.tex}}
+  \centering\adjustbox{max width=\textwidth,max totalheight=0.74\textheight}{\tab{final_per_shape_compact.tex}}
 \end{frame}
 
 
@@ -346,11 +347,11 @@
 \begin{frame}{Backup: what the world model imagines vs the simulator}
   \begin{columns}[T]
     \column{0.5\textwidth}
-    \video{imagined_vs_real_D.png}{world_model/imagined_vs_real_D.mp4}{\linewidth}\\
-    \snote{D: red outline = imagined, open-loop over 32 controls (error at most about 1.5 px).}
+    \centering\href{run:\presroot videos/world_model/imagined_vs_real_D.mp4}{\includegraphics[height=0.6\textheight]{imagined_vs_real_D.png}}\\
+    \snote{D: red outline = imagined, open-loop over 32 controls; error at most 1.5 px.}
     \column{0.5\textwidth}
-    \video{imagined_vs_real_E.png}{world_model/imagined_vs_real_E.mp4}{\linewidth}\\
-    \snote{E: open-loop errors can grow to tens of pixels, which is why the teacher re-plans after every push.}
+    \centering\href{run:\presroot videos/world_model/imagined_vs_real_E.mp4}{\includegraphics[height=0.6\textheight]{imagined_vs_real_E.png}}\\
+    \snote{E: 1--2 px in most windows, but one 32-control window drifted 43 px; the teacher re-plans after every push.}
   \end{columns}
 \end{frame}
 
@@ -379,10 +380,10 @@
 \end{frame}
 
 
-\begin{frame}{Backup: teacher vs camera policy, per letter (same validation scenes)}
-  \centering\fig[width=0.95\textwidth,height=0.78\textheight,keepaspectratio]{method_teacher_success_26letters}\\
-  \snote{Hatched: teacher checked with an older world model. Ten earlier shapes: 400/500 at their latest check
-         (390/500 in the run that made the labels).}
+\begin{frame}{Backup: teacher vs camera policy, per letter}
+  \centering\fig[width=0.95\textwidth,height=0.68\textheight,keepaspectratio]{method_teacher_success_26letters}\\
+  \snote{Same 50 validation scenes per shape. Hatched: teacher checked with an older world model. Ten earlier shapes:
+         400/500 at their latest check (390/500 in the run that made the labels).}
 \end{frame}
 
 \begin{frame}{Backup: how the teacher was fixed (state noise)}
@@ -404,7 +405,7 @@
 \end{frame}
 
 \begin{frame}{Backup: how to read the videos}
-  \centering\includegraphics[height=0.75\textheight]{video_legend.png}\\
+  \centering\includegraphics[width=0.9\textwidth,height=0.7\textheight,keepaspectratio]{video_legend.png}\\
   \snote{Playback: 3x real time (the simulator runs 10 controls per second); the demo reel runs at 6x.}
 \end{frame}
 
