@@ -8,9 +8,10 @@ Two methods, same states, reward and optimizer (SAC, off-policy; the base policy
 Actors read only the frozen policy's camera features (and, for residual, the base plan). Critics also read exact
 simulator state (block and pusher relative to the goal, coverage, shape): privileged, training only, disclosed.
 
-Reward per decision (8 controls): 10 * coverage gain, doubled when coverage is lost, a one-time bonus when coverage
-first exceeds 0.95 (success, which ends the episode), and -0.05 per decision. Episodes last at most 6 decisions;
-time-limit cut-offs bootstrap.
+Reward per decision (8 controls): --reward-gain * coverage gain, minus --reward-loss * coverage lost within the
+decision, a one-time --reward-bonus when coverage first exceeds 0.95 (success, which ends the episode), and minus
+--reward-step per decision. Episodes last at most --episode-decisions decisions; time-limit cut-offs bootstrap.
+v1 (D058): 10 / 10 / 5 / 0.05, 6 decisions. v2 (D058 amendment): 10 / 2 / 20 / 0.2, 12 decisions, gamma 0.95.
 
     .venv/bin/python -B scripts/learning/lastmile_rl.py train --method dsrl --student CKPT --states DIR --out DIR
     .venv/bin/python -B scripts/learning/lastmile_rl.py eval --student CKPT --states DIR --scenes 20030-20039 \
@@ -33,7 +34,7 @@ from torch import nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 TRAINED27 = ["T", "T_narrow", "Y", "D", "L", "E", "F", "J", "P", "U"] + list("ABCGHIKMNOQRSVWXZ")
-DECISIONS, EXECUTE, SUCCESS = 6, 8, 0.95
+EXECUTE, SUCCESS = 8, 0.95
 
 
 # ---------------------------------------------------------------------------------------------- simulator workers
@@ -220,9 +221,13 @@ def load_states(directory, scenes):
     return recs
 
 
+REWARD = {"gain": 10.0, "loss": 10.0, "bonus": 5.0, "step": 0.05}           # set from the command line in main()
+
+
 def reward(c0, c1, lost, crossed):
-    gain = c1 - c0
-    return 10.0 * (gain - lost) + (5.0 if crossed else 0.0) - 0.05
+    """Coverage gain over the decision, an extra penalty on coverage lost within it, a one-time success bonus and a
+    cost per decision. v1 (D058) weights: 10, 10, 5, 0.05."""
+    return REWARD["gain"] * (c1 - c0) - REWARD["loss"] * lost + (REWARD["bonus"] if crossed else 0.0) - REWARD["step"]
 
 
 # ---------------------------------------------------------------------------------------------- train / eval
@@ -321,7 +326,7 @@ def run(args, train=True):
             state[s].update(ims=ims, pos=ps, priv=priv2, cov=c1, t=state[s]["t"] + 1)
             d[k] = 1.0 if crossed else 0.0                    # success is terminal; time limit bootstraps
             nxt_ims.append(ims); nxt_pos.append(ps)
-            if crossed or state[s]["t"] >= DECISIONS:
+            if crossed or state[s]["t"] >= args.episode_decisions:
                 done_slots.append(s); episodes += 1; successes += int(crossed)
         feat2 = base.features(nxt_ims, nxt_pos)
         priv2 = torch.tensor([state[s]["priv"] for s in slots], device=dev, dtype=torch.float32)
@@ -384,7 +389,7 @@ def evaluate(args, base, pool, actor, method, recs, act_obs, make_plans):
         res = pool.call("reset", list(zip(slots, batch)))
         st = {s: {"ims": res[s][0], "pos": res[s][1], "cov0": res[s][3], "cov": res[s][3], "done": False, "t": 0} for s in slots}
         gen = torch.Generator(device=base.device).manual_seed(args.seed + start)
-        for _ in range(DECISIONS):
+        for _ in range(args.episode_decisions):
             live = [s for s in slots if not st[s]["done"]]
             if not live:
                 break
@@ -392,7 +397,7 @@ def evaluate(args, base, pool, actor, method, recs, act_obs, make_plans):
             noise = torch.randn((len(live), 32), device=base.device, generator=gen)
             if args.actor:
                 bx = base.plan_x(feat, noise).reshape(len(live), 32) if method == "residual" else None
-                a, _ = actor(act_obs(feat, bx), deterministic=True)
+                a, _ = actor(act_obs(feat, bx), deterministic=not args.stochastic)
                 plans = make_plans(feat, a, bx)
             else:
                 plans = base.plan(feat, noise)
@@ -527,11 +532,18 @@ def main():
     ap.add_argument("--residual-px", type=float, default=10.0)
     ap.add_argument("--per-shape", type=int, default=40, help="eval: states per shape")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--episode-decisions", type=int, default=6, help="decisions (of 8 controls) per episode")
+    ap.add_argument("--reward-gain", type=float, default=10.0)
+    ap.add_argument("--reward-loss", type=float, default=10.0, help="extra penalty per unit of coverage lost")
+    ap.add_argument("--reward-bonus", type=float, default=5.0)
+    ap.add_argument("--reward-step", type=float, default=0.05)
+    ap.add_argument("--stochastic", action="store_true", help="eval: sample from the actor instead of its mean")
     ap.add_argument("--seed-base", type=int, default=400000, help="episodes: scene pool")
     ap.add_argument("--start", type=int, default=0, help="episodes: first scene index")
     ap.add_argument("--count", type=int, default=50, help="episodes: number of scenes")
     ap.add_argument("--shapes", default="", help="episodes: comma-separated shapes (default: the 27 trained)")
     args = ap.parse_args()
+    REWARD.update(gain=args.reward_gain, loss=args.reward_loss, bonus=args.reward_bonus, step=args.reward_step)
     if args.mode == "episodes":
         episodes(args)
     else:

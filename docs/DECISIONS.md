@@ -1020,6 +1020,14 @@ the critics may read exact simulator state (training only, disclosed). Tests: fi
 held-out scenes, then full episodes on an unused fresh pool (seeds 13000000 + 20*i), paired with round 50, with T and
 near-T reported.
 
+D058 amendment (2026-11-08, after the first run, before any v2 result). First run (v1, 150k decisions each, start
+states from scenes 20000-20019): on 1080 near-goal states of held-out scenes 20030-20039, finishing within 48 controls
+fell from 14.1% (base) to 8.0% with noise steering (-6.1 points [-8.5, -3.7]) and 12.8% with the residual (-1.3
+[-3.8, +1.2]). Mean training reward rose to about zero while success did not: the doubled penalty on lost coverage
+rewarded small, safe moves. v2 rebalances the reward (gain 10, extra loss penalty 2, success bonus 20, cost 0.2 per
+decision), allows 12 decisions (96 controls) with gamma 0.95, trains 300k decisions on start states from scenes
+20000-20029, and is evaluated on new held-out scenes 20040-20049 (20030-20039 are now used for tuning).
+
 ## D059 — New policy architecture (2026-11-08, before any result)
 
 Lead's decision: a new camera policy built with current methods at about 500M parameters, trained on the same data as
