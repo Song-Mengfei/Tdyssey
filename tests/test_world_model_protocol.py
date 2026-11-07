@@ -8,8 +8,8 @@ from tdyssey.world_model_protocol import MetricTotals, WorldModelConfig
 
 class WorldModelProtocolChecks(unittest.TestCase):
     def test_resource_and_horizon_limits(self):
-        for args in ({'epochs':0},{'future':5},{'batch_size':33},{'max_steps':3001},
-                     {'seconds':901},{'seed':True},{'learning_rate':float('nan')}):
+        for args in ({'epochs':0},{'future':5},{'batch_size':1025},{'max_steps':10000001},
+                     {'seconds':604801},{'seed':True},{'learning_rate':float('nan')}):
             with self.subTest(args=args), self.assertRaises(ValueError):WorldModelConfig(**args)
         self.assertEqual(WorldModelConfig().future,4)
 

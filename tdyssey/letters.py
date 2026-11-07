@@ -33,10 +33,28 @@ PATTERNS = {
 ALPHABET = tuple("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 ALL_SHAPES = (*ALPHABET, "T_narrow")
 
+# Held-out test shapes (approved 2026-11-02 for the 26-letter run): never used for training, data collection,
+# world-model fitting or tuning. Same 5 x 7 block system, size and density as the capitals; each is one
+# edge-connected piece and none matches a capital.
+NOVEL_PATTERNS = {
+    "digit3": ("11110", "00011", "00011", "01110", "00011", "00011", "11110"),
+    "digit4": ("00011", "00111", "01011", "11011", "11111", "00011", "00011"),
+    "digit7": ("11111", "00011", "00110", "00110", "01100", "01100", "01100"),
+    "plus": ("00100", "00100", "00100", "11111", "00100", "00100", "00100"),
+    "hash": ("01010", "11111", "01010", "01010", "11111", "01010", "01010"),
+    "arrow": ("00100", "01110", "11111", "00100", "00100", "00100", "00100"),
+}
+NOVEL_SHAPES = tuple(NOVEL_PATTERNS)
+
 
 def block_letter(name):
     """120 high, 100 wide, 20 x 120/7 cells, mass-centered coordinates."""
-    rows = PATTERNS[name]
+    if name in NOVEL_PATTERNS:
+        return _block_shape(name, NOVEL_PATTERNS[name], "novel_block_v1_area_centroid")
+    return _block_shape(name, PATTERNS[name], "official_block_capital_v1_area_centroid")
+
+
+def _block_shape(name, rows, version):
     rectangles = []
     for y, row in enumerate(rows):
         x = 0
@@ -52,4 +70,4 @@ def block_letter(name):
     cx, cy = (sum(r.area * r.center[i] for r in rectangles) / area for i in (0, 1))
     centered = tuple(Rectangle(r.x0-cx, r.y0-cy, r.x1-cx, r.y1-cy) for r in rectangles)
     symmetry = 2 if rows == tuple(row[::-1] for row in rows[::-1]) else 1
-    return Shape(name, centered, symmetry, "official_block_capital_v1_area_centroid")
+    return Shape(name, centered, symmetry, version)

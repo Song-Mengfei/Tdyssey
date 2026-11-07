@@ -23,6 +23,8 @@ dependencies = [
 [project.optional-dependencies]
 cpu = ["torch==2.5.1", "torchvision==0.20.1"]
 cu124 = ["torch==2.5.1", "torchvision==0.20.1"]
+cu128 = ["torch==2.7.1", "torchvision==0.22.1"]
+tracking = ["wandb==0.18.7"]
 dp = [
     "dill==0.3.9",
     "diffusers==0.31.0",
@@ -32,8 +34,6 @@ dp = [
     "opencv-python-headless==4.10.0.84",
     "robomimic==0.2.0",
     "scikit-image==0.24.0",
-    "torch==2.5.1",
-    "torchvision==0.20.1",
 ]
 gpc = [
     "ipython==8.29.0",
@@ -50,21 +50,28 @@ gpc = [
 package = false
 required-version = "==0.13.0"
 environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
-conflicts = [[{ extra = "cpu" }, { extra = "cu124" }]]
+conflicts = [[{ extra = "cpu" }, { extra = "cu124" }, { extra = "cu128" }]]
 
 [tool.uv.sources]
 torch = [
     { index = "pytorch-cpu", extra = "cpu" },
     { index = "pytorch-cu124", extra = "cu124" },
+    { index = "pytorch-cu128", extra = "cu128" },
 ]
 torchvision = [
     { index = "pytorch-cpu", extra = "cpu" },
     { index = "pytorch-cu124", extra = "cu124" },
+    { index = "pytorch-cu128", extra = "cu128" },
 ]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
 url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [[tool.uv.index]]
