@@ -73,6 +73,10 @@ def build(student=None):
     from dataclasses import replace
     config = ForwardConfig(**json.loads((ROOT/"configs/nft_nearmiss_batched.json").read_text()))
     payload = torch.load(student, map_location="cpu", weights_only=True) if student else None
+    if payload and (payload.get("arch") or {}).get("type") == "flow_dit":   # flow_train.py (D059): DINOv2 + flow DiT
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import flow_policy
+        return flow_policy.load_agent(payload), make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))
     if payload:
         config = replace(config, trainable=payload["trainable"])
     source = ROOT/"third_party/diffusion_policy"

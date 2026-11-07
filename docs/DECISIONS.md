@@ -1039,3 +1039,13 @@ self-attention over the 16 action tokens, cross-attention to image and pusher to
 trained with flow matching (pi0-style Beta time sampling), 10 Euler steps at inference; 16 predicted targets, 8
 executed, as before. Same fresh-scene test as D058, paired with round 50; correction rounds with the new policy only if
 time allows before the talk.
+
+D059 implementation (2026-11-08, before any result): `scripts/learning/flow_policy.py`, `flow_train.py`; 504.6M
+parameters (DINOv2 ViT-B/14 86.6M with `facebook/dinov2-base` weights; DiT head 418.0M, width 1024, depth 24, 16 heads).
+Each frame: 84 px crop (random in training) resized to 224; 16x16 patch tokens pooled to 8x8 plus CLS; one pusher token.
+Head blocks: self-attention over 16 action tokens, cross-attention to the 131 condition tokens, MLP; shared time
+modulation with per-block offsets (adaLN-single, zero-initialised gates); per-head query/key normalisation. Flow path
+x_t = t x1 + (1 - t) noise, t = 0.999 (1 - u), u ~ Beta(1.5, 1) (pi0); 10 Euler steps from per-row seeded noise. AdamW
+(head 1e-4, encoder 1e-5, betas 0.9/0.95), 1000 warm-up steps then cosine, bf16, EMA; batch 128, 160k steps (about 6.4
+passes over the round-50 training data: same 116 record folders, 4 teacher demonstration folders and human T data).
+`base_rollouts.build` loads it, so the existing tests and correction rounds run unchanged.
