@@ -1001,3 +1001,14 @@ D056 outcome (2026-11-07; 6600 paired episodes per setting, `runs/fairtest-d054/
 each plan is much worse on every shape. Success over the 27 trained shapes: 8 steps 34.8%, 12 steps 18.6% (-16.1
 [-17.1, -15.2]), 15 steps 12.2% (-22.5 [-23.7, -21.4]); final coverage 0.83 -> 0.76 -> 0.72; six held-out shapes
 4.4% -> 2.2% -> 1.3%; T 44.0% -> 23.5% -> 17.5%. The trained setting (8) stays; no confirmation run is needed.
+
+## D057 — Presentation materials in Git (2026-11-08)
+
+Lead's decision: the talk and paper materials live in the repository under `presentation/` (branch
+`docs/presentation`), so every author can work on them: Beamer slides, graphs (PDF and PNG), images, short demo videos
+of every model we trained (most checkpoints are private), the CSV tables behind the graphs and the scripts that rebuild
+them. This is an explicit exception to keeping generated media outside Git, like the earlier curated snapshots. Limits:
+H.264 videos of at most 768 px wide grids (CRF 28), no checkpoints, no raw run data beyond the CSV tables, and the
+whole folder under 200 MB (`presentation/README.md` lists the contents). Videos are validation-scene examples and are
+labelled as such; success rates come only from the fresh-scene tests.
+

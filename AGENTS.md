@@ -75,7 +75,8 @@ versions observed on one machine as requirements for every collaborator.
   MP4 snapshot under `docs/media/official-alphabet-2026-10-19/` and reviewed PNG/JSON
   snapshot under `docs/media/world-model-2026-10-19/` are explicit publication
   exceptions; see `docs/RESULTS.md`. The latter has a manifest and 1 MiB cap.
-  Keep full raw reports/frames and model weights out of these snapshots. Use configurable paths,
+  Keep full raw reports/frames and model weights out of these snapshots. `presentation/` (slides, graphs, images, short
+  demo videos and data tables for the talk and paper; D057, under 200 MB) is a third exception. Use configurable paths,
   never author-specific absolute paths.
 - Use a branch or isolated checkout per author. Inspect `git status` before edits
   and preserve unrelated work. Split file ownership before any parallel work.
