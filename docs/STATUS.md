@@ -6,8 +6,9 @@ copies the teacher's intended plans and learns from correction rounds (DAgger). 
 success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
 (192 px, a disclosed sensor change); the ten earlier shapes stay at 33-34% and the 17 new letters reach 33%. On six
 never-seen shapes success rises with the number of training shapes: 1.2% -> 2.8% (ten letters) -> 4.7-5.9% (26
-letters). Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049). Next: the 96 px line runs to round
-50 with a fresh-scene check (D054); the 192 px line continues on the next H100 job (D055). Work continues on
+letters). Six more 96 px rounds added +1.9 points [+0.1, +3.6] on fresh scenes (round 50 vs 44: 32.9% -> 34.8%;
+D054), so round 50 is the 96 px model. Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049).
+Next: the 192 px line continues on the next H100 job (D055). Work continues on
 `feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
