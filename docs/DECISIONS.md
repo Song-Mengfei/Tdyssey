@@ -996,3 +996,8 @@ with its existing 8-step results; reported as differences with 95% intervals for
 The network always plans 16 steps and the first lines up with the current moment, so 15 is the most it can execute.
 The policy was trained with 8; these scenes already decided round 50 against round 44, so a setting that wins here
 needs a confirmation on unused scenes (seeds 13000000 + 20*i) before it replaces 8 in any headline result.
+
+D056 outcome (2026-11-07; 6600 paired episodes per setting, `runs/fairtest-d054/report-d056.txt`). Executing more of
+each plan is much worse on every shape. Success over the 27 trained shapes: 8 steps 34.8%, 12 steps 18.6% (-16.1
+[-17.1, -15.2]), 15 steps 12.2% (-22.5 [-23.7, -21.4]); final coverage 0.83 -> 0.76 -> 0.72; six held-out shapes
+4.4% -> 2.2% -> 1.3%; T 44.0% -> 23.5% -> 17.5%. The trained setting (8) stays; no confirmation run is needed.
