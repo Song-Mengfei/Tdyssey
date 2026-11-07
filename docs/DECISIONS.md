@@ -970,6 +970,13 @@ if better; either way D051 stays the pre-registered headline. (The first attempt
 loading round 45 in memory, about 145 GB of frames; the job was requeued and the line restarted with frames streamed
 to disk.)
 
+D054 outcome (2026-11-07; 6600 paired episodes, `runs/fairtest-d054/report.txt`). Round 50 against round 44, success %:
+ten earlier shapes 34.0 -> 34.4 (+0.4 [-2.5, +3.3]); 17 new letters 32.3 -> 35.0 (+2.7 [+0.6, +4.9]); all 27 trained
+shapes 32.9 -> 34.8 (+1.9 [+0.1, +3.6]), final coverage 0.823 -> 0.827; six held-out shapes 4.8 -> 4.4 (-0.4 [-2.0,
++1.2]). T 38.0 -> 44.0 and near-T 32.5 -> 37.5 (200 scenes each). Round 50 is better on the trained shapes, so it
+becomes the 96 px model; D051 stays the pre-registered headline. Validation of rounds 45-49: 437, 443, 480, 453, 452
+of 1350 (round 44: 470); the line stops here as decided.
+
 ## D055 — 192 px line continues on the next H100 job (2026-11-06)
 
 Lead's decision: when the queued H100 job starts, the 192 px line continues from its newest student

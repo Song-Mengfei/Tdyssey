@@ -678,7 +678,9 @@ and then held at 34-37%.
 Per held-out shape (26-letter 192 px): digit7 23.0% (original 2.0%), hash 7.3%, arrow 2.7%, digit3 1.7%, digit4 0.7%,
 plus 0.3%; mean final coverage 0.58 (original 0.43), and 20% of episodes reach 90% coverage at some point (original
 6%). T 46.0% -> 40.7% / 38.3% and near-T 37.3% -> 29.0% / 32.3% (wide intervals at 300 scenes). The 192 px pick's
-validation lead did not hold on fresh scenes. Charts: `training_26letters_full.png`, `final_test_26letters.png`
+validation lead did not hold on fresh scenes. Six more 96 px rounds (45-50, D054) added +1.9 points [+0.1, +3.6] on
+the 27 trained shapes in a separate fresh-scene check (32.9% -> 34.8%; 17 new letters +2.7; held-out shapes
+unchanged), so round 50 is the 96 px model. Charts: `training_26letters_full.png`, `final_test_26letters.png`
 (not in Git).
 
 ## Privileged signals and priors (disclosure)
