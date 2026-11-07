@@ -11,8 +11,12 @@ implemented alongside model assessment; it does not wait for alphabet dynamics.
 The first model predicts the next scene from **two RGB frames, two pusher
 positions, the fixed goal pose and future pixel-position actions**. It is a new,
 small CNN predictor, separate from the unchanged official Diffusion Policy.
-It uses no object pose, velocity, contact or reward as model input. It currently
-accepts official capital-L datasets only.
+It uses no object pose, velocity, contact or reward as model input. The original
+experiments below used only L. The loader now supports mixed official-letter
+catalogs, deriving labels/masks from each episode's geometry without adding a
+letter ID to inputs. This enables shared-model experiments; it does not establish
+shared accuracy or adapt pretrained GPC. See the
+[forward-learning/data handoff](FORWARD_POLICY_LEARNING.md).
 
 **This custom CNN pilot uses no pretrained world-model checkpoint.** Its first run
 trains from scratch on six L play episodes (600 unique control steps).
@@ -52,20 +56,27 @@ this pilot.** Do not use it to tune architecture, losses or stopping decisions.
 
 | Training limit | Default | Maximum |
 | --- | --- | --- |
-| Epochs | 10 | 50 |
-| Optimizer updates | 750 | 3000 |
-| Batch size | 8 | 32 |
+| Epochs | 10 | 10,000 |
+| Optimizer updates | 750 | 10,000,000 |
+| Batch size | 8 | 1,024 |
 | Predicted future controls | 4 | 4 |
-| Wall time including loading | 300 seconds | 900 seconds |
-| Retained output byte budget | 32 MiB | 64 MiB |
+| Wall time including loading | 300 seconds | 604,800 seconds |
+| Retained output byte budget | 64 MiB | 16 GiB |
+| Recovery interval in optimizer steps | 250 | 1,000,000 |
 
 An epoch uses all valid training windows unless the update/time cap interrupts
 it. The final partial epoch can be validated at the update cap; an epoch number
 alone does not imply all its windows were visited. A wall-time failure is labelled
 failed rather than a completed result. Reports include actual updates, windows,
-forecast steps, selected epoch and measured peak GPU allocation. Only one best
-checkpoint is retained, with weights/config/normalization; optimizer/resume state
-is deliberately not saved. The report records all completed validation passes.
+forecast steps, selected epoch and measured peak GPU allocation. `best.pt`
+retains the selected inference model. The newer `last.pt` recovery checkpoint
+saves optimizer/RNG, report and next training-window cursor at configured step
+intervals and validation boundaries. Resume into a new directory with matching
+sources/catalog and the matching parent `best.pt`; partial epochs continue from
+the cursor. Larger caps are configuration bounds, not measured resource needs.
+The earlier published pilot used the original shorter caps and did not save
+optimizer recovery. See [machine and logging guide](TRAINING_MACHINE.md) for
+commands and shared W&B/local tracking. The report records completed validation passes.
 
 ## Model and training protocol
 

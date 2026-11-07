@@ -1,7 +1,15 @@
 # Shared project status
 
-Updated: 2026-10-22. Stage: denoising/near-miss replay and 500-control T continuation completed;
-reliable world-model rollouts and policy learning remain pending.
+Updated: 2026-11-06. Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
+exact simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
+copies the teacher's intended plans and learns from correction rounds (DAgger). On 300 fresh scenes per shape (D051),
+success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
+(192 px, a disclosed sensor change); the ten earlier shapes stay at 33-34% and the 17 new letters reach 33%. On six
+never-seen shapes success rises with the number of training shapes: 1.2% -> 2.8% (ten letters) -> 4.7-5.9% (26
+letters). Six more 96 px rounds added +1.9 points [+0.1, +3.6] on fresh scenes (round 50 vs 44: 32.9% -> 34.8%;
+D054), so round 50 is the 96 px model. Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049).
+Next: the 192 px line continues on the next H100 job (D055). Work continues on
+`feat/wm-planning-teacher`.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -20,9 +28,150 @@ world-model data/validation, proposed reward and DPPO losses, physical/imagined
 training steps, bounded starting experiments and concrete three-developer tasks.
 README gives a short human overview; agents should read the full plan before
 learning work. Settings and proposed trainer files are not implemented by this
-documentation. See D027.
+documentation. See D027. The later training implementation now exists on
+`feat/direct-dppo-pilot`; read `docs/POLICY_LEARNING.md` and D028. It is a specified
+DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
+inspection/plan review milestone.
 
 ## Completed
+
+- 26-letter policy, 2026-11-02 to 2026-11-06 (H100 + A100; [learning findings](LEARNING_FINDINGS.md) section 8,
+  D051-D053): world model v3 for 27 shapes; a larger per-round budget; final test on 300 fresh scenes per shape as above.
+
+- Ten-letter policy, 2026-10-31 to 2026-11-02 (H100 NVL; [learning findings](LEARNING_FINDINGS.md) section 7,
+  D046-D052): world model v2 for ten shapes; students trained on the teacher's intended plans (+68% over executed
+  pushes in a matched test); correction rounds to a plateau; fair tests on 1000 fresh scenes per letter as above;
+  26-letter preparation and six held-out test shapes in `tdyssey/letters.py`.
+
+- Learning findings, 2026-10-24 to 2026-10-26 (H100 NVL, `feat/wm-planning-teacher`;
+  full tables in [learning findings](LEARNING_FINDINGS.md), code in
+  `scripts/learning/`). Base on the 1000-scene final test pool: T 44.4%, near-T
+  41.9%, Y 9.4%, D 0.3%, L 0.1%. Long NFT/AdvantageFlow runs did not learn and
+  degraded T with drift; only 16-36% of score variance comes from the candidate's
+  own plan (D035). Oracle best-of-N gave small gains (Y 3/20 -> 8/20), and
+  imitating it stayed within noise (D037). The structured state world model `wm2`
+  reaches 0.22-0.32 px median 8-control contact error (D038). BPTT teachers through
+  it failed; the sampling planner `mpc_teacher.py` solves D 50/50, Y 36/50, L 21/50
+  validation scenes but only T 5/50 and near-T 12/50 (D039). Round-1 teacher data
+  (350 scenes, 14.6k records with T retention) was distilled into three image
+  students; all were worse than the base on every shape (validation T 35 ->
+  15-25), so naive distillation of the closed-loop planner fails. Round 2 with chunk-consistent
+  labels failed the same way. Training the encoder too, 60 epochs and DAgger gave the
+  first image students with D/L successes but 10-15 points lower T. Blending a
+  student with the base (`interpolate.py`) recovered most of T: the selected 70%
+  blend on the final-test pool had T 39.6% vs 44.4%, near-T 41.0% vs 41.9%, Y 12.3%
+  vs 9.4%, D 4.9% vs 0.3%, L 0.2% vs 0.1% (not passed: T lower bound -8.7 < -5).
+  Every run is listed in the [experiment log](LEARNING_EXPERIMENT_LOG.md). New
+  physics checks: `tests/test_learning_wm_runtime.py`.
+
+- H200 NVL session (2026-10-24, commit 8cba20e, cu124, MPS): doctor, preflight,
+  `tracking_smoke` and `nft_full_network_smoke` passed (dense peak 12.25 GB; its
+  tiny smoke had tied scores, so no dense update). Eight completed sequential
+  20k-control T/L pilots: NFT/AdvantageFlow with LoRA seeds 42-44 and dense seed
+  42 (8 updates each; changed/frozen/reload-parity checks passed). L stayed 0/3 on
+  every run; T moved between 1/3 and 3/3, within evaluation noise. Feedback was
+  informative (L contact about 0.3-0.5, near-zero tied groups), unlike the earlier
+  pilot; 8 updates is too few to judge adaptation. Runs and the verified base asset
+  are kept in the author's private HF store; raw outputs remain outside Git.
+- Throughput: plans dominate time (a dense pilot sampled about 900 batch-1 plans
+  in 22 min; replay physics is minor). Eight concurrent smokes ran 1.4x faster in
+  aggregate than one, 2.4x with MPS. Added opt-in `batched_rollouts` (D033):
+  batch 32 cost 2.62 s versus 2.15 s for batch 1; the matched batched LoRA pilot
+  took 7.4 min versus 29.6 min sequential under similar 6-job load; group size 16
+  (8 updates, 77,603 controls) took 9.8 min. Prefix replays were 81% of that run's
+  counted controls, so large groups mostly spend interaction budget on replay.
+  Same-seed batched/sequential evaluations agree to about 0.02 px, then diverge
+  chaotically; one near-threshold T success flipped. Use many more scenes for claims.
+  Installed suite with official checks enabled: 126 ran, OK, 28 skipped (GPC not
+  installed); `scripts/check_repo.py` passed.
+
+- Added [training-machine handoff](TRAINING_MACHINE.md), optional W&B plus flushed
+  local scalar logs and a no-account live viewer for all three trainers. Forward
+  runs now record fixed baseline-plan/noise diagnostics, contact/tied-score
+  feedback, periodic physical development evaluations and selected `best.pt`.
+  Recovery preserves the best checkpoint and starts a new tracking run with
+  cumulative axes. Detailed update traces are bounded; active replay prefixes remain.
+- Added a no-install read-only GPU/asset/disk preflight, source-only multi-seed
+  comparison planner/sequential launcher, bounded longer T/L presets and a locked
+  cu128 candidate profile (torch 2.7.1 / torchvision 0.22.1) plus independent W&B
+  extra. The current cu124 environment was unchanged. Blackwell and dense extended
+  training remain untested; presets do not establish useful settings or permission.
+- Custom visual dynamics now save rolling optimizer/RNG/window-cursor recovery,
+  including partial epochs, and accept explicit longer budgets. A synthetic CUDA
+  check kept model-test images unread, restored the exact cursor/RNG, and matched
+  uninterrupted updates under deterministic GPU operations. Normal training is
+  not promised bit-identical across GPU executions. GPC adaptation remains absent.
+- A real forward monitoring check and fresh-process resume completed: cumulative
+  352 training controls, 192 physical evaluation controls, four optimizer
+  minibatches, about 1.11 GiB peak CUDA, frozen-weight/reload checks passed.
+  Offline W&B and local fixed/per-shape events were recorded; live-viewer HTTP
+  routes and JavaScript parsing passed. This is a mechanics check with a 32-control
+  evaluation cap, not useful adaptation. Online W&B authentication/upload and
+  browser appearance were not verified. See [validation evidence](VALIDATION.md).
+
+- Implemented the [forward training path](FORWARD_POLICY_LEARNING.md): NFT and
+  AdvantageFlow epsilon-prediction adaptations, full action-U-Net/head/distributed
+  LoRA scopes, frozen rollout/T references, matched physical candidate trials,
+  periodic atomic checkpoints and source/config/optimizer/RNG-checked resume.
+  The distributed rank-8 actor has 1,652,824 trainable factors. The actor uses RGB
+  and pusher history; geometric rewards/physical traces are privileged feedback.
+- Added full-prefix warm-contact replay checks and all-step original-sampler
+  parity. Analytic training noising preserves the scheduler's original CPU buffer;
+  the library's mutating noising helper caused a prototype mismatch and is no
+  longer used. Fresh-model checkpoint loading is checked, not only same-object
+  reload. Small tied-score batches correctly report no weight change.
+- Extended the trained-policy evaluator to forward checkpoints, every registered
+  shape and optional bounded MP4 output. The official play collector now supports
+  A-Z/near-T; custom visual-dynamics windows use each episode's geometry. A tiny
+  Y path check collected 56 controls in seven episodes (272,344 bytes); a mixed
+  L/Y catalog read real windows and fitted stats on 640 training controls only.
+  This is data support, not learned shared-world-model accuracy or GPC adaptation.
+- Completed the corrected distributed-LoRA NFT pilot: six updates, 88 optimizer
+  minibatches, 3712 training controls including replay, 295.393 seconds and about
+  1.11 GiB peak allocated CUDA. Factors changed and frozen weights/reload parity
+  passed. On one 128-control development evaluation, L remained unsuccessful
+  (peak coverage 0.410331 to 0.409805, final zero); four of five L training groups
+  had zero contact and tied scores. No useful L adaptation is established.
+- Corrected AdvantageFlow smoke and a fresh-directory resume passed. Neutral
+  batches kept weights and before/after actions identical. The resumed lineage
+  accounts for 96 training / 192 evaluation controls without double-counting its
+  parent. Fresh-process L previews matched all 128 saved actions/outcomes, and a
+  native 512x512 MP4 decoded all 129 frames. Raw outputs remain ignored/local.
+  Full installed verification: 120 passed; source discovery: 64 passed / 56
+  skipped. See `docs/VALIDATION.md` for commands, hashes and prototype exclusions.
+- Surveyed newer image/flow RL objectives and closely related world-model policy
+  work; added `docs/DIFFUSION_RL_RESEARCH.md` with primary sources, a DDPM-NFT
+  specification, loss algebra, model-reliability limits and three-developer tasks.
+  Recommend it as the next objective comparison alongside the existing PPO;
+  that research milestone added no trainer; the later forward implementation is
+  documented above. No imagined trainer or useful adaptation is established. Course
+  scope remains shared multi-shape adaptation; algorithmic novelty is not required.
+- Added a direct-simulator visual tail-PPO trainer, physical-time shaping/GAE,
+  value estimator and compact checkpoint/reload path. Supports output-head or
+  full action-network updates with frozen encoder/normalizers and identical
+  original 100-step sampling before updates. Full-network runtime is pending.
+- Recorded a six-method primary-source survey and derivations of latent-chain
+  policy gradients, potential shaping, chunk returns and an assumption-dependent
+  model-bias bound. Independent source and CUDA checks passed; see
+  `docs/POLICY_LEARNING.md`. A bounded 64-control GPU run updated 1,313,282 head
+  parameters, preserved all frozen parameters and reloaded identical actions.
+  It produced zero training reward and establishes no adaptation benefit.
+- Completed a short head-only pilot: 16 update rounds / 64 optimizer minibatches,
+  1,008 physical training controls (T 500 / L 508). On one paired development
+  scene, T remained successful but slowed from 270 to 297 controls; L remained
+  unsuccessful with essentially unchanged peak coverage (0.410331 to 0.409394).
+  Frozen weights and checkpoint action parity passed. This establishes no L
+  adaptation benefit. Elapsed 431.609 seconds, peak allocated CUDA about 1.11 GiB,
+  with about 16.2 MiB of ignored output; commands/hashes in `docs/VALIDATION.md`.
+- Added native Conv1d LoRA with head or distributed action-U-Net targets and
+  separate trained-checkpoint desktop evaluation. A head-LoRA 64-control update
+  trained 25,604 factors, preserved base weights and reloaded exact actions.
+  Distributed LoRA passed original-sampler parity, real GPU updates and compact
+  reload checks; a physical learning improvement is not established. Visible
+  L/T previews matched all 300/297 saved evaluation actions/rewards/overlaps.
+  See D029 and `docs/POLICY_LEARNING.md`; training itself remains headless.
+  Latest checks: all 111 installed tests passed in 42.356 seconds; source-only
+  discovery passed 62 and skipped 49 runtime checks. No new dependency or asset.
 
 - Defined the three-author course project's research question, staged milestones,
   candidate dependency lock, upstream revisions, and contribution rules.
@@ -236,20 +385,55 @@ See `docs/VALIDATION.md` for commands and limits.
   CUDA/DP/GPC environment and pretrained assets enabled. Source-only discovery
   passed 59 and skipped 45. This includes real inference/parity, simulator and
   existing world-model update checks, not a diffusion-policy RL update.
+- Training milestone checks on 2026-10-23: source discovery passed 62 / skipped
+  47 (109 total); installed CUDA/DP/GPC discovery passed all 109 in 30.882 seconds.
+  This includes independent reward/return checks and real denoising likelihood,
+  action/RNG parity, actor update, frozen-weight integrity and delta reload checks.
 
 ## Next task
 
-Implement the direct-simulator diffusion-policy RL loop on T/L with correct
-denoising probabilities, physical control-step rewards and terminal handling.
-Start with limited action-network updates; record trainable weights and budgets.
-Begin with a bounded update/serialization check, then measure learning on separate
-physical scenes. In parallel, define the frozen/adapted predictor comparison and
+Keep T while learning the new letters (D040 failed on T alone). Candidates: more T
+retention data from the base's own plans (`mpc_dagger.py --label policy`), blending
+the action network and encoder separately, the large students now training, or a
+disclosed shape gate that routes T to the base. Any further final-test candidate is a
+secondary result under D040. Reduce the planner's leftover T rotation.
+
+The earlier next-task notes below predate these findings.
+
+Run long forward comparisons with `batched_rollouts` on the batched branch, keep
+sequential and batched results apart, and evaluate on more than three scenes per
+shape before comparing methods. Decide whether prefix-replay controls should
+dominate the interaction budget at larger group sizes.
+
+Use the [machine handoff](TRAINING_MACHINE.md) to recreate the selected profile
+and pass the short preflight/smoke run on the training GPU. Then review live
+per-shape feedback on the bounded pilot before launching repeated longer jobs.
+Fix contact-free/tied trials if they persist; extra GPU time alone is insufficient.
+
+Measure the implemented NFT/AdvantageFlow methods against PPO using
+[the runnable guide](FORWARD_POLICY_LEARNING.md). Diagnose contact coverage,
+finite-horizon score signal and physical learning curves before scaling; retain
+the original success criterion. Validate dense action-network mode on its intended
+GPU. World-model scoring still follows contact/reward/ranking checks.
+The first forward pilot identifies mostly contact-free/tied L groups. Improve
+automated context/contact coverage and assess score horizons before simply running
+more copies of the same uninformative interaction. Disclose any play-based context
+selection or geometric curriculum and retain full-reset physical evaluation.
+
+Measure physical learning on separate development scenes, diagnose reward/contact
+coverage, and validate full action-network updates on an authorized larger GPU.
+The first tail-PPO sampler/likelihood/update/serialization checks now pass;
+an actual learning improvement has not been established. Tail-PPO still needs its
+own periodic recovery before long experiments; the forward trainer has it.
+A standalone trained-delta desktop evaluator and bounded MP4 export now exist.
+In parallel, define the frozen/adapted predictor comparison and
 collect bounded T/L data; do not wait for a reliable A-Z model to start policy work.
 Follow [the detailed handoff](LEARNING_PLAN.md) for proposed file ownership,
 interfaces, reward/return rules and starting budgets.
-Extend the official collector to a fixed, diverse multi-shape development set,
+Use the extended official collector on a fixed, diverse multi-shape development set,
 using machine-generated play/current-policy interaction and per-shape episode
-splits. The existing collector/pilot covers T/L only, not the alphabet training set.
+splits. Existing substantial data remains L-only; the tiny Y check is not an
+alphabet training set or enough data for shared dynamics.
 Assess a shared pretrained predictor on those domains; adapt it when measured
 errors justify doing so, and require physical action/reward checks before imagined
 RL. Compare partial updates/adapters with full updates under matched budgets,
@@ -280,8 +464,9 @@ Retain the custom CNN as an L-only comparison. Loading a public checkpoint does
 not establish adaptation, reliable planning or differentiable policy training;
 the released sampler rounds pixels and disables gradients. That blocks direct
 backpropagation through its predictions, not likelihood-ratio policy gradients
-such as DPPO. See decision D021 and `docs/POLICY_DIAGNOSTICS.md` for the separate
-policy-sampling inspection; no RL trainer exists yet.
+such as DPPO, or reward-based forward regression. See decision D021 and
+`docs/POLICY_DIAGNOSTICS.md` for the separate policy-sampling inspection. The direct
+PPO trainer now exists; a world-model policy-learning loop remains pending.
 
 Verify direct physical-simulator policy optimization before imagined updates.
 Repeat a small fixed T/L/Y/near-T evaluation set across additional scenes before
