@@ -1,10 +1,15 @@
-# Official T/L interaction data
+# Official letter-shape interaction data
 
 The primary collector uses the original official PushT environment plus the tested
-capital-L adapter. It collects non-expert interactions, not expert demonstrations
+capital-letter adapters. It collects non-expert interactions, not expert demonstrations
 or frozen-policy evaluation traces. No policy checkpoint, new packages, downloads
 or model training are involved. Existing CPU physics/rendering performs collection;
 GPU use is a separate requirement for policy/model training.
+
+The collector accepts A-Z and `T_narrow`. T/L remains the first learning check.
+Freeze the training-shape set before scaling; target-shape play is adaptation
+exposure, not unseen-shape transfer. The caps and frozen whole-episode splits
+below apply to each shape. Mixed catalogs remain official-only.
 
 ## Collect and verify
 
@@ -48,10 +53,12 @@ actions using reward, goal alignment, a learned model or an expert policy.
 existing 12-pixel maximum target displacement and 12-control waypoint interval.
 Actions are absolute world-position targets in pixels.
 
-Use the [official geometry/physics](OFFICIAL_SHAPES.md): original T or mass-1
-capital L with height 120, foot width 90, stroke 30 and inertia 1875. The original
+Use the [official geometry/physics](OFFICIAL_SHAPES.md): original T, registered
+capital letters or the near-T control. Capital L retains height 120, foot width
+90, stroke 30 and inertia 1875. The original
 T goal stays `(256,256,pi/4)`; L's goal origin is shifted to match T's target mass
-center, not copied blindly from T. The collector uses this fixed official goal,
+center, not copied blindly from T. Other letters use their registered target
+mapping. The collector uses this fixed official goal,
 unchanged pusher/controller/contact convention, and legacy reset semantics.
 
 Reset/action streams are versioned and independent. Candidate resets undergo

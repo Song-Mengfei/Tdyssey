@@ -1,7 +1,22 @@
 # Learning plan and developer handoff
 
-Updated: 2026-10-22. This is the shared implementation plan, not a report of
-completed policy training. Read [current evidence](STATUS.md) alongside it.
+Updated: 2026-10-23. This defines the shared experiments; read
+[completed checks and results](STATUS.md) alongside it.
+The first direct trainer and its precise variant, survey, derivations and commands
+are now in [policy learning](POLICY_LEARNING.md). The ambitious learning stages
+below are not established by a successful optimizer check.
+The [extended RL research note](DIFFUSION_RL_RESEARCH.md) specifies a
+DiffusionNFT alternative and its world-model extension. The
+[forward training guide](FORWARD_POLICY_LEARNING.md) covers its implemented
+physical NFT/AdvantageFlow path and recovery; imagined feedback remains pending.
+The [training-machine handoff](TRAINING_MACHINE.md) supplies live logging,
+fixed diagnostics, regular physical development evaluation, repeated-seed jobs
+and candidate cu128 setup. Extended budgets are untested proposals; larger jobs
+must first pass the target machine's smoke checks.
+DPPO below describes the
+first implementation, not a requirement that all later learning use PPO. The
+course project can implement and compare established methods without claiming
+algorithmic novelty; its shared multi-shape scope remains unchanged.
 
 ## The idea in one minute
 
@@ -10,8 +25,9 @@ learn to push other letters using automated interaction and simulator-derived
 rewards, without new human demonstrations. First establish learning on L while
 checking T retention; then expand to mixed shapes and potentially A-Z.
 
-A world model predicts what an action will do. DPPO changes the policy using
-the rewards from trying actions. They are different models with different losses.
+A world model predicts what an action will do. A policy-learning method changes
+the policy using rewards from trying actions; DPPO is the implemented starting
+method. They are different models with different losses.
 The reward specifies the task; an image predictor does not automatically supply
 a reliable reward. Original expert T pretraining and privileged simulator labels
 remain part of the method and must be disclosed.
@@ -27,16 +43,18 @@ a joint experiment:
 ```text
 Existing T policy + official T/L simulator
   |
-  +-- Physical practice --> reward + DPPO --> directly trained policy
+  +-- Physical practice --> reward + policy update --> directly trained policy
   |
   +-- Automated data --> assess/adapt world model --> pass prediction checks
                                                    |
-                            imagined practice + DPPO
+                            imagined practice + same update method
                                                    |
                           test policy in physical simulator
 ```
 
 The direct-simulator route is both a debugging check and a scientific baseline.
+Implemented update choices are tail-PPO and the NFT/AdvantageFlow adaptations.
+Hold the update method fixed when comparing simulator versus world-model feedback.
 It must work before imagined policy improvement is claimed. World-model evaluation
 need not wait for it. A negative learning result should be diagnosed and reported,
 not hidden by moving to a more complex predictor.
@@ -47,11 +65,12 @@ not hidden by moving to a more complex predictor.
 | --- | --- | --- |
 | Official visual CNN policy and T/L physics | CUDA inference and physical checks passed | Reuse this baseline and its saved normalizers |
 | Alphabet/near-T environments | Frozen-policy development sweep completed | Extend the T/L training collector before mixed-shape collection |
-| Automated T/L collection and split-safe batches | Implemented; tiny L pilot available only locally | More varied, disjoint training/validation scenes |
+| Automated letter collection and split-safe batches | Implemented; L pilot and tiny Y path check available locally | More varied, disjoint training/validation scenes and balanced shape exposure |
 | Policy inspection | Actual denoising replay, near-miss analysis and 500-control T continuation completed | Review behavior; no training is provided by these tools |
 | Custom 1.3M-parameter L predictor | Small supervised pilot; unreliable rewards/drift | Keep as a comparison, not the imagined environment |
 | Pretrained 8.73M-parameter GPC predictor | Loading verified; official-domain/contact failures measured | Assess official-domain adaptation against frozen weights |
-| Direct DPPO trainer, value network, adapter | **Not implemented** | First policy-learning work package below |
+| Direct DPPO-style trainer and value network | Tail-transition PPO and Conv1d LoRA implemented; initial real GPU update/reload checks passed | Establish physical learning curves and validate full action-network training |
+| Forward-process policy learning | NFT/AdvantageFlow, matched physical branches and recovery implemented | Diagnose physical learning curves, compare objectives/capacity, then validate learned-model feedback |
 | Shared multi-shape world model / imagined trainer | **Not implemented** | Build only after the relevant interfaces and checks work |
 
 The committed [result index](RESULTS.md) contains selected earlier evidence.
@@ -242,6 +261,7 @@ reserve fresh geometry variants before using them as a stronger final test.
 | Model training window | Past observations through time `t`, future actions starting at `t`, targets after those actions; no future frame among inputs; see [window timing](TRAINING_DATA.md) |
 | Imagined transition | Model/version and initial-history provenance; chosen action, predicted next RGB/pusher/coverage, derived reward and predicted termination; no unseen true future labels |
 | On-policy DPPO buffer | Current actor/version, exact conditioning observations, full sampled denoising chain, old conditional log probabilities, executed prefix length, per-control rewards, value estimates and terminal/truncation masks |
+| Forward-process buffer | Implemented physical groups include exact context/prefix provenance, rollout round, full normalized sampled plans, executed prefixes, simulator scores and normalization; predicted scoring remains pending; see [guide](FORWARD_POLICY_LEARNING.md) |
 | Evaluation record | Frozen method/checkpoint, scene/policy seeds, physical action/state/metric traces, costs and stop reason; no optimizer updates |
 
 For the actor, preserve two 96x96 RGB frames, original cropping and pusher-history
@@ -405,20 +425,23 @@ not a separate policy per letter.
 These are proposed boundaries, not assigned author names. Agree on owners before
 simultaneous edits. Each workstream uses a branch; coordinate edits to common
 contracts/configuration and let one owner update status/decisions per milestone.
+For the next method comparison, the [research handoff](DIFFUSION_RL_RESEARCH.md)
+adds concrete forward-trainer, matched-branch collection and evaluation tasks to
+these same three workstreams; it does not assign extra developers or require a
+new policy architecture.
 
 | Workstream | First build task and suggested file ownership | Acceptance evidence |
 | --- | --- | --- |
-| Policy learning | Add the training sampler/probability calculation, rollout buffer, value estimator and bounded CUDA update; proposed new `tdyssey/policy_rl.py`, `scripts/train_official_policy.py`, focused tests | Old/new likelihood consistency before an update; finite gradients; intended CUDA weights change and frozen weights do not; saved weights reload; correct short-chunk/terminal returns |
+| Policy learning | Extend existing `tdyssey/dppo.py`, `tdyssey/rl_protocol.py`, `tdyssey/policy_training.py` and `scripts/train_official_policy.py`; start from checked tail-transition PPO | Establish physical learning curves; validate full-network mode, periodic checkpoints/evaluation and a standalone trained-delta evaluator before claiming reliable adaptation |
 | Data and world model | Existing `tdyssey/gpc_world_model.py`, world-model collection/training/probe scripts; start with a versioned T/L comparison protocol and frozen/adapted GPC interface assessment | Whole-episode/scene separation; action normalization verified; contact/reward/ranking failures preserved; reproducible resource/error table |
 | Evaluation and integration | Official evaluator/metrics, baseline scene lists, experiment configuration and result summaries; coordinate any edits to `tdyssey/official.py` with policy owner | Frozen checkpoint baseline; disjoint learning/evaluation scenes; no accidental reward/success change; original versus learned physical rollouts and interaction counts |
 
-The proposed training files above **do not exist yet**. The world-model module
-name in the table is existing code; extending it does not make it training-ready.
-The first policy PR should implement a bounded update check before a longer
-learning run. Proposed command-line requirements are source/checkpoint paths,
-output path, config path and hard update/control/time/storage caps; finalize the
-actual command when the trainer exists. Do not advertise a runnable training command
-for code that has not been implemented.
+The first policy training script now exists and accepts source/checkpoint paths,
+config and a new output directory, with control/update/time/storage limits in
+the configuration. See [actual commands and limitations](POLICY_LEARNING.md).
+The world-model module remains an inference wrapper; extending it does not make
+pretrained-model adaptation or imagined training ready. Existing dynamics-training
+commands still train a different model from the acting diffusion policy.
 
 The shared experiment configuration must record: checkpoint/source hashes,
 shape exposure, training/validation/evaluation scene IDs, observation/action

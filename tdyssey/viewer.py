@@ -3,6 +3,16 @@
 import time
 
 
+def presentation_frame(env, size=512):
+    """Native physics rendering for people; preserve 96px policy observations."""
+    previous_size, previous_screen = env.render_size, env.screen
+    try:
+        env.render_size = size
+        return env._render_frame(mode="rgb_array")
+    finally:
+        env.render_size, env.screen = previous_size, previous_screen
+
+
 class PushTViewer:
     def __init__(self, title="Tdyssey — PushT", hold_seconds=0, window_size=768):
         import pygame

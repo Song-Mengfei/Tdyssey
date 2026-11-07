@@ -8,11 +8,15 @@ from pathlib import Path
 import tempfile
 import unittest
 
+# Set before CUDA libraries are initialized by installed-test discovery. Strict
+# determinism below is scoped to the continuation test, not ordinary training.
+os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
+
 from tdyssey.collection import CollectedEpisode, CollectionConfig
 from tdyssey.dataset import DatasetWriter
 from tdyssey.envs.official import official_shape
 from tdyssey.geometry import Pose
-from tdyssey.official_collection import ENVIRONMENT_FAMILY
+from tdyssey.official_collection import ENVIRONMENT_FAMILY, OfficialCollectionConfig
 from tdyssey.state import BodyState, Snapshot
 from tdyssey.training_data import WindowSpec, write_catalog
 from tdyssey.trajectories import Trajectory, Transition
@@ -33,20 +37,20 @@ class WorldModelRuntimeChecks(unittest.TestCase):
         self.root=Path(self.temporary.name)
         self.catalog=self.fixture()
 
-    def fixture(self):
-        np=self.np;root=self.root/'data'
-        writer=DatasetWriter(root,CollectionConfig(episodes=3,steps=8),
+    def fixture(self, shape='L', suffix=''):
+        np=self.np;root=self.root/('data'+suffix)
+        writer=DatasetWriter(root,OfficialCollectionConfig(shape=shape,episodes=3,steps=8),
                              {'environment_family':ENVIRONMENT_FAMILY,'kind':'synthetic markers, not physical data'})
         writer.manifest['rates']={'simulation_hz':100,'control_hz':10}
         splits={'train':[],'validation':[],'model_test':[]}
         for i,split in enumerate(splits):
             dx=2 if split=='train' else 10
             def state(t):
-                return Snapshot('L',official_shape('L').geometry_hash,'a'*64,
+                return Snapshot(shape,official_shape(shape).geometry_hash,'a'*64,
                     BodyState(Pose((200+dx*t,240+i*5),wrap_angle(math.pi-.1+.2*t))),
                     BodyState(Pose((80+t,100),0)),Pose((300,300),.3),t,None if t==0 else (130+t-1,110))
             transitions=tuple(Transition(state(t),(130+t,110),state(t+1),t/10,False,t==7) for t in range(8))
-            trajectory=Trajectory(f'marker-{i}','fixture','v1',i,.1,transitions)
+            trajectory=Trajectory(f'marker-{i}{suffix}','fixture','v1',i,.1,transitions)
             steps=[dict(n_contacts=t%2,iou=0.,coverage=0.,upstream_terminated=False,
                         upstream_truncated=False,collector_truncated=t==7) for t in range(8)]
             images=np.stack([np.full((3,96,96),20+t,np.uint8) for t in range(9)])
@@ -56,7 +60,7 @@ class WorldModelRuntimeChecks(unittest.TestCase):
             writer.add(episode);splits[split].append(trajectory.trajectory_id)
         writer.manifest['counts']={'control_steps':24,'control_physics_substeps':240,'reset_attempts':3,'reset_physics_substeps':3}
         writer.finish(splits)
-        catalog=self.root/'catalog.json';write_catalog([root],catalog)
+        catalog=self.root/('catalog'+suffix+'.json');write_catalog([root],catalog)
         return catalog
 
     def dataset(self,split='train',future=2):
@@ -77,6 +81,23 @@ class WorldModelRuntimeChecks(unittest.TestCase):
 
     def batch(self):
         return self.torch.utils.data.default_collate([self.dataset()[0],self.dataset()[1]])
+
+    def test_mixed_shape_labels_use_each_episodes_geometry_without_actor_shape_id(self):
+        self.fixture('Y', '-Y')
+        catalog=self.root/'mixed.json'
+        write_catalog([self.root/'data',self.root/'data-Y'],catalog)
+        dataset=VisualDynamicsDataset(catalog,'train',WindowSpec(2,2))
+        samples={}
+        for index in range(len(dataset)):
+            sample=dataset[index]
+            samples.setdefault(sample['shape'],sample)
+        self.assertEqual(set(samples),{'L','Y'})
+        self.assertFalse(self.np.array_equal(samples['L']['labels']['object_roi'],
+                                           samples['Y']['labels']['object_roi']))
+        for sample in samples.values():
+            self.assertNotIn('shape',sample['observations'])
+            self.np.testing.assert_allclose(sample['labels']['motion'][:,2],[2.,2.])
+        self.assertEqual(fit_motion_stats(dataset)['unique_transitions'],16)
 
     def test_autoregression_is_causal_and_differentiable_through_first_action(self):
         torch=self.torch
@@ -108,6 +129,10 @@ class WorldModelRuntimeChecks(unittest.TestCase):
     def test_training_updates_on_cuda_and_does_not_read_model_test_images(self):
         torch=self.torch
         if not torch.cuda.is_available():self.skipTest('CUDA required for optimizer check')
+        previous=torch.are_deterministic_algorithms_enabled()
+        warn_only=torch.is_deterministic_algorithms_warn_only_enabled()
+        torch.use_deterministic_algorithms(True)
+        self.addCleanup(torch.use_deterministic_algorithms,previous,warn_only=warn_only)
         from tdyssey.world_model_training import load_checkpoint,train
         # Corrupt the quarantined model-test payload. Training/validation must
         # succeed without decoding it; catalog metadata still remains intact.
@@ -121,6 +146,25 @@ class WorldModelRuntimeChecks(unittest.TestCase):
         self.assertTrue(all(p.device.type=='cuda' for p in model.parameters()))
         self.assertGreater(float(model.image_head.weight.norm()),0)
         self.assertEqual(payload['catalog_sha256'],report['catalog_sha256'])
+        self.assertEqual(len((self.root/'model/metrics.jsonl').read_text().splitlines()),3)
+        resumed=train(self.catalog,self.root/'resumed',replace(config,max_steps=2),
+                      resume=self.root/'model/last.pt')
+        self.assertEqual(resumed['steps'],2)
+        self.assertEqual(resumed['training_windows_seen'],4)
+        self.assertEqual(resumed['sessions'][-1]['optimizer_steps'],1)
+        recovery=torch.load(self.root/'resumed/last.pt',map_location='cpu',weights_only=True)
+        self.assertEqual(recovery['training_state']['epoch_cursor'],4)
+        self.assertEqual(recovery['training_state']['completed_epochs'],0)
+        self.assertFalse(resumed['model_test_used'])
+        full=train(self.catalog,self.root/'uninterrupted',replace(config,max_steps=2))
+        uninterrupted=torch.load(self.root/'uninterrupted/last.pt',map_location='cpu',weights_only=True)
+        self.assertAlmostEqual(resumed['epochs'][-1]['train_loss'],full['epochs'][-1]['train_loss'],places=6)
+        for name,value in recovery['state_dict'].items():
+            # Deterministic resize/backward isolates recovery from CUDA reduction
+            # order; ordinary training does not promise bit-identical updates.
+            torch.testing.assert_close(value,uninterrupted['state_dict'][name],rtol=1e-6,atol=1e-8)
+        torch.testing.assert_close(recovery['training_state']['torch_rng'],
+                                   uninterrupted['training_state']['torch_rng'],rtol=0,atol=0)
         with self.assertRaisesRegex(ValueError,'hash/size'):self.dataset('model_test')[0]
 
 
