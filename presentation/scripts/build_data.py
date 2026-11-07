@@ -150,6 +150,46 @@ def build_tests(raw, w_shape, w_pair, w_eps):
                                          round(lo, 4), round(hi, 4)])
 
 
+TRAIN_LINES = [("5 shapes", "correction rounds", "dagger-loop", "round*/info.json"),
+               ("10 shapes", "correction rounds, executed-push labels", "dagger10", "round*/train/info.json"),
+               ("10 shapes", "correction rounds, intended-plan labels", "dagger10p", "round*/train/info.json"),
+               ("10 shapes", "96 px main line", "dagger10m", "round*/train/info.json"),
+               ("10 shapes", "192 px side line", "dagger10h", "round*/train/info.json"),
+               ("27 shapes", "96 px line", "dagger26m", "round*/train/info.json"),
+               ("27 shapes", "192 px line", "dagger26h", "round*/train/info.json")]
+
+
+def build_training(raw, w):
+    """Per training round: examples by source (teacher demonstrations, corrections, human T), camera frames, steps and
+    the training loss (mean of the first and last 1000 steps), from each round's info.json and loss_per_step.npy."""
+    import ast
+    try:
+        import numpy as np
+    except ImportError:
+        np = None
+    w.writerow(["stage", "line", "run", "round", "examples", "teacher_examples", "correction_examples", "human_T_examples",
+                "camera_frames", "steps", "loss_first_1000", "loss_last_1000"])
+    n = 0
+    for stage, line, run, pattern in TRAIN_LINES:
+        for info in sorted(glob.glob(str(raw / run / pattern)), key=lambda p: int(re.search(r"round(\d+)", p).group(1))):
+            j = json.load(open(info))
+            pg = j["per_group"] if isinstance(j["per_group"], dict) else ast.literal_eval(j["per_group"])
+            teach = sum(v for k, v in pg.items() if k.endswith("-teacher"))
+            corr = sum(v for k, v in pg.items() if k.endswith("-dagger"))
+            human = sum(v for k, v in pg.items() if k.endswith("-human"))
+            args = j.get("args", {}); args = args if isinstance(args, dict) else {}
+            steps = args.get("steps", "")
+            lf = ll = ""
+            lp = Path(info).with_name("loss_per_step.npy")
+            if np is not None and lp.exists():
+                a = np.load(lp); lf, ll = round(float(a[:1000].mean()), 5), round(float(a[-1000:].mean()), 5)
+                steps = steps or len(a)
+            w.writerow([stage, line, run, int(re.search(r"round(\d+)", info).group(1)), j["samples"], teach, corr, human,
+                        j.get("frames", ""), steps, lf, ll])
+            n += 1
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", default=os.path.join(os.environ.get("TDYSSEY_WORK", "/tmp/Tdyssey"), "slides_data/raw/runs"))
@@ -160,6 +200,8 @@ def main():
     with open(OUT / "final_tests_by_shape.csv", "w", newline="") as a, open(OUT / "final_tests_paired.csv", "w", newline="") as b, \
             open(OUT / "final_tests_episodes.csv", "w", newline="") as c:
         build_tests(raw, csv.writer(a), csv.writer(b), csv.writer(c))
+    with open(OUT / "training_rounds.csv", "w", newline="") as f:
+        print("training rows:", build_training(raw, csv.writer(f)))
     for p in sorted(OUT.glob("*.csv")):
         print(f"{p.name}: {sum(1 for _ in open(p)) - 1} rows, {p.stat().st_size / 1e6:.2f} MB")
 

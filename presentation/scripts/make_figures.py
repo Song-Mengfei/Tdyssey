@@ -17,11 +17,14 @@ original = light grey, 5-shape students = raspberry, 10-shape students = orange 
 """
 import argparse
 import csv
+import json
 import math
 import textwrap
 from collections import defaultdict
 from pathlib import Path
 
+import os
+os.environ.setdefault("SOURCE_DATE_EPOCH", "0")      # reproducible PDFs: no creation time, so reruns do not change files
 import matplotlib
 
 matplotlib.use("Agg")
@@ -36,6 +39,7 @@ from matplotlib.transforms import Bbox  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
+TYPED = json.load(open(DATA / "typed_in_numbers.json"))   # numbers typed in from the docs (with sources)
 FIG = ROOT / "figures"
 TAB = DATA / "tables"
 
@@ -675,13 +679,15 @@ def fig_curves_5shapes():
     ax.set_xlim(0.5, 10.5)
     # TYPED-IN: DECISIONS.md D046 (original on the teacher's 50 validation scenes: 20+17+4+0+0 of 250) and
     # LEARNING_FINDINGS.md section 5 (final planner, same 50 scenes: 5+12+36+50+21 = 124 of 250).
+    o5 = TYPED["original_on_teacher_validation_5shapes"]; t5 = TYPED["teacher_first_planner_5shapes_total"]
+    o5p, t5p = o5["successes"] / o5["of"] * 100, t5["successes"] / t5["of"] * 100
     for ax in axes:
-        ax.axhline(41 / 250 * 100, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
-        ax.axhline(124 / 250 * 100, color=TEACHER, lw=1.8, ls=(0, (4, 3)))
+        ax.axhline(o5p, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
+        ax.axhline(t5p, color=TEACHER, lw=1.8, ls=(0, (4, 3)))
         ax.grid(False, axis="x")
         ax.legend(loc="lower right", fontsize=12)
-    axes[0].text(152, 124 / 250 * 100 + 1, "teacher (exact state) 49.6%", fontsize=12, color=INK2, ha="right")
-    axes[0].text(152, 41 / 250 * 100 - 1.2, "original 16.4%", fontsize=12, color=INK2, ha="right", va="top")
+    axes[0].text(152, t5p + 1, f"teacher (exact state) {t5p:.1f}%", fontsize=12, color=INK2, ha="right")
+    axes[0].text(152, o5p - 1.2, f"original {o5p:.1f}%", fontsize=12, color=INK2, ha="right", va="top")
     axes[0].set_ylim(0, 55)
     axes[0].yaxis.set_major_formatter(PCT)
     axes[0].set_ylabel("Validation success (5 shapes)")
@@ -1162,12 +1168,11 @@ def fig_shapes_validation_vs_test():
 
 # TYPED-IN: LEARNING_FINDINGS.md section 7, "26-letter preparation (D051)": teacher (world model wm2 v3) successes of
 # 50 validation scenes per letter. Earlier ten-letter shapes other than T, D and L were not re-checked.
-TEACHER26 = {"A": 47, "B": 49, "C": 42, "G": 44, "H": 49, "I": 47, "K": 49, "M": 49, "N": 46, "O": 49, "Q": 49,
-             "R": 36, "S": 49, "V": 44, "W": 47, "X": 48, "Z": 48, "T": 30, "D": 49, "L": 34}
+TEACHER26 = TYPED["teacher26_successes_of_50"]["values"]
 # TYPED-IN: LEARNING_FINDINGS.md section 5 table "Final planner (50)": first sampling-planner teacher, 50 validation
 # scenes per letter; and the original policy on the 1000-scene final-test pool (same section, last column).
-TEACHER5 = {"T": 5, "T_narrow": 12, "Y": 36, "D": 50, "L": 21}
-ORIG5_FINALPOOL = {"T": 44.4, "T_narrow": 41.9, "Y": 9.4, "D": 0.3, "L": 0.1}
+TEACHER5 = TYPED["teacher5_successes_of_50"]["values"]
+ORIG5_FINALPOOL = TYPED["original_5shapes_final_pool_percent"]["values"]
 
 
 def fig_shapes_teacher_vs_student():
@@ -1567,7 +1572,7 @@ def fig_analysis_steps_executed():
 
 
 # TYPED-IN: DECISIONS.md D048 "Teacher outcome": ten-letter teacher, 50 validation scenes per letter, successes of 500.
-TEACHER_COMMIT = [("re-plan\nevery push", 390), ("commit to\n4 pushes", 317), ("commit to\n8 pushes", 303)]
+TEACHER_COMMIT = TYPED["teacher_commit_successes_of_500"]["values"]
 
 
 def fig_analysis_commitment():
@@ -1718,10 +1723,7 @@ def fig_analysis_192_vs_96(per_shape=False):
 
 
 # TYPED-IN: LEARNING_FINDINGS.md section 7 "What helps" table (successes of 1000: 100 validation scenes x 10 shapes).
-LABEL_AB = [("Copy the teacher's intended plan\ninstead of its executed pushes", 77, 129),
-            ("Camera 192 px instead of 96 px", 111, 129),
-            ("All teacher demonstrations\ninstead of half", 104, 111),
-            ("Action network 990M instead of\n251M parameters (from scratch)", 138, 146)]
+LABEL_AB = TYPED["label_ab_successes_of_1000"]["values"]
 
 
 def fig_analysis_label_ab():
@@ -1755,8 +1757,8 @@ def fig_analysis_budget():
     fig, axes = plt.subplots(1, 2, figsize=FULL, gridspec_kw={"width_ratios": [1, 1.5], "wspace": 0.35})
     # TYPED-IN: DECISIONS.md D053: training samples per shape per correction round.
     ax = axes[0]
-    rows = [("10 shapes,\n20k steps", 512, TEN), ("27 shapes,\n20k steps", 190, tint(M96, 0.5)),
-            ("27 shapes,\n54k steps", 512, M96)]
+    (l1, n1), (l2, n2), (l3, n3) = TYPED["budget_samples_per_shape_per_round_thousands"]["values"]
+    rows = [(l1, n1, TEN), (l2, n2, tint(M96, 0.5)), (l3, n3, M96)]
     x = np.arange(len(rows))
     ax.bar(x, [r[1] for r in rows], 0.6, color=[r[2] for r in rows], edgecolor="white", zorder=3)
     for xi, r in zip(x, rows):
@@ -1865,19 +1867,15 @@ def fig_analysis_selection_bias():
 # ----------------------------------------------------------------------------------------------------------------------
 # TYPED-IN: LEARNING_EXPERIMENT_LOG.md section 2, "Long runs" table: T success at update 0 and at the last evaluation
 # (small development evaluation). (setting, AdvantageFlow last T, NFT last T, last update)
-RL_LONG = [("dense, lr 1e-4", 0.15, 0.00, "25"), ("dense, lr 3e-5", 0.00, 0.30, "150"),
-           ("dense, lr 1e-5", 0.30, 0.30, "150"), ("dense, lr 3e-6", 0.60, 0.60, "125"),
-           ("LoRA, lr 3e-4", 0.40, None, "150")]
-RL_T0 = 0.55
+RL_LONG = TYPED["rl_long_runs"]["values"]
+RL_T0 = TYPED["rl_long_runs"]["t_success_at_update_0"]
 # TYPED-IN: same table, (T drift ratio, last-evaluation T success) per long run with an evaluation.
-RL_DRIFT = [("AF", 6.5e-1, 0.15), ("AF", 3.2e-1, 0.30), ("AF", 1.9e1, 0.00), ("AF", 8.5e-3, 0.60), ("AF", 6.8e-2, 0.40),
-            ("AF", 7.6e-2, 0.55), ("NFT", 1.5e0, 0.00), ("NFT", 1.1e-1, 0.30), ("NFT", 9.0e-1, 0.30),
-            ("NFT", 1.0e-2, 0.60)]
+RL_DRIFT = TYPED["rl_drift"]["values"]
 # TYPED-IN: LEARNING_FINDINGS.md section 2 table (score_snr.py): plan share of score variance, split-half reliability.
-RL_SNR = [("T", 0.33, 0.27), ("near-T", 0.17, 0.18), ("Y", 0.16, 0.14), ("D", 0.36, 0.29)]
+RL_SNR = TYPED["rl_signal_share"]["values"]
 # TYPED-IN: LEARNING_EXPERIMENT_LOG.md section 3, value function as candidate ranker: mean correlation with the true
 # full-episode return (trainer's 32-control score, value-function score, one full-episode draw).
-RL_RANK = [("T", 0.06, 0.04, 0.43), ("near-T", 0.15, 0.19, 0.47), ("Y", 0.24, -0.08, 0.51), ("D", -0.11, 0.12, 0.27)]
+RL_RANK = TYPED["rl_candidate_ranking"]["values"]
 
 
 def fig_rl_t_collapse():
@@ -2023,8 +2021,9 @@ def fig_method_teacher_26():
 
 def fig_method_teacher_gap():
     # TYPED-IN: teacher totals (LEARNING_FINDINGS.md sections 5 and 7); students from validation_rounds.csv
-    rows = [("5 shapes", 124 / 250 * 100, "5 shapes", "correction rounds", 7, FIVE),
-            ("10 shapes", 390 / 500 * 100, "10 shapes", "96 px main line", 14, TEN)]
+    tt = TYPED["teacher_totals"]["values"]
+    rows = [("5 shapes", tt["5 shapes"][0] / tt["5 shapes"][1] * 100, "5 shapes", "correction rounds", 7, FIVE),
+            ("10 shapes", tt["10 shapes"][0] / tt["10 shapes"][1] * 100, "10 shapes", "96 px main line", 14, TEN)]
     fig, ax = plt.subplots(figsize=HALF)
     x = np.arange(len(rows))
     w = 0.36
