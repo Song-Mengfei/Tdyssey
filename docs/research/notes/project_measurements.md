@@ -1,6 +1,6 @@
 # Project measurements (this project's own experiments, 2026-10-24/25)
 
-Source: runs on one H100 NVL (SLURM job 1009007) and one H200 (2026-10-24); raw files in the private
+Source: runs on one H100 NVL and one H200 (2026-10-24); raw files in the private
 the author's private run store (runs/, logs/). These are first-hand results, not literature.
 
 ## Base policy performance

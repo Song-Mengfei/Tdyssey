@@ -10,7 +10,7 @@ checkpoints and data stay outside Git in the author's private store.
 
 ## How the work ran
 
-- **Machines.** 2026-10-24: two 3-hour NUS SLURM sessions on one H200 NVL (141 GB).
+- **Machines.** 2026-10-24: two 3-hour cluster sessions on one H200 NVL (141 GB).
   From 2026-10-25: a 3-day job on one H100 NVL (94 GB), still running when this was
   written. All environments, caches and runs lived in node-local `/tmp`, which is wiped
   when a job ends, because the home quota was nearly full.

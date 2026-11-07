@@ -6,6 +6,9 @@ scripts/learning/<script> --help`). They import each other as siblings and find 
 repository root themselves (`REPO` overrides it). Outputs go wherever `--out` points;
 keep them outside Git.
 
+The shell scripts that ran each experiment, with their seeds and settings, are in
+[`experiments/`](experiments/README.md).
+
 | Script | Purpose | Status |
 | --- | --- | --- |
 | `base_rollouts.py` | Frozen-base (or `--student`) evaluation on fixed scene pools; state/action rollouts for world-model data | used for every claim |
