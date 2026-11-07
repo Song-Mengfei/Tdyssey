@@ -8,7 +8,8 @@
  "teacher_first_planner_5shapes_total": {
   "successes": 124,
   "of": 250,
-  "source": "docs/LEARNING_FINDINGS.md section 5, final planner (T 5, near-T 12, Y 36, D 50, L 21)"
+  "source": "docs/LEARNING_FINDINGS.md section 5, final planner (T 5, near-T 12, Y 36, D 50, L 21); the FIRST exact-state planner, not the teacher that labelled the camera students",
+  "label": "first exact-state planner (no state noise)"
  },
  "teacher26_successes_of_50": {
   "values": {
@@ -75,7 +76,7 @@
  "teacher_totals": {
   "values": {
    "5 shapes": [
-    124,
+    191,
     250
    ],
    "10 shapes": [
@@ -83,7 +84,7 @@
     500
    ]
   },
-  "source": "docs/LEARNING_FINDINGS.md sections 5 and 7"
+  "source": "5 shapes: docs/LEARNING_FINDINGS.md section 6 (1 px / 1 degree noisy teacher, 34+22+46+50+39); 10 shapes: docs/LEARNING_FINDINGS.md section 7 and docs/DECISIONS.md D048 (re-plans every push, world model wm2 v2). 27 shapes: summed from teacher_validation.csv"
  },
  "label_ab_successes_of_1000": {
   "values": [
@@ -298,5 +299,99 @@
    "one full-episode draw"
   ],
   "source": "docs/LEARNING_EXPERIMENT_LOG.md section 3 (correlation with the true full-episode return)"
+ },
+ "teacher_noisy_planner_5shapes": {
+  "values": {
+   "T": 34,
+   "T_narrow": 22,
+   "Y": 46,
+   "D": 50,
+   "L": 39
+  },
+  "successes": 191,
+  "of": 250,
+  "label": "planner teacher reading exact state with 1 px / 1 degree noise (labelled the 5-shape students)",
+  "source": "docs/LEARNING_FINDINGS.md section 6, 'Teacher-relabelled DAgger works' (teacher 34, 22, 46, 50, 39) and 'Can the student copy the teacher?' table; docs/DECISIONS.md D044/D045; 50 validation scenes per letter (seeds 400000 + 20*i)"
+ },
+ "five_shape_round0": {
+  "stage": "5 shapes",
+  "line": "copy the teacher, no corrections (v1)",
+  "step": 30000,
+  "meaning": "the student the 5-shape correction rounds started from (round 0 = no correction rounds yet)",
+  "source": "run store runs/dagger-loop/round1/info.json, args.init = runs/bc/v1/ema-step30000.pt; its validation is the step-30000 row of that line in validation_rounds.csv"
+ },
+ "picked_rounds": {
+  "values": {
+   "5-shape round 4": [
+    "5 shapes",
+    "correction rounds",
+    4
+   ],
+   "5-shape round 7": [
+    "5 shapes",
+    "correction rounds",
+    7
+   ],
+   "10-shape 96 px": [
+    "10 shapes",
+    "96 px main line",
+    13
+   ],
+   "10-shape 192 px": [
+    "10 shapes",
+    "192 px side line",
+    6
+   ],
+   "26-letter 96 px (round 44)": [
+    "27 shapes",
+    "96 px line",
+    44
+   ],
+   "26-letter 192 px (round 2)": [
+    "27 shapes",
+    "192 px line",
+    2
+   ],
+   "26-letter 96 px round 50 (main model)": [
+    "27 shapes",
+    "96 px line",
+    50
+   ]
+  },
+  "columns": [
+   "stage",
+   "line",
+   "rounds completed"
+  ],
+  "note": "Rounds whose student went to a fresh-scene test. Round 50 has no validation (the line stopped after training it); its number comes from the D054 fresh-scene test. Round 47 later scored the most validation successes (480 of 1350), but the D051 pick had been fixed by rule at round 44 (12 hours before the job ended).",
+  "source": "docs/DECISIONS.md D046, D047, D049 (amendment: round 13), D050, D051/D053 outcome (round 44, round 2), D054"
+ },
+ "method_pipeline": {
+  "dynamics_episodes": 1500,
+  "dynamics_controls_thousands": 431,
+  "action_noise_px": [
+   0,
+   10,
+   25
+  ],
+  "planner_random_search_iterations": 4,
+  "planner_samples_per_iteration": 256,
+  "planner_structured_pushes": 128,
+  "planner_candidates_per_step": 1152,
+  "planner_horizon_controls": 48,
+  "teacher_state_noise_px": 1,
+  "teacher_angle_noise_deg": 1,
+  "plan_steps": 16,
+  "executed_steps": 8,
+  "camera_frames": 2,
+  "camera_px": 96,
+  "denoising_steps": 100,
+  "teacher_share_of_decisions_in_corrections": 0.3,
+  "human_T_episodes": 206,
+  "correction_scenes_per_shape_per_round": 30,
+  "correction_scenes_per_new_letter_from_round_14": 60,
+  "world_model_pd_substeps": 10,
+  "world_model_pusher_check_px": 0.0001,
+  "source": "docs/LEARNING_FINDINGS.md sections 4 (dynamics data, wm2), 5 (planner: --pushes 128 --horizon 48 in Reproduce), 6 (1 px / 1 degree noise; DAgger: student drives with probability 0.7; 206 human T episodes); scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 + 128 = 1152 candidates per control); docs/LEARNING_FINDINGS.md Evaluation protocol (DDPM-100, 8 of 16 actions executed); docs/DECISIONS.md D048, D051, D053 (30 scenes per shape per round; 60 per new letter from round 14)"
  }
 }

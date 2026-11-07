@@ -190,6 +190,22 @@ def build_training(raw, w):
     return n
 
 
+def build_loss_curves(raw, w, window=500):
+    """Training loss within each round, averaged over windows of 500 steps (from loss_per_step.npy)."""
+    import numpy as np
+    w.writerow(["stage", "line", "run", "round", "step_end", "mean_loss"])
+    n = 0
+    for stage, line, run, pattern in TRAIN_LINES:
+        for info in sorted(glob.glob(str(raw / run / pattern)), key=lambda p: int(re.search(r"round(\d+)", p).group(1))):
+            lp = Path(info).with_name("loss_per_step.npy")
+            if not lp.exists():
+                continue
+            a = np.load(lp); k = int(re.search(r"round(\d+)", info).group(1))
+            for end in range(window, len(a) + 1, window):
+                w.writerow([stage, line, run, k, end, round(float(a[end - window:end].mean()), 5)]); n += 1
+    return n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", default=os.path.join(os.environ.get("TDYSSEY_WORK", "/tmp/Tdyssey"), "slides_data/raw/runs"))
@@ -202,6 +218,8 @@ def main():
         build_tests(raw, csv.writer(a), csv.writer(b), csv.writer(c))
     with open(OUT / "training_rounds.csv", "w", newline="") as f:
         print("training rows:", build_training(raw, csv.writer(f)))
+    with open(OUT / "training_loss_curves.csv", "w", newline="") as f:
+        print("loss rows:", build_loss_curves(raw, csv.writer(f)))
     for p in sorted(OUT.glob("*.csv")):
         print(f"{p.name}: {sum(1 for _ in open(p)) - 1} rows, {p.stat().st_size / 1e6:.2f} MB")
 
