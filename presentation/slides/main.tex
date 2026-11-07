@@ -4,8 +4,8 @@
 % and set slides/main.tex as the main file. Large-font figure versions in figures/slide*/ are used when they exist.
 % Clicking a video still opens the clip in the system player (local PDF viewers only; in PowerPoint embed the MP4).
 %
-% Timing (about 10:00): title 0:15 | problem 0:45 | approach 3:00 | results and demo 2:30 |
-%                       image world model (teammates) 2:30 | discussion 1:00.  Backup slides follow the appendix.
+% Timing (about 10:00, 21 slides; video slides take 15-25 s): title 0:15 | problem 0:40 | approach 2:50 |
+%   results and demo 2:50 | image world model (teammates) 2:30 | discussion and close 1:00.  Backup after the appendix.
 % TODO: speakers per section.
 \documentclass[aspectratio=169,11pt]{beamer}
 \usepackage[T1]{fontenc}
@@ -128,10 +128,33 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Copy what the teacher intends, not what it did}
+  \begin{columns}[T]
+    \column{0.58\textwidth}
+    \includegraphics[width=\linewidth]{training_data/labels_intended_vs_executed.png}
+    \snote{The teacher re-plans after every push, so its executed pushes zigzag (red); its intended plans are smooth (gold).}
+    \column{0.4\textwidth}
+    \halffig[width=\linewidth]{analysis_label_ab}
+    \snote{Same data and training: intended-plan labels give the largest single gain.}
+  \end{columns}
+\end{frame}
+
 % ==================================================================================== 3. results
 \section{Results and demonstration}
 \begin{frame}{Training: 5 $\rightarrow$ 10 $\rightarrow$ 27 shapes}
   \centering\fig[width=0.92\textwidth]{curves_all_stages}
+\end{frame}
+
+\begin{frame}{26 letters: the per-shape budget was the bottleneck}
+  \begin{columns}[T]
+    \column{0.62\textwidth}
+    \fig[width=\linewidth]{curves_26letters}
+    \column{0.36\textwidth}
+    \begin{itemize}
+      \item 27 shapes sharing the 10-shape budget levelled off near 24\%.
+      \item 54k steps per round and more practice scenes for new letters: about 35\%.
+    \end{itemize}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Final test: 300 fresh scenes per shape}
@@ -148,6 +171,10 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{New letters improve most; T and near-T dip}
+  \centering\fig[height=0.8\textheight]{final_dumbbell}
+\end{frame}
+
 \begin{frame}{Demo: same scene, original vs ours}
   \begin{columns}[T]
     \column{0.32\textwidth}
@@ -162,15 +189,36 @@
          videos/near\_misses/). Interactive demo: the Hugging Face Space (TODO: link or screen recording).}
 \end{frame}
 
-\begin{frame}{Never-seen shapes, and the last millimetres}
+\begin{frame}{Demo: the teacher and the camera policy that learned from it}
+  \centering\video{teacher_vs_student_E.png}{teacher_vs_student/E.mp4}{0.62\textwidth}\\
+  \snote{Same scene. Left: the teacher with exact state. Right: the camera policy (round 50). All 27 shapes:
+         videos/teacher\_vs\_student/.}
+\end{frame}
+
+\begin{frame}{Demo: one scene through the whole project}
+  \centering\video{progression_E.png}{progression/E_across_models.mp4}{0.6\textwidth}\\
+  \snote{Original policy, then the 5-shape, 10-shape and 26-letter models (rounds 0, 13, 50) on the same scene.}
+\end{frame}
+
+\begin{frame}{Never-seen shapes}
   \begin{columns}[T]
-    \column{0.48\textwidth}
+    \column{0.5\textwidth}
     \halffig[width=\linewidth]{heldout_scaling}
     \snote{Six shapes never trained on: success grows with the number of training shapes (1.2\% $\rightarrow$ 5.9\%).}
-    \column{0.5\textwidth}
+    \column{0.48\textwidth}
+    \video{compare_digit7_scene2.png}{compare/digit7_scene2.mp4}{\linewidth}\\
+    \snote{Digit 7, never seen in training, solved (17--23\% of fresh scenes; original 2\%).}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The last millimetres}
+  \begin{columns}[T]
+    \column{0.56\textwidth}
     \includegraphics[width=\linewidth]{last_mile/near_miss_vs_solved_zoom.png}
-    \snote{Most failures are near misses: 91\% coverage at the best moment on average, success needs 95\%;
-           grid: one camera pixel.}
+    \snote{Grid: one 96 px camera pixel (about 5 simulator pixels).}
+    \column{0.42\textwidth}
+    \video{near_miss_M_400020.png}{near_misses/near_miss_M_400020.mp4}{0.9\linewidth}\\
+    \snote{Most failures are near misses: 91\% coverage at the best moment on average, success needs 95\%.}
   \end{columns}
 \end{frame}
 
@@ -254,17 +302,11 @@
   \centering\resizebox{\textwidth}{!}{\tab{final_headline.tex}}
 \end{frame}
 
-\begin{frame}{Backup: per shape}
-  \centering\fig[height=0.8\textheight]{final_dumbbell}
-\end{frame}
 
 \begin{frame}{Backup: per-shape table}
   \centering\resizebox{!}{0.82\textheight}{\tab{final_per_shape_compact.tex}}
 \end{frame}
 
-\begin{frame}{Backup: 26 letters, the per-shape budget}
-  \centering\fig[width=0.9\textwidth]{curves_26letters}
-\end{frame}
 
 \begin{frame}{Backup: what mattered}
   \begin{columns}[T]
@@ -288,10 +330,6 @@
   \centering\halffig[height=0.75\textheight]{wm_accuracy}
 \end{frame}
 
-\begin{frame}{Backup: intended plans vs executed pushes}
-  \centering\includegraphics[width=0.95\textwidth]{training_data/labels_intended_vs_executed.png}\\
-  \snote{The teacher re-plans after every push, so its executed pushes zigzag; its intended plans are smooth.}
-\end{frame}
 
 \begin{frame}{Backup: round 50 vs round 44, and the 192 px camera}
   \begin{columns}[T]
@@ -315,9 +353,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Backup: teacher vs camera policy, same scene}
-  \centering\video{teacher_vs_student_E.png}{teacher_vs_student/E.mp4}{0.6\textwidth}
-\end{frame}
 
 \begin{frame}{Backup: teacher per letter, and how it was fixed}
   \begin{columns}[T]
@@ -328,14 +363,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Backup: the same scene through the project}
-  \centering\video{progression_E.png}{progression/E_across_models.mp4}{0.62\textwidth}
-\end{frame}
 
-\begin{frame}{Backup: a never-seen shape solved (digit 7)}
-  \centering\video{compare_digit7_scene2.png}{compare/digit7_scene2.mp4}{0.6\textwidth}\\
-  \snote{Digit 7 was never used in training; on fresh scenes it is solved 17--23\% of the time (original: 2\%).}
-\end{frame}
 
 \begin{frame}{Backup: limitations and disclosure in full}
   \begin{itemize}
