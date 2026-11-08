@@ -51,6 +51,7 @@ MODELS = {   # key: (title, checkpoint relative to runs/, None = original offici
     "l26_r13": ("26 letters: round 13 (before the larger budget)", "dagger26m/round13/train/ema-step20000.pt", False),
     "l26_r44": ("26 letters: round 44 (final-test model)", "dagger26m/round44/train/ema-step54000.pt", False),
     "l26_r50": ("26 letters: round 50 (main model)", "dagger26m/round50/train/ema-step54000.pt", True),
+    "frontier": ("Frontier: 505M flow-matching transformer", "flow26/v1/ema-step160000.pt", True),
     "l26_192": ("26 letters: 192 px camera", "dagger26h/round2/train/ema-step54000.pt", True),
 }
 
@@ -665,6 +666,22 @@ def compose():
                     body = np.hstack([tile_at(la, i, TILE, name="Original (T only)"), tile_at(lb, i, TILE, name="Tdyssey (26 letters)")])
                     w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(label(s), 0.8, (15, 15, 15))]), body])))
             index.append((p, f"{label(s)}: original vs main model", f"original {outcome(la)} | Tdyssey {outcome(lb)}"))
+    # 3b. architecture experiment: main model (official network) vs the 505M flow-matching transformer, same scenes
+    for seed in SEEDS:
+        if not (have("l26_r50", seed) and have("frontier", seed)):
+            continue
+        a, b = lanes_of("l26_r50", seed, ALL33), lanes_of("frontier", seed, ALL33)
+        for la, lb in zip(a, b):
+            s = la["shape_name"]
+            tag = "" if seed == SEEDS[0] else "_scene2"
+            p = V / "frontier" / f"{s}{tag}.mp4"
+            n = max(len(la["frames"]), len(lb["frames"])) + 45
+            with writer(p) as w:
+                for i in range(n):
+                    body = np.hstack([tile_at(la, i, TILE, name="Official network (main model)"),
+                                      tile_at(lb, i, TILE, name="505M transformer (experiment)")])
+                    w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(label(s), 0.8, (15, 15, 15))]), body])))
+            index.append((p, f"{label(s)}: main model vs 505M transformer", f"main model {outcome(la)} | transformer {outcome(lb)}"))
     # 4. the same scene across the whole project
     prog = ["original", "five_r7", "ten_96", "l26_r0", "l26_r13", "l26_r50"]
     if all(have(k, SEEDS[0]) for k in prog):
@@ -778,6 +795,7 @@ def posters():
     for v in sorted(V.rglob("*.mp4")):
         folder, stem = v.parent.name, v.stem
         name = (f"compare_{stem}" if folder == "compare" else f"teacher_vs_student_{stem}" if folder == "teacher_vs_student"
+                else f"frontier_{stem}" if folder == "frontier"
                 else f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
         r = imageio.get_reader(v)
         last = None
@@ -804,6 +822,7 @@ def mid_stills(where=0.4):
         v = V / rel
         folder, stem = v.parent.name, v.stem
         name = (f"compare_{stem}" if folder == "compare" else f"teacher_vs_student_{stem}" if folder == "teacher_vs_student"
+                else f"frontier_{stem}" if folder == "frontier"
                 else f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
         r = imageio.get_reader(v)
         n = r.count_frames()

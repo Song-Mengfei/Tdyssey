@@ -452,12 +452,15 @@ DECK_WORDS = [
     ("Plan labels", "Intended-plan labels"), ("990M network", "990M-parameter network"),
     ("best of 16, true simulator", "best of 16, re-ranked in the simulator"), ("generic", "plain network"),
     ("teacher demos", "teacher runs"), ("Best-of-N", "Simulator re-ranking"), ("6 unseen", "6 never seen"),
-    ("Forward RL", "RL fine-tuning"), ("px and °", "px and degrees"),
+    ("Forward RL", "RL fine-tuning"), ("needs >", "needs >"),
+    ("gradient-based teacher (4 runs, 250-2000 iterations)", "back-propagation"),
+    ("sampling planner teacher", "sampling planner"), ("original policy", "original"),
+    ("Mean final goal coverage in the real simulator", "Goal covered at the end (real simulator)"), ("px and °", "px and degrees"),
     ("round 50: fresh test", "after 6 more rounds:"),
 ]
 DECK_GLYPHS = [("\u2212", "$-$"), ("\u2192", "$\\rightarrow$"), ("\u00d7", "$\\times$"), ("\u2265", "$\\geq$"),
                ("\u2264", "$\\leq$"), ("\u2248", "$\\approx$"), ("\u00b0", "$^\\circ$"), ("\u00b1", "$\\pm$"),
-               ("\u00b7", "$\\cdot$"), ("\u2013", "-"), ("\u2014", "-"), ("\u2026", "..."), ("<", "$<$"), (">", "$>$"),
+               ("\u00b7", "$\\cdot$"), ("\u2013", "-"), ("\u2014", "-"), ("\u2026", "..."), ("<", " below "), (">", " over "),
                ('"', "''"), ("~", "$\\sim$")]
 
 
@@ -4412,6 +4415,232 @@ def fig_deck_heldout():
     return fig
 
 
+
+# Later experiments (presentation/data/architecture_*.csv, lastmile_rl.csv; scripts/build_experiment_data.py)
+TRANSF = "#9e2a8a"          # the 505M transformer policy (architecture experiment, D059); validated against M96
+
+
+def _pts(frac):
+    """A 4-decimal fraction from the experiment CSVs as points, rounded half-even on the exact decimal (0.1005 -> 10.0),
+    as in the decision log."""
+    from decimal import Decimal, ROUND_HALF_EVEN
+    return float((Decimal(frac) * 100).quantize(Decimal("0.1"), rounding=ROUND_HALF_EVEN))
+
+
+def _read_opt(name):
+    path = DATA / name
+    return read(name) if path.exists() else []
+
+
+def fig_deck_arch_groups():
+    """Architecture experiment (D059) at 100 x 50 mm: main model (official network, after 50 correction rounds) vs the
+    505M transformer on the same new scenes (200 per shape), per group with the paired difference and its 95% interval
+    written at the right. Plain labels."""
+    rows = {r["group"]: r for r in _read_opt("architecture_test_groups.csv")}
+    order = [("all 27 trained shapes", "All 27 trained"), ("10 earlier shapes", "10 earlier"),
+             ("17 newer letters", "17 newer"), ("6 never-seen shapes", "6 never seen"), ("T", "T"),
+             ("narrow T", "narrow T")]
+    fig, ax = deck_fig(100, 50, l=21, r=34, b=8.5, t=1.5)
+    ys = np.arange(len(order))
+    for i, (key, lab_) in enumerate(order):
+        r = rows[key]
+        a, b = 100 * float(r["main_model"]), 100 * float(r["transformer"])
+        ax.plot([a, b], [i, i], color=tint(TRANSF, 0.55), lw=2.2, zorder=2, solid_capstyle="butt")
+        ax.scatter([a], [i], s=30, color=M96, zorder=3, edgecolor="white", lw=0.6)
+        ax.scatter([b], [i], s=30, color=TRANSF, zorder=4, edgecolor="white", lw=0.6)
+        d, lo, hi = (_pts(r[k]) for k in ("difference", "ci_low", "ci_high"))
+        bold = i == 0
+        ax.text(1.02, i, f"{fmt_signed(d)}  [{fmt_signed(lo)}, {fmt_signed(hi)}]", transform=ax.get_yaxis_transform(),
+                va="center", ha="left", fontsize=9, color=INK, fontweight="bold" if bold else None, clip_on=False)
+    ax.text(1.02, -0.85, "change (points)", transform=ax.get_yaxis_transform(), va="center", ha="left", fontsize=9,
+            color=INK2, clip_on=False)
+    ax.axhline(3.5, color=GRID, lw=0.8)
+    ax.set_yticks(ys, [o[1] for o in order])
+    for tl, (key, _) in zip(ax.get_yticklabels(), order):
+        if key.startswith("all"):
+            tl.set_fontweight("bold")
+            tl.set_color(INK)
+    ax.set_ylim(len(order) - 0.45, -2.1)
+    ax.set_xlim(0, 55)
+    ax.set_xticks([0, 10, 20, 30, 40, 50])
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Success on new test scenes")
+    handles = [Line2D([], [], marker="o", color=M96, ls="none", ms=5, label="main model"),
+               Line2D([], [], marker="o", color=TRANSF, ls="none", ms=5, label="505M transformer")]
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0, 1.0), ncol=1, frameon=False,
+              borderaxespad=0.1, handletextpad=0.3, labelspacing=0.25)
+    return fig
+
+
+def _deck_row_legend(fig, handles, left_mm, width_mm):
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(left_mm / width_mm, 1.0), ncol=len(handles),
+               frameon=False, borderaxespad=0.15, columnspacing=0.7, handletextpad=0.3, handlelength=1.0)
+
+
+def fig_deck_oracle():
+    """Simulator re-ranking (best of 16) at 70 x 46 mm: original vs best-of-16 successes per letter, counts written in a
+    right-hand column; one-row legend."""
+    fig, ax = deck_fig(70, 46, l=15, r=24, b=9.5, t=6)
+    for i, s_ in enumerate(FIVE_SHAPES):
+        n = ea("oracle_bon", "base policy", s_, "successes", "of")
+        b = ea("oracle_bon", "base policy", s_, "successes")
+        o = ea("oracle_bon", "simulator best-of-N (upper bound)", s_, "successes")
+        pb, po = 100 * b / n, 100 * o / n
+        ax.plot([pb, po], [i, i], color=tint(TEACHER, 0.4), lw=2.0, zorder=2)
+        ax.scatter([pb], [i], s=24, color=ORIG, edgecolor="white", lw=0.6, zorder=3)
+        ax.scatter([po], [i], s=22, color=TEACHER, marker="D", edgecolor="white", lw=0.6, zorder=4)
+        ax.text(1.03, i, f"{b:.0f} \u2192 {o:.0f} of {n:.0f}", transform=ax.get_yaxis_transform(), va="center",
+                ha="left", fontsize=9, color=INK, clip_on=False)
+    ax.set_yticks(range(len(FIVE_SHAPES)), [disp(s_) for s_ in FIVE_SHAPES])
+    ax.set_ylim(len(FIVE_SHAPES) - 0.5, -0.5)
+    ax.set_xlim(-3, 100)
+    ax.set_xticks([0, 50, 100])
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Success (selection scenes)")
+    _deck_row_legend(fig, [Line2D([], [], marker="o", color=ORIG, ls="none", ms=5, label="original"),
+                           Line2D([], [], marker="D", color=TEACHER, ls="none", ms=4.5,
+                                  label="best of 16 (simulator)")], 3, 70)
+    return fig
+
+
+def fig_deck_bptt():
+    """Back-propagation teacher (BPTT) at 70 x 46 mm: goal covered at the end in the real simulator per letter, range of
+    the four runs as a bar, the original policy and the sampling planner as markers; one-row legend."""
+    conds = ea_conditions("bptt_teacher")
+    orig = {s_: coverage("D040", "original", [s_]) for s_ in FIVE_SHAPES}
+    fig, ax = deck_fig(70, 46, l=15, r=4, b=9.5, t=6)
+    for i, s_ in enumerate(FIVE_SHAPES):
+        v = [100 * ea("bptt_teacher", c, s_, "final_coverage") for c in conds]
+        ax.plot([min(v), max(v)], [i, i], color=INK2, lw=3.2, solid_capstyle="round", zorder=3)
+        ax.scatter([orig[s_]], [i], s=24, color=ORIG, edgecolor="white", lw=0.6, zorder=3)
+        sp = [r for r in EARLY if r["attempt"] == "sampling_planner" and r["shape"] == s_
+              and r["metric"] == "final_coverage"]
+        if sp:
+            ax.scatter([100 * _f(sp[0]["value"])], [i], s=22, color=TEACHER, marker="D", edgecolor="white", lw=0.6,
+                       zorder=4)
+    ax.axvline(95, color=INK, lw=0.8, ls=(0, (3, 2)))
+    ax.set_yticks(range(len(FIVE_SHAPES)), [disp(s_) for s_ in FIVE_SHAPES])
+    ax.set_ylim(len(FIVE_SHAPES) - 0.5, -0.5)
+    ax.set_xlim(0, 100)
+    ax.set_xticks([0, 25, 50, 75, 100])
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Goal covered at the end")
+    _deck_row_legend(fig, [Line2D([], [], color=INK2, lw=3, label="gradients (4 runs)"),
+                           Line2D([], [], marker="o", color=ORIG, ls="none", ms=5, label="original"),
+                           Line2D([], [], marker="D", color=TEACHER, ls="none", ms=4.5, label="planner")], 3, 70)
+    return fig
+
+
+def fig_deck_copying():
+    """Copying the teacher (D044, 5 shapes, same 50 selection scenes per shape) at 70 x 44 mm: pooled successes of 250
+    for the teacher, two students that read the exact state, the camera student and the original policy."""
+    conds = ea_conditions("copying_gap")
+    pick = [(conds[0], TEACHER, "Teacher (exact state)"),
+            (conds[4], INK2, "Copy, exact state,\nre-plans every step"),
+            (conds[3], tint(INK2, 0.35), "Copy, exact state,\n8 of 16 steps"),
+            (conds[7], M96, "Camera copy"),
+            (conds[1], ORIG, "Original policy")]
+    fig, ax = deck_fig(70, 44, l=29, r=4, b=8.5, t=1.5)
+    for i, (c, colr, lbl) in enumerate(pick):
+        tot = int(sum(ea("copying_gap", c, s_, "successes") for s_ in FIVE_SHAPES))
+        v = 100 * tot / 250
+        ax.barh(i, v, 0.66, color=colr, zorder=3, edgecolor="white", lw=0.8)
+        ax.text(v + 1.2, i, f"{v:.0f}%", va="center", ha="left", fontsize=9, color=INK,
+                fontweight="bold" if i == 0 else None)
+    ax.set_yticks(range(len(pick)), [p_[2] for p_ in pick], fontsize=9)
+    ax.set_ylim(len(pick) - 0.5, -0.5)
+    ax.set_xlim(0, 90)
+    ax.set_xticks([0, 25, 50, 75])
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Success, 5 shapes")
+    return fig
+
+
+def fig_deck_blends():
+    """Weight blends (D040-D043) at 70 x 44 mm: change in T success vs the original for each of the six pre-registered
+    tests (95% intervals; pass rule: T interval above -5 points), with the Y change and the verdict in text columns."""
+    conds = ea_conditions("blend_tests")
+    fig, ax = deck_fig(70, 44, l=25, r=24, b=10, t=1.5)
+    for i, c in enumerate(conds):
+        d, lo, hi = (ea("blend_tests", c, "T", "difference_pts", f) for f in ("value", "ci_low", "ci_high"))
+        ok = ea("blend_tests", c, "all", "passed") == 1
+        colr = FIVE if ok else ORIG_LINE
+        ax.plot([lo, hi], [i, i], color=colr, lw=1.4, zorder=2)
+        ax.scatter([d], [i], s=22, color=colr if ok else "white", edgecolor=colr, lw=1.0, zorder=3)
+        y = ea("blend_tests", c, "Y", "difference_pts")
+        ax.text(1.03, i, f"{fmt_signed(y)}", transform=ax.get_yaxis_transform(), va="center", ha="left", fontsize=9,
+                color=INK, clip_on=False)
+        ax.text(1.36, i, "passed" if ok else "failed", transform=ax.get_yaxis_transform(), va="center", ha="left",
+                fontsize=9, color=INK if ok else INK2, fontweight="bold" if ok else None, clip_on=False)
+    ax.text(1.03, -1.05, "Y", transform=ax.get_yaxis_transform(), va="center", ha="left", fontsize=9, color=INK2,
+            clip_on=False)
+    ax.text(-0.02, -1.05, "blend test", transform=ax.get_yaxis_transform(), va="center", ha="right", fontsize=9,
+            color=INK2, clip_on=False)
+    ax.axvline(0, color=INK2, lw=0.8)
+    ax.axvline(-5, color=INK, lw=0.8, ls=(0, (3, 2)))
+    labels = []
+    for c in conds:
+        frac = "70%" if "70%" in c else "50%" if "50%" in c else "30%"
+        labels.append(("whole " if "whole network" in c else "encoder ") + frac)
+    ax.set_yticks(range(len(conds)), [f"{i + 1}: {l_}" for i, l_ in enumerate(labels)], fontsize=9)
+    ax.set_ylim(len(conds) - 0.5, -1.5)
+    ax.set_xlim(-10, 7)
+    ax.set_xticks([-10, -5, 0, 5])
+    ax.xaxis.set_major_formatter(SIGNED)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Change in T success (points)")
+    return fig
+
+
+def fig_deck_lastmile():
+    """Last-mile RL on the frozen main model (D058 v2) at 144 x 50 mm: share of 1080 near-goal states of held-out scenes
+    finished within 96 controls, for the frozen model, the camera-only RL variants and the diagnostic that also reads
+    the exact block position; paired change with 95% interval written at the right."""
+    rows = [r for r in _read_opt("lastmile_rl.csv") if r["version"].startswith("v2")]
+    names = {"frozen main model": "Main model alone",
+             "noise steering, camera only": "RL steering its noise (camera only)",
+             "noise steering, camera only, sampled": "same, sampled actions",
+             "residual, camera only": "RL adding small corrections (camera only)",
+             "noise steering + exact block state (diagnostic)": "RL steering + exact block position"}
+    fig, ax = deck_fig(144, 50, l=52, r=34, b=8.5, t=1.5)
+    ys = np.arange(len(rows))
+    for i, r in enumerate(rows):
+        v = 100 * float(r["finished"])
+        diag = "exact" in r["policy"]
+        c = ORIG_LINE if r["policy"] == "frozen main model" else (TEACHER if diag else M96)
+        ax.barh(i, v, 0.62, color=c, zorder=3, edgecolor="white", lw=0.8)
+        ax.text(v + 0.6, i, f"{v:.1f}%", va="center", ha="left", fontsize=9, color=INK)
+        if r["difference"]:
+            d, lo, hi = (100 * float(r[k]) for k in ("difference", "ci_low", "ci_high"))
+            ax.text(1.02, i, f"{fmt_signed(d)}  [{fmt_signed(lo)}, {fmt_signed(hi)}]",
+                    transform=ax.get_yaxis_transform(), va="center", ha="left", fontsize=9, color=INK,
+                    fontweight="bold" if diag else None, clip_on=False)
+    ax.text(1.02, -0.75, "change (points)", transform=ax.get_yaxis_transform(), va="center", ha="left", fontsize=9,
+            color=INK2, clip_on=False)
+    ax.set_yticks(ys, [names.get(r["policy"], r["policy"]) for r in rows])
+    ax.set_ylim(len(rows) - 0.5, -1.0)
+    ax.set_xlim(0, 42)
+    ax.xaxis.set_major_formatter(PCT)
+    ax.grid(True, axis="x")
+    ax.grid(False, axis="y")
+    ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Near-goal states finished (1080 states of held-out scenes, up to 96 steps)")
+    return fig
+
 # custom deck figures: (name, function, README text)
 DECK_CUSTOM = [
     ("curves_stages_1", lambda: fig_deck_stages(1),
@@ -4430,16 +4659,31 @@ DECK_CUSTOM = [
      "(1.2% -> 2.8% -> 4.7%; 192 px 5.9%), 95% intervals, labelled directly (no legend)."),
     ("final_dumbbell", fig_deck_dumbbell, "All 33 shapes along x (sorted; never-seen shapes right of the line), "
      "original vs ours 96 px (round 44), D051; T and near-T labels bold; one row of short shape names."),
+    ("arch_groups", fig_deck_arch_groups, "Architecture experiment (D059): main model (official network, 96 px, after "
+     "50 correction rounds) vs the 505M transformer (DINOv2 encoder + flow-matching action head) on the same new "
+     "scenes, 200 per shape; per group with paired change and 95% interval (architecture_test_groups.csv)."),
+    ("blends_compact", fig_deck_blends, "Weight blends (D040-D043): change in T success vs the original for the six "
+     "pre-registered tests with 95% intervals and the -5 point pass line; Y change and verdict as text columns "
+     "(early_attempts.csv)."),
+    ("oracle_compact", fig_deck_oracle, "Simulator re-ranking: original vs best of 16 plans picked in the true "
+     "simulator, per letter (successes written at the right; early_attempts.csv)."),
+    ("bptt_compact", fig_deck_bptt, "Back-propagation (BPTT) teacher: goal covered at the end in the real simulator, "
+     "range of four runs vs the original policy and the sampling planner (early_attempts.csv; original from the D040 "
+     "pool)."),
+    ("copying_pooled", fig_deck_copying, "Copying the teacher (D044, 5 shapes, same 50 selection scenes per shape): "
+     "pooled success of the teacher, two copies reading the exact state, the camera copy and the original policy "
+     "(early_attempts.csv)."),
 ]
 # existing figures drawn at deck size: (name, layout mode, width mm, height mm)
 DECK_FIGURES = [
     ("rl_t_collapse", "deck_half", 78, 50), ("curves_26letters", "deck", 144, 52),
     ("analysis_label_ab", "deck_half", 70, 56), ("analysis_steps_executed", "deck_half", 70, 56),
-    ("oracle_bon", "deck_half", 70, 60), ("final_blends_all", "deck", 144, 55), ("wm_accuracy", "deck", 144, 58),
+    ("final_blends_all", "deck", 144, 52), ("wm_accuracy", "deck", 144, 58),
     ("analysis_round50_vs_44", "deck_half", 70, 58), ("analysis_192_vs_96", "deck_half", 70, 58),
     ("analysis_t_tradeoff", "deck", 144, 62), ("final_10shapes_bars", "deck", 144, 62),
     ("heldout_unseen_capitals", "deck", 144, 62), ("method_teacher_success_26letters", "deck", 144, 54),
     ("teacher_state_noise", "deck", 144, 62), ("data_growth", "deck", 144, 43), ("project_timeline", "deck", 144, 62),
+
 ]
 
 

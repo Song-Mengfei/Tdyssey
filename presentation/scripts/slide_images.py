@@ -91,6 +91,11 @@ def main():
         pair(f"compare_{s}", f"compare_{s}_orig", f"compare_{s}_ours")
         written += [f"compare_{s}_orig.png", f"compare_{s}_ours.png"]
     pair("compare_P_mid", "compare_P_mid_orig", "compare_P_mid_ours")
+    # architecture experiment: main model (left) vs the 505M transformer (right), same scene, last frames
+    for s_ in ("T", "W", "Z"):
+        if (POST / f"frontier_{s_}.png").exists():
+            pair(f"frontier_{s_}", f"frontier_{s_}_main", f"frontier_{s_}_transformer")
+            written += [f"frontier_{s_}_main.png", f"frontier_{s_}_transformer.png"]
     pair("teacher_vs_student_K", "tvs_K_teacher", "tvs_K_policy")
     written += ["compare_P_mid_orig.png", "compare_P_mid_ours.png", "tvs_K_teacher.png", "tvs_K_policy.png"]
 

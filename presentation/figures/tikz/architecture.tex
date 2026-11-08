@@ -1,0 +1,69 @@
+% Architecture experiment (deck slide "Does the network matter?"): the official Diffusion Policy network of the main
+% model against a 505M transformer policy, same input, same training data, same output.
+% Facts: docs/DECISIONS.md D059 (scripts/learning/flow_policy.py): DINOv2 ViT-B/14 encoder (86.6M, pretrained on
+% ordinary photos, fine-tuned), each 96 px frame cropped to 84 px and enlarged to 224 px, 16x16 patch tokens pooled to
+% 8x8 per frame plus one pusher token; transformer action head 418M (24 blocks, the 16 action tokens attend to each other
+% and to the image and pusher tokens, denoising time enters every block), flow matching, 10 sampling steps; 504.6M in
+% all; 160k training steps from scratch, no correction rounds of its own. Official network: ResNet-18 encoder (11M) and
+% 1D U-Net (251M), diffusion with 100 denoising steps.
+% Overlay steps (\arstep{n}{...} = \onslide<n->{...} in beamer): 1 input and output, 2 the official network, 3 the
+% transformer. Size 144 x 46 mm; fixed font sizes in the current family.
+\makeatletter%
+\@ifclassloaded{beamer}{\providecommand\arstep[2]{\onslide<#1->{#2}}}{\providecommand\arstep[2]{#2}}%
+\makeatother%
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdpanel}{HTML}{F3F5F8}%
+\providecolor{tdtransf}{HTML}{9E2A8A}%
+\providecolor{tdbluebg}{HTML}{EAF2FC}%
+\providecolor{tdtransfbg}{HTML}{F7EAF5}%
+\tikzset{%
+  ar box/.style={rounded corners=1.6mm, line width=0.9pt, fill=white},%
+  ar arrow/.style={-{Stealth[length=2.2mm,width=1.9mm]}, line width=1pt, draw=#1},%
+  ar title/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink},%
+  ar text/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdink,%
+    align=flush left},%
+  ar tag/.style={anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=#1},%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,46);
+  % ---------------------------------------------------------------- 1: same input, same data, same output
+  \arstep{1}{
+    \draw[ar box, draw=tdink!70] (0,12) rectangle (28,34);
+    \node[ar title] at (2,32) {Same input};
+    \node[ar text] at (2,27.4) {2 camera frames\\96$\times$96 px\\+ pusher position};
+    \node[ar text, text=tdgrey] at (0,9.5) {same training data};
+    \draw[ar box, draw=tdink!70] (116,12) rectangle (144,34);
+    \node[ar title] at (118,32) {Same output};
+    \node[ar text] at (118,27.4) {16 planned\\pusher targets;\\executes 8};
+  }
+  % ---------------------------------------------------------------- 2: the official network (main model)
+  \arstep{2}{
+    \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdblue!60, fill=tdbluebg] (33,25) rectangle (111,46);
+    \node[ar tag=tdblue] at (35.5,43.4) {Main model: official Diffusion Policy network};
+    \draw[ar box, draw=tdblue] (36,27.5) rectangle (66,40.5);
+    \node[ar title] at (38,38.6) {ResNet-18};
+    \node[ar text] at (38,34.2) {image encoder\\11M};
+    \draw[ar box, draw=tdblue] (75,27.5) rectangle (108,40.5);
+    \node[ar title] at (77,38.6) {1D U-Net};
+    \node[ar text] at (77,34.2) {251M; diffusion,\\100 denoising steps};
+    \draw[ar arrow=tdgrey] (66,34) -- (75,34);
+    \draw[ar arrow=tdgrey] (28,28) -- (33,33);
+    \draw[ar arrow=tdgrey] (111,33) -- (116,28);
+  }
+  % ---------------------------------------------------------------- 3: the 505M transformer
+  \arstep{3}{
+    \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdtransf!60, fill=tdtransfbg] (33,0) rectangle (111,21);
+    \node[ar tag=tdtransf] at (35.5,2.6) {Experiment: 505M transformer};
+    \draw[ar box, draw=tdtransf] (36,5) rectangle (66,18);
+    \node[ar title] at (38,16.1) {DINOv2 ViT-B};
+    \node[ar text] at (38,11.7) {86.6M; pretrained\\on photos};
+    \draw[ar box, draw=tdtransf] (75,5) rectangle (108,18);
+    \node[ar title] at (77,16.1) {Transformer head};
+    \node[ar text] at (77,11.7) {418M; flow matching;\\24 blocks, 10 steps};
+    \draw[ar arrow=tdgrey] (66,11.5) -- (75,11.5);
+    \draw[ar arrow=tdgrey] (28,18) -- (33,13);
+    \draw[ar arrow=tdgrey] (111,13) -- (116,18);
+  }
+\end{tikzpicture}%

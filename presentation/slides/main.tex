@@ -5,7 +5,8 @@
 % xelatex and Tectonic. Graphs come from figures/deck/ (scripts/make_figures.py --variant deck): drawn at exactly the
 % size they are placed, in Computer Modern Sans, so they are included at natural size and their text matches the slide
 % text. Scenes come from images/slide/ (scripts/slide_images.py): video stills cropped to the scene, labels set here.
-% TikZ diagrams (figures/tikz/): overview.tex (Figure 1, shared with the paper), worldmodel.tex, planner.tex. Figure 1
+% TikZ diagrams (figures/tikz/): overview.tex (Figure 1, shared with the paper), worldmodel.tex, planner.tex,
+% architecture.tex (the 505M transformer experiment). Figure 1
 % uses images/slide/ov_icon_data.png, images/slide/ov_icon_wm.png, images/slide/ov_icon_teacher.png,
 % images/slide/ov_icon_camera.png and images/slide/shape_T.png, shape_A.png, shape_K.png, shape_R.png, shape_S.png,
 % shape_W.png.
@@ -17,10 +18,17 @@
 % Highlighted numbers: one hero size (final-test slide only) and one stat size; grey = original policy, blue = ours,
 % dark gold = the teacher, ink = anything else.
 %
-% Timing (about 10:30, 24 slides; builds add little time): title 0:15 | problem and question 0:45 |
-%   approach 3:20 | results and demo 2:55 | image world model (teammates) 2:30 | discussion and close 0:45.
-% Overlay builds: problem (original, then ours), Figure 1 (6 steps), world model (4), teacher planning (6), intended
-%   plans (number), training curve (5 -> 10 -> 27 shapes), final-test bars (original, then ours), last millimetres.
+% Timing (about 12:30, 29 slides; builds add little time): title 0:15 | problem and question 0:45 |
+%   approach 4:30 (incl. what did not work) | results and demo 2:45 | architecture experiment 1:15 |
+%   image world model (teammates) 2:30 | discussion and close 0:30.
+% Overlay builds: problem (original, then ours), Figure 1 (6 steps), path to a teacher (3), world model (4), teacher
+%   planning (6), intended plans (number), training curve (5 -> 10 -> 27 shapes), final-test bars (original, then
+%   ours), last millimetres, architecture (3).
+% Architecture experiment (docs D059): main model = official network after 50 correction rounds (stays the final
+%   model); the 505M transformer was trained once on the same data. Numbers: data/architecture_test_groups.csv and
+%   architecture_test_by_shape.csv; demo stills images/slide/frontier_*.png from videos/frontier/ (T, W, Z: the
+%   transformer solves, the main model does not, per videos/INDEX.md). The result of the transformer's own correction
+%   rounds (D060) is a TODO on its result slide.
 % TODO: speakers per section.
 \documentclass[aspectratio=169,11pt,t]{beamer}
 \usepackage[T1]{fontenc}
@@ -60,6 +68,7 @@
 \definecolor{tdgoldbg}{HTML}{FFF6E0}
 \definecolor{tdbluebg}{HTML}{EAF2FC}
 \definecolor{tdblueline}{HTML}{9CC3F0}
+\definecolor{tdtransf}{HTML}{9E2A8A}
 % colours drawn in the videos (scripts/make_videos.py): goal, block, pusher, next targets, rest of the plan
 \definecolor{vgoal}{RGB}{144,238,144}
 \definecolor{vblock}{RGB}{119,136,153}
@@ -247,8 +256,52 @@
   \vspace{1.5mm}
   \takeaway{Lesson: we needed a \hl{teacher} that already knows how to push every letter.}
   \vspace{0.5mm}
-  \cpt{RL fine-tuning in the simulator, two variants. Also tried: re-ranking with the simulator, weight blends,
-       back-propagating through a world model (backup).}
+  \cpt{RL fine-tuning of the diffusion policy in the simulator, two RL variants; T success at each run's last check.}
+\end{frame}
+
+\begin{frame}{The path to a teacher}
+  \vspace{1.5mm}
+  \centering
+  \begin{tikzpicture}[x=1mm, y=1mm]
+    \foreach \i/\x/\y/\c/\st/\h/\b/\v in {%
+        1/0/30/tdorig/1/{RL fine-tuning}/{reward success in the simulator}/{\nok{T 55\% \too 5\%}},
+        2/48/30/tdorig/1/{Re-ranking}/{pick the best of 16 plans with the simulator, then imitate}/{\nok{within noise}},
+        3/96/30/tdorig/1/{Back-propagation}/{train a teacher through the world model by gradients}/{\nok{goal covered 4--12\%}},
+        4/0/0/tdgold/2/{Sampling planner}/{search many push plans inside the world model}/{\ok{the teacher: 88\%}},
+        5/48/0/tdorig/3/{Copying the teacher}/{plain copies and weight blends}/{\color{tdgolddark}\footnotesize partly: most skill lost},
+        6/96/0/tdblue/3/{Correction rounds}/{the policy drives, the teacher labels}/{\ok{our method}}}{
+      \uncover<\st->{%
+        \draw[rounded corners=1.6mm, line width=0.9pt, draw=\c, fill=white] (\x,\y) rectangle ++(44,25);
+        \node[st badge=\c] at (\x+3.6,\y+21) {\i};
+        \node[anchor=west, inner sep=0pt, font=\small\bfseries, text=tdink] at (\x+7,\y+21) {\h};
+        \node[anchor=north west, inner sep=0pt, font=\footnotesize, text=tdgrey, text width=40mm, align=flush left]
+          at (\x+2.4,\y+16.4) {\b};
+        \node[anchor=south west, inner sep=0pt] at (\x+2.4,\y+2.6) {\v};}
+    }
+    \uncover<1->{\foreach \x in {44,92} \draw[ar] (\x+0.3,42.5) -- (\x+3.7,42.5);}
+    \uncover<2->{\draw[ar, rounded corners=2mm] (118,30) -- (118,27.5) -- (22,27.5) -- (22,25.3);}
+    \uncover<3->{\foreach \x in {44,92} \draw[ar] (\x+0.3,12.5) -- (\x+3.7,12.5);}
+  \end{tikzpicture}\par
+  \vspace{3mm}
+  \raggedright
+  \uncover<3->{\takeaway{Each dead end taught us something; the next two slides show the evidence.}}
+\end{frame}
+
+\begin{frame}{Two dead ends before the teacher}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{70mm}
+    {\small\textbf{Re-ranking with the true simulator}\par}\vspace{0.5mm}
+    \deckfig{oracle_compact}\par
+    \vspace{1mm}
+    {\small Best of 16 helps a little (Y: 3 \too 8 of 20); imitating the picks stays within noise: the original
+     policy's plans are too alike.\par}
+    \column{70mm}
+    {\small\textbf{Back-propagating through the world model}\par}\vspace{0.5mm}
+    \deckfig{bptt_compact}\par
+    \vspace{1mm}
+    {\small It never pushed the block home (goal covered 4--12\%): gradients through contact get stuck, so we
+     switched to \hl{sampling} plans.\par}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{How the world model works}
@@ -272,6 +325,23 @@
     \parbox[b]{100mm}{\small\color{tdgrey}of the selection scenes solved over the 27 shapes (50 fixed scenes per shape
       that we use to pick models). It needs the exact state, so it only \textbf{teaches}; it is never deployed.}%
     \hfill\href{run:\presroot videos/teacher/teacher_9shapes.mp4}{\small\textbf{\cours watch it}}\par}
+\end{frame}
+
+\begin{frame}{Copying the teacher was not enough}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{70mm}
+    {\small\textbf{Plain copying}\par}\vspace{0.5mm}
+    \deckfig{copying_pooled}\par
+    \vspace{1mm}
+    {\small Even a copy that reads the exact state keeps only 30--41\% of the teacher's successes: the skill is lost
+     in copying, not in seeing.\par}
+    \column{70mm}
+    {\small\textbf{Blending weights with the original T policy}\par}\vspace{0.5mm}
+    \deckfig{blends_compact}\par
+    \vspace{1mm}
+    {\small 3 of 6 tests passed the check that T does not drop (dashed line), but gains stayed small (best: Y 8.6\%
+     \too 14.8\%).\par}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Teaching the camera policy: correction rounds}
@@ -428,20 +498,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Demo: one scene through the whole project}
-  \vfill
-  \centering
-  \prog{Original}{(T only)}{original}{\nok{}}\hfill\prog{5 shapes}{7 rounds}{five_r7}{\nok{}}\hfill
-  \prog{10 shapes}{\phantom{0}}{ten_96}{\ok{}}\hfill\prog{26 letters}{start}{l26_r0}{\nok{}}\hfill
-  \prog{26 letters}{13 rounds}{l26_r13}{\ok{}}\hfill\prog{26 letters}{50 rounds}{l26_r50}{\ok{}}\par
-  \vspace{4mm}
-  \takeaway{The same scene (E) for the original policy, then our 5-shape and 10-shape policies and the 26-letter policy
-    after 0, 13 and 50 correction rounds.}
-  \vspace{1mm}
-  \cpt{Last frames; \ok{solved}\quad\nok{not solved}. Click to play the whole progression.}
-  \vfill
-\end{frame}
-
 \begin{frame}{Never-seen shapes}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{66mm}
@@ -473,6 +529,60 @@
   \vspace{1.5mm}
   \takeaway{Most failures are near misses: \hl{91\%} of the goal covered at the best moment on average; success needs
     \hl{95\%}.}
+\end{frame}
+
+\begin{frame}{Does the network matter? A 505M transformer}
+  \centering
+  \tikzfile{architecture}\par
+  \vspace{1.5mm}
+  \raggedright
+  \uncover<3->{\takeaway{Only the network changes; our main model stays the official network.}
+  \vspace{0.2mm}
+  \cpt{Trained once from scratch, 160k steps, on the main model's final data, no correction rounds of its own. Frames
+       are cropped to 84 px and enlarged to 224 px (no new detail).}}
+\end{frame}
+
+\begin{frame}{Same data, bigger network: 32.8\% \texorpdfstring{\too}{->} 45.2\%}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{100mm}
+    \deckfig{arch_groups}
+    \column{38mm}
+    \vspace{3mm}
+    \stat[\color{tdtransf}]{+12.4 points}{on the 27 trained shapes (32.8\% \too 45.2\%)}
+    \vspace{3mm}
+    \stat[\color{tdtransf}]{26 of 27}{trained shapes improve; goal covered at the end 0.82 \too 0.89}
+  \end{columns}
+  \vspace{0.8mm}
+  \cpt{Same new test scenes for both: 200 per shape, 6{,}600 paired episodes, 95\% intervals. The original T-only
+       policy was not run on them (no comparison with 3.7\% here).}
+  \vspace{0.3mm}
+  \cpt{Running now: correction rounds driven by the transformer itself. Result: \textbf{\color{tdbad}[TODO: pending]}.}
+\end{frame}
+
+\begin{frame}{Demo: main model vs the 505M transformer}
+  \begin{columns}[c,totalwidth=\textwidth]
+    \column{104mm}
+    \begin{tikzpicture}[x=1mm, y=1mm]
+      \foreach \c/\n in {0/T, 1/W, 2/Z}
+        \node[anchor=south, inner sep=0pt, font=\small\bfseries] at (26+\c*27.5+12.75, 1) {\n};
+      \node[anchor=east, align=right, inner sep=0pt] at (23.5,-12.75)
+        {\small\textbf{Main model}\\[0.2mm]\small\textbf{(official)}\\[0.6mm]\nok{not solved}};
+      \node[anchor=east, align=right, inner sep=0pt] at (23.5,-40.75)
+        {\small\textbf{505M}\\[0.2mm]\small\textbf{transformer}\\[0.6mm]\ok{solved}};
+      \gridscene{26}{0}{25.5}{slide/frontier_T_main.png}{frontier/T.mp4}
+      \gridscene{53.5}{0}{25.5}{slide/frontier_W_main.png}{frontier/W.mp4}
+      \gridscene{81}{0}{25.5}{slide/frontier_Z_main.png}{frontier/Z.mp4}
+      \gridscene{26}{-28}{25.5}{slide/frontier_T_transformer.png}{frontier/T.mp4}
+      \gridscene{53.5}{-28}{25.5}{slide/frontier_W_transformer.png}{frontier/W.mp4}
+      \gridscene{81}{-28}{25.5}{slide/frontier_Z_transformer.png}{frontier/Z.mp4}
+    \end{tikzpicture}
+    \column{36mm}
+    \raggedright
+    {\small Same scene for both. The main model stops at 92--94\% of the goal covered; the transformer
+     finishes.\par}
+    \vspace{3mm}
+    \cpt{Picked from the selection scenes where the transformer succeeds and the main model does not.}
+  \end{columns}
 \end{frame}
 
 % ==================================================================================== image world model (teammates)
@@ -547,7 +657,7 @@
        per setting; simulation only.};
   \end{tikzpicture}\par
   \vspace{1.5mm}
-  \cpt{Ongoing: RL on near-goal states for the last millimetres; a larger transformer policy (500M parameters).}
+  \cpt{Ongoing: correction rounds for the 505M transformer policy.}
   \vspace{1mm}
 \end{frame}
 
@@ -597,23 +707,13 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{What else did not work: re-ranking in the simulator}
-  \begin{columns}[c,totalwidth=\textwidth]
-    \column{70mm}
-    \deckfig{oracle_bon}
-    \column{68mm}
-    \takeaway{Re-ranking the original policy's own plans with the true simulator helps a little; imitating those
-      choices stays within evaluation noise.}
-    \vspace{2mm}
-    \cpt{The original policy's proposals are too similar to each other to contain new behaviour.}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{What else did not work: weight blends}
+\begin{frame}{Weight blends in detail}
+  \vspace{-1mm}
   \deckfig{final_blends_all}\par
   \vspace{1mm}
-  \cpt{Every pre-registered blend test; two candidates failed on T, the 50\% encoder blend passed twice. It keeps the
-       original action network, so it cannot carry most of the teacher's skill.}
+  \cpt{All six pre-registered blend tests, change vs the original on T, Y and D with 95\% intervals. Three failed on T;
+       the 30\% and 50\% encoder blends passed (the 50\% one twice). A blend keeps the original action network, so it
+       cannot carry most of the teacher's skill.}
 \end{frame}
 
 \begin{frame}{The world model}
@@ -669,6 +769,20 @@
 
 \begin{frame}{How the teacher was fixed (state noise)}
   \deckfig{teacher_state_noise}
+\end{frame}
+
+\begin{frame}{One scene through the whole project}
+  \vfill
+  \centering
+  \prog{Original}{(T only)}{original}{\nok{}}\hfill\prog{5 shapes}{7 rounds}{five_r7}{\nok{}}\hfill
+  \prog{10 shapes}{\phantom{0}}{ten_96}{\ok{}}\hfill\prog{26 letters}{start}{l26_r0}{\nok{}}\hfill
+  \prog{26 letters}{13 rounds}{l26_r13}{\ok{}}\hfill\prog{26 letters}{50 rounds}{l26_r50}{\ok{}}\par
+  \vspace{4mm}
+  \takeaway{The same scene (E) for the original policy, then our 5-shape and 10-shape policies and the 26-letter policy
+    after 0, 13 and 50 correction rounds.}
+  \vspace{1mm}
+  \cpt{Last frames; \ok{solved}\quad\nok{not solved}. Click to play the whole progression.}
+  \vfill
 \end{frame}
 
 \begin{frame}{Every model we trained (same scene, 9 shapes)}
