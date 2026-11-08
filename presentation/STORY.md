@@ -39,25 +39,35 @@ demo or recorded video); discussion and conclusions; team number and all members
 | 1 | Title | Team 28: Liang Wenzhong, Song Mengfei, Su Shenyi | 0:15 | 33-shape gallery |
 | 2 | Problem and motivation | A pushing policy that only knows the T | 0:30 | original vs ours on P (build), 3.7% |
 | 3 | Problem and motivation | The question | 0:15 | one question, the 27 trained shapes |
-| 4 | Approach | Approach at a glance | 0:50 | Figure 1 (`figures/tikz/overview.tex`), builds in 6 steps |
-| 5 | Approach | First attempt: RL on the simulator | 0:30 | RL chart, 55% -> 5%, 16-36% |
-| 6 | Approach | The teacher plans inside a learned world model | 0:35 | three teacher stills, 1,024 plans, 48 steps, 88% |
-| 7 | Approach | Teaching the camera policy: correction rounds | 0:30 | TikZ loop + correction-round examples |
-| 8 | Approach | Copy what the teacher intends, not what it did | 0:25 | intended vs executed labels, 77 -> 129 (build) |
-| 9 | Results | Training: 5 -> 10 -> 27 shapes | 0:30 | training curves (build per stage) |
-| 10 | Results | 26 letters: budget per shape | 0:20 | budget curve |
-| 11 | Results | Final test: 300 fresh scenes per shape | 0:25 | big numbers 3.7% -> 33.4% |
-| 12 | Results | Final test by shape group | 0:20 | bars (build: original, then ours) |
-| 13 | Results | Per shape: the new letters improve most | 0:15 | dumbbell; T and near-T drop 5-8 points |
-| 14 | Demo | Same scene, original vs ours | 0:30 | A, M, S grid; play `videos/talk/demo_reel.mp4` (40 s) |
-| 15 | Demo | The teacher and the policy it taught | 0:20 | K: teacher vs policy, 88% vs 35% |
-| 16 | Demo | One scene through the whole project | 0:15 | E across six models |
-| 17 | Results | Never-seen shapes | 0:20 | held-out chart, digit 7 |
-| 18 | Results | The last millimetres | 0:20 | near miss, then close-ups (build) |
-| 19-20 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
-| 21 | Discussion and conclusions | What we achieved | 0:20 | three stat tiles |
-| 22 | Discussion and conclusions | Takeaways and limitations | 0:30 | three takeaways, limitations panel |
-| 23 | Close | Thank you | 0:10 | 33-shape grid, code and model links |
+| 4 | Approach | Approach at a glance | 0:45 | Figure 1 (`figures/tikz/overview.tex`), builds in 6 steps |
+| 5 | Approach | First attempt: RL on the simulator | 0:25 | RL chart, 55% -> 5%, 16-36% |
+| 6 | Approach | How the world model works | 0:30 | `figures/tikz/worldmodel.tex` (4 steps), 0.2-0.3 px vs 2.3 px |
+| 7 | Approach | How the teacher plans | 0:35 | `figures/tikz/planner.tex` (6 steps), 88% |
+| 8 | Approach | Teaching the camera policy: correction rounds | 0:25 | TikZ loop + correction-round examples |
+| 9 | Approach | Copy what the teacher intends, not what it did | 0:20 | intended vs executed labels, 77 -> 129 (build) |
+| 10 | Results | Training: 5 -> 10 -> 27 shapes | 0:25 | training curves (build per stage) |
+| 11 | Results | 26 letters: training per shape | 0:15 | budget curve |
+| 12 | Results | Final test: 300 new scenes per shape | 0:25 | 3.7% -> 33.4% |
+| 13 | Results | Final test by shape group | 0:15 | bars (build: original, then ours) |
+| 14 | Results | Per shape: the new letters improve most | 0:15 | dumbbell; T and narrow T drop 5-8 points |
+| 15 | Demo | Same scene, original vs ours | 0:30 | A, M, S grid; play the 40 s demo video |
+| 16 | Demo | The teacher and the policy it taught | 0:15 | K: teacher vs policy, 88% vs 35% |
+| 17 | Demo | One scene through the whole project | 0:15 | E across six models |
+| 18 | Results | Never-seen shapes | 0:15 | held-out chart, digit 7 |
+| 19 | Results | The last millimetres | 0:20 | near miss, then close-ups (build) |
+| 20-21 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
+| 22 | Discussion and conclusions | What we achieved | 0:15 | three stat tiles |
+| 23 | Discussion and conclusions | Takeaways and limitations | 0:25 | three takeaways, limitations panel |
+| 24 | Close | Thank you | 0:10 | 33-shape grid, code and model links |
+
+Slide wording avoids internal names: "our policy" (the headline test used the model after 44 correction rounds; the
+videos show it after 6 more), "narrow T" for near-T, "new test scenes" for fresh pools, "selection scenes" for the 50
+validation scenes per shape used to pick models.
+
+Backup (18 slides): test protocol and headline table, per-shape table, what mattered, simulator re-ranking, weight
+blends, the world model's accuracy, imagined vs simulator videos, round 50 vs 44 and 192 vs 96 px, T and narrow T, ten
+shapes, ten-shape policies on unseen capitals, teacher vs policy per letter, how the teacher was fixed, every model we
+trained, how to read the videos, full disclosure, data and compute, timeline.
 
 ## Paper outline (one week after the talk)
 

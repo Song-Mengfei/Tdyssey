@@ -194,7 +194,7 @@ footnote with the test protocol and data source.
 
 ## Deck versions (`figures/deck/`)
 
-Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; included at scale 1 / natural width), so chart text matches the slide's 11 pt body text: 10 pt labels, 9 pt ticks, nothing above 10.5 pt; no footnote or title (the slide says the protocol). Regenerate only these with --variant deck. curves_stages_1-3 and final_bars_1-2 are builds: the same axes with progressively more data, swapped with \only in the deck. The others follow the slide (full-width) or half-slide layout at the canvas given per file.
+Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; included at scale 1 / natural width), so chart text matches the slide's 11 pt body text: 10 pt labels, 9 pt ticks, nothing above 10.5 pt, in Computer Modern Sans (matplotlib's cmss10, the slides' Latin Modern Sans; minus, arrows and similar symbols via mathtext; bold drawn as a thin outline). Labels use plain words for the talk audience (no round numbers, decision IDs or method names; DECK_WORDS in make_figures.py); no footnote or title. Regenerate only these with --variant deck. curves_stages_1-3 and final_bars_1-2 are builds: the same axes with progressively more data, swapped with \only in the deck. The others follow the slide (full-width) or half-slide layout at the canvas given per file.
 
 | File | Shows |
 | --- | --- |
@@ -212,7 +212,7 @@ Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; 
 | `deck/heldout_unseen_capitals` | 10-shape students (96 px round 13, 192 px round 6) on the 17 capitals they never trained on, per letter and pooled (0.2 / 6.6 / 10.6%). Canvas 144 x 62 mm. |
 | `deck/method_teacher_success_26letters` | WIDE per-letter version: teacher vs camera student (96 px, round 44) for all 27 trained shapes on the same 50 validation scenes; pooled rates in the legend (88% vs 35% overall); no hatching (world-model version per shape: default version and teacher_validation.csv). Canvas 144 x 54 mm. |
 | `deck/teacher_state_noise` | Teacher reading the state with noise: exact vs 1 px vs 2 px on T, near-T, L (50 scenes; gold shades = noise level) and the estimator accuracy sweep on Y, D, L (20 scenes; letters by grey shade, marker and direct label). Canvas 144 x 62 mm. |
-| `deck/data_growth` | 10 shapes and 26 letters; bands labelled directly (corrections, teacher demos, human T: 24k) instead of a legend. Canvas 144 x 42 mm. |
+| `deck/data_growth` | 10 shapes and 26 letters; bands labelled directly (corrections, teacher demos, human T: 24k) instead of a legend. Canvas 144 x 43 mm. |
 | `deck/project_timeline` | Project timeline Oct 24 -> Nov 7: each approach as a bar over its days, coloured by outcome, with the result. Canvas 144 x 62 mm. |
 | `deck/curves_stages_1` | Build step 1 of the training story (validation success per correction round): only the 5-shape stage drawn; same axes, bands and stage names as steps 2 and 3. Canvas 144 x 52 mm. |
 | `deck/curves_stages_2` | Build step 2: 5- and 10-shape stages (executed vs plan labels, 96 px and 192 px lines). Canvas 144 x 52 mm. |

@@ -385,6 +385,7 @@ def save_variant(fig, name, shows=""):
             t.set_fontsize(VARIANT_CEIL[mode])
     if deck():
         _deck_marks(fig)
+        _deck_text(fig)
     out = FIG / VARIANT_DIR[mode]
     out.mkdir(parents=True, exist_ok=True)
     import warnings
@@ -426,6 +427,93 @@ def _deck_marks(fig):
                 c.set_sizes(np.asarray(c.get_sizes()) * 0.35)
                 if np.size(c.get_linewidths()) and np.max(c.get_linewidths()) > 1:
                     c.set_linewidths(0.7)
+
+
+# Deck versions use Computer Modern Sans (cmss10, shipped with matplotlib), the slides' Latin Modern Sans. The font uses
+# the TeX text encoding, so a few characters are drawn with mathtext (Computer Modern symbols) instead; it has no bold
+# face, so bold text gets a thin outline of its own colour. Internal names are replaced by plain words (the audience
+# does not know our round numbers, decision IDs or method names).
+DECK_WORDS = [
+    ("near-T", "narrow T"), ("Validation success,\n1000 episodes", "Success,\n1000 episodes"),
+    ("Validation success (27 shapes)", "Success (27 shapes)"), ("Validation success", "Success (selection scenes)"),
+    ("Planner success (validation)", "Planner success (selection scenes)"), ("(validation)", "(selection scenes)"),
+    ("Fresh-scene success", "Success on new test scenes"), ("our student (colour = policy)", "our policy (colour = stage)"),
+    ("27 shapes (round 44)", "27 shapes"), ("5 shapes, round 4", "5 shapes, 4 rounds"),
+    ("5 shapes, round 7", "5 shapes, 7 rounds"), ("Camera student (round 44)", "Our camera policy"),
+    ("Ours, 96 px (round 13)", "Ours, 96 px camera"), ("Ours, 192 px (round 6)", "Ours, 192 px camera"),
+    ("Round 50 \u2212 round 44 (points)", "Change after 6 more rounds (points)"), ("round 44 \u2192 50", "after 44 \u2192 50 rounds"),
+    ("10 shapes: round 6 vs round 13", "10 shapes"), ("27 shapes: round 2 vs round 44", "27 shapes"),
+    ("D040 whole 70%", "test 1: whole net 70%"), ("D040 enc. 70%", "test 2: encoder 70%"),
+    ("D041 enc. 70%", "test 3: encoder 70%"), ("D042 enc. 30%", "test 4: encoder 30%"),
+    ("D042 enc. 50%", "test 5: encoder 50%"), ("D043 enc. 50%", "test 6: encoder 50%"),
+    ("AdvantageFlow", "RL variant A"), ("NFT", "RL variant B"), ("dense, lr ", "learning rate "),
+    ("LoRA, lr ", "low-rank, rate "), ("before: 55%", "before RL: 55%"), ("updates", "RL updates"),
+    ("All teacher demos", "All teacher data (vs half)"),
+    ("Plan labels", "Intended-plan labels"), ("990M network", "990M-parameter network"),
+    ("best of 16, true simulator", "best of 16, re-ranked in the simulator"), ("generic", "plain network"),
+    ("teacher demos", "teacher runs"), ("Best-of-N", "Simulator re-ranking"), ("6 unseen", "6 never seen"),
+    ("Forward RL", "RL fine-tuning"), ("px and °", "px and degrees"),
+    ("round 50: fresh test", "after 6 more rounds:"),
+]
+DECK_GLYPHS = [("\u2212", "$-$"), ("\u2192", "$\\rightarrow$"), ("\u00d7", "$\\times$"), ("\u2265", "$\\geq$"),
+               ("\u2264", "$\\leq$"), ("\u2248", "$\\approx$"), ("\u00b0", "$^\\circ$"), ("\u00b1", "$\\pm$"),
+               ("\u00b7", "$\\cdot$"), ("\u2013", "-"), ("\u2014", "-"), ("\u2026", "..."), ("<", "$<$"), (">", "$>$"),
+               ('"', "''"), ("~", "$\\sim$")]
+
+
+def _deck_str(text):
+    """Plain words and Computer Modern-safe glyphs (outside existing $...$ mathtext only)."""
+    if not text:
+        return text
+    lead = text[:len(text) - len(text.lstrip("\n"))]
+    if text.strip() == "nT":
+        return lead + "narrow\nT"
+    for old, new in DECK_WORDS:
+        text = text.replace(old, new)
+    parts = text.split("$")
+    for i in range(0, len(parts), 2):          # even parts are outside mathtext
+        for old, new in DECK_GLYPHS:
+            parts[i] = parts[i].replace(old, new)
+    return "$".join(parts)
+
+
+class _DeckFormatter(matplotlib.ticker.Formatter):
+    """Wraps a tick formatter and passes its labels through _deck_str."""
+    def __init__(self, inner):
+        self.inner = inner
+
+    def set_axis(self, axis):
+        self.inner.set_axis(axis)
+
+    def set_locs(self, locs):
+        self.inner.set_locs(locs)
+
+    def __call__(self, x, pos=None):
+        return _deck_str(self.inner(x, pos))
+
+    def format_ticks(self, values):
+        return [_deck_str(t) for t in self.inner.format_ticks(values)]
+
+    def get_offset(self):
+        return _deck_str(self.inner.get_offset())
+
+
+def _deck_text(fig):
+    from matplotlib import patheffects
+    from matplotlib.ticker import FixedFormatter
+    for ax in fig.axes:
+        for axis in (ax.xaxis, ax.yaxis):
+            f = axis.get_major_formatter()
+            if isinstance(f, FixedFormatter):
+                f.seq = [_deck_str(t) for t in f.seq]
+            elif not isinstance(f, _DeckFormatter):
+                axis.set_major_formatter(_DeckFormatter(f))
+    for t in fig.findobj(Text):
+        if t.get_text():
+            t.set_text(_deck_str(t.get_text()))
+        w = t.get_fontweight()
+        if w in ("bold", "heavy", "extra bold", "black", "semibold", "demibold") or (isinstance(w, (int, float)) and w >= 600):
+            t.set_path_effects([patheffects.withStroke(linewidth=0.55, foreground=t.get_color())])
 
 
 def save(fig, name, shows, data, use, title=None, svg=False):
@@ -567,7 +655,7 @@ def legend_top(ax, handles=None, ncol=4, y=1.02, **kw):
 
 def stagger(labels):
     """Alternate tick labels between two rows (slide versions with many narrow categories)."""
-    return [("\n" if i % 2 else "") + str(t) for i, t in enumerate(labels)] if slide() else list(labels)
+    return [("\n" if i % 2 else "") + str(t) for i, t in enumerate(labels)] if slide() and not deck() else list(labels)
 
 
 def slide_legend(fig, handles, labels, title=None, ncol=None):
@@ -4106,7 +4194,10 @@ def write_readme():
                             ("deck", "Deck versions (`figures/deck/`)",
                              "Drawn at exactly the size slides/main.tex places them (16:9 slide, 160 x 90 mm; included at "
                              "scale 1 / natural width), so chart text matches the slide's 11 pt body text: 10 pt labels, "
-                             "9 pt ticks, nothing above 10.5 pt; no footnote or title (the slide says the protocol). "
+                             "9 pt ticks, nothing above 10.5 pt, in Computer Modern Sans (matplotlib's cmss10, the "
+                             "slides' Latin Modern Sans; minus, arrows and similar symbols via mathtext; bold drawn as a "
+                             "thin outline). Labels use plain words for the talk audience (no round numbers, decision "
+                             "IDs or method names; DECK_WORDS in make_figures.py); no footnote or title. "
                              "Regenerate only these with --variant deck. curves_stages_1-3 and final_bars_1-2 are builds: "
                              "the same axes with progressively more data, swapped with \\only in the deck. The others "
                              "follow the slide (full-width) or half-slide layout at the canvas given per file.")):
@@ -4122,7 +4213,10 @@ def write_readme():
 # ----------------------------------------------------------------------------------------------------------------------
 # Deck versions (figures/deck/): exact slide size, slide-size text
 # ----------------------------------------------------------------------------------------------------------------------
-DECK_RC = {"font.size": 10, "axes.labelsize": 10, "axes.titlesize": 10, "xtick.labelsize": 9, "ytick.labelsize": 9,
+DECK_RC = {"font.family": ["cmss10", "DejaVu Sans"], "mathtext.fontset": "custom", "mathtext.rm": "cmss10",
+           "mathtext.sf": "cmss10", "mathtext.it": "cmss10", "mathtext.bf": "cmss10", "mathtext.cal": "cmss10",
+           "mathtext.tt": "cmss10", "mathtext.fallback": "cm", "axes.unicode_minus": True,
+           "font.size": 10, "axes.labelsize": 10, "axes.titlesize": 10, "xtick.labelsize": 9, "ytick.labelsize": 9,
            "legend.fontsize": 9.5, "legend.title_fontsize": 9.5, "lines.markersize": 4, "lines.linewidth": 1.6,
            "axes.linewidth": 0.8, "xtick.major.width": 0.8, "ytick.major.width": 0.8, "xtick.major.size": 3,
            "ytick.major.size": 3, "xtick.major.pad": 2.5, "ytick.major.pad": 2.5, "axes.labelpad": 3,
@@ -4138,6 +4232,7 @@ def deck_fig(w, h, l, r, b, t):
 
 
 def save_deck(fig, name, shows):
+    _deck_text(fig)
     out = FIG / "deck"
     out.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
@@ -4147,6 +4242,7 @@ def save_deck(fig, name, shows):
     plt.close(fig)
 
 
+
 def fig_deck_stages(upto):
     """Whole training story (5 -> 10 -> 27 shapes) at 144 x 52 mm, revealed one stage at a time (upto = 1, 2, 3).
     Same axes, bands, stage names and ticks on every step; only the data of the later stages is left out. Markers are
@@ -4154,7 +4250,7 @@ def fig_deck_stages(upto):
     lines = story_lines()
     fig, ax = deck_fig(144, 52, l=12.5, r=1.5, b=9.5, t=5.5)
     top = 52
-    names = ["5 shapes", "10 shapes", "26 letters + near-T"]
+    names = ["5 shapes", "10 shapes", "26 letters + narrow T"]
     for i, (a, b) in enumerate(STAGE_SPAN):
         ax.axvspan(a, b, color=BAND if i % 2 == 0 else "#fbfbf9", zorder=0, lw=0)
         ax.text((a + b) / 2, 1.02, names[i], ha="center", va="bottom", fontsize=10, fontweight="bold",
@@ -4173,14 +4269,14 @@ def fig_deck_stages(upto):
     if upto >= 2:
         ax.text(STAGE_SPAN[1][1] - 0.4, o10 - 1.0, "original", ha="right", va="top", **t)
         ax.axvline(sw, color=INK2, lw=0.8, ymin=0.2, ymax=1, zorder=1)
-        ax.text(sw - 1.0, top - 0.8, "executed", ha="right", va="top", **t)
-        ax.text(sw + 1.0, top - 0.8, "plan labels", ha="left", va="top", **t)
+        ax.text(sw - 1.0, top - 0.8, "executed pushes", ha="right", va="top", **t)
+        ax.text(sw + 1.0, top - 0.8, "intended plans", ha="left", va="top", **t)
         L = byk["ten192"]
         ax.text(STAGE_OFF[1] + L["x"][-1] + 0.8, L["y"][-1] + 0.4, "192 px", ha="left", va="bottom", **t)
         L = byk["ten96"]
         ax.text(STAGE_OFF[1] + L["x"][-1], min(L["y"][-6:]) - 2.2, "96 px", ha="right", va="top", **t)
     if upto >= 3:
-        ax.text(STAGE_SPAN[2][1] - 0.2, o27 + 0.9, "original: fresh test", ha="right", va="bottom", **t)
+        ax.text(STAGE_SPAN[2][1] - 0.2, o27 + 0.9, "original, new test scenes", ha="right", va="bottom", **t)
         ax.axvline(bx, color=INK2, lw=0.8, ymin=0.22, ymax=1, zorder=1)
         ax.text(bx + 1.0, top - 0.8, "larger budget per round", ha="left", va="top", **t)
         L = byk["m192"]
@@ -4210,7 +4306,7 @@ def fig_deck_stages(upto):
     ax.set_xticks(ticks, labels)
     ax.grid(False, axis="x")
     ax.set_xlabel("Correction rounds completed (within each stage)")
-    ax.set_ylabel("Validation success")
+    ax.set_ylabel("Success (selection scenes)")
     return fig
 
 
@@ -4239,12 +4335,14 @@ def fig_deck_final_bars(step):
     ax.set_xticks(range(len(groups)), names, fontsize=10)
     ax.tick_params(axis="x", length=0, pad=3)
     ax.set_xlim(-0.55, len(groups) - 0.45)
-    ax.set_ylim(0, 52)
+    ax.set_ylim(0, 56)
     ax.set_yticks([0, 10, 20, 30, 40])
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
     ax.set_ylabel("Success")
-    handles = [Patch(facecolor=col(k), edgecolor="white", label=LAB_SHORT[k]) for k in keys]
+    words = {"original": "Original", "ten96": "Ours, trained on 10 shapes", "m96": "Ours, 27 shapes, 96 px camera",
+             "m192": "Ours, 27 shapes, 192 px camera"}
+    handles = [Patch(facecolor=col(k), edgecolor="white", label=words[k]) for k in keys]
     leg = ax.legend(handles=handles, loc="upper right", ncol=2, frameon=False, borderaxespad=0.1, labelspacing=0.3,
                     columnspacing=1.6)
     if step < 2:
@@ -4260,12 +4358,12 @@ def fig_deck_dumbbell():
     order = _sorted_shapes(key)[::-1] + sorted(HELD, key=lambda s: -rate("D051", D051[key], [s])[0])
     a = np.array([rate("D051", "original", [s])[0] for s in order])
     b = np.array([rate("D051", D051[key], [s])[0] for s in order])
-    fig, ax = deck_fig(144, 55, l=12.5, r=1, b=5.5, t=7)
+    fig, ax = deck_fig(144, 55, l=12.5, r=1, b=8.5, t=7)
     xs = np.arange(len(order))
     ax.vlines(xs, a, b, color=tint(col(key), 0.5), lw=1.6, zorder=2)
     ax.scatter(xs, a, s=18, color=ORIG_LINE, zorder=3, edgecolor="white", lw=0.6)
     ax.scatter(xs, b, s=24, color=col(key), zorder=4, edgecolor="white", lw=0.6)
-    ax.set_xticks(xs, [SHORT.get(s, s) for s in order], fontsize=9)
+    ax.set_xticks(xs, ["T\nnarrow" if s == "T_narrow" else SHORT.get(s, s) for s in order], fontsize=9)
     ax.tick_params(axis="x", length=0, pad=3)
     for tl, s_ in zip(ax.get_xticklabels(), order):
         if s_ in ("T", "T_narrow"):
@@ -4279,8 +4377,8 @@ def fig_deck_dumbbell():
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success")
     ax.grid(False, axis="x")
-    handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=5, label=LAB_SHORT["original"]),
-               Line2D([], [], marker="o", color=col(key), ls="none", ms=5.5, label=LAB_SHORT[key])]
+    handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=5, label="Original"),
+               Line2D([], [], marker="o", color=col(key), ls="none", ms=5.5, label="Ours")]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(12.5 / 144, 1.0), ncol=2, frameon=False,
                borderaxespad=0.2)
     return fig
@@ -4300,9 +4398,9 @@ def fig_deck_heldout():
     errbars(ax, [30.5], [r192[0]], [r192[3]], [r192[4]], lw=0.9)
     t = dict(fontsize=9, color=INK)
     ax.text(3.0, pts[0][0] - 0.35, f"original\n{pts[0][0]:.1f}%", ha="left", va="top", **t)
-    ax.text(11.4, pts[1][0] - 0.25, f"10 shapes\n{pts[1][0]:.1f}%", ha="left", va="top", **t)
-    ax.text(25.8, pts[2][0] + 0.1, f"96 px\n{pts[2][0]:.1f}%", ha="right", va="bottom", **t)
-    ax.text(30.5, r192[0] + 1.0, f"192 px\n{r192[0]:.1f}%", ha="center", va="bottom", **t)
+    ax.text(11.4, pts[1][0] - 0.25, f"ours, 10 shapes\n{pts[1][0]:.1f}%", ha="left", va="top", **t)
+    ax.text(25.8, pts[2][0] + 0.1, f"ours, 27 shapes\n{pts[2][0]:.1f}%", ha="right", va="bottom", **t)
+    ax.text(30.5, r192[0] + 1.0, f"192 px\ncamera\n{r192[0]:.1f}%", ha="center", va="bottom", **t)
     ax.set_xticks(xs, ["1", "10", "27"])
     ax.set_xlim(-2, 34)
     ax.set_ylim(-0.9, 9.5)
@@ -4662,6 +4760,8 @@ def main():
         MODE["name"] = "default"
         style()
     if variant in ("all", "deck"):
+        import logging
+        logging.getLogger("fontTools").setLevel(logging.ERROR)     # quiet notes about the bundled fonts' timestamps
         for name, mode, w, h in DECK_FIGURES:
             if wanted(name):
                 MODE["name"] = mode
