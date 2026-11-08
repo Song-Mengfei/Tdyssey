@@ -17,6 +17,7 @@ Playback: 1 frame per control at 30 fps = 3x real time (the simulator runs 10 co
 | `models/l26_r13_9shapes.mp4` | 26 letters: round 13 (before the larger budget): 9 shapes, same scene | T=n near-T=Y Y=n D=Y L=n E=Y K=n R=n digit 7 (never seen)=n |
 | `models/l26_r44_9shapes.mp4` | 26 letters: round 44 (final-test model): 9 shapes, same scene | T=n near-T=Y Y=n D=Y L=n E=n K=Y R=Y digit 7 (never seen)=Y |
 | `models/l26_r50_9shapes.mp4` | 26 letters: round 50 (main model): 9 shapes, same scene | T=n near-T=Y Y=n D=Y L=Y E=Y K=n R=n digit 7 (never seen)=n |
+| `models/frontier_9shapes.mp4` | Frontier: 505M flow-matching transformer: 9 shapes, same scene | T=Y near-T=Y Y=Y D=Y L=n E=Y K=n R=n digit 7 (never seen)=n |
 | `models/l26_192_9shapes.mp4` | 26 letters: 192 px camera: 9 shapes, same scene | T=Y near-T=Y Y=Y D=Y L=Y E=Y K=n R=Y digit 7 (never seen)=n |
 | `all_shapes/original_33shapes.mp4` | Original policy (trained on T only): all 33 shapes | solved 1/33 |
 | `all_shapes/original_33shapes_wide.mp4` | Original policy (trained on T only): all 33 shapes, wide layout | solved 1/33 |
@@ -30,6 +31,9 @@ Playback: 1 frame per control at 30 fps = 3x real time (the simulator runs 10 co
 | `all_shapes/l26_r50_33shapes.mp4` | 26 letters: round 50 (main model): all 33 shapes | solved 11/33 |
 | `all_shapes/l26_r50_33shapes_wide.mp4` | 26 letters: round 50 (main model): all 33 shapes, wide layout | solved 11/33 |
 | `all_shapes/l26_r50_33shapes_scene2.mp4` | 26 letters: round 50 (main model): all 33 shapes | solved 10/33 |
+| `all_shapes/frontier_33shapes.mp4` | Frontier: 505M flow-matching transformer: all 33 shapes | solved 18/33 |
+| `all_shapes/frontier_33shapes_wide.mp4` | Frontier: 505M flow-matching transformer: all 33 shapes, wide layout | solved 18/33 |
+| `all_shapes/frontier_33shapes_scene2.mp4` | Frontier: 505M flow-matching transformer: all 33 shapes | solved 15/33 |
 | `all_shapes/l26_192_33shapes.mp4` | 26 letters: 192 px camera: all 33 shapes | solved 19/33 |
 | `all_shapes/l26_192_33shapes_wide.mp4` | 26 letters: 192 px camera: all 33 shapes, wide layout | solved 19/33 |
 | `all_shapes/l26_192_33shapes_scene2.mp4` | 26 letters: 192 px camera: all 33 shapes | solved 11/33 |
@@ -99,6 +103,72 @@ Playback: 1 frame per control at 30 fps = 3x real time (the simulator runs 10 co
 | `compare/plus_scene2.mp4` | plus (never seen): original vs main model | original not solved, best 38.1% | Tdyssey not solved, best 51.7% |
 | `compare/hash_scene2.mp4` | hash (never seen): original vs main model | original not solved, best 89.0% | Tdyssey not solved, best 69.6% |
 | `compare/arrow_scene2.mp4` | arrow (never seen): original vs main model | original not solved, best 85.9% | Tdyssey not solved, best 87.8% |
+| `frontier/T.mp4` | T: main model vs 505M transformer | main model not solved, best 92.4% | transformer solved in 190 moves |
+| `frontier/T_narrow.mp4` | near-T: main model vs 505M transformer | main model solved in 96 moves | transformer solved in 226 moves |
+| `frontier/Y.mp4` | Y: main model vs 505M transformer | main model not solved, best 91.2% | transformer solved in 128 moves |
+| `frontier/D.mp4` | D: main model vs 505M transformer | main model solved in 181 moves | transformer solved in 184 moves |
+| `frontier/L.mp4` | L: main model vs 505M transformer | main model solved in 249 moves | transformer not solved, best 93.2% |
+| `frontier/E.mp4` | E: main model vs 505M transformer | main model solved in 64 moves | transformer solved in 145 moves |
+| `frontier/F.mp4` | F: main model vs 505M transformer | main model solved in 78 moves | transformer not solved, best 94.0% |
+| `frontier/J.mp4` | J: main model vs 505M transformer | main model solved in 64 moves | transformer solved in 120 moves |
+| `frontier/P.mp4` | P: main model vs 505M transformer | main model solved in 296 moves | transformer solved in 120 moves |
+| `frontier/U.mp4` | U: main model vs 505M transformer | main model not solved, best 92.5% | transformer not solved, best 89.2% |
+| `frontier/A.mp4` | A: main model vs 505M transformer | main model solved in 87 moves | transformer solved in 62 moves |
+| `frontier/B.mp4` | B: main model vs 505M transformer | main model not solved, best 92.8% | transformer solved in 248 moves |
+| `frontier/C.mp4` | C: main model vs 505M transformer | main model solved in 81 moves | transformer solved in 224 moves |
+| `frontier/G.mp4` | G: main model vs 505M transformer | main model not solved, best 94.2% | transformer solved in 248 moves |
+| `frontier/H.mp4` | H: main model vs 505M transformer | main model not solved, best 94.1% | transformer solved in 164 moves |
+| `frontier/I.mp4` | I: main model vs 505M transformer | main model not solved, best 94.7% | transformer not solved, best 94.2% |
+| `frontier/K.mp4` | K: main model vs 505M transformer | main model not solved, best 93.6% | transformer not solved, best 92.4% |
+| `frontier/M.mp4` | M: main model vs 505M transformer | main model solved in 136 moves | transformer solved in 151 moves |
+| `frontier/N.mp4` | N: main model vs 505M transformer | main model not solved, best 94.4% | transformer not solved, best 95.0% |
+| `frontier/O.mp4` | O: main model vs 505M transformer | main model not solved, best 85.6% | transformer solved in 145 moves |
+| `frontier/Q.mp4` | Q: main model vs 505M transformer | main model solved in 239 moves | transformer solved in 65 moves |
+| `frontier/R.mp4` | R: main model vs 505M transformer | main model not solved, best 92.8% | transformer not solved, best 93.2% |
+| `frontier/S.mp4` | S: main model vs 505M transformer | main model not solved, best 91.8% | transformer solved in 209 moves |
+| `frontier/V.mp4` | V: main model vs 505M transformer | main model not solved, best 90.9% | transformer not solved, best 91.5% |
+| `frontier/W.mp4` | W: main model vs 505M transformer | main model not solved, best 93.9% | transformer solved in 119 moves |
+| `frontier/X.mp4` | X: main model vs 505M transformer | main model not solved, best 93.2% | transformer not solved, best 92.7% |
+| `frontier/Z.mp4` | Z: main model vs 505M transformer | main model not solved, best 94.4% | transformer solved in 81 moves |
+| `frontier/digit3.mp4` | digit 3 (never seen): main model vs 505M transformer | main model not solved, best 71.9% | transformer not solved, best 59.1% |
+| `frontier/digit4.mp4` | digit 4 (never seen): main model vs 505M transformer | main model not solved, best 92.3% | transformer not solved, best 66.6% |
+| `frontier/digit7.mp4` | digit 7 (never seen): main model vs 505M transformer | main model not solved, best 92.9% | transformer not solved, best 92.2% |
+| `frontier/plus.mp4` | plus (never seen): main model vs 505M transformer | main model not solved, best 84.5% | transformer not solved, best 76.1% |
+| `frontier/hash.mp4` | hash (never seen): main model vs 505M transformer | main model not solved, best 94.3% | transformer not solved, best 94.1% |
+| `frontier/arrow.mp4` | arrow (never seen): main model vs 505M transformer | main model not solved, best 90.2% | transformer not solved, best 93.6% |
+| `frontier/T_scene2.mp4` | T: main model vs 505M transformer | main model not solved, best 91.3% | transformer solved in 233 moves |
+| `frontier/T_narrow_scene2.mp4` | near-T: main model vs 505M transformer | main model not solved, best 89.1% | transformer solved in 220 moves |
+| `frontier/Y_scene2.mp4` | Y: main model vs 505M transformer | main model solved in 121 moves | transformer not solved, best 94.6% |
+| `frontier/D_scene2.mp4` | D: main model vs 505M transformer | main model solved in 194 moves | transformer solved in 143 moves |
+| `frontier/L_scene2.mp4` | L: main model vs 505M transformer | main model not solved, best 93.4% | transformer solved in 272 moves |
+| `frontier/E_scene2.mp4` | E: main model vs 505M transformer | main model solved in 270 moves | transformer solved in 111 moves |
+| `frontier/F_scene2.mp4` | F: main model vs 505M transformer | main model not solved, best 93.1% | transformer solved in 266 moves |
+| `frontier/J_scene2.mp4` | J: main model vs 505M transformer | main model not solved, best 90.4% | transformer not solved, best 92.3% |
+| `frontier/P_scene2.mp4` | P: main model vs 505M transformer | main model solved in 192 moves | transformer not solved, best 94.1% |
+| `frontier/U_scene2.mp4` | U: main model vs 505M transformer | main model solved in 105 moves | transformer solved in 200 moves |
+| `frontier/A_scene2.mp4` | A: main model vs 505M transformer | main model not solved, best 91.4% | transformer not solved, best 94.2% |
+| `frontier/B_scene2.mp4` | B: main model vs 505M transformer | main model not solved, best 94.5% | transformer solved in 227 moves |
+| `frontier/C_scene2.mp4` | C: main model vs 505M transformer | main model not solved, best 87.4% | transformer not solved, best 94.0% |
+| `frontier/G_scene2.mp4` | G: main model vs 505M transformer | main model not solved, best 91.4% | transformer not solved, best 92.0% |
+| `frontier/H_scene2.mp4` | H: main model vs 505M transformer | main model solved in 74 moves | transformer not solved, best 91.8% |
+| `frontier/I_scene2.mp4` | I: main model vs 505M transformer | main model not solved, best 94.4% | transformer not solved, best 89.2% |
+| `frontier/K_scene2.mp4` | K: main model vs 505M transformer | main model not solved, best 94.4% | transformer solved in 280 moves |
+| `frontier/M_scene2.mp4` | M: main model vs 505M transformer | main model not solved, best 94.9% | transformer not solved, best 94.3% |
+| `frontier/N_scene2.mp4` | N: main model vs 505M transformer | main model solved in 113 moves | transformer solved in 192 moves |
+| `frontier/O_scene2.mp4` | O: main model vs 505M transformer | main model not solved, best 73.3% | transformer not solved, best 78.2% |
+| `frontier/Q_scene2.mp4` | Q: main model vs 505M transformer | main model not solved, best 93.0% | transformer solved in 185 moves |
+| `frontier/R_scene2.mp4` | R: main model vs 505M transformer | main model not solved, best 59.4% | transformer not solved, best 90.7% |
+| `frontier/S_scene2.mp4` | S: main model vs 505M transformer | main model solved in 289 moves | transformer not solved, best 94.2% |
+| `frontier/V_scene2.mp4` | V: main model vs 505M transformer | main model not solved, best 90.7% | transformer solved in 247 moves |
+| `frontier/W_scene2.mp4` | W: main model vs 505M transformer | main model not solved, best 87.7% | transformer solved in 79 moves |
+| `frontier/X_scene2.mp4` | X: main model vs 505M transformer | main model solved in 270 moves | transformer not solved, best 90.1% |
+| `frontier/Z_scene2.mp4` | Z: main model vs 505M transformer | main model not solved, best 94.2% | transformer solved in 185 moves |
+| `frontier/digit3_scene2.mp4` | digit 3 (never seen): main model vs 505M transformer | main model not solved, best 48.9% | transformer not solved, best 48.5% |
+| `frontier/digit4_scene2.mp4` | digit 4 (never seen): main model vs 505M transformer | main model not solved, best 71.6% | transformer not solved, best 58.7% |
+| `frontier/digit7_scene2.mp4` | digit 7 (never seen): main model vs 505M transformer | main model solved in 279 moves | transformer solved in 193 moves |
+| `frontier/plus_scene2.mp4` | plus (never seen): main model vs 505M transformer | main model not solved, best 51.7% | transformer not solved, best 89.0% |
+| `frontier/hash_scene2.mp4` | hash (never seen): main model vs 505M transformer | main model not solved, best 69.6% | transformer not solved, best 76.0% |
+| `frontier/arrow_scene2.mp4` | arrow (never seen): main model vs 505M transformer | main model not solved, best 87.8% | transformer not solved, best 84.2% |
 | `progression/K_across_models.mp4` | K across 6 models | Original: not solved, best 52.2% | 5 shapes r7: not solved, best 76.5% | 10 shapes: not solved, best 84.4% | 26 letters r0: solved in 211 moves | 26 letters r13: not solved, best 93.9% | 26 letters r50: not solved, best 93.6% |
 | `progression/R_across_models.mp4` | R across 6 models | Original: not solved, best 73.8% | 5 shapes r7: not solved, best 88.5% | 10 shapes: not solved, best 92.1% | 26 letters r0: not solved, best 94.6% | 26 letters r13: not solved, best 93.1% | 26 letters r50: not solved, best 92.8% |
 | `progression/D_across_models.mp4` | D across 6 models | Original: not solved, best 63.6% | 5 shapes r7: not solved, best 94.5% | 10 shapes: solved in 184 moves | 26 letters r0: solved in 147 moves | 26 letters r13: solved in 101 moves | 26 letters r50: solved in 181 moves |
