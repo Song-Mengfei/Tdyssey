@@ -1,27 +1,30 @@
 % Tdyssey talk: 10 minutes, structured as the course asks (problem and motivation; approach and implementation;
 % results and demonstration; discussion and conclusions), plus about 2.5 minutes for the image world-model path.
 % Build in this folder with pdflatex (twice), or on Overleaf: upload the zip from scripts/overleaf_zip.py (see ../README.md)
-% and set slides/main.tex as the main file. Works with pdflatex, xelatex and Tectonic (Arimo Type 1 fonts, no fontspec).
-% Graphs come from figures/deck/ (scripts/make_figures.py --variant deck): drawn at exactly the size they are placed,
-% so they are included at natural size and their text matches the slide text. Scenes come from images/slide/
-% (scripts/slide_images.py): video stills cropped to the scene, labels set here in LaTeX.
-% Figure 1 is figures/tikz/overview.tex (shared with the paper); it uses images/slide/ov_icon_data.png,
-% images/slide/ov_icon_wm.png, images/slide/ov_icon_teacher.png, images/slide/ov_icon_camera.png and
-% images/slide/shape_T.png, shape_A.png, shape_K.png, shape_R.png, shape_S.png, shape_W.png (listed here so that
-% scripts/overleaf_zip.py packs them: images/slide/shape_A.png images/slide/shape_K.png images/slide/shape_R.png
-% images/slide/shape_S.png images/slide/shape_W.png).
+% and set slides/main.tex as the main file. Font: Latin Modern Sans (lmodern), the beamer default; works with pdflatex,
+% xelatex and Tectonic. Graphs come from figures/deck/ (scripts/make_figures.py --variant deck): drawn at exactly the
+% size they are placed, in Computer Modern Sans, so they are included at natural size and their text matches the slide
+% text. Scenes come from images/slide/ (scripts/slide_images.py): video stills cropped to the scene, labels set here.
+% TikZ diagrams (figures/tikz/): overview.tex (Figure 1, shared with the paper), worldmodel.tex, planner.tex. Figure 1
+% uses images/slide/ov_icon_data.png, images/slide/ov_icon_wm.png, images/slide/ov_icon_teacher.png,
+% images/slide/ov_icon_camera.png and images/slide/shape_T.png, shape_A.png, shape_K.png, shape_R.png, shape_S.png,
+% shape_W.png.
 % Clicking a scene (blue play mark) opens the clip in the system player (local PDF viewers only; in PowerPoint embed the
 % MP4). For the talk itself, play videos/talk/demo_reel.mp4 (40 s) on the demo slide: it needs no PDF links.
+% Wording: no internal names on the slides. "Our policy" = the 26-letter 96 px policy after 44 correction rounds in the
+% final test (one footnote says so) and after 50 rounds ("6 more correction rounds") in the videos; "selection scenes" =
+% the 50 fixed validation scenes per shape used to pick models; "new test scenes" = fresh final-test scenes.
+% Highlighted numbers: one hero size (final-test slide only) and one stat size; grey = original policy, blue = ours,
+% dark gold = the teacher, ink = anything else.
 %
-% Timing (about 10:00, 23 slides; builds add little time): title 0:15 | problem and question 0:45 |
-%   approach 2:45 | results and demo 3:00 | image world model (teammates) 2:30 | discussion and close 0:45.
-% Overlay builds: problem (original, then ours), Figure 1 (6 steps), intended plans (number), training curve
-%   (5 -> 10 -> 27 shapes), final-test bars (original, then ours), last millimetres (scene, then close-ups).
+% Timing (about 10:30, 24 slides; builds add little time): title 0:15 | problem and question 0:45 |
+%   approach 3:20 | results and demo 2:55 | image world model (teammates) 2:30 | discussion and close 0:45.
+% Overlay builds: problem (original, then ours), Figure 1 (6 steps), world model (4), teacher planning (6), intended
+%   plans (number), training curve (5 -> 10 -> 27 shapes), final-test bars (original, then ours), last millimetres.
 % TODO: speakers per section.
-\RequirePackage{fix-cm}
 \documentclass[aspectratio=169,11pt,t]{beamer}
 \usepackage[T1]{fontenc}
-\usepackage[sfdefault,type1]{arimo}
+\usepackage{lmodern}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{adjustbox}
@@ -65,7 +68,6 @@
 \definecolor{vrest}{RGB}{240,165,165}
 
 \usetheme{default}
-\usefonttheme{professionalfonts}
 \setbeamersize{text margin left=8mm, text margin right=8mm}
 \setbeamertemplate{navigation symbols}{}
 \setbeamercolor{normal text}{fg=tdink}
@@ -116,16 +118,20 @@
 \newcommand{\lbl}[3]{\makebox[#1][l]{\small\textbf{#2}\hfill#3}}
 \newcommand{\ok}[1]{{\footnotesize\color{tdgood}\ding{51}\,#1}}
 \newcommand{\nok}[1]{{\footnotesize\color{tdbad}\ding{55}\,#1}}
-% caption (small grey), one-line takeaway, highlighted number
+% caption (small grey), one-line takeaway, highlighted words
 \newcommand{\cpt}[1]{{\footnotesize\color{tdgrey}#1\par}}
 \newcommand{\takeaway}[1]{{\fontsize{12}{15}\selectfont\color{tdink}#1\par}}
 \newcommand{\hl}[1]{\textbf{\color{tdblue}#1}}
-% text arrow from the slide font (no math font at large sizes)
+% text arrow
 \newcommand{\too}{\textrightarrow\xspace}
-% big number with a caption under it
-\newcommand{\stat}[3][tdblue]{{\fontsize{24}{27}\selectfont\bfseries\color{#1}#2\par}\vspace{0.6mm}{\small\color{tdgrey}#3\par}}
-\newcommand{\smallstat}[2]{{\fontsize{18}{20}\selectfont\bfseries\color{tdblue}#1\par}\vspace{0.3mm}%
-  {\footnotesize\color{tdgrey}#2\par}}
+% highlighted numbers: one hero size (final-test slide) and one stat size everywhere else
+\newcommand{\heronum}[1]{{\fontsize{40}{44}\selectfont\bfseries #1}}
+\newcommand{\statnum}[1]{{\fontsize{18}{21}\selectfont\bfseries #1}}
+\newcommand{\corig}{\color{tdorig}}
+\newcommand{\cours}{\color{tdblue}}
+\newcommand{\cteach}{\color{tdgolddark}}
+% a stat: number (stat size) with a small caption under it; optional colour (default: ours)
+\newcommand{\stat}[3][\cours]{{\statnum{#1#2}\par}\vspace{0.5mm}{\small\color{tdgrey}#3\par}}
 % line, dot and marker swatches for legends set in LaTeX
 \newcommand{\swatch}[2][1.6pt]{\tikz[baseline=-0.6ex]\draw[#2, line width=#1] (0,0) -- (3.6mm,0);}
 \newcommand{\dotsw}[1]{\tikz[baseline=-0.6ex]\fill[#1] (0,0) circle (0.9mm);}
@@ -137,6 +143,9 @@
 \newcommand{\placeholder}[2]{\tikz\node[draw=tdmuted, dash pattern=on 3pt off 2pt, line width=0.8pt, fill=tdpanel,
   rounded corners=2mm, minimum width=#1, minimum height=#2, align=center, text=tdgrey]
   {\textbf{Placeholder (teammates)}\\[1mm]\small figure goes here};}
+% input a TikZ diagram from figures/tikz/, with a note if the file is missing from an upload
+\newcommand{\tikzfile}[1]{\IfFileExists{\presroot figures/tikz/#1.tex}{\input{\presroot figures/tikz/#1.tex}}%
+  {\placeholder{144mm}{50mm}\par\cpt{figures/tikz/#1.tex is missing from this upload.}}}
 
 % styles of the correction-round cycle
 \tikzset{st badge/.style={circle, fill=#1, text=white, font=\fontsize{8}{8}\selectfont\bfseries, inner sep=0pt,
@@ -145,7 +154,7 @@
 % one tile of a filmstrip (progression slide) and one numbered takeaway
 \newcommand{\prog}[4]{\begin{minipage}[b]{21.8mm}\centering{\footnotesize\textbf{#1}\\#2\par}\vspace{0.3mm}%
   {#4\par}\vspace{0.6mm}\video{slide/prog_E_#3.png}{progression/E_across_models.mp4}{21.8mm}\end{minipage}}
-\newcommand{\tk}[2]{\noindent\makebox[9mm][l]{\fontsize{20}{22}\selectfont\bfseries\color{tdblue}#1}%
+\newcommand{\tk}[2]{\noindent\makebox[9mm][l]{\statnum{\cours#1}}%
   \parbox[t]{134mm}{\raggedright\fontsize{12.5}{15.5}\selectfont #2}\par\vspace{4mm}}
 % two-line label above a scene: name, then outcome
 \newcommand{\lbltwo}[3]{\parbox[b]{#1}{\small\textbf{#2}\\[0.2mm]#3}}
@@ -179,7 +188,7 @@
   \centering
   \includegraphics[width=118mm]{slide/shapes_33.png}\par
   \vspace{1.2mm}
-  \cpt{The 26 capital letters and near-T (trained) and six shapes never seen in training (light).}
+  \cpt{The 26 capital letters and a narrow T (trained) and six shapes never seen in training (light).}
   \vspace{3mm}
 \end{frame}
 
@@ -195,7 +204,7 @@
     \cpt{Same scene, letter P. Click a scene to play (3$\times$ real time).}
     \column{42mm}
     \vspace{6mm}
-    \stat[tdorig]{3.7\%}{success of the official RSS~2023 Diffusion Policy on 26 letters and near-T}
+    \stat[\corig]{3.7\%}{success of the official RSS~2023 Diffusion Policy on 26 letters and a narrow T}
     \vspace{5mm}
     {\small It pushes a block onto a goal outline from a camera image, but it was trained on human demonstrations of
      the \textbf{T only}.\par}
@@ -212,7 +221,7 @@
   \vfill
   \includegraphics[width=\textwidth]{slide/shapes_27_row.png}\par
   \vspace{1.5mm}
-  \cpt{26 capital letters and a narrower T (near-T). Six more shapes are held out and never trained on.}
+  \cpt{26 capital letters and a narrow T. Six more shapes are kept aside and never seen in training.}
   \vspace{3mm}
 \end{frame}
 
@@ -221,46 +230,48 @@
 \begin{frame}{Approach at a glance}
   \vspace{-1mm}
   \centering
-  \IfFileExists{\presroot figures/tikz/overview.tex}{\input{\presroot figures/tikz/overview.tex}}%
-    {\placeholder{144mm}{60mm}\par\cpt{figures/tikz/overview.tex is missing from this upload.}}
+  \tikzfile{overview}
 \end{frame}
 
-\begin{frame}{First attempt: reinforcement learning on the simulator}
+\begin{frame}{First attempt: reinforcement learning in the simulator}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{80mm}
     \deckfig{rl_t_collapse}
     \column{58mm}
     \vspace{2mm}
-    \stat{55\% \too 5\%}{T success once the RL steps were large enough to change the policy}
+    \stat[\corig]{55\% \color{tdgrey}\too \color{tdink}5\%}{T success when the RL steps were large enough to change
+      the policy}
     \vspace{5mm}
-    \stat{16--36\%}{of a plan's training score came from the plan itself; the rest was noise}
+    \stat[\color{tdink}]{16--36\%}{of a plan's score came from the plan itself; the rest was noise}
   \end{columns}
   \vspace{1.5mm}
   \takeaway{Lesson: we needed a \hl{teacher} that already knows how to push every letter.}
   \vspace{0.5mm}
-  \cpt{Forward-process RL on the simulator; T success at each run's last evaluation. Also tried: re-ranking with the
-       true simulator, weight blends, back-propagating through a world model (backup).}
+  \cpt{RL fine-tuning in the simulator, two variants. Also tried: re-ranking with the simulator, weight blends,
+       back-propagating through a world model (backup).}
 \end{frame}
 
-\begin{frame}{The teacher plans inside a learned world model}
-  \vspace{1mm}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{110mm}
-    \lbl{34mm}{near-T}{}\hspace{3mm}\lbl{34mm}{L}{}\hspace{3mm}\lbl{34mm}{W}{}\\[0.8mm]
-    \video{slide/teacher_nearT.png}{teacher/teacher_9shapes.mp4}{34mm}\hspace{3mm}%
-    \video{slide/teacher_L.png}{teacher/teacher_9shapes.mp4}{34mm}\hspace{3mm}%
-    \video{slide/teacher_W.png}{teacher/teacher_9shapes.mp4}{34mm}\\[1.2mm]
-    \cpt{Mid-episode: \dotsw{vnext} next targets, \dotsw{vrest} rest of the planned path.}
-    \column{29mm}
-    \vspace{2mm}
-    \smallstat{1{,}024}{plans per control (128 structured pushes)}
-    \vspace{3mm}
-    \smallstat{48}{steps ahead; re-plans after every push}
-  \end{columns}
-  \vspace{3mm}
-  {\small It solves \hl{88\%} of validation scenes over the 27 shapes, but it reads exact state: a \textbf{teacher}, not
-   a policy. Its world model copies pusher motion and contact geometry from the simulator and learns only how the block
-   moves in contact.\par}
+\begin{frame}{How the world model works}
+  \centering
+  \tikzfile{worldmodel}\par
+  \vspace{1.2mm}
+  \raggedright
+  \uncover<4->{%
+    \statnum{\cours 0.2--0.3 px}\hspace{2.5mm}{\small\color{tdgrey}vs}\hspace{2.5mm}\statnum{\color{tdink}2.3 px}%
+    \hspace{3mm}\parbox[c]{79mm}{\footnotesize\color{tdgrey}median error 8 steps ahead: ours vs a plain network that
+      learns everything; finishing needs about 1.5 px}\par}
+\end{frame}
+
+\begin{frame}{How the teacher plans}
+  \centering
+  \tikzfile{planner}\par
+  \vspace{2.5mm}
+  \raggedright
+  \uncover<6->{%
+    \statnum{\cteach 88\%}\hspace{3mm}%
+    \parbox[b]{100mm}{\small\color{tdgrey}of the selection scenes solved over the 27 shapes (50 fixed scenes per shape
+      that we use to pick models). It needs the exact state, so it only \textbf{teaches}; it is never deployed.}%
+    \hfill\href{run:\presroot videos/teacher/teacher_9shapes.mp4}{\small\textbf{\cours watch it}}\par}
 \end{frame}
 
 \begin{frame}{Teaching the camera policy: correction rounds}
@@ -269,7 +280,7 @@
   \begin{tikzpicture}[x=1mm, y=1mm]
     \foreach \x/\c/\n/\h/\b in {2/tdblue/1/Policy drives/{practice scenes, camera only},
                                 37.7/tdgold/2/Teacher labels/{every state the policy visits},
-                                73.4/tdorig/3/Add to the data/{+ teacher demos,\\206 human T demos},
+                                73.4/tdorig/3/Add to the data/{+ the teacher's runs\\+ 206 human demos},
                                 109.1/tdblue/4/Retrain/{official network and recipe}}{
       \draw[rounded corners=1.6mm, fill=white, draw=\c, line width=0.9pt] (\x,0) rectangle ++(33.4,15);
       \node[st badge=\c] at (\x,15) {\n};
@@ -287,8 +298,9 @@
   \scene{31mm}{slide/correction_K.png}\hspace{3mm}\scene{31mm}{slide/correction_R.png}\hspace{3mm}%
   \scene{31mm}{slide/correction_E.png}\hspace{4mm}%
   \parbox[b]{36mm}{\raggedright\cpt{At states the policy reached itself: \swatch{tdblue!70} its 8 sampled plans and
-    \swatch[2pt]{tdgold} the teacher's label.}\vspace{4mm}
-    {\small Equal share per shape; trained on 5 \too 10 \too 27 shapes.\par}}
+    \swatch[2pt]{tdgold} the teacher's label.}\vspace{2.5mm}
+    {\small Equal share per shape; 5 \too 10 \too 27 shapes.\par}\vspace{1.5mm}
+    \cpt{Known as DAgger.}}
 \end{frame}
 
 \begin{frame}{Copy what the teacher intends, not what it did}
@@ -297,13 +309,13 @@
   \scene{40mm}{slide/labels_T.png}\hspace{3mm}\scene{40mm}{slide/labels_Y.png}\hspace{3mm}%
   \scene{40mm}{slide/labels_E.png}\par
   \vspace{1.5mm}
-  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes: re-planned after every push,
-       they zigzag}
+  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes: it re-plans after every push,
+       so they zigzag}
   \vspace{4mm}
   \uncover<2->{%
-    {\fontsize{24}{27}\selectfont\bfseries\color{tdorig}77\color{tdgrey}\ \too\ \color{tdblue}129}%
-    \hspace{4mm}{\small\color{tdgrey}\begin{tabular}[b]{@{}l@{}}successes of 1000 (validation): same data and training,\\
-      only the labels change, the largest single gain\end{tabular}}\par}
+    \statnum{\corig 77 \color{tdgrey}\too \cours 129}%
+    \hspace{4mm}{\small\color{tdgrey}\begin{tabular}[b]{@{}l@{}}successes in 1000 episodes on the selection scenes:\\
+      same data and training, only the labels change; the largest single gain\end{tabular}}\par}
 \end{frame}
 
 % ==================================================================================== 3. results
@@ -313,38 +325,39 @@
   \only<2>{\deckfig{curves_stages_2}}%
   \only<3->{\deckfig{curves_stages_3}}\par
   \vspace{1mm}
-  \cpt{\mbox{\ringsw\ sent to a fresh-scene test} \qquad \mbox{\starsw\ round 50, fresh test 34.8\%} \qquad
-       \mbox{\swatch[1.1pt]{tdorig, dash pattern=on 2.4pt off 1.8pt} original (validation)}\\
-       \mbox{\swatch[1.4pt]{tdorig, dash pattern=on 0.7pt off 1.6pt} original (fresh test)} \qquad
-       Validation: 50 fixed scenes per shape, averaged over the stage's shapes.}
+  \cpt{\mbox{\ringsw\ tested on new scenes} \quad \mbox{\starsw\ after 6 more rounds: 34.8\% on new scenes}
+       \quad \mbox{\swatch[1.1pt]{tdorig, dash pattern=on 2.4pt off 1.8pt} original, same scenes} \quad
+       \mbox{\swatch[1.4pt]{tdorig, dash pattern=on 0.7pt off 1.6pt} original, new scenes}}
+  \vspace{0.4mm}
+  \cpt{Selection scenes: 50 fixed scenes per shape, used to pick models; averaged over each stage's shapes.}
 \end{frame}
 
-\begin{frame}{26 letters: budget per shape was the bottleneck}
+\begin{frame}{26 letters: training per shape was the bottleneck}
   \deckfig{curves_26letters}\par
   \vspace{2mm}
-  \takeaway{27 shapes sharing the 10-shape budget levelled off near \hl{24\%}; 54k steps per round and 60 practice
-    scenes per new letter lifted it to about \hl{35\%}.}
+  \takeaway{27 shapes sharing the 10-shape training budget levelled off near \hl{24\%}; 54k training steps per round
+    and 60 practice scenes per new letter lifted it to about \hl{35\%}.}
 \end{frame}
 
-\begin{frame}{Final test: 300 fresh scenes per shape}
+\begin{frame}{Final test: 300 new scenes per shape}
   \vfill
   \centering
-  {\fontsize{48}{52}\selectfont\bfseries\color{tdorig}3.7\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}%
-   \color{tdblue}33.4\%\par}
+  \heronum{\corig 3.7\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}\cours 33.4\%}\par
   \vspace{2mm}
-  {\large success on 26 letters + near-T, same camera (96 px, round 44)\par}
+  {\large success on 26 letters and a narrow T, with the same 96 px camera\par}
   \vfill
   \begin{tikzpicture}[x=1mm, y=1mm]
-    \foreach \x/\n/\t in {0/33.8\%/with a sharper 192 px camera,
-                          48/0.4\% \too 33.2\%/on the 17 letters added last,
-                          96/0.35 \too 0.82/goal covered at the end}{
+    \foreach \x/\n/\t in {0/{\cours 33.8\%}/with a sharper 192 px camera,
+                          48/{\corig 0.4\% \color{tdgrey}\too \cours 33.2\%}/on the 17 letters added last,
+                          96/{\corig 0.35 \color{tdgrey}\too \cours 0.82}/share of the goal covered at the end}{
       \fill[tdpanel] (\x,0) rectangle ++(44,19);
-      \node[anchor=north, text=tdink, font=\fontsize{17}{19}\selectfont\bfseries] at (\x+22,15.5) {\n};
-      \node[anchor=north, text=tdgrey, font=\small, text width=40mm, align=flush center] at (\x+22,7.3) {\t};
+      \node[anchor=north, inner sep=0pt] at (\x+22,15) {\statnum{\n}};
+      \node[anchor=north, text=tdgrey, font=\small, text width=40mm, align=flush center] at (\x+22,7.6) {\t};
     }
   \end{tikzpicture}\par
   \vspace{3mm}
-  \cpt{Fresh scenes never used for training or model selection; every policy on the same scenes.}
+  \cpt{New scenes, never used for training or for picking models; every policy on the same scenes. Our policy here:
+       after 44 correction rounds.}
 \end{frame}
 
 \begin{frame}{Final test by shape group}
@@ -353,16 +366,16 @@
   \vspace{1.5mm}
   \uncover<2->{\takeaway{The 17 letters added last caught up with the earlier ten (33\%).}}
   \vspace{1mm}
-  \cpt{Six more rounds (round 50, the model in the videos), tested against round 44 on another fresh pool:
+  \cpt{After 6 more correction rounds (the policy in the videos), tested against it on other new scenes:
        32.9\% \too 34.8\%. Bars: 95\% intervals.}
 \end{frame}
 
 \begin{frame}{Per shape: the new letters improve most}
   \deckfig{final_dumbbell}\par
   \vspace{1mm}
-  \takeaway{Every trained shape improves except \hl{T and near-T, which drop 5--8 points}.}
+  \takeaway{All trained shapes improve except \hl{the T and the narrow T (5--8 points down)}.}
   \vspace{0.3mm}
-  \cpt{Final test, 300 fresh scenes per shape. nT = near-T; 3, 4, 7 = digits; + plus, \# hash, \too arrow.}
+  \cpt{Final test, 300 new scenes per shape. 3, 4, 7 = digits; + plus, \# hash, \too arrow.}
 \end{frame}
 
 \begin{frame}{Demo: same scene, original vs ours}
@@ -385,12 +398,13 @@
     \column{36mm}
     \href{run:\presroot videos/talk/demo_reel.mp4}{\tikz\node[fill=tdblue, text=white, rounded corners=2mm,
       inner xsep=2.2mm, inner ysep=2.2mm, align=center, font=\small\bfseries]
-      {\tikz\fill[white] (0,0) -- (0,2.4mm) -- (2.1mm,1.2mm) -- cycle;\ Demo reel\\
+      {\tikz\fill[white] (0,0) -- (0,2.4mm) -- (2.1mm,1.2mm) -- cycle;\ Demo video\\
        \normalfont\footnotesize 40 seconds};}\par
     \vspace{1.5mm}
-    \cpt{Legend, these scenes, then all 33 shapes (videos/talk/).}
+    \cpt{How to read the scenes, these three letters, then all 33 shapes at once.}
     \vspace{2.5mm}
-    \cpt{Examples where ours succeeds, from validation scenes; it succeeds on about a third of fresh scenes.}
+    \cpt{Examples where ours succeeds, from the selection scenes; on new test scenes it succeeds about a third of
+         the time.}
     \vspace{2.5mm}
     \cpt{Interactive demo: Hugging Face Space (TODO).}
   \end{columns}
@@ -401,32 +415,28 @@
   \begin{columns}[T,totalwidth=\textwidth]
     \column{99mm}
     \lbltwo{47mm}{Teacher (exact state)}{\ok{solved in 24 moves}}\hspace{4mm}%
-    \lbltwo{47mm}{Camera policy (round 50)}{\nok{best 93.6\% covered}}\\[1mm]
+    \lbltwo{47mm}{Our camera policy}{\nok{best 93.6\% covered}}\\[1mm]
     \video{slide/tvs_K_teacher.png}{teacher_vs_student/K.mp4}{47mm}\hspace{4mm}%
     \video{slide/tvs_K_policy.png}{teacher_vs_student/K.mp4}{47mm}
     \column{39mm}
     \vspace{8mm}
-    {\fontsize{22}{25}\selectfont\bfseries\color{tdgolddark}88\%\par}
-    {\small\color{tdgrey}teacher (exact state)\par}
+    \stat[\cteach]{88\%}{teacher}
     \vspace{2mm}
-    {\fontsize{22}{25}\selectfont\bfseries\color{tdblue}35\%\par}
-    {\small\color{tdgrey}camera policy, same validation scenes\par}
+    \stat{35\%}{our camera policy, on the same selection scenes}
     \vspace{5mm}
     {\small Same scene (K). The gap is \textbf{final alignment}.\par}
-    \vspace{3mm}
-    \cpt{All 27 shapes: videos/\allowbreak teacher\_vs\_student/.}
   \end{columns}
 \end{frame}
 
 \begin{frame}{Demo: one scene through the whole project}
   \vfill
   \centering
-  \prog{Original}{(T only)}{original}{\nok{}}\hfill\prog{5 shapes}{round 7}{five_r7}{\nok{}}\hfill
-  \prog{10 shapes}{\phantom{0}}{ten_96}{\ok{}}\hfill\prog{26 letters}{round 0}{l26_r0}{\nok{}}\hfill
-  \prog{26 letters}{round 13}{l26_r13}{\ok{}}\hfill\prog{26 letters}{round 50}{l26_r50}{\ok{}}\par
+  \prog{Original}{(T only)}{original}{\nok{}}\hfill\prog{5 shapes}{7 rounds}{five_r7}{\nok{}}\hfill
+  \prog{10 shapes}{\phantom{0}}{ten_96}{\ok{}}\hfill\prog{26 letters}{start}{l26_r0}{\nok{}}\hfill
+  \prog{26 letters}{13 rounds}{l26_r13}{\ok{}}\hfill\prog{26 letters}{50 rounds}{l26_r50}{\ok{}}\par
   \vspace{4mm}
-  \takeaway{The same scene (E) for the original policy, then the 5-shape, 10-shape and 26-letter models
-    (rounds 0, 13, 50).}
+  \takeaway{The same scene (E) for the original policy, then our 5-shape and 10-shape policies and the 26-letter policy
+    after 0, 13 and 50 correction rounds.}
   \vspace{1mm}
   \cpt{Last frames; \ok{solved}\quad\nok{not solved}. Click to play the whole progression.}
   \vfill
@@ -456,12 +466,12 @@
     \column{88mm}
     \uncover<2->{%
       \lbl{40mm}{Near miss: M}{\footnotesize\color{tdgrey}94.9\%}\hspace{3mm}%
-      \lbl{40mm}{Solved: near-T}{\footnotesize\color{tdgrey}95.2\%}\\[1mm]
+      \lbl{40mm}{Solved: narrow T}{\footnotesize\color{tdgrey}95.2\%}\\[1mm]
       \scene{40mm}{slide/zoom_near_miss_M.png}\hspace{3mm}\scene{40mm}{slide/zoom_solved_nearT.png}\\[1mm]
-      \cpt{Coverage at the best moment; grid: one 96 px camera pixel (about 5 simulator pixels).}}
+      \cpt{Share of the goal covered at the best moment; grid: one 96 px camera pixel (about 5 simulator pixels).}}
   \end{columns}
   \vspace{1.5mm}
-  \takeaway{Most failures are near misses: \hl{91\%} coverage at the best moment on average; success needs
+  \takeaway{Most failures are near misses: \hl{91\%} of the goal covered at the best moment on average; success needs
     \hl{95\%}.}
 \end{frame}
 
@@ -507,36 +517,37 @@
   \vfill
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
-    \foreach \x/\n/\t in {0/3.7\% \too 33.4\%/{one camera policy for all 26 letters and near-T, on fresh
-                            scenes},
-                          48/0/{new human demonstrations: the teacher's data and the corrections are machine-made},
-                          96/1.2\% \too 4.7\%/{on six never-seen shapes: small, but growing with the number
-                            of training shapes}}{
+    \foreach \x/\n/\t in {0/{\corig 3.7\% \color{tdgrey}\too \cours 33.4\%}/{one camera policy for all 26 letters and
+                            a narrow T, on new test scenes},
+                          48/{\color{tdink}0}/{new human demonstrations: all the new training data is
+                            machine-made},
+                          96/{\corig 1.2\% \color{tdgrey}\too \cours 4.7\%}/{on six never-seen shapes: small, but growing
+                            with the number of training shapes}}{
       \fill[tdpanel] (\x,0) rectangle ++(44,38);
       \fill[tdblue] (\x,38) rectangle ++(44,-1);
-      \node[anchor=north, text=tdblue, font=\fontsize{20}{23}\selectfont\bfseries] at (\x+22,31) {\n};
+      \node[anchor=north, inner sep=0pt] at (\x+22,30) {\statnum{\n}};
       \node[anchor=north, text=tdink, font=\small, text width=38mm, align=flush center] at (\x+22,19) {\t};
     }
   \end{tikzpicture}\par
   \vfill
-  \cpt{All rates from final tests on fresh scenes (96 px camera, round 44).}
+  \cpt{All rates from the final test on new scenes (96 px camera).}
   \vspace{2mm}
 \end{frame}
 
 \begin{frame}{Takeaways and limitations}
   \vspace{4mm}
-  \tk{1}{A privileged teacher plus correction rounds beat RL fine-tuning here.}
+  \tk{1}{A teacher that may use the exact simulator state, plus correction rounds, beat RL fine-tuning here.}
   \tk{2}{Copy the teacher's intended plans, not its executed actions.}
   \tk{3}{Train enough per shape; plan 16 steps, execute 8.}
   \vfill
   \begin{tikzpicture}[x=1mm, y=1mm]
     \node[fill=tdpanel, inner xsep=3mm, inner ysep=2.4mm, text width=138mm, align=flush left, font=\small]
-      {\textbf{Limitations.} The teacher uses exact state and hand-designed push candidates (training only). Final
-       alignment: most failures are near misses. T and near-T drop 5--8 points. One run per setting; simulation
-       only.};
+      {\textbf{Limitations.} The teacher uses the exact simulator state and hand-designed push candidates (training
+       only). Final alignment: most failures are near misses. The T and the narrow T drop 5--8 points. One training run
+       per setting; simulation only.};
   \end{tikzpicture}\par
   \vspace{1.5mm}
-  \cpt{Ongoing: last-mile RL on near-goal states; a 500M flow-matching transformer policy with a DINOv2 encoder.}
+  \cpt{Ongoing: RL on near-goal states for the last millimetres; a larger transformer policy (500M parameters).}
   \vspace{1mm}
 \end{frame}
 
@@ -548,7 +559,7 @@
   \vfill
   \video{slide/grid_r50_33shapes.png}{all_shapes/l26_r50_33shapes_wide.mp4}{\dimexpr\textwidth-1pt\relax}\par
   \vspace{1mm}
-  \cpt{Our policy (round 50) on all 33 shapes at once (recorded).}
+  \cpt{Our policy on all 33 shapes at once (recorded).}
   \vspace{3mm}
   {\small Code: \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Model:
    \textbf{huggingface.co/LWZ19/tdyssey-pusht-26-letters}\par}
@@ -560,8 +571,8 @@
 \section{Backup}
 \begin{frame}{Test protocol and headline table}
   \begin{itemize}
-    \item Validation: 50 fixed scenes per shape (for picking rounds). Final tests: unused seed pools, fixed before the
-          run, all policies on the same scenes, 95\% intervals on paired differences.
+    \item Selection scenes: 50 fixed scenes per shape, used to pick models. Final tests: new scenes never used
+          before, fixed before the run, all policies on the same scenes, 95\% intervals on paired differences.
     \item Success: more than 95\% of the goal covered within 300 controls.
   \end{itemize}
   \vspace{1mm}
@@ -569,23 +580,24 @@
 \end{frame}
 
 \begin{frame}{Per-shape final test}
-  \centering\adjustbox{max width=\textwidth, max totalheight=0.72\textheight}{\tab{final_per_shape_compact.tex}}\par
+  \centering\adjustbox{max width=\textwidth, max totalheight=0.68\textheight}{\tab{final_per_shape_compact.tex}}\par
   \vspace{1mm}
-  \cpt{Success \%, 300 fresh scenes per shape; 96 px and 192 px = the 27-shape policies of rounds 44 and 2.}
+  \cpt{Success \%, 300 new scenes per shape; 96 px and 192 px: our 27-shape policies with each camera (after 44 and
+       2 correction rounds).}
 \end{frame}
 
 \begin{frame}{What mattered}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{70mm}
-    {\small\textbf{Matched A/B tests} \color{tdgrey}(validation)\par}\vspace{1mm}
+    {\small\textbf{Matched A/B tests} \color{tdgrey}(selection scenes)\par}\vspace{1mm}
     \deckfig{analysis_label_ab}
     \column{70mm}
-    {\small\textbf{Planned steps executed} \color{tdgrey}(final test)\par}\vspace{1mm}
+    {\small\textbf{Steps executed of the 16 planned} \color{tdgrey}(final test)\par}\vspace{1mm}
     \deckfig{analysis_steps_executed}
   \end{columns}
 \end{frame}
 
-\begin{frame}{What else did not work: simulator best-of-N}
+\begin{frame}{What else did not work: re-ranking in the simulator}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{70mm}
     \deckfig{oracle_bon}
@@ -616,16 +628,16 @@
     \centering
     \video{slide/wm_imagined_D.png}{world_model/imagined_vs_real_D.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{D: red outline = imagined, open-loop over 32 controls; error at most 1.5 px.}
+    \cpt{D: red outline = imagined, 32 steps ahead without correction; error at most 1.5 px.}
     \column{68mm}
     \centering
     \video{slide/wm_imagined_E.png}{world_model/imagined_vs_real_E.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{E: 1--2 px in most windows, but one 32-control window drifted 43 px; the teacher re-plans after every push.}
+    \cpt{E: 1--2 px in most windows, but one 32-step window drifted 43 px; the teacher re-plans after every push.}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Round 50 vs round 44, and the 192 px camera}
+\begin{frame}{Six more correction rounds, and the 192 px camera}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{70mm}
     \deckfig{analysis_round50_vs_44}
@@ -633,14 +645,14 @@
     \deckfig{analysis_192_vs_96}
   \end{columns}
   \vspace{1mm}
-  \cpt{192 px round 2 vs 96 px round 44: they also differ in the number of training rounds.}
+  \cpt{The 192 px and 96 px policies also differ in the number of correction rounds (2 vs 44).}
 \end{frame}
 
-\begin{frame}{T and near-T}
+\begin{frame}{The T and the narrow T}
   \deckfig{analysis_t_tradeoff}
 \end{frame}
 
-\begin{frame}{Ten shapes: 1000 fresh scenes per shape}
+\begin{frame}{Ten shapes: 1000 new scenes per shape}
   \deckfig{final_10shapes_bars}
 \end{frame}
 
@@ -651,7 +663,7 @@
 \begin{frame}{Teacher vs camera policy, per letter}
   \deckfig{method_teacher_success_26letters}\par
   \vspace{1mm}
-  \cpt{Same 50 validation scenes per shape. Ten earlier shapes: 400/500 at their latest check (390/500 in the run that
+  \cpt{Same 50 selection scenes per shape. Ten earlier shapes: 400/500 at their latest check (390/500 in the run that
        made the labels).}
 \end{frame}
 
@@ -663,15 +675,15 @@
   \vspace{2mm}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{22mm}\mdl{slide/models_original.png}{original}{Original\\(T only)}
-    \column{22mm}\mdl{slide/models_forward_rl.png}{forward_rl}{Forward RL\\(degraded)}
-    \column{22mm}\mdl{slide/models_five_r7.png}{five_r7}{5 shapes\\round 7}
-    \column{22mm}\mdl{slide/models_blend.png}{blend}{Encoder\\blend}
+    \column{22mm}\mdl{slide/models_forward_rl.png}{forward_rl}{RL fine-tuned\\(degraded)}
+    \column{22mm}\mdl{slide/models_five_r7.png}{five_r7}{5 shapes\\7 rounds}
+    \column{22mm}\mdl{slide/models_blend.png}{blend}{Weight\\blend}
     \column{22mm}\mdl{slide/models_ten_96.png}{ten_96}{10 shapes\\96 px}
-    \column{22mm}\mdl{slide/models_l26_r50.png}{l26_r50}{26 letters\\round 50}
+    \column{22mm}\mdl{slide/models_l26_r50.png}{l26_r50}{26 letters\\50 rounds}
   \end{columns}
   \vspace{4mm}
-  \cpt{Last frames of T, near-T, Y / D, L, E / K, R, digit 7; click to play. All 14 models (also copying the teacher,
-       round 4, executed-push labels, 192 px, 26-letter rounds 0, 13, 44): videos/models/, outcomes in
+  \cpt{Last frames of T, narrow T, Y / D, L, E / K, R, digit 7; click to play. All 14 models (also plain copying of the
+       teacher, executed-push labels, the 192 px camera and more checkpoints): videos/models/, outcomes in
        videos/INDEX.md.}
 \end{frame}
 
@@ -701,11 +713,12 @@
 \begin{frame}{Limitations and disclosure in full}
   \begin{itemize}\small
     \item The teacher reads exact simulator state, its push candidates are hand-designed (an exploration prior), and
-          the reward geometry uses privileged state; all training-only. The tested policy is camera-only.
+          the reward uses the exact simulator state; all training only. The tested policy sees only the camera.
     \item The 206 original human T demonstrations are reused; no new human data.
     \item One training run per setting: variation across training seeds is not measured.
-    \item T: 46.0\% \too 40.7\% (96 px, interval includes zero); near-T 37.3\% \too 29.0\%.
-    \item Demo clips come from validation scenes that were also used to pick checkpoints; rates come from fresh tests.
+    \item T: 46.0\% \too 40.7\% (96 px, interval includes zero); narrow T 37.3\% \too 29.0\%.
+    \item Demo clips come from the selection scenes, which were also used to pick models; rates come from new test
+          scenes.
   \end{itemize}
 \end{frame}
 
@@ -713,8 +726,8 @@
   \deckfig{data_growth}\par
   \vspace{1mm}
   {\small Training ran on single NVIDIA data-center GPUs (H100 and A100): about 120 GPU-hours of policy training over
-   128 rounds (all stages), plus practice scenes and validation. A 26-letter round: about 1--1.7 hours of training
-   (54k steps) at 96 px, about 3 hours at 192 px, plus about half an hour of practice scenes and validation.
+   128 rounds (all stages), plus practice scenes and model selection. A 26-letter round: about 1--1.7 hours of training
+   (54k steps) at 96 px, about 3 hours at 192 px, plus about half an hour of practice scenes and model selection.
    \textcolor{tdgrey}{Per round: data/training\_rounds.csv, data/compute\_rounds.csv.}\par}
 \end{frame}
 

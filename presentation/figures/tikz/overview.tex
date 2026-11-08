@@ -54,12 +54,12 @@
     \draw[ov arrow=tdgrey] (45.5,47.4) -- (50,47.4);
     \ovbox{tdgold}{50}{59.7}{44}{24.6}{2}{ov_icon_wm.png}{World model}
       {\textcolor{tdgrey}{copied:} pusher motion and\\contact geometry\\
-       \textcolor{tdgolddark}{learned:} how the block\\moves in contact}
+       \textcolor{tdgolddark}{learned:} how the letter\\moves when pushed}
   }
   \ovstep{3}{
     \draw[ov arrow=tdgrey] (94,47.4) -- (98.5,47.4);
     \ovbox{tdgold}{98.5}{59.7}{44}{24.6}{3}{ov_icon_teacher.png}{Planner teacher}
-      {1{,}024 plans per control\\(128 structured pushes),\\48 steps ahead;\\re-plans every push}
+      {1{,}024 plans per step\\(128 structured pushes),\\48 steps ahead;\\re-plans every step}
   }
   % ---------------------------------------------------------------- camera policy (deployed)
   \ovstep{4}{
@@ -68,7 +68,7 @@
     \node[anchor=east, inner sep=0pt, text=tdgolddark, font=\ovbody] at (103,31)
       {\textbf{imitation:} copy the teacher's \textbf{intended} 16-step plans};
     \ovbox{tdblue}{98.5}{26.5}{44}{25}{4}{ov_icon_camera.png}{Camera policy}
-      {official Diffusion Policy:\\2 frames (96$\times$96) + pusher\\position \textrightarrow{} 16 targets,\\executes 8}
+      {official Diffusion Policy:\\2 camera frames (96$\times$96)\\+ pusher position;\\plans 16 steps, executes 8}
   }
   \ovstep{5}{
     \draw[ov arrow=tdblue] (139.5,26.6) -- (139.5,35.1);
@@ -88,9 +88,9 @@
     \foreach \s [count=\i] in {T,A,K,R,S,W}
       \node[inner sep=0pt] at (49.4 + \i*5.8, 14.4) {\includegraphics[width=5mm]{\ovroot images/slide/shape_\s.png}};
     \node[anchor=west, inner sep=0pt, text=tdgrey, font=\ovbody] at (87.4,14.4) {\dots};
-    \node[ov text, font=\ovbody] at (52,10.2) {camera only; one policy for\\26 letters + near-T};
+    \node[ov text, font=\ovbody] at (52,10.2) {camera only; one policy for\\26 letters and a narrow T};
     \draw[ov lane priv] (1.5,6.3) rectangle ++(6.5,3.6);
-    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,8.1) {training only (privileged)};
+    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,8.1) {training only: exact state};
     \draw[ov lane dep] (1.5,0.9) rectangle ++(6.5,3.6);
     \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,2.7) {camera + pusher position};
   }
