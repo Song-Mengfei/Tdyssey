@@ -175,6 +175,106 @@ def iter_records_parallel(dirs, unnormalize, size, workers):
             yield (img[k], apos[k], acts[k], f"{shape}-dagger")
 
 
+class _NoFrames:
+    """Stands in for frames during build_index's bookkeeping pass: has a length, ignores writes."""
+    def __init__(self, n):
+        self.n = n
+
+    def __len__(self):
+        return self.n
+
+    def __setitem__(self, key, value):
+        pass
+
+
+def _demo_meta(f, sub, plan_label):
+    if not (f.parent/sub/f"{f.stem}_frames.npz").exists():
+        return None
+    with np.load(f) as z:
+        keep = ["seed", "mask", "state", "action", "coverage", "shape"] + (["plan"] if plan_label and "plan" in z.files else [])
+        return {k: z[k] for k in keep}
+
+
+def _record_meta(f):
+    with np.load(f) as z:
+        if "candidate_x" not in z.files or len(z["choice"]) == 0:
+            return None
+        n = len(z["choice"])
+        return z["candidate_x"][np.arange(n), z["choice"]].astype(np.float32), z["agent_pos"].astype(np.float32), str(z["shape"])
+
+
+def _demo_write(job, sub, path):
+    f, spans = job                                                       # spans: (episode, length, offset)
+    fr = np.load(f.parent/sub/f"{f.stem}_frames.npz")["frames"]
+    mm = np.load(path, mmap_mode="r+")
+    for i, m, off in spans:
+        mm[off:off+m] = fr[i, :m]
+    mm.flush()
+    return len(spans)
+
+
+def _record_write(job, size, path):
+    f, off = job
+    with np.load(f) as z:
+        img = resize_frames(np.moveaxis(z["image"], 2, -1), size)
+    mm = np.load(path, mmap_mode="r+")
+    mm[off:off + 2*len(img)] = img.reshape(-1, *img.shape[2:])
+    mm.flush()
+    return len(img)
+
+
+def build_streamed_parallel(args, unnormalize, out, workers):
+    """build_index(iter_episodes(args), iter_records(...), out=out) for a file-backed out, with the files read and the
+    frames written by worker processes. The bookkeeping is build_index itself (run on frame stand-ins), with the same
+    episode selection and the same unnormalize call per record file, so every returned array is identical."""
+    sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
+    rng = np.random.default_rng(1234)
+    files = sorted(f for d in args.demos for f in Path(d).glob("*.npz"))
+    eps, demo_jobs, off = [], [], 0
+    for f, z in _ordered(_demo_meta, files, workers, sub, args.label == "plan"):
+        if z is None:
+            print(f"skipped {f.name}: no {sub}/ file", flush=True); continue
+        spans = []
+        for i in range(len(z["seed"])):
+            n = int(z["mask"][i].sum()); m = n - 1
+            if m < 2 or rng.random() >= args.data_fraction:
+                continue
+            plan = z["plan"][i, :m] if "plan" in z else None
+            eps.append((_NoFrames(m), z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan))
+            spans.append((i, m, off)); off += m
+        demo_jobs.append((f, spans))
+    human = []
+    if args.human_t:
+        import zarr
+        g = zarr.open(str(args.human_t), "r")
+        img, st, act = g["data"]["img"][:], g["data"]["state"][:], g["data"]["action"][:]
+        ends = g["meta"]["episode_ends"][:]
+        for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
+            fr = resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size)
+            human.append((off, fr)); eps.append((_NoFrames(len(fr)), st[s:e, :2], act[s:e], "T-human", None, None)); off += len(fr)
+    rfiles = [f for d in args.records for f in sorted(Path(d).glob("*.npz"))]
+    recs, rec_jobs = [], []
+    for f, r in _ordered(_record_meta, rfiles, workers):
+        if r is None:
+            continue
+        lab, apos, shape = r
+        acts = unnormalize(lab)
+        rec_jobs.append((f, off))
+        for k in range(len(lab)):
+            recs.append((_NoFrames(2), apos[k], acts[k], f"{shape}-dagger")); off += 2
+    _, pos, acts_all, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage, out=_NoFrames(off))
+    assert off <= len(out), f"{off} frames for an array of {len(out)}"
+    path = out.filename
+    for o, fr in human:
+        out[o:o+len(fr)] = fr
+    out.flush()
+    for _ in _ordered(_demo_write, demo_jobs, workers, sub, path):
+        pass
+    for _ in _ordered(_record_write, rec_jobs, workers, args.image_size, path):
+        pass
+    return out, pos, acts_all, obs_idx, act_idx, group, near
+
+
 def count_frames(args):
     """Frames the streaming build will write, without loading any frames (same choices as iter_episodes)."""
     sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
