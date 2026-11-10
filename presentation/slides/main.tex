@@ -6,7 +6,8 @@
 % size they are placed, in Computer Modern Sans, so they are included at natural size and their text matches the slide
 % text. Scenes come from images/slide/ (scripts/slide_images.py): video stills cropped to the scene, labels set here.
 % TikZ diagrams (figures/tikz/): overview.tex (Figure 1, shared with the paper), worldmodel.tex, planner.tex,
-% architecture.tex (the 505M transformer experiment). Figure 1
+% architecture.tex (the 505M transformer experiment), arch_cnn_detailed.tex and arch_flow_detailed.tex (the two networks
+% in detail; the latter's next-run tag is hidden on the slide with \def\adnonext{}). Figure 1
 % uses images/slide/ov_icon_data.png, images/slide/ov_icon_wm.png, images/slide/ov_icon_teacher.png,
 % images/slide/ov_icon_camera.png and images/slide/shape_T.png, shape_A.png, shape_K.png, shape_R.png, shape_S.png,
 % shape_W.png.
@@ -327,6 +328,14 @@
     \hfill\href{run:\presroot videos/teacher/teacher_9shapes.mp4}{\small\textbf{\cours watch it}}\par}
 \end{frame}
 
+\begin{frame}{The camera policy: the official Diffusion Policy network}
+  \centering
+  \tikzfile{arch_cnn_detailed}\par
+  \vspace{0.4mm}
+  \raggedright
+  \takeaway{Two camera frames + pusher position in; 16 pusher targets out, 8 executed.}
+\end{frame}
+
 \begin{frame}{Copying the teacher was not enough}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{70mm}
@@ -540,6 +549,14 @@
   \vspace{0.2mm}
   \cpt{Trained once from scratch, 160k steps, on the main model's final data, no correction rounds of its own. Frames
        are cropped to 84 px and enlarged to 224 px (no new detail).}}
+\end{frame}
+
+\begin{frame}{Inside the 505M transformer}
+  \centering
+  {\def\adnonext{}\tikzfile{arch_flow_detailed}}\par
+  \vspace{1mm}
+  \raggedright
+  \takeaway{Same inputs and outputs; DINOv2 encoder + transformer head (flow matching).}
 \end{frame}
 
 \begin{frame}{Same data, bigger network: 32.8\% \texorpdfstring{\too}{->} 45.2\%}
