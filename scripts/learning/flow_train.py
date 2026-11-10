@@ -62,7 +62,7 @@ def build_data(args, normalizer, dev):
         eps = bc_train.load_episodes(args)
         recs = bc_train.load_records(args.records, unnorm, args.image_size)
         frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage)
-    del eps, recs
+    eps = recs = None                                                        # release the loaders' references
     groups = sorted(set(group))
     letters = sorted({g.rsplit("-", 1)[0] for g in groups})
     share = {g: (1/len(letters)) / sum(1 for h in groups if h.rsplit("-", 1)[0] == g.rsplit("-", 1)[0]) for g in groups}
