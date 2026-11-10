@@ -252,15 +252,17 @@ def run(args, train=True):
     feat_dim = obs_res.shape[1]
     priv_dim = 7 + len(TRAINED27)
     act_dim = 32 if method == "dsrl" else 16
-    actor_in = feat_dim + (32 if method == "residual" else 0)
+    actor_in = feat_dim + (32 if method == "residual" else 0) + (priv_dim if args.actor_privileged else 0)
     scale = args.noise_bound if method == "dsrl" else args.residual_px
     actor = Actor(actor_in, act_dim, scale).to(dev)
     if args.actor:
         actor.load_state_dict(torch.load(args.actor, map_location=dev, weights_only=True)["actor"])
 
-    def act_obs(feat, base_x):
-        """Actor input: camera features, plus the base plan (normalized) for the residual."""
-        return feat if method == "dsrl" else torch.cat([feat, base_x.view(len(feat), -1)], -1)
+    def act_obs(feat, base_x, priv=None):
+        """Actor input: camera features, plus the base plan (normalized) for the residual, plus exact state for the
+        privileged diagnostic (--actor-privileged: not a deployable policy)."""
+        parts = [feat] + ([base_x.view(len(feat), -1)] if method == "residual" else [])
+        return torch.cat(parts + ([priv] if args.actor_privileged else []), -1)
 
     def base_plan_x(feat, noise):
         return base.plan_x(feat, noise).reshape(len(feat), 32) if method == "residual" else torch.zeros((len(feat), 1), device=dev)
@@ -312,7 +314,7 @@ def run(args, train=True):
                 else:
                     a = torch.zeros((len(slots), act_dim), device=dev)
             else:
-                a, _ = actor(act_obs(feat, base_x))
+                a, _ = actor(act_obs(feat, base_x, priv))
             plans = make_plans(feat, a, base_x).cpu().numpy()
         res = pool.call("step", [(s, plans[k, 1:1 + EXECUTE]) for k, s in enumerate(slots)])
         r = torch.zeros(len(slots), device=dev); d = torch.zeros(len(slots), device=dev)
@@ -339,13 +341,13 @@ def run(args, train=True):
             for _ in range(args.updates):
                 bt = rb.sample(args.batch)
                 with torch.no_grad():
-                    a2, logp2 = actor(act_obs(bt["f2"], bt["b2"]))
+                    a2, logp2 = actor(act_obs(bt["f2"], bt["b2"], bt["p2"]))
                     q1t, q2t = target(torch.cat([bt["f2"], bt["p2"], a2] + ([bt["b2"]] if method == "residual" else []), -1))
                     y = bt["r"][:, 0] + gamma * (1 - bt["d"][:, 0]) * (torch.min(q1t, q2t) - log_alpha.exp() * logp2)
                 q1, q2 = critic(torch.cat([bt["f"], bt["p"], bt["a"]] + ([bt["b"]] if method == "residual" else []), -1))
                 lc = ((q1 - y) ** 2 + (q2 - y) ** 2).mean()
                 opt_c.zero_grad(); lc.backward(); opt_c.step()
-                an, logp = actor(act_obs(bt["f"], bt["b"]))
+                an, logp = actor(act_obs(bt["f"], bt["b"], bt["p"]))
                 q1n, q2n = critic(torch.cat([bt["f"], bt["p"], an] + ([bt["b"]] if method == "residual" else []), -1))
                 la = (log_alpha.exp().detach() * logp - torch.min(q1n, q2n)).mean()
                 opt_a.zero_grad(); la.backward(); opt_a.step()
@@ -387,7 +389,8 @@ def evaluate(args, base, pool, actor, method, recs, act_obs, make_plans):
         batch = chosen[start:start + args.slots]
         slots = list(range(len(batch)))
         res = pool.call("reset", list(zip(slots, batch)))
-        st = {s: {"ims": res[s][0], "pos": res[s][1], "cov0": res[s][3], "cov": res[s][3], "done": False, "t": 0} for s in slots}
+        st = {s: {"ims": res[s][0], "pos": res[s][1], "priv": res[s][2], "cov0": res[s][3], "cov": res[s][3], "done": False, "t": 0}
+              for s in slots}
         gen = torch.Generator(device=base.device).manual_seed(args.seed + start)
         for _ in range(args.episode_decisions):
             live = [s for s in slots if not st[s]["done"]]
@@ -397,7 +400,8 @@ def evaluate(args, base, pool, actor, method, recs, act_obs, make_plans):
             noise = torch.randn((len(live), 32), device=base.device, generator=gen)
             if args.actor:
                 bx = base.plan_x(feat, noise).reshape(len(live), 32) if method == "residual" else None
-                a, _ = actor(act_obs(feat, bx), deterministic=not args.stochastic)
+                pv = torch.tensor([st[s]["priv"] for s in live], device=base.device, dtype=torch.float32)
+                a, _ = actor(act_obs(feat, bx, pv), deterministic=not args.stochastic)
                 plans = make_plans(feat, a, bx)
             else:
                 plans = base.plan(feat, noise)
@@ -405,7 +409,7 @@ def evaluate(args, base, pool, actor, method, recs, act_obs, make_plans):
             for s in live:
                 hist, pos, priv2, c0, c1, lost, crossed = out[s]
                 st[s]["ims"] = (st[s]["ims"] + hist)[-2:]; st[s]["pos"] = (list(st[s]["pos"]) + list(pos))[-2:]
-                st[s]["cov"] = c1; st[s]["t"] += 1
+                st[s]["cov"] = c1; st[s]["t"] += 1; st[s]["priv"] = priv2
                 if crossed:
                     st[s]["done"] = True
         for s, rec in zip(slots, batch):
@@ -439,6 +443,8 @@ def episodes(args):
     if args.actor:
         blob = torch.load(args.actor, map_location=dev, weights_only=True)
         method = blob["method"]
+        if blob["args"].get("actor_privileged"):
+            raise SystemExit("privileged actors are a diagnostic, not a camera policy: no full-episode test")
         feat_dim = base.features([np.zeros((2, base.size, base.size, 3), np.uint8)], [[np.zeros(2), np.zeros(2)]]).shape[1]
         actor = Actor(feat_dim + (32 if method == "residual" else 0), 32 if method == "dsrl" else 16,
                       args.noise_bound if method == "dsrl" else args.residual_px).to(dev)
@@ -538,6 +544,8 @@ def main():
     ap.add_argument("--reward-bonus", type=float, default=5.0)
     ap.add_argument("--reward-step", type=float, default=0.05)
     ap.add_argument("--stochastic", action="store_true", help="eval: sample from the actor instead of its mean")
+    ap.add_argument("--actor-privileged", action="store_true",
+                    help="diagnostic: the actor also reads exact block/pusher state (not deployable)")
     ap.add_argument("--seed-base", type=int, default=400000, help="episodes: scene pool")
     ap.add_argument("--start", type=int, default=0, help="episodes: first scene index")
     ap.add_argument("--count", type=int, default=50, help="episodes: number of scenes")

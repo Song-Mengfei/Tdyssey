@@ -1027,6 +1027,19 @@ fell from 14.1% (base) to 8.0% with noise steering (-6.1 points [-8.5, -3.7]) an
 rewarded small, safe moves. v2 rebalances the reward (gain 10, extra loss penalty 2, success bonus 20, cost 0.2 per
 decision), allows 12 decisions (96 controls) with gamma 0.95, trains 300k decisions on start states from scenes
 20000-20029, and is evaluated on new held-out scenes 20040-20049 (20030-20039 are now used for tuning).
+v2 result (300k decisions each; 1080 near-goal states of held-out scenes 20040-20049, up to 96 controls each,
+paired with the base on the same states): base 28.9%; noise steering 30.3% (+1.4 points [-2.1, +4.9]), sampled from
+the actor 30.6% (+1.8 [-1.7, +5.2]); residual 26.9% (-2.0 [-5.5, +1.4]). No significant gain; T and near-T not worse
+under noise steering (T 9 -> 10, near-T 6 -> 10 of 40). Not tested on full episodes.
+Diagnostic (2026-11-08, before its result): the same v2 noise-steering run, but the actor also reads exact block and
+pusher state relative to the goal (`--actor-privileged`; not a deployable policy, no full-episode test). Same states,
+reward and held-out evaluation as v2. A clear gain would mean the frozen policy's camera features cannot resolve the
+remaining error; no gain would mean noise steering itself is too weak.
+Diagnostic result (same 1080 held-out states, paired): privileged actor 35.4% vs base 28.9% (+6.5 points [+2.9,
++10.0]) and vs the camera-only actor 30.3% (+5.1 [+1.5, +8.6]); mean final coverage 0.849 / 0.891 / 0.899. The frozen
+policy's sampler can produce finishing pushes and steering can choose them when the block pose is known exactly; the
+camera-only features of the frozen 96 px policy are the bottleneck. Not a deployable result (the actor reads exact
+state). The track closes here at the lead's decision. Results: `runs/lastmile-rl/eval-*heldout*.json` in the store.
 
 ## D059 — New policy architecture (2026-11-08, before any result)
 
