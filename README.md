@@ -1,137 +1,90 @@
 # Tdyssey
 
-A three-author course research project: can a policy trained to push a T-shaped
-object learn useful pushing behavior for new shapes through non-expert interaction
-data and reinforcement learning inside a learned world model?
+[![Model weights](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-model%20weights-yellow)](https://anonymous-hf.com/a/uq38ysup3kuj/)
+[![Demo](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-live%20demo-blue)](https://tinyurl.com/tdyssey)
 
-The intended outcome is one shared policy across multiple shapes, using no new
-human demonstrations for adaptation. The released T policy already uses expert
-pretraining. T-to-L is the first learning check before expanding to mixed shapes;
-it is not the final project scope.
+**One camera policy that pushes all 26 capital letters.** We start from the official RSS 2023
+[Diffusion Policy](https://diffusion-policy.cs.columbia.edu/) for PushT, which was trained on human demonstrations
+of the **T only**, and adapt it to every capital letter with machine-generated data. **No new human demonstrations
+were used.** The policy still sees only the camera image (two 96x96 frames) and the pusher position.
 
-The project is graded on effort. Substantial implementation, controlled
-experiments, reproducibility, and an honest explanation of failures are useful
-deliverables even if the ambitious adaptation/generalization goals fail.
+- **Model weights:** [Hugging Face](https://anonymous-hf.com/a/uq38ysup3kuj/) (main model, a 192 px variant, the
+  planner teacher's world model, and single-file demo models).
+- **Live demo:** [Hugging Face Space](https://tinyurl.com/tdyssey): pick a letter, drag the block, the goal and the
+  pusher, and watch the original policy and ours on the same scene.
 
-**Current stage:** the official RSS 2023 visual CNN policy runs on CUDA and solved
-three original T development scenes. T/L data collection, alphabet evaluation and
-actual denoising/continuation inspection work. In one common alphabet scene, only
-T and Y succeeded. World-model pilots expose contact/reward failures; reliable
-imagined rollouts remain pending. A direct-simulator tail-PPO trainer now passes
-an initial GPU update/reload check. Forward-process NFT/AdvantageFlow training,
-matched physical branches and recovery checkpoints are also implemented;
-one image policy now covers all 26 capital letters and near-T: on 300 fresh scenes per shape its success is 33.4%
-against the original's 3.7% (docs/LEARNING_FINDINGS.md, sections 7-8). GPC reference work stays
-separate from the official baseline. See [results](docs/RESULTS.md),
-[status](docs/STATUS.md) and [validation evidence](docs/VALIDATION.md).
-The latest forward pilot changed distributed LoRA weights over six updates but
-did not improve L; most L candidate groups had no contact and tied scores.
-The next learning work is improving that feedback and checking longer evaluations.
-For another GPU machine, use the [training handoff](docs/TRAINING_MACHINE.md):
-locked CUDA 12.4/12.8 profiles, setup checks, repeated-seed jobs, recovery and
-live local or W&B charts. Larger presets are proposed budgets, not validated
-learning settings.
+## Results
 
-## Start here
+Success means the block covers more than 95% of its goal outline within 300 controls. Every test uses fresh scenes
+never used for training or model selection, and every model in a table plays the same scenes.
+
+**Final test (fixed in advance; 300 fresh scenes per shape):**
+
+| Shapes | Original policy | Ten-shape model | 26-letter 96 px | 26-letter 192 px |
+| --- | --- | --- | --- | --- |
+| Ten earlier shapes (T, near-T, Y, D, L, E, F, J, P, U) | 9.3% | 33.0% | 33.7% | 34.2% |
+| 17 other letters | 0.4% | 6.4% | 33.2% | 33.5% |
+| **All 26 trained shapes** | **3.7%** | 16.3% | **33.4%** | 33.8% |
+| 6 never-seen shapes (digits 3, 4, 7, plus, hash, arrow) | 1.2% | 2.8% | 4.7% | 5.9% |
+| Goal covered at the end, 26 shapes | 0.35 | 0.63 | 0.82 | 0.81 |
+
+Six more correction rounds then lifted the main model from 32.9% to 34.8% on 200 other fresh scenes per shape
+(+1.9 points, 95% interval +0.1 to +3.6). Details, intervals and per-shape results:
+[learning findings](docs/LEARNING_FINDINGS.md) and [decisions](docs/DECISIONS.md) (D051, D054).
+
+## How it works
+
+1. **World model.** A model of the pushing physics for all letters: the pusher's motion and the contact geometry are
+   copied from the simulator, and how the letter moves when pushed is learned from machine-generated pushes.
+2. **Teacher.** A sampling planner that reads the exact simulator state and tries about 1,000 candidate push plans per
+   control inside the world model, re-planning after every push. It uses privileged information, so it only makes
+   training data; it is never deployed.
+3. **Copying.** The official training recipe on the teacher's demonstrations, labelled with the teacher's *intended*
+   16-step plans (much better than its executed pushes), plus the original human T demonstrations, with an equal
+   share for every letter.
+4. **Correction rounds (DAgger).** The policy drives new scenes, the teacher labels every situation it reaches, and
+   the policy retrains on everything so far; 5 -> 10 -> 26 letters.
+
+**What did not work** (all documented with numbers in the [learning findings](docs/LEARNING_FINDINGS.md) and the
+[experiment log](docs/LEARNING_EXPERIMENT_LOG.md)): reinforcement-learning fine-tuning of the diffusion policy in the
+simulator (the training signal was mostly noise, and larger steps destroyed the T skill), re-ranking the original
+policy's plans with the true simulator, back-propagating through the world model, weight blends, and a world model
+learned directly from images ([world-model notes](docs/WORLD_MODEL.md)).
+
+## Run the trained policy
+
+Set up the CUDA environment and the official Diffusion Policy as described below and in
+[official setup](docs/OFFICIAL_BASELINE.md), download the weights, then from the repository root:
+
+```bash
+# 10 scenes per shape on six letters with the main model
+.venv/bin/python -B scripts/learning/base_rollouts.py eval --seed-base 400000 --scenes 10 --execute 8 \
+    --shapes T A K M R Z --student /path/to/96px/model.pt --out my_test.json
+```
+
+Shape names: any capital letter, `T_narrow`, and the never-seen `digit3 digit4 digit7 plus hash arrow`. The tools
+build the network and the camera size from the checkpoint. The training and correction-round scripts, with the seeds
+of every run, are in [scripts/learning](scripts/learning/README.md) and
+[scripts/learning/experiments](scripts/learning/experiments/README.md).
+
+## Documentation
 
 - [Main results: one camera policy for all 26 letters, and what did not work](docs/LEARNING_FINDINGS.md)
 - [Every learning run, including failed ones](docs/LEARNING_EXPERIMENT_LOG.md) and [the run scripts with their seeds](scripts/learning/experiments/README.md)
-- [Full learning plan: data, world models, rewards, DPPO and developer tasks](docs/LEARNING_PLAN.md)
-- [Run policy training; method survey and mathematical derivations](docs/POLICY_LEARNING.md)
-- [Run NFT/AdvantageFlow training, resume and record a trained policy](docs/FORWARD_POLICY_LEARNING.md)
-- [Move to a training machine and view live training](docs/TRAINING_MACHINE.md)
-- [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
-- [Project scope and milestones](docs/PROJECT.md)
+- [Decisions, each recorded before its result](docs/DECISIONS.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
-- [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
-- [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
-- [Separate GPC reference collector](docs/COLLECTION.md)
-- [Prepare episode-safe training batches](docs/TRAINING_DATA.md)
-- [Visual training and pretrained world-model checks](docs/WORLD_MODEL.md)
-- [Browse published experiment figures and results](docs/RESULTS.md)
-- [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
-- [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
-- [Separate GPC reference-policy comparison](docs/POLICY_BASELINE.md)
-- [Current status and next work](docs/STATUS.md)
-- [Coauthor onboarding and task ownership](docs/ONBOARDING.md)
-- [Shared environment and storage](docs/ENVIRONMENT.md)
-- [Codex project guidance](docs/CODEX.md) and [agent instructions](AGENTS.md)
-- [Decisions](docs/DECISIONS.md)
-- [Commit and pull request rules](docs/GIT.md)
+- [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
+- [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md) and [browse published figures](docs/RESULTS.md)
+- [Visual world-model experiments](docs/WORLD_MODEL.md)
+- [Policy training methods and derivations](docs/POLICY_LEARNING.md), [forward-process RL](docs/FORWARD_POLICY_LEARNING.md) and [the RL research survey](docs/DIFFUSION_RL_RESEARCH.md)
+- [Original learning plan](docs/LEARNING_PLAN.md) and [project scope](docs/PROJECT.md)
+- [Implemented code and PushT integration](docs/IMPLEMENTATION.md)
+- [Collect official interaction data](docs/OFFICIAL_COLLECTION.md), [prepare training batches](docs/TRAINING_DATA.md) and [the separate GPC reference collector](docs/COLLECTION.md)
+- [Move to a training machine](docs/TRAINING_MACHINE.md) and [shared environment and storage](docs/ENVIRONMENT.md)
+- [Current status](docs/STATUS.md), [coauthor onboarding](docs/ONBOARDING.md), [validation evidence](docs/VALIDATION.md)
+- [Commit and pull request rules](docs/GIT.md), [agent instructions](AGENTS.md) and [Codex guidance](docs/CODEX.md)
 - [Original detailed research schedule](跨形状机器人世界模型研究_详细执行时间表.md)
-
-## The plan at a glance
-
-**Goal:** improve one T-trained visual diffusion policy across multiple letters,
-using automated interaction and rewards, with no new human adaptation demonstrations.
-The original T policy was trained on expert demonstrations. T/L is the first
-learning check; A-Z is a later expansion, not a prerequisite for getting started.
-
-| Order | What we build | How we know it works |
-| --- | --- | --- |
-| Now, policy work | Compare implemented PPO, NFT and AdvantageFlow in the physical T/L simulator | Correct losses/rewards, actual GPU weight updates, then separate-scene physical improvement and T retention |
-| Now, world-model work | Compare compatible pretrained prediction models; adapt one if necessary using automated data | Predict contact, rotation, pusher position and reward; correctly rank actions, including near the goal |
-| Join the two | Freeze validated dynamics and use the chosen update method with short predicted rollouts | Updated policy improves in the physical simulator, compared with the same method using simulator feedback |
-| Expand | Train shared dynamics/policy on a fixed diverse shape set, then A-Z if affordable | Per-shape results, costs, failures and retained T performance |
-
-**What does the reward teach?** The proposed training reward combines completion
-at the original **coverage > 95%** threshold with a carefully discounted coverage
-progress term. Coverage is target area occupied by the object; it differs from
-IoU. DPPO increases the likelihood of denoising decisions that lead to better
-future rewards. Maintaining alignment after success is a separate training/evaluation
-task; stopping the original episode at first success does not train that behavior.
-
-**Why not just choose the biggest world model?** It must accept our continuous
-actions and predict their physical consequences, not merely generate plausible
-video. Pretrained GPC loading works, but its official-domain contact prediction
-is not reliable yet. A-Z training is needed only as justified by the expansion;
-training every letter cannot demonstrate unseen-letter generalization.
-
-**Why not just use the physical simulator?** We can, and it may be the better
-choice for cheap 2D PushT physics. The central comparison is frozen policy vs
-simulator-trained RL vs the same update method with world-model feedback. Count world-model data and
-training costs too; lower physical interaction use, faster training or better
-physical performance must be measured rather than assumed. A useful negative
-result is that the learned model adds cost or errors without improving the policy.
-
-**Ready today:** official policy/environment, T/L collection and batches, alphabet
-evaluation, world-model pilots, denoising/continuation inspection and a bounded
-direct-simulator tail-PPO trainer. **Still to establish:** useful learned adaptation,
-a reliable shared world model and imagined policy updates.
-The world model is intended as a training aid; the updated policy can act on real
-observations without using it for test-time planning.
-
-Read the [detailed implementation and experiment plan](docs/LEARNING_PLAN.md) for
-data sizes/splits, model losses, reward equations, training steps, proposed starting
-settings and three developer work packages. Proposed settings are not tested defaults.
-
-The [extended RL survey](docs/DIFFUSION_RL_RESEARCH.md) recommends a DDPM-compatible
-DiffusionNFT experiment alongside PPO, then world-model-scored updates after
-prediction checks. The [forward trainer](docs/FORWARD_POLICY_LEARNING.md) now
-implements NFT and AdvantageFlow with physical feedback, shared shape support and
-recovery checkpoints. Learned-model scores remain pending. Using and comparing established
-methods fits this course project; an original algorithm is not required. The
-shared multi-shape goal remains unchanged.
-
-To check a small real GPU policy update using an existing authorized CUDA/DP setup:
-
-```bash
-.venv/bin/python -B scripts/train_official_policy.py --config configs/dppo_smoke.json --output artifacts/dppo-smoke-001
-```
-
-The [policy-learning guide](docs/POLICY_LEARNING.md) explains the DPPO-style variant,
-rewards, small/full-network configurations, mathematical limits and current evidence.
-The smoke run tests mechanics; it is not an L-learning result.
-For the main capacity comparison, use full action-network or distributed LoRA
-profiles in the [training guide](docs/POLICY_LEARNING.md), rather than assuming
-head-only updates suffice. LoRA changes which parameters learn; the PPO objective
-remains the same.
-
-Training runs without a window. To watch a saved trained policy, use
-[`scripts/evaluate_trained_policy.py`](scripts/evaluate_trained_policy.py) with
-`--adapter PATH/last.pt --display`; see the [preview command](docs/POLICY_LEARNING.md#run-and-inspect).
-The same evaluator accepts forward checkpoints and optional `--video PATH.mp4`.
 
 ## Work without installing anything
 
