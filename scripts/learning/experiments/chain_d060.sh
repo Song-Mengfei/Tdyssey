@@ -2,7 +2,8 @@
 # D060 test: the flow policy after its correction rounds (last completed round) against the flow policy without
 # rounds (D059 final checkpoint) and the 96 px round-50 student, 200 new scenes per shape, 33 shapes, seeds
 # 14000000 + 20*i (8 parts of 25 scenes per policy), paired. The two fixed policies run first (at most CONC parts at
-# once, to leave the GPU to the rounds); the corrected policy runs after chain_flow_dagger.sh ends.
+# once, to leave the GPU to the rounds); the corrected policy runs after chain_flow_dagger.sh ends (CONC_LAST parts
+# at once, default 4). Started after the rounds, CONC=8 CONC_LAST=8 runs the whole test at the end.
 # Usage: [FLOW_RUN=flow26 POOL=14000000 OUTNAME=fairtest-d060] chain_d060.sh   (D061: flow26b, 15000000, fairtest-d061)
 source "$(dirname "$0")/common.sh"
 FLOW_RUN=${FLOW_RUN:-flow26}; POOL=${POOL:-14000000}; OUTNAME=${OUTNAME:-fairtest-d060}
@@ -29,7 +30,7 @@ run r50 $R/dagger26m/round50/train/ema-step54000.pt $CONC
 run flow0 $R/$FLOW_RUN/v1/ema-step160000.pt $CONC
 until [ -f $R/$FLOW_RUN/last_round_checkpoint.txt ] && ! pgrep -f "chain_flow_dagger.sh" >/dev/null; do sleep 60; done
 C=$(cat $R/$FLOW_RUN/last_round_checkpoint.txt); echo "[d060 $(date +%T)] corrected policy: $C"
-run flowdagger $C 4
+run flowdagger $C ${CONC_LAST:-4}
 $PY -I scripts/learning/report_pair.py $OUT r50 flow0 flowdagger > $OUT/report.txt 2>&1
 $PY -I scripts/learning/report_pair.py $OUT flow0 flowdagger > $OUT/report-rounds.txt 2>&1
 echo "[d060 $(date +%T)] done"; cat $OUT/report.txt $OUT/report-rounds.txt

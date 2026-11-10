@@ -26,7 +26,10 @@ W="--wm $R/wm2/v3/model.pt --select best --gate-margin 0 --pushes 128 --horizon 
 DEMOS="$R/teacher-plan-demos $R/teacher-plan-demos2 $R/teacher-plan-demos3 $R/teacher-plan-demos26"
 HUMAN=$WORK/data/pusht-official/pusht/pusht_cchi_v7_replay.zarr
 OLD="$R/mpc-data/dagger-bc1/data $(ls -d $R/mpc-data/dagger-r*/data $R/mpc-data/dagger10-r*/data $R/mpc-data/dagger10[pmh]-r*/data $R/lastmile/lastmile-r*/data $R/mpc-data/dagger26m-r*/data 2>/dev/null | tr '\n' ' ')"
-export TDYSSEY_FRAMES_MMAP=${TDYSSEY_FRAMES_MMAP:-$WORK/mmap}; mkdir -p $TDYSSEY_FRAMES_MMAP
+# frames stream to local disk by default; export TDYSSEY_FRAMES_MMAP= (empty) to keep them in memory where host RAM is at
+# least 3x the frame bytes (the 26-letter set: ~150 GB of frames, ~300 GB peak while building)
+if [ "${TDYSSEY_FRAMES_MMAP-unset}" = unset ]; then export TDYSSEY_FRAMES_MMAP=$WORK/mmap; fi
+[ -n "$TDYSSEY_FRAMES_MMAP" ] && mkdir -p $TDYSSEY_FRAMES_MMAP
 student=$RUN/v1/ema-step160000.pt
 for k in $(seq 1 $((first - 1))); do [ -f $RUN/round$k/train/ema-step$STEPS.pt ] && student=$RUN/round$k/train/ema-step$STEPS.pt; done
 for k in $(seq $first $last); do
