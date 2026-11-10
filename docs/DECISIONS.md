@@ -1117,3 +1117,15 @@ checkpoint and data are uploaded to the store when the round ends. Deciding test
 FLOW_RUN=flow26b POOL=15000000 OUTNAME=fairtest-d061): the last completed round against the rebuilt base and round 50,
 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (unused), paired, same groups as D059, whatever the
 outcome.
+
+## D062 — Larger encoder and full image detail on the A100 (2026-11-10, before any result)
+
+Lead's decision for the queued A100 job: the D059 flow policy with two changes, the large DINOv2 encoder
+(`facebook/dinov2-large`, 304.4M, fine-tuned) and all 16 x 16 patch tokens per frame instead of an 8 x 8 average
+(`--vit large --pool 16`; 722.8M parameters in total). Everything else as D059: the round-50 data set (116 correction
+folders, the teacher demonstrations, the human T demos), batch 128, 160k steps, seed 0, the same schedule; encoder
+activations are recomputed in the backward pass (`--grad-checkpoint`), which changes memory, not the result (smoke
+test on the H100: 51 GB peak, out of memory without it). Run folder `runs/flow26L/v1`; checkpoints backed up every
+10k steps. If the job's end comes before step 160k, the latest checkpoint is tested instead and reported as such.
+Test: 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (the D061 pool), 8 executed targets, paired by
+scene against round 50 and the D061 rebuilt base (`runs/flow26b/v1`), same groups as D059, whatever the outcome.
