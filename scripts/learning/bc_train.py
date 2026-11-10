@@ -94,6 +94,87 @@ def iter_records(dirs, unnormalize, size=96):
                     yield (img[r], z["agent_pos"][r].astype(np.float32), acts[r], f"{z['shape']}-dagger")
 
 
+# ------------------------------------------------------------------------------------- parallel file loading
+# The serial generators above decompress every file on one core (~35 min for the 26-letter set). With
+# TDYSSEY_LOAD_WORKERS=N the same files are read by N worker processes; the main process consumes them in the original
+# order and does everything else exactly as the serial code (episode selection with the same random stream, the same
+# unnormalize call per file), so the yielded items, and the built arrays, are identical.
+
+def _load_demo_file(f, sub):
+    ff = f.parent/sub/f"{f.stem}_frames.npz"
+    if not ff.exists():
+        return None
+    z = {k: v for k, v in np.load(f).items()}
+    z["__frames"] = np.load(ff)["frames"]
+    return z
+
+
+def _load_record_file(f, size):
+    with np.load(f) as z:
+        if "candidate_x" not in z.files or len(z["choice"]) == 0:
+            return None
+        n = len(z["choice"])
+        lab = z["candidate_x"][np.arange(n), z["choice"]].astype(np.float32)
+        img = resize_frames(np.moveaxis(z["image"], 2, -1), size)
+        return lab, img, z["agent_pos"].astype(np.float32), str(z["shape"])
+
+
+def _ordered(fn, items, workers, *extra):
+    """Results of fn(item, *extra) in item order, at most 2*workers in flight (bounded host memory)."""
+    import collections, concurrent.futures, multiprocessing
+    ctx = multiprocessing.get_context("spawn")
+    with concurrent.futures.ProcessPoolExecutor(workers, mp_context=ctx) as ex:
+        q, it = collections.deque(), iter(items)
+        for item in it:
+            q.append((item, ex.submit(fn, item, *extra)))
+            if len(q) >= 2 * workers:
+                break
+        while q:
+            item, fut = q.popleft()
+            nxt = next(it, None)
+            if nxt is not None:
+                q.append((nxt, ex.submit(fn, nxt, *extra)))
+            yield item, fut.result()
+
+
+def iter_episodes_parallel(args, workers):
+    """iter_episodes with the demo files read by worker processes (same items, same order)."""
+    sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
+    rng = np.random.default_rng(1234)
+    files = sorted(f for d in args.demos for f in Path(d).glob("*.npz"))
+    for f, z in _ordered(_load_demo_file, files, workers, sub):
+        if z is None:
+            print(f"skipped {f.name}: no {sub}/ file", flush=True); continue
+        fr = z.pop("__frames")
+        for i in range(len(z["seed"])):
+            n = int(z["mask"][i].sum()); m = n - 1
+            if m < 2 or rng.random() >= args.data_fraction:
+                continue
+            plan = z["plan"][i, :m] if (args.label == "plan" and "plan" in z) else None
+            yield (fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+        del fr
+    if args.human_t:
+        import zarr
+        g = zarr.open(str(args.human_t), "r")
+        img, st, act = g["data"]["img"][:], g["data"]["state"][:], g["data"]["action"][:]
+        ends = g["meta"]["episode_ends"][:]
+        for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
+            yield (resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
+                   "T-human", None, None)
+
+
+def iter_records_parallel(dirs, unnormalize, size, workers):
+    """iter_records with the record files read by worker processes (same items, same order)."""
+    files = [f for d in dirs for f in sorted(Path(d).glob("*.npz"))]
+    for f, r in _ordered(_load_record_file, files, workers, size):
+        if r is None:
+            continue
+        lab, img, apos, shape = r
+        acts = unnormalize(lab)
+        for k in range(len(lab)):
+            yield (img[k], apos[k], acts[k], f"{shape}-dagger")
+
+
 def count_frames(args):
     """Frames the streaming build will write, without loading any frames (same choices as iter_episodes)."""
     sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
