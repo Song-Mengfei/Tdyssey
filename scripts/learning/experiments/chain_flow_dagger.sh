@@ -64,6 +64,11 @@ print('[flowdagger] round $k: previous checkpoint solved', s, 'of 1350 validatio
   recs="$OLD $(ls -d $R/mpc-data/$FLOW_RUN-r*/data | tr '\n' ' ')"
   $PY -B scripts/learning/flow_train.py --init $student --demos $DEMOS --human-t $HUMAN --records $recs --label plan \
       --batch 128 --steps $STEPS --save-every 10000 --resume --out $out/train > $L/round$k-train.log 2>&1
+  if [ ! -f $out/train/ema-step$STEPS.pt ] && [ "${TDYSSEY_LOAD_WORKERS:-0}" != 0 ]; then   # retry once, serial loader
+    echo "[flowdagger $(date +%T)] round $k training failed; retrying with the serial loader"
+    TDYSSEY_LOAD_WORKERS=0 $PY -B scripts/learning/flow_train.py --init $student --demos $DEMOS --human-t $HUMAN --records $recs \
+        --label plan --batch 128 --steps $STEPS --save-every 10000 --resume --out $out/train >> $L/round$k-train.log 2>&1
+  fi
   [ -f $out/train/ema-step$STEPS.pt ] || { echo "[flowdagger $(date +%T)] round $k training failed"; break; }
   student=$out/train/ema-step$STEPS.pt; echo "$student" > $RUN/last_round_checkpoint.txt
 done
