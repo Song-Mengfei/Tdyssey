@@ -5,14 +5,17 @@
 # every flow round's records). Each round also checks the previous checkpoint on the 50 validation scenes per shape
 # (monitoring only). New rounds start only while DEADLINE minus ROUND_HOURS + RESERVE_HOURS is still ahead; then the
 # deciding test runs on the last completed round (chain_d060.sh).
-# Usage: DEADLINE="2026-11-09 20:15" chain_flow_dagger.sh [first round] [last round]
+# Usage: DEADLINE="2026-11-09 20:15" [FLOW_RUN=flow26] chain_flow_dagger.sh [first round] [last round]
+#   FLOW_RUN names the run folder (runs/$FLOW_RUN, base checkpoint runs/$FLOW_RUN/v1/ema-step160000.pt) and the data
+#   folders (runs/mpc-data/$FLOW_RUN-r<k>); D061 uses flow26b.
 #   training seeds 800000 + 20*i, i = 30000 + 70*k (unused range 30000-43999)
 source "$(dirname "$0")/common.sh"
 export TDYSSEY_SHAPES=T,T_narrow,Y,D,L,E,F,J,P,U,A,B,C,G,H,I,K,M,N,O,Q,R,S,V,W,X,Z
 first=${1:-1}; last=${2:-8}
 [ -n "$DEADLINE" ] || { echo "set DEADLINE (e.g. '2026-11-09 20:15')"; exit 1; }
 end=$(date -d "$DEADLINE" +%s)
-R=$WORK/runs; L=$WORK/logs/flow; RUN=$R/flow26; mkdir -p $L
+FLOW_RUN=${FLOW_RUN:-flow26}
+R=$WORK/runs; L=$WORK/logs/$FLOW_RUN; RUN=$R/$FLOW_RUN; mkdir -p $L
 PY=${PY:-$REPO/.venv/bin/python}; [ -x "$PY" ] || PY=$WORK/repo/.venv/bin/python
 STEPS=${STEPS:-20000}; NEWSCENES=${NEWSCENES:-60}; WAVE=${WAVE:-4}; MIN_FREE_GB=${MIN_FREE_GB:-10}
 ROUND_HOURS=${ROUND_HOURS:-4}; RESERVE_HOURS=${RESERVE_HOURS:-2.5}
@@ -34,7 +37,7 @@ for k in $(seq $first $last); do
     $PY -B scripts/learning/base_rollouts.py eval --seed-base 400000 --start $part --scenes $n --execute 8 \
         --shapes $LETTERS --student $student --out $out/eval-in-x8-part$part.json > $L/round$k-eval-$part.log 2>&1 &
   done
-  data=$R/mpc-data/flow26-r$k; coll=""
+  data=$R/mpc-data/$FLOW_RUN-r$k; coll=""
   for s in $LETTERS; do
     while [ $(for p in $coll; do kill -0 $p 2>/dev/null && echo x; done | wc -l) -ge $WAVE ] || [ "$(free_gb)" -lt $MIN_FREE_GB ]; do sleep 15; done
     $PY -B scripts/learning/mpc_dagger.py $W --execute 8 --every 8 --beta 0.3 --student $student --scenes $(nsc $s) \
@@ -55,7 +58,7 @@ import json, glob
 s = sum(v['success'] for f in glob.glob('$out/eval-in-x8-part*.json') for v in json.load(open(f))['summary'].values())
 print('[flowdagger] round $k: previous checkpoint solved', s, 'of 1350 validation scenes')"
   echo "[flowdagger $(date +%T)] round $k collected $(ls $data/data 2>/dev/null | wc -l) scenes"
-  recs="$OLD $(ls -d $R/mpc-data/flow26-r*/data | tr '\n' ' ')"
+  recs="$OLD $(ls -d $R/mpc-data/$FLOW_RUN-r*/data | tr '\n' ' ')"
   $PY -B scripts/learning/flow_train.py --init $student --demos $DEMOS --human-t $HUMAN --records $recs --label plan \
       --batch 128 --steps $STEPS --save-every 10000 --resume --out $out/train > $L/round$k-train.log 2>&1
   [ -f $out/train/ema-step$STEPS.pt ] || { echo "[flowdagger $(date +%T)] round $k training failed"; break; }

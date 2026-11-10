@@ -1105,3 +1105,15 @@ help; they cost about 3 points. Source: the chain log (`logs/1083816/chain_d060.
 report_pair.py's output). The A100 node's /tmp was wiped at job end before the flow checkpoints, the round data and
 this test's episode files were uploaded, so per-shape numbers for D060 and the flow checkpoints are not available; the
 D059 episode files are in the store.
+
+## D061 — Rebuild the flow policy and continue its correction rounds (2026-11-10, before any result)
+
+Lead's decision: continue the flow policy's correction rounds beyond D060's five. The D060 checkpoints and round data
+were lost with the A100 node, so the H100 job first rebuilds the base flow policy with the D059 command (same data,
+settings, 160k steps; a rerun, not bit-identical) as `runs/flow26b/v1`, then runs the D060 round recipe
+(`chain_flow_dagger.sh` with FLOW_RUN=flow26b; the same practice-scene seeds i = 30000 + 70*k, continuing past k = 5)
+for as many rounds as fit before the job ends, with validation of every checkpoint for monitoring. Each round's
+checkpoint and data are uploaded to the store when the round ends. Deciding test (`chain_d060.sh` with
+FLOW_RUN=flow26b POOL=15000000 OUTNAME=fairtest-d061): the last completed round against the rebuilt base and round 50,
+200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (unused), paired, same groups as D059, whatever the
+outcome.
