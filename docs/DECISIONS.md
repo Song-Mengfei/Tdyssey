@@ -1118,6 +1118,12 @@ FLOW_RUN=flow26b POOL=15000000 OUTNAME=fairtest-d061): the last completed round 
 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (unused), paired, same groups as D059, whatever the
 outcome.
 
+D061 amendment (2026-11-10, before any result; lead's decision): after the 8 x 8 rebuild (`runs/flow26b`), the H100
+trains the same policy with all 16 x 16 patch tokens per frame (`--pool 16`, everything else identical;
+`runs/flow26b16`). Both bases are scored on the 50 validation scenes per shape; the correction rounds continue from
+the one with more successes (8 x 8 on a tie), and the deciding test (seeds 15000000 + 20*i) also runs the other base on
+the same scenes, so 8 x 8 vs 16 x 16 is compared directly.
+
 ## D062 — Larger encoder and full image detail on the A100 (2026-11-10, before any result)
 
 Lead's decision for the queued A100 job: the D059 flow policy with two changes, the large DINOv2 encoder
