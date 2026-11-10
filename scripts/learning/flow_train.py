@@ -50,7 +50,12 @@ def build_data(args, normalizer, dev):
                                         shape=(bc_train.count_frames(args), args.image_size, args.image_size, 3))
         import atexit; atexit.register(lambda: path.unlink(missing_ok=True))
         print(f"frames streamed to {path} ({out.nbytes/2**30:.0f} GB)", flush=True)
-        eps = bc_train.iter_episodes(args); recs = bc_train.iter_records(args.records, unnorm, args.image_size)
+        nw = int(os.environ.get("TDYSSEY_LOAD_WORKERS", "0"))                  # parallel file reading, same arrays
+        if nw > 0:
+            eps = bc_train.iter_episodes_parallel(args, nw)
+            recs = bc_train.iter_records_parallel(args.records, unnorm, args.image_size, nw)
+        else:
+            eps = bc_train.iter_episodes(args); recs = bc_train.iter_records(args.records, unnorm, args.image_size)
         frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage, out=out)
         assert len(pos) == len(frames), f"streamed {len(pos)} frames into an array of {len(frames)}"
         frames.flush()
