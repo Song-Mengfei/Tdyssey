@@ -1062,3 +1062,46 @@ x_t = t x1 + (1 - t) noise, t = 0.999 (1 - u), u ~ Beta(1.5, 1) (pi0); 10 Euler 
 (head 1e-4, encoder 1e-5, betas 0.9/0.95), 1000 warm-up steps then cosine, bf16, EMA; batch 128, 160k steps (about 6.4
 passes over the round-50 training data: same 116 record folders, 4 teacher demonstration folders and human T data).
 `base_rollouts.build` loads it, so the existing tests and correction rounds run unchanged.
+
+D059 test (fixed 2026-11-08, before the final checkpoint exists). Interim validation, for monitoring only: the step-120k
+checkpoint solved 595 of 1350 validation scenes (44.1%), against 470 for round 44 and at most 480 for any 96 px round
+on the same scenes (validation picked those rounds, so this favours the CNN line). The deciding test: the final
+checkpoint (`runs/flow26/v1/ema-step160000.pt`) against the 96 px round-50 student (tested sampler, 100 DDPM steps),
+200 new scenes per shape on all 33 shapes (27 trained, 6 never seen), seeds 13000000 + 20*i, i in [0, 200) (unused so
+far), 8 executed targets, paired by scene; reported for all 27 trained shapes, the 10 earlier and 17 newer, the 6
+never-seen shapes, T and near-T, with 95% intervals, whatever the outcome.
+
+D059 outcome (2026-11-08; 6600 paired episodes, `runs/fairtest-d059/report.txt` in the store). Flow-matching policy
+(final checkpoint, step 160k) against the 96 px round-50 student, success %: all 27 trained shapes 32.8 -> 45.2 (+12.4
+[+10.6, +14.2]); 10 earlier shapes 33.3 -> 42.8 (+9.5 [+6.6, +12.4]); 17 newer letters 32.5 -> 46.6 (+14.1 [+11.9,
++16.3]); 6 never-seen shapes 4.1 -> 14.9 (+10.8 [+8.6, +13.0]); T 37.5 -> 50.0 (+12.5 [+3.0, +22.0]); near-T 30.5 ->
+33.5 (+3.0 [-6.2, +12.2]); digit 7 17.5 -> 30.5. Final coverage on the trained shapes 0.82 -> 0.89; 26 of 27 trained
+shapes improve. Same data, same 96 px camera input and same 8 executed targets as round 50; trained from scratch
+(DINOv2 encoder pretrained on images) for 160k steps without correction rounds of its own. The original policy was not
+run on this pool, so no claim against it here.
+
+## D060 — Correction rounds driven by the flow policy (2026-11-08, before any result)
+
+Lead's decision: the 96 px round-50 policy stays the project's final model; the flow policy (D059) is an experiment
+on how much the architecture matters, reported in a few extra slides; its D059 result (no rounds of its own) is the
+architecture comparison. As an additional experiment (what happens if it keeps training), its remaining A100 time goes
+to correction rounds driven by the flow policy itself, with the D053 recipe (teacher wm2 v3 takes 30% of 8-control
+decisions; 30 practice scenes per round for the ten earlier shapes, 60 for the 17 new letters; training seeds
+800000 + 20*i, i = 30000 + 70*k, an unused range), each round fine-tuning 20k steps from the previous checkpoint on all
+data (the round-50 data set plus all flow-round records). `scripts/learning/experiments/chain_flow_dagger.sh`; new
+rounds start only while there is time left for a round and the test before the job ends. Validation of each
+checkpoint is monitoring only. The deciding test (`chain_d060.sh`): the last completed round against the D059
+checkpoint (no rounds) and round 50, 200 new scenes per shape on all 33 shapes, seeds 14000000 + 20*i (unused), paired,
+reported for the same groups as D059 whatever the outcome.
+
+D060 outcome (2026-11-09). Five rounds ran (validation of the checkpoints before rounds 1-5 and after round 4: 572,
+591, 563, 585, 594 of 1350; flat within chance). Test on 6600 paired new scenes (seeds 14000000 + 20*i), success %:
+flow policy without rounds vs round 50: all 27 trained shapes 31.9 -> 44.6 (+12.7 [+10.9, +14.5]), 10 earlier 32.1 ->
+41.8 (+9.7 [+6.8, +12.6]), 17 newer 31.8 -> 46.3 (+14.5 [+12.3, +16.7]), 6 never seen 3.4 -> 13.8 (+10.4 [+8.3, +12.5]):
+the D059 gain replicates on a second pool. After five rounds vs round 50: all 27 +9.7 [+8.0, +11.5], never seen +9.2.
+After five rounds vs without rounds: all 27 trained shapes 44.6 -> 41.6 (-3.0 [-4.8, -1.2]); 10 earlier -1.8 [-4.7,
++1.2]; 17 newer -3.7 [-6.0, -1.5]; never seen -1.2 [-3.8, +1.3]. Correction rounds driven by the flow policy did not
+help; they cost about 3 points. Source: the chain log (`logs/1083816/chain_d060.log` in the store, which prints
+report_pair.py's output). The A100 node's /tmp was wiped at job end before the flow checkpoints, the round data and
+this test's episode files were uploaded, so per-shape numbers for D060 and the flow checkpoints are not available; the
+D059 episode files are in the store.
