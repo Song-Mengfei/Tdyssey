@@ -155,7 +155,7 @@ class DinoV2(nn.Module):
 
 
 def load_dinov2(model, repo=DINO_REPO):
-    """Strictly load the public facebook/dinov2-base weights (HF_HOME cache; weights only, no transformers)."""
+    """Strictly load public DINOv2 weights (facebook/dinov2-base or -large; HF_HOME cache; weights only, no transformers)."""
     from huggingface_hub import hf_hub_download
     from safetensors.torch import load_file
     state = load_file(hf_hub_download(repo, "model.safetensors"))

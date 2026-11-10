@@ -146,7 +146,9 @@ def main():
     p.add_argument("--heads", type=int, default=16)
     p.add_argument("--mlp-ratio", type=float, default=4.0)
     p.add_argument("--adaln", choices=("single", "full"), default="single", help="Shared (PixArt adaLN-single) or per-block time modulation")
-    p.add_argument("--pool", type=int, default=8, help="Patch tokens per frame are pooled to pool x pool")
+    p.add_argument("--pool", type=int, default=8, help="Patch tokens per frame are pooled to pool x pool (16 = all of them)")
+    p.add_argument("--vit", choices=("base", "large"), default="base",
+                   help="DINOv2 encoder: base (facebook/dinov2-base, 86.6M) or large (facebook/dinov2-large, 304M)")
     p.add_argument("--no-cls", action="store_true", help="Drop the CLS token of each frame")
     p.add_argument("--no-qk-norm", action="store_true")
     p.add_argument("--inference-steps", type=int, default=10)
@@ -181,7 +183,8 @@ def main():
         init = torch.load(args.init, map_location="cpu", weights_only=True)
         net = fp.build_network(init); arch = net.arch
     else:
-        arch = fp.default_arch(width=args.width, depth=args.depth, heads=args.heads, mlp_ratio=args.mlp_ratio, adaln=args.adaln,
+        vit = {"base": {}, "large": {"encoder": "facebook/dinov2-large", "vit_dim": 1024, "vit_depth": 24, "vit_heads": 16}}[args.vit]
+        arch = fp.default_arch(**vit, width=args.width, depth=args.depth, heads=args.heads, mlp_ratio=args.mlp_ratio, adaln=args.adaln,
                                pool=args.pool, use_cls=not args.no_cls, qk_norm=not args.no_qk_norm,
                                inference_steps=args.inference_steps)
         net = fp.FlowPolicy(arch, normalizer, pretrained=True)
