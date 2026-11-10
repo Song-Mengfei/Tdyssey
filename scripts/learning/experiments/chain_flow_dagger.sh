@@ -66,6 +66,7 @@ print('[flowdagger] round $k: previous checkpoint solved', s, 'of 1350 validatio
       --batch 128 --steps $STEPS --save-every 10000 --resume --out $out/train > $L/round$k-train.log 2>&1
   if [ ! -f $out/train/ema-step$STEPS.pt ] && [ "${TDYSSEY_LOAD_WORKERS:-0}" != 0 ]; then   # retry once, serial loader
     echo "[flowdagger $(date +%T)] round $k training failed; retrying with the serial loader"
+    [ -f $out/train/resume.pt ] || rm -rf $out/train                              # nothing to resume: start clean
     TDYSSEY_LOAD_WORKERS=0 $PY -B scripts/learning/flow_train.py --init $student --demos $DEMOS --human-t $HUMAN --records $recs \
         --label plan --batch 128 --steps $STEPS --save-every 10000 --resume --out $out/train >> $L/round$k-train.log 2>&1
   fi
