@@ -1135,3 +1135,14 @@ test on the H100: 51 GB peak, out of memory without it). Run folder `runs/flow26
 10k steps. If the job's end comes before step 160k, the latest checkpoint is tested instead and reported as such.
 Test: 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (the D061 pool), 8 executed targets, paired by
 scene against round 50 and the D061 rebuilt base (`runs/flow26b/v1`), same groups as D059, whatever the outcome.
+
+## D063 — Three more held-out shapes: digits 2, 5 and 8 (2026-11-10, before any result)
+
+Lead's decision: add `digit2`, `digit5` and `digit8` to the held-out test shapes (`tdyssey/letters.py`), never used
+for training, data or tuning. Drawn on the same 5 x 7 block grid, each one edge-connected piece, and checked by script
+against every capital, near-T and the other held-out shapes, including 180-degree rotations and mirror images: no
+match; the nearest shapes differ by 6-7 cells (digit 2 vs S or Z, digit 5 vs G, digit 8 vs B), about as far apart as
+B and D. Because a matched scene is accepted only if it is valid for every shape in the run, the three digits are
+tested as their own matched group with T (`T digit2 digit5 digit8`) on the same seeds, so the 33-shape scenes of every
+test stay unchanged. From the D061 and D062 tests onward every policy also runs this group; earlier tests do not
+include them.
