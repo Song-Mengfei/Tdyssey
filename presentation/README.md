@@ -7,7 +7,7 @@ folder is how the whole team can see and show them.
 | Folder | What is in it |
 | --- | --- |
 | [`STORY.md`](STORY.md) | Talk plan (10 minutes, slide by slide with timing and visuals), paper outline, key numbers, likely questions |
-| [`slides/`](slides/) | `main.tex`: the Beamer deck (16:9, 29 main slides with step-by-step builds, 18 backup; standard LaTeX font). Build with `pdflatex main.tex` (twice) in `slides/`, on Overleaf (see below), or download the PDF that GitHub builds on every push (Actions -> Presentation PDFs -> `presentation-pdfs`) |
+| [`slides/`](slides/) | `main.tex`: the Beamer deck (16:9, 41 main slides and 21 backup; 62 final-build pages by default, optional step-by-step builds; standard LaTeX font). Slides 4-14 are the early-attempt image-model story in `slides/image_world_model_48m.tex`, placed after the opening three frames; its summary is slide 41 in `slides/image_world_model_summary.tex`, matching the current PPTX order. All 17 media slides use the current PPTX posters and reviewed videos; slides4/9/14 are saved-output displays (the two48M clips are discrete snapshots); the earlier 8.73M story remains in `slides/image_world_model.tex` as historical source. `slides/playable_video_appendix.tex` retains three recorded clips with dedicated playback space. Build with `pdflatex main.tex` (twice) in `slides/`, on Overleaf (see below), or download the PDF that GitHub builds on every push (Actions -> Presentation PDFs -> `presentation-pdfs`) |
 | [`figures/`](figures/README.md) | Every graph as PDF (Beamer) and PNG (PowerPoint); `figures/deck/` holds the versions drawn at the exact size the deck uses them (including the build steps), `figures/slide/` and `figures/slide_half/` older large-font versions, `figures/tikz/` the diagrams (`overview.tex`: Figure 1, used by the deck and the paper; `worldmodel.tex` and `planner.tex`: how the world model and the teacher work; `architecture.tex`: the architecture experiment); [`figures/README.md`](figures/README.md) lists what each shows |
 | `images/` | Shape galleries, camera views, last-frame grids for every model, filmstrips (five moments of one episode); `images/slide/` holds the crops the deck uses (built by `scripts/slide_images.py`) |
 | [`videos/`](videos/INDEX.md) | Demo videos; [`videos/INDEX.md`](videos/INDEX.md) lists every clip with its outcome; `videos/posters/` has a still of each (its last frame) |
@@ -51,19 +51,41 @@ The clips are examples from validation scenes (seeds 400000 and 400020), which w
 success rates come only from the fresh-scene tests in `data/`. `videos/INDEX.md` gives every clip's outcome so you can
 choose honestly (for instance one success and one near miss).
 
-## Overleaf and PowerPoint
+## Current PPTX, LaTeX and video playback
 
-- Overleaf limits uploads to about 50 MB. Build a small zip (about 6 MB, tested: both documents compile from it alone) with only what the deck and paper use:
-  `python3 presentation/scripts/overleaf_zip.py --out presentation-overleaf.zip` (from the repository root; keep the
-  zip out of Git). Upload it as a new project and set `slides/main.tex` (or `paper/main.tex`) as the main file; the
-  deck finds its files whether Overleaf compiles from the project root or from `slides/`.
-- For the talk, play `videos/talk/demo_reel.mp4` on the demo slide; it does not depend on PDF links.
-- Stills for the clips the deck uses also exist mid-episode (`videos/posters/*_mid.png`), showing the plan dots.
-- In the PDF, clicking a video still opens the clip only in local viewers that allow it (for example Acrobat, Okular)
-  and only with `videos/` next to `slides/`; it does not work on Overleaf, in browsers or in macOS Preview. In
-  PowerPoint, insert the MP4 files directly.
-- The deck uses graphs from `figures/deck/` (drawn at their exact size on the slide, so their text matches the slide
-  text): `make_figures.py --variant deck` rebuilds them.
+The editable source now follows the reviewed 62-slide offline PPTX: the image-model
+section is at 4-14, the closing slide is 40, its image-model summary is 41, and the 21
+backup slides follow. Printed counters and progress bars follow the current order.
+The source PPTX SHA256,17 exact MP4/poster hashes, bounding boxes and scientific
+qualifications are in [`data/pptx_slide_media.json`](data/pptx_slide_media.json).
+The text, tables and TikZ diagrams remain editable; media posters are extracted
+from the PPTX without recompression. No training, simulation or inference was run.
+
+- Compile `slides/main.tex` with `pdflatex` twice, or use `latexmk -pdf main.tex`
+  from `presentation/slides/`. Default output is exactly62 pages: the final build
+  of each PPTX slide. The original overlay builds remain available with
+  `pdflatex -jobname=tdyssey-builds "\def\tdanimated{1}\input{main.tex}"`.
+- Clicking a video poster in the default PDF opens its existing public Drive
+  video. All 17 videos were verified as anyone-with-link viewers on 2026-11-11;
+  the deck itself and the containing media folder retain their separate access.
+  Eight comparison slides each open one synchronized MP4, so all panels start
+  together. Saved-snapshot qualifications remain in the source and media index.
+- For local video launches, compile from `presentation/slides/` with
+  `pdflatex -jobname=tdyssey-local "\def\tdlocalvideos{1}\input{main.tex}"`
+  twice. Keep the PDF in `slides/` and the included `videos/` tree beside it.
+  Acrobat/Okular-style local-launch support depends on the viewer. A PDF is not
+  an offline video container and does not provide PowerPoint-style inline media.
+- Build a portable Overleaf/source zip from the repository root:
+  `python -B presentation/scripts/overleaf_zip.py --out presentation-overleaf.zip`.
+  It includes the 17 current MP4 files and posters, plus the deck, paper, diagrams
+  and figures. Add `--without-videos` for a smaller online-only bundle. Keep
+  generated zips/PDFs outside Git. On Overleaf, choose `slides/main.tex` or
+  `paper/main.tex` as the main document.
+- The standalone offline PPTX supplied separately embeds all 17 videos. A new
+  Google Slides export need not retain those embedded files. See
+  [`videos/slides/README.md`](videos/slides/README.md) for extraction/verification
+  and [`videos/slides/INDEX.md`](videos/slides/INDEX.md) for the current media map.
+- Graphs remain in `figures/deck/`; `make_figures.py --variant deck` rebuilds them.
 
 ## Rebuild
 
@@ -83,10 +105,6 @@ is already in this folder.
 
 ## Not here yet
 
-- The two image world-model slides (placeholders for the teammates who built it; their published figures are in
-  `images/image_world_model/`).
 - A screen recording and a screenshot of the interactive demo (needs a browser): record them from the Hugging Face
   Space and add them to `videos/` and `images/`; the demo slide has a TODO.
 - Speakers per section.
-- The slides and paper have not been compiled on the training machine (no LaTeX there); compile on Overleaf or
-  locally and fix anything that breaks.

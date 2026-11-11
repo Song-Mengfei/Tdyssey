@@ -1,6 +1,6 @@
 # Shared project status
 
-Updated: 2026-11-06. Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
+Updated: 2026-11-11 (presentation integration; policy research summary as of 2026-11-06). Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
 exact simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
 copies the teacher's intended plans and learns from correction rounds (DAgger). On 300 fresh scenes per shape (D051),
 success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
@@ -34,6 +34,20 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- PPTX-to-LaTeX synchronization, 2026-11-11: the editable [Beamer source](../presentation/slides/main.tex) follows the reviewed 62-slide offline deck, including the image-model section at 4-14 and its summary at 41. Default compilation produces 62 final-build pages with updated counters; the optional overlay builds remain available. The [media manifest](../presentation/data/pptx_slide_media.json) records 17 unchanged MP4 streams and original posters, including eight synchronized comparisons. PDF posters open the public Drive videos by default; a documented build option uses the included relative MP4 files in an external player. The portable source zip includes those media files. This presentation-only update adds no training, inference or simulation; PDF local launches depend on the viewer.
+
+- Native early-attempt presentation delivery, 2026-11-11: the same62-slide Google Slides file now places the image-model study at4-15, with corrected page counters and progress bars. Three new Drive videos on4/9/14 were actually played and decoded; all38 original video objects retain their original bindings, geometry and properties. The two48M clips are explicitly discrete saved snapshots. Local PPTX/PDF/LaTeX include clickable posters; no new model calls, simulation or training.
+
+- Early image-model video posters, 2026-11-11: linked approved saved-output clips from slides4/9/14 in the local portable source/PDF. The historical clip has four saved prediction steps and a fixed real H4 reference; both48M clips are explicitly discrete H4/H8/H16 snapshots. Source comments, hashes, unequal-budget and L021 moving-prefix qualifications are retained; no new inference, simulation or training.
+
+- Presentation order, 2026-11-11: moved the existing twelve image-world-model frames immediately after the opening three frames, labelled as early attempts. Figures, scientific sources, the moving-L consecutive-frame example and the 41-main/21-backup split are unchanged. Two existing user title/label edits and omitted printed notes are mirrored from native Slides; qualifications remain in speaker comments and provenance. Local PDF page labels and portable LaTeX are regenerated from this order; no training or inference.
+
+- P28 visual revision, 2026-11-11: replaced the nearly static O input illustration with saved moving-L frames4..8 from AC-L-05-08. The four observed frames and the true one-step next frame use a common fixed ROI at equal scale; original96 RGB and hashes are retained in the portable source. The same native Slides file was patched in place; all38 video objects and all other slide elements were preserved. No new training, inference or simulation.
+
+- SciGuard presentation update, 2026-11-11: [twelve image-model frames](../presentation/slides/image_world_model_48m.tex) and [asset provenance](../presentation/data/image_wm_48m_sources.json) replace the earlier image-model section, keeping all 47 other author frames unchanged. The 48,864,707-parameter architecture uses three past control targets plus the current target and predicts RGB only. The matched intermediate-parent continuation study is separate from the completed original baseline (49,991 effective updates); the L counterexamples and fixed-development-set limits are retained. The 62-slide [native Google Slides](https://docs.google.com/presentation/d/1GBYTmR0nSW-OEXcfk7nQGnv2nTdlghSZDKnDsk6AmUw/edit?usp=drivesdk) has 38 real video placements, each actually played and decoded in the final Slides file. The earlier delivery and PR remain unchanged; this presentation work ran no training or inference.
+
+- Presentation integration, 2026-11-10 (local PR #12 checkout): replaced the two image-world-model placeholders with ten visual frames, including the approved GPC U-Net diagram. Sources: [image-model section](../presentation/slides/image_world_model.tex), [asset provenance](../presentation/data/image_wm_story_sources.json). This reuses saved experiment evidence; no new training or generalization result is claimed.
 
 - 26-letter policy, 2026-11-02 to 2026-11-06 (H100 + A100; [learning findings](LEARNING_FINDINGS.md) section 8,
   D051-D053): world model v3 for 27 shapes; a larger per-round budget; final test on 300 fresh scenes per shape as above.

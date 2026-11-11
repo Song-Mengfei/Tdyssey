@@ -1012,3 +1012,13 @@ H.264 videos of at most 768 px wide grids (CRF 28), no checkpoints, no raw run d
 whole folder under 200 MB (`presentation/README.md` lists the contents). Videos are validation-scene examples and are
 labelled as such; success rates come only from the fresh-scene tests.
 
+PPTX-preservation addendum (2026-11-11): the lead requested conversion of the
+approved 62-slide offline PPTX back into this PR's editable LaTeX. Preserve its 17
+MP4 streams and original posters under `presentation/videos/slides/` and
+`presentation/videos/posters/slides/`, with relative-path bindings and byte hashes
+in `presentation/data/pptx_slide_media.json`. This narrow snapshot retains the
+approved wider canvases, including the 8 synchronized comparisons, instead of
+resizing their panels to 768 px. The 17 MP4s total 6,744,124 bytes; no new raw run data,
+model weights or experiments are added. The under 200 MB presentation limit remains.
+PDF posters open the existing Drive video by default, or the included relative
+MP4 with the documented local-launch build option; PDF viewer support varies.
