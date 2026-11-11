@@ -450,7 +450,7 @@ DECK_WORDS = [
     ("D041 enc. 70%", "test 3: encoder 70%"), ("D042 enc. 30%", "test 4: encoder 30%"),
     ("D042 enc. 50%", "test 5: encoder 50%"), ("D043 enc. 50%", "test 6: encoder 50%"),
     ("AdvantageFlow", "RL variant A"), ("NFT", "RL variant B"), ("dense, lr ", "learning rate "),
-    ("LoRA, lr ", "low-rank, rate "), ("before: 55%", "before RL: 55%"), ("updates", "RL updates"),
+    ("LoRA, lr ", "low-rank, rate "), ("before: 55%", "before RL 55%"), ("updates", "RL updates"),
     ("All teacher demos", "All teacher data (vs half)"),
     ("Plan labels", "Intended-plan labels"), ("990M network", "990M-parameter network"),
     ("best of 16, true simulator", "best of 16, re-ranked in the simulator"), ("generic", "plain network"),
@@ -2655,9 +2655,9 @@ def fig_method_teacher_26():
         ax.set_yticks([0, 50, 100])
     ax.set_ylabel("Validation success\n(same 50 scenes per shape)" if not slide() else "Validation success")
     handles = [patch(TEACHER, SL("Planning teacher (reads exact state)",
-                                 f"Teacher (exact state): {100 * kt / nt:.0f}% overall")),
+                                 f"Teacher (exact state), {100 * kt / nt:.0f}% overall")),
                patch(M96, SL(f"Camera student, 27 shapes, 96 px (round {STUDENT_VAL_ROUND})",
-                             f"Camera student (round {STUDENT_VAL_ROUND}): {100 * ks / ns:.0f}% overall"))]
+                             f"Camera student (round {STUDENT_VAL_ROUND}), {100 * ks / ns:.0f}% overall"))]
     if not slide():
         handles += [Patch(facecolor=TEACHER, edgecolor="white", hatch="//", label="teacher checked with world model v2"),
                     Patch(facecolor=TEACHER, edgecolor="white", hatch="..", label="... with world model v1")]
@@ -3229,7 +3229,7 @@ def fig_wm_accuracy():
         ax.plot(i, v, "_", color=INK2, ms=10, mew=2, zorder=4)
         ax.text(i - (0.12 if not sl else 0.4), v, t, ha="right", va="center", fontsize=11.5, color=INK2)
     if sl:          # what the marks mean (the default version has a legend)
-        ax.text(-0.45, 95, "dot: typical error\nline top: 1 in 10", ha="left", va="top", color=INK2)
+        ax.text(-0.45, 95, "dot = typical error\nline top = 1 in 10", ha="left", va="top", color=INK2)
     ax.axhline(need, color=INK, lw=1.1, ls=(0, (3, 2)))
     ax.set_yscale("log")
     ax.set_ylim(0.08, 150)
@@ -4292,7 +4292,8 @@ def fig_deck_stages(upto):
         ax.text(STAGE_OFF[2] + 33, min(L["y"][j - 3:j + 4]) - 2.2, "96 px", ha="center", va="top", **t)
     for L in lines:
         if L["stage"] < upto:
-            ax.plot(STAGE_OFF[L["stage"]] + L["x"], L["y"], color=L["color"], lw=1.3, marker="o", ms=2.0, zorder=3)
+            col = TEN if L["key"] == "exec" else L["color"]           # one colour for the 10-shape 96 px line (lead)
+            ax.plot(STAGE_OFF[L["stage"]] + L["x"], L["y"], color=col, lw=1.3, marker="o", ms=2.0, zorder=3)
     if upto >= 3:
         ax.plot(STAGE_OFF[2] + MAIN_ROUND, main_model_rate(LETTERS26), **(STAR | {"ms": 11, "mew": 0.8}))
     ax.set_xlim(0, STAGE_SPAN[2][1] + 1.6)
@@ -4476,6 +4477,79 @@ def fig_deck_arch_groups():
                Line2D([], [], marker="o", color=TRANSF, ls="none", ms=5, label="Flow-DiT")]
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0, 1.0), ncol=1, frameon=False,
               borderaxespad=0.1, handletextpad=0.3, labelspacing=0.25)
+    return fig
+
+
+# D064 architecture test episodes in the run store (read directly, so a rerun picks up parts that arrived later)
+D064_RUNS = Path(os.environ.get("TDYSSEY_WORK", "/tmp/Tdyssey")) / "runs" / "fairtest-d064"
+
+
+def _d064_episodes(prefix):
+    """{(shape, requested_seed): success} from every runs/fairtest-d064/<prefix>-part*.json present."""
+    import glob
+    out = {}
+    for f in sorted(glob.glob(str(D064_RUNS / f"{prefix}-part*.json"))):
+        for r in json.load(open(f))["episodes"]:
+            out[(r["shape"], int(r["requested_seed"]))] = int(r["success"])
+    return out
+
+
+def arch_letter_rates(shapes=LETTERS26):
+    """Per-shape success (%) of the main model (round 50) and Flow-DiT on the D064 test, paired by shape and scene seed
+    (keys present in both). From the run store when its files exist, otherwise from architecture_test_by_shape.csv
+    (build_experiment_data.py). Returns {shape: (main %, Flow-DiT %, paired scenes)} and the source used."""
+    A, B = _d064_episodes("r50"), _d064_episodes("base")
+    if A and B:
+        out = {}
+        for s_ in shapes:
+            ks = [k for k in A if k[0] == s_ and k in B]
+            if ks:
+                out[s_] = (100 * sum(A[k] for k in ks) / len(ks), 100 * sum(B[k] for k in ks) / len(ks), len(ks))
+        return out, f"run store {D064_RUNS}"
+    rows = _read_opt("architecture_test_by_shape.csv")
+    by = defaultdict(dict)
+    for r in rows:
+        by[r["shape"]]["flow" if r["policy"].startswith("Flow-DiT") else "main"] = r
+    out = {s_: (100 * float(by[s_]["main"]["success_rate"]), 100 * float(by[s_]["flow"]["success_rate"]),
+                int(by[s_]["main"]["episodes"])) for s_ in shapes if len(by.get(s_, {})) == 2}
+    return out, "data/architecture_test_by_shape.csv"
+
+
+def fig_deck_arch_letters():
+    """Architecture experiment (D064) per letter at 144 x 50 mm, like final_dumbbell: main model (round 50) and Flow-DiT
+    success on the same new scenes for each of the 26 letters, joined by a thin line; letters sorted by Flow-DiT
+    success; T bold; no narrow T and no never-seen shapes."""
+    R, src = arch_letter_rates()
+    if len(R) < len(LETTERS26):
+        print(f"  SKIPPED arch_letters: only {len(R)} of 26 letters have paired D064 episodes ({src})")
+        return None
+    ns = sorted({v[2] for v in R.values()})
+    print(f"  arch_letters: {src}, {ns[0]}-{ns[-1]} paired scenes per letter")
+    order = sorted(LETTERS26, key=lambda s_: (-R[s_][1], -R[s_][0], s_))
+    a = np.array([R[s_][0] for s_ in order])
+    b = np.array([R[s_][1] for s_ in order])
+    fig, ax = deck_fig(144, 50, l=12.5, r=1, b=6, t=6.5)
+    xs = np.arange(len(order))
+    ax.vlines(xs, a, b, color=tint(TRANSF, 0.55), lw=1.4, zorder=2)
+    ax.scatter(xs, a, s=18, color=M96, zorder=3, edgecolor="white", lw=0.6)
+    ax.scatter(xs, b, s=18, color=TRANSF, zorder=4, edgecolor="white", lw=0.6)
+    ax.set_xticks(xs, order, fontsize=9)
+    ax.tick_params(axis="x", length=0, pad=3)
+    for tl, s_ in zip(ax.get_xticklabels(), order):
+        if s_ == "T":
+            tl.set_fontweight("bold")
+            tl.set_color(INK)
+    top = max(64, 10 * math.ceil((max(a.max(), b.max()) + 2) / 10))
+    ax.set_xlim(-0.7, len(order) - 0.3)
+    ax.set_ylim(-2, top)
+    ax.set_yticks(list(range(0, top + 1, 20)))
+    ax.yaxis.set_major_formatter(PCT)
+    ax.set_ylabel("Success")
+    ax.grid(False, axis="x")
+    handles = [Line2D([], [], marker="o", color=M96, ls="none", ms=5, label="main model"),
+               Line2D([], [], marker="o", color=TRANSF, ls="none", ms=5, label="Flow-DiT")]
+    fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(12.5 / 144, 1.0), ncol=2, frameon=False,
+               borderaxespad=0.2)
     return fig
 
 
@@ -4717,6 +4791,10 @@ DECK_CUSTOM = [
      "50 correction rounds) vs Flow-DiT (505M: DINOv2 encoder with all 16x16 tokens + flow-matching DiT action head) "
      "on the same new scenes, 200 per shape; groups all 26 letters, 9 earlier, 17 new, 6 never seen, T (narrow T left "
      "out) with paired change and 95% interval (architecture_test_groups.csv)."),
+    ("arch_letters", fig_deck_arch_letters, "Architecture experiment (D064) per letter: main model (round 50) vs "
+     "Flow-DiT success on the same new scenes for the 26 letters (no narrow T, no never-seen shapes), joined by a thin "
+     "line, sorted by Flow-DiT success, T bold; read from the run store's fairtest-d064 episode files when present "
+     "(every part found, paired by shape and scene seed), else architecture_test_by_shape.csv."),
     ("blends_compact", fig_deck_blends, "Weight blends (D040-D043): change in T success vs the original for the six "
      "pre-registered tests with 95% intervals and the -5 point pass line; Y change and verdict as text columns "
      "(early_attempts.csv)."),

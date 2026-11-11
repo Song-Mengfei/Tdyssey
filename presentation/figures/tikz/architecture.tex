@@ -36,18 +36,18 @@
     \node[ar text, text=tdgrey] at (0,9.5) {same training data};
     \draw[ar box, draw=tdink!70] (116,12) rectangle (144,34);
     \node[ar title] at (118,32) {Same output};
-    \node[ar text] at (118,27.4) {16 planned\\pusher targets;\\executes 8};
+    \node[ar text] at (118,27.4) {16 planned\\pusher targets,\\executes 8};
   }
   % ---------------------------------------------------------------- 2: the official network (main model)
   \arstep{2}{
     \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdblue!60, fill=tdbluebg] (33,25) rectangle (111,46);
-    \node[ar tag=tdblue] at (35.5,43.4) {Main model: official Diffusion Policy network};
+    \node[ar tag=tdblue] at (35.5,43.4) {Main model, official Diffusion Policy network};
     \draw[ar box, draw=tdblue] (36,27.5) rectangle (66,40.5);
     \node[ar title] at (38,38.6) {ResNet-18};
     \node[ar text] at (38,34.2) {image encoder\\11M};
     \draw[ar box, draw=tdblue] (75,27.5) rectangle (108,40.5);
     \node[ar title] at (77,38.6) {1D U-Net};
-    \node[ar text] at (77,34.2) {251M; diffusion,\\100 denoising steps};
+    \node[ar text] at (77,34.2) {251M, diffusion,\\100 denoising steps};
     \draw[ar arrow=tdgrey] (66,34) -- (75,34);
     \draw[ar arrow=tdgrey] (28,28) -- (33,33);
     \draw[ar arrow=tdgrey] (111,33) -- (116,28);
@@ -55,13 +55,13 @@
   % ---------------------------------------------------------------- 3: Flow-DiT (505M)
   \arstep{3}{
     \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdtransf!60, fill=tdtransfbg] (33,0) rectangle (111,21);
-    \node[ar tag=tdtransf] at (35.5,2.6) {Experiment: Flow-DiT (505M)};
+    \node[ar tag=tdtransf] at (35.5,2.6) {Experiment, Flow-DiT (505M)};
     \draw[ar box, draw=tdtransf] (36,5) rectangle (66,18);
     \node[ar title] at (38,16.1) {DINOv2 ViT-B};
-    \node[ar text] at (38,11.7) {86.6M; pretrained\\on photos};
+    \node[ar text] at (38,11.7) {86.6M, pretrained\\on photos};
     \draw[ar box, draw=tdtransf] (75,5) rectangle (108,18);
     \node[ar title] at (77,16.1) {DiT head};
-    \node[ar text] at (77,11.7) {418M; flow matching;\\24 blocks, 10 steps};
+    \node[ar text] at (77,11.7) {418M, flow matching,\\24 blocks, 10 steps};
     \draw[ar arrow=tdgrey] (66,11.5) -- (75,11.5);
     \draw[ar arrow=tdgrey] (28,18) -- (33,13);
     \draw[ar arrow=tdgrey] (111,13) -- (116,18);

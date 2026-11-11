@@ -309,7 +309,7 @@
        T success at each run's last check.}
 \end{frame}
 
-\begin{frame}{The path to a teacher}
+\begin{frame}[c]{The path to a teacher}
   \vspace{1.5mm}
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
@@ -371,12 +371,12 @@
     \cpt{Teacher success per letter on the selection scenes. It reads the exact state, so it only teaches.}}
 \end{frame}
 
-\begin{frame}{The camera policy network}
+\begin{frame}[c]{The camera policy network}
   \centering
   \tikzfile{arch_cnn_detailed}\par
 \end{frame}
 
-\begin{frame}{Copying the teacher was not enough}
+\begin{frame}[c]{Copying the teacher was not enough}
   \vspace{2mm}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{74mm}
@@ -393,8 +393,8 @@
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
     \foreach \x/\c/\n/\h/\b in {2/tdblue/1/Policy drives/{practice scenes, camera only},
-                                37.7/tdgold/2/Teacher labels/{every state the policy visits},
-                                73.4/tdorig/3/Add to the data/{together with the\\teacher's own runs},
+                                37.7/tdgold/2/Teacher labels/{plans from each state\\the policy reached},
+                                73.4/tdorig/3/Add to the data/{these labels join\\all earlier data},
                                 109.1/tdblue/4/Retrain/{official network and recipe}}{
       \draw[rounded corners=1.6mm, fill=white, draw=\c, line width=0.9pt] (\x,0) rectangle ++(33.4,15);
       \node[st badge=\c] at (\x,15) {\n};
@@ -411,8 +411,8 @@
   \lbl{31mm}{K}{}\hspace{3mm}\lbl{31mm}{R}{}\hspace{3mm}\lbl{31mm}{E}{}\\[0.8mm]
   \scene{31mm}{slide/correction_K.png}\hspace{3mm}\scene{31mm}{slide/correction_R.png}\hspace{3mm}%
   \scene{31mm}{slide/correction_E.png}\hspace{4mm}%
-  \parbox[b]{36mm}{\raggedright\cpt{At states the policy reached itself, \swatch{tdblue!70} its 8 sampled plans and
-    \swatch[2pt]{tdgold} the teacher's label.}\vspace{2.5mm}
+  \parbox[b]{36mm}{\raggedright\cpt{Each picture is a state the policy reached itself. \swatch{tdblue!70} the 8 plans
+    it sampled, \swatch[2pt]{tdgold} the teacher's plan, used as the label.}\vspace{2.5mm}
     {\small 50 rounds, with 3.2M training examples in the last one.\par}}
 \end{frame}
 
@@ -422,13 +422,18 @@
   \scene{40mm}{slide/labels_T.png}\hspace{3mm}\scene{40mm}{slide/labels_Y.png}\hspace{3mm}%
   \scene{40mm}{slide/labels_E.png}\par
   \vspace{1.5mm}
-  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes, which zigzag because the
-       teacher re-plans after every push}
+  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes, zigzag from re-planning after
+       every push}
   \vspace{4mm}
   \uncover<2->{%
-    \statnum{\corig 77 \color{tdgrey}\too \cours 129}%
-    \hspace{4mm}{\small\color{tdgrey}\begin{tabular}[b]{@{}l@{}}successes in 1000 episodes on the selection scenes.\\
-      Same data and training, only the labels change.\end{tabular}}\par}
+    \parbox[c]{30mm}{\raggedleft\statnum{\corig 77 \color{tdgrey}\too \cours 129}}\hspace{4mm}%
+    \parbox[c]{90mm}{\small\color{tdgrey}successes in 1000 episodes on the selection scenes.\\
+      Same data and training, only the labels change.}\par}
+\end{frame}
+
+\begin{frame}[c]{Why correction rounds work}
+  \centering
+  \tikzfile{dagger}
 \end{frame}
 
 % ==================================================================================== 3. results
@@ -489,7 +494,7 @@
     see.}
 \end{frame}
 
-\begin{frame}{Final test by shape group}
+\begin{frame}[c]{Final test by shape group}
   \only<1|handout:0>{\deckfig{final_bars_1}}%
   \only<2-|handout:1>{\deckfig{final_bars_2}}\par
   \vspace{1.5mm}
@@ -502,7 +507,7 @@
   \cpt{Final test, 300 new scenes per shape. 3, 4 and 7 are digits, + plus, \# hash, \too arrow.}
 \end{frame}
 
-\begin{frame}{Original vs ours}
+\begin{frame}[c]{Original vs ours}
 % Synchronized composite for p19; underlying stills and labels are unchanged.
 \slidevideo{p19}
   \begin{columns}[c,totalwidth=\textwidth]
@@ -584,12 +589,12 @@
   \takeaway{Most failures are near misses, \hl{91\%} of the goal covered at best. Success needs \hl{95\%}.}
 \end{frame}
 
-\begin{frame}{Does the network matter?}
+\begin{frame}[c]{Does the network matter?}
   \centering
   \tikzfile{architecture}\par
   \vspace{1.5mm}
   \raggedright
-  \uncover<3->{\takeaway{Only the network changes; our main model stays the official network.}
+  \uncover<3->{\takeaway{Only the network changes. Our main model stays the official network.}
   \vspace{0.2mm}
   \cpt{Trained once from scratch, 160k steps, on the main model's final data.}}
 \end{frame}
@@ -599,7 +604,7 @@
   {\def\adnonext{}\tikzfile{arch_flow_detailed}}\par
   \vspace{1mm}
   \raggedright
-  \takeaway{Same inputs and outputs; DINOv2 encoder + DiT action head (flow matching).}
+  \takeaway{Same inputs and outputs, with a DINOv2 encoder and a flow-matching DiT head.}
 \end{frame}
 
 \begin{frame}{Same data, bigger network: 32.8\% \texorpdfstring{\too}{->} 45.2\%}
@@ -614,7 +619,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Main model vs Flow-DiT}
+\begin{frame}[c]{Main model vs Flow-DiT}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{104mm}
     \begin{tikzpicture}[x=1mm, y=1mm]
@@ -633,7 +638,7 @@
     \end{tikzpicture}
     \column{36mm}
     \raggedright
-    {\small Same scene for both. The main model stops at 93--94\% of the goal covered; Flow-DiT
+    {\small Same scene for both. The main model stops at 93 to 94\% of the goal covered, Flow-DiT
      finishes.\par}
   \end{columns}
 \end{frame}
@@ -678,7 +683,7 @@
   \begin{tikzpicture}[remember picture,overlay]
     \node[anchor=north west,inner sep=0pt,outer sep=0pt]
       at ([xshift=8mm,yshift=-83mm]current page.north west)
-      {\parbox[t]{144mm}{\small Code: \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Demo:
+      {\parbox[t]{144mm}{\small Code \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Demo
         \textbf{tinyurl.com/tdyssey}}};
   \end{tikzpicture}
 \end{frame}
@@ -691,9 +696,9 @@
 \section{Backup}
 \begin{frame}{Test protocol and headline table}
   \begin{itemize}
-    \item Selection scenes: 50 fixed scenes per shape, used to pick models. Final tests: new scenes never used
-          before, fixed before the run, all policies on the same scenes, 95\% intervals on paired differences.
-    \item Success: more than 95\% of the goal covered within 300 controls.
+    \item Selection scenes are 50 fixed scenes per shape, used to pick models. Final tests use new scenes never used
+          before, fixed before the run, with all policies on the same scenes and 95\% intervals on paired differences.
+    \item Success means more than 95\% of the goal covered within 300 controls.
   \end{itemize}
   \vspace{1mm}
   \centering\adjustbox{max width=\textwidth}{\small\tab{final_headline.tex}}
@@ -702,8 +707,8 @@
 \begin{frame}{Per-shape final test}
   \centering\adjustbox{max width=\textwidth, max totalheight=0.68\textheight}{\tab{final_per_shape_compact.tex}}\par
   \vspace{1mm}
-  \cpt{Success \%, 300 new scenes per shape; 96 px and 192 px: our 27-shape policies with each camera (after 44 and
-       2 correction rounds).}
+  \cpt{Success \%, 300 new scenes per shape. 96 px and 192 px are our 27-shape policies with each camera (after 44
+       and 2 correction rounds).}
 \end{frame}
 
 \begin{frame}{What mattered}
@@ -720,7 +725,7 @@
 \begin{frame}{The world model}
   \deckfig{wm_accuracy}\par
   \vspace{1mm}
-  \cpt{Copied from the simulator: pusher motion and contact geometry. Learned: how the block moves in contact.}
+  \cpt{Copied from the simulator, the pusher motion and contact geometry. Learned, how the block moves in contact.}
 \end{frame}
 
 \begin{frame}{What the world model imagines vs the simulator}
@@ -731,12 +736,12 @@
     \centering
     \video{slide/wm_imagined_D.png}{world_model/imagined_vs_real_D.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{D: red outline = imagined, 32 steps ahead without correction; error at most 1.5 px.}
+    \cpt{D, red outline = imagined 32 steps ahead without correction. Error at most 1.5 px.}
     \column{68mm}
     \centering
     \video{slide/wm_imagined_E.png}{world_model/imagined_vs_real_E.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{E: 1--2 px in most windows, but one 32-step window drifted 43 px; the teacher re-plans after every push.}
+    \cpt{E, 1 to 2 px in most windows, but one 32-step window drifted 43 px. The teacher re-plans after every push.}
   \end{columns}
 \end{frame}
 
@@ -762,8 +767,8 @@
 \begin{frame}{Teacher vs camera policy, per letter}
   \deckfig{method_teacher_success_26letters}\par
   \vspace{1mm}
-  \cpt{Same 50 selection scenes per shape. Ten earlier shapes: 400/500 at their latest check (390/500 in the run that
-       made the labels).}
+  \cpt{Same 50 selection scenes per shape. The ten earlier shapes reached 400/500 at their latest check (390/500 in the
+       run that made the labels).}
 \end{frame}
 
 \begin{frame}{How the teacher was fixed (state noise)}
@@ -782,7 +787,7 @@
   \takeaway{The same scene (E) for the original policy, then our 5-shape and 10-shape policies and the 26-letter policy
     after 0, 13 and 50 correction rounds.}
   \vspace{1mm}
-  \cpt{Last frames; \ok{solved}\quad\nok{not solved}. Click to play the whole progression.}
+  \cpt{Last frames, \ok{solved}\quad\nok{not solved}. Click to play the whole progression.}
   \vfill
 \end{frame}
 
@@ -799,9 +804,8 @@
     \column{22mm}\mdl{slide/models_l26_r50.png}{l26_r50}{26 letters\\50 rounds}
   \end{columns}
   \vspace{4mm}
-  \cpt{Last frames of T, narrow T, Y / D, L, E / K, R, digit 7; click to play. All 14 models (also plain copying of the
-       teacher, executed-push labels, the 192 px camera and more checkpoints): videos/models/, outcomes in
-       videos/INDEX.md.}
+  \cpt{Last frames of T, narrow T, Y / D, L, E / K, R and digit 7. Click to play. All 14 models are in videos/models/,
+       with outcomes in videos/INDEX.md.}
 \end{frame}
 
 % Real-video playback pages retained separately from the new 48M PNG diagnostics.

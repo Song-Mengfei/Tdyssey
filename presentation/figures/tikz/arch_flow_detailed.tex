@@ -1,7 +1,7 @@
 % Architecture of Flow-DiT, the 505M flow-matching transformer policy (D059, 16x16 version D061/D064, runs/flow26b16).
 % Facts checked against scripts/learning/flow_policy.py (branch feat/last-mile-rl, --pool 16): DINOv2 ViT-B/14 encoder
 % (86.6M; 14x14 patches, 256 + CLS tokens, width 768, 12 pre-norm layers with LayerScale, final LayerNorm), all 16x16
-% patch tokens plus CLS = 257 tokens per frame (no pooling), Linear 768 -> 1024 with slot and frame embeddings, pusher
+% patch tokens plus CLS = 257 tokens per frame (no pooling), Linear 768 -> 1024 (the Project block) with slot and frame embeddings, pusher
 % MLP token, condition LayerNorm (515 x 1024); DiT head (418.2M): Linear 2 -> 1024 + position embedding, 24 blocks of
 % adaLN-modulated self-attention (QK-norm), cross-attention to the condition and MLP x4, each gated (adaLN-Zero, shared
 % time projection + per-block offsets), final adaLN and Linear 1024 -> 2 = velocity; flow matching, 10 Euler steps;
@@ -48,9 +48,11 @@
   \adstack{65.0}{\yt}{21}{12}{adenc}
   \node[ad blk=adenc, minimum width=21mm, minimum height=12mm] (vit) at (65.0,\yt) {\adhead ViT layer\\$\times12$};
   \draw[ad arr] (pe) -- (vit);
+  \node[ad blk=adenc, minimum width=15mm, minimum height=12mm] (proj) at (91.4,\yt) {\adhead Project\\$768{\to}1024$};
+  \draw[ad arr] ($(vit.east)+(1.6,0)$) -- (proj.west);
   \node[ad blk=adcond, minimum width=33mm, minimum height=12mm] (cond) at (127.4,\yt)
     {\adhead Condition\\515 tokens};
-  \draw[ad arr] ($(vit.east)+(1.6,0)$) -- node[ad shape, above] {$2{\times}257$} node[ad shape, below] {all tokens} (cond.west);
+  \draw[ad arr] (proj.east) -- node[ad shape, above] {$2{\times}257$} (cond.west);
   \draw[ad arr] (127.4,59.4) -- node[ad shape, left] {pusher $xy$} (cond.north);
   % ------------------------------------------------------------------ action network (DiT)
   \draw[ad grp=tdtransf] (18,4) rectangle (96,33);
