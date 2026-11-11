@@ -752,6 +752,59 @@ def lastmile(seed=400000, near_shape="G", solved_shape="E", half=34.0):
     print(f"wrote {p.name}: best {100 * l['peak']:.1f}% at move {k}", flush=True)
 
 
+NEVER9 = ["digit2", "digit3", "digit4", "digit5", "digit7", "digit8", "plus", "hash", "arrow"]
+
+
+def gallery():
+    """Title and question-slide shape pictures (no GPU): the 26 capital letters in alphabetical order and the nine
+    never-seen shapes (lighter), upright and without goals: images/slide/shapes_title.png (13 per row, the never-seen
+    row centred) and images/slide/shapes_26_row.png (the letters in one row). Needs a checkout whose tdyssey has the
+    digits 2, 5 and 8 (REPO)."""
+    import pygame
+    from tdyssey.envs.official import make_official_shape_env_class
+    from tdyssey.official import load_official_source
+    cls = make_official_shape_env_class(load_official_source(REPO / "third_party" / "diffusion_policy"))
+    from diffusion_policy.env.pusht.pusht_env import pymunk_to_shapely
+    def glyph(s, light):
+        env = cls(shape=s, legacy=True)
+        env.seed(0); env.reset()
+        st = np.array([30.0, 30.0, 256.0, 256.0, 0.0])
+        for _ in range(3):
+            env._set_state(st)
+            c = pymunk_to_shapely(env.block, env.block.shapes).centroid
+            st[2:4] += [256 - c.x, 256 - c.y]
+        env._set_state(st); env.goal_pose[:2] = -1000                 # move the goal off the table
+        env._get_obs()
+        img = np.ascontiguousarray(np.transpose(pygame.surfarray.array3d(env.screen), (1, 0, 2)))
+        env.close()
+        img = cv2.resize(img[136:376, 136:376], (180, 180), interpolation=cv2.INTER_AREA)[22:158, 22:158]
+        if light:
+            img = (img.astype(float) + (255 - img.astype(float)) * 0.55).round().astype(np.uint8)
+        return img
+    def grid(tiles, cols, gap, centre_last=False):
+        h, w = tiles[0].shape[:2]
+        rows = [tiles[i:i + cols] for i in range(0, len(tiles), cols)]
+        out = []
+        for r in rows:
+            pad = cols - len(r)
+            left = pad // 2 if centre_last else 0
+            cells = [np.full_like(tiles[0], 255)] * left + r + [np.full_like(tiles[0], 255)] * (pad - left)
+            line = cells[0]
+            for c in cells[1:]:
+                line = np.hstack([line, np.full((h, gap, 3), 255, np.uint8), c])
+            out.append(line)
+        img = out[0]
+        for line in out[1:]:
+            img = np.vstack([img, np.full((gap, img.shape[1], 3), 255, np.uint8), line])
+        return img
+    letters = [glyph(chr(c), False) for c in range(ord("A"), ord("Z") + 1)]
+    never = [glyph(s, True) for s in NEVER9]
+    S = OUT / "images" / "slide"
+    cv2.imwrite(str(S / "shapes_title.png"), cv2.cvtColor(grid(letters + never, 13, 8, centre_last=True), cv2.COLOR_RGB2BGR))
+    cv2.imwrite(str(S / "shapes_26_row.png"), cv2.cvtColor(grid(letters, 26, 10), cv2.COLOR_RGB2BGR))
+    print("wrote shapes_title.png (26 letters + 9 never-seen) and shapes_26_row.png", flush=True)
+
+
 def compose():
     V, I = OUT / "videos", OUT / "images"
     index = []
@@ -1016,6 +1069,8 @@ if __name__ == "__main__":
         dynamics()
     elif sys.argv[1] == "lastmile":
         lastmile()
+    elif sys.argv[1] == "gallery":
+        gallery()
     elif sys.argv[1] == "flowdit":
         flowdit_clips()
     elif sys.argv[1] == "compose":
