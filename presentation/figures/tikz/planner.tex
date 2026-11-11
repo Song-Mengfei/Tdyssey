@@ -3,8 +3,9 @@
 % simulator state, samples 256 smooth pusher-target paths 48 steps ahead (in the first round 128 of them are structured
 % pushes), rolls each out in the world model, scores how well the letter's points match the goal, keeps the 24 best
 % and samples around them, 4 rounds (4 x 256 = 1,024 plans), then executes the first target of the best plan and
-% plans again at the next step. Overlay steps (\plstep{n}{...} = \onslide<n->{...} in beamer) follow the six numbered
-% boxes. Size 144 x 46 mm; fixed font sizes in the current family.
+% plans again at the next step. Drawn as a plan-ahead loop: an inner search in the world model (sample, imagine, score,
+% keep the best, 4 rounds) inside the outer act-and-replan loop. Overlay steps (\plstep{n}{...} = \onslide<n->{...} in
+% beamer): 1 read the state, 2 the search, 3 execute and plan again. Size 144 x 38 mm; fixed font sizes.
 \makeatletter%
 \@ifclassloaded{beamer}{\providecommand\plstep[2]{\onslide<#1->{#2}}}{\providecommand\plstep[2]{#2}}%
 \makeatother%
@@ -22,47 +23,37 @@
     align=flush left},%
   pl label/.style={inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont\bfseries, text=#1, align=left},%
 }%
-% \plbox{colour}{x0}{y top}{number}{title}{text}: a 33 x 17 mm step box
-\providecommand\plbox[6]{%
-  \draw[rounded corners=1.6mm, line width=0.9pt, draw=#1, fill=white] (#2,#3) rectangle ++(33,-17);%
-  \node[pl badge=#1] at ($(#2,#3)+(3.6,-3.9)$) {#4};%
-  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink]%
-    at ($(#2,#3)+(6.8,-3.9)$) {#5};%
-  \node[pl text, text width=29.4mm] at ($(#2,#3)+(2,-7.8)$) {#6};%
+% \plnode{colour}{x0}{y bottom}{width}{title}{text}: a step box 14 mm high
+\providecommand\plnode[6]{%
+  \draw[rounded corners=1.6mm, line width=0.9pt, draw=#1, fill=white] (#2,#3) rectangle ++(#4,14);%
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink]%
+    at ($(#2,#3)+(2,12.2)$) {#5};%
+  \node[pl text, text width=#4 mm - 3mm] at ($(#2,#3)+(2,7.4)$) {#6};%
 }%
 \begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
-  \useasboundingbox (0,0) rectangle (144,46);
-  \begin{scope}[yshift=-3.5mm]
-  \plstep{1}{\plbox{tdgold}{0}{49}{1}{Read the state}{exact simulator state\\(training only)}}
+  \useasboundingbox (0,0) rectangle (144,38);
+  % ---------------------------------------------------------------- 1: read the exact state
+  \plstep{1}{\plnode{tdgold}{0}{12}{24}{Read state}{exact, training\\only}}
+  % ---------------------------------------------------------------- 2: search inside the world model
   \plstep{2}{
-    \draw[pl arrow=tdgrey] (33,40.5) -- (37,40.5);
-    \plbox{tdgold}{37}{49}{2}{Propose}{256 pusher paths,\\48 steps ahead}
-    \draw[rounded corners=1.4mm, line width=0.7pt, draw=tdgold, dash pattern=on 2pt off 1.5pt, fill=tdgoldbg]
-      (37,27.5) rectangle (88,13);
-    \draw[line width=0.7pt, draw=tdgold, dash pattern=on 2pt off 1.5pt] (53.5,32) -- (53.5,27.5);
-    \node[pl text, text width=48mm] at (39,25.8)
-      {first round: 128 structured pushes (go to a safe spot, go around, push one point of the outline)};
+    \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdgold, dash pattern=on 3pt off 2pt, fill=tdgoldbg]
+      (28.5,1) rectangle (115.5,33);
+    \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=tdgolddark]
+      at (31,31.6) {SEARCH IN THE WORLD MODEL\enspace\mdseries 4 rounds, 1{,}024 plans};
+    \draw[pl arrow=tdgrey] (24,19) -- (31.5,19);
+    \plnode{tdgold}{31.5}{12}{25}{Sample}{256 push paths,\\48 steps ahead}
+    \draw[pl arrow=tdgrey] (56.5,19) -- (60,19);
+    \plnode{tdgold}{60}{12}{25}{Imagine}{run each one in\\the world model}
+    \draw[pl arrow=tdgrey] (85,19) -- (88.5,19);
+    \plnode{tdgold}{88.5}{12}{25}{Score}{how well it\\fits the goal}
+    \draw[pl arrow=tdgold, rounded corners=2mm] (101,12) -- (101,6) -- (44,6) -- (44,12);
+    \node[pl label=tdgolddark, fill=tdgoldbg, inner sep=0.8mm] at (72.5,6) {keep the best 24, sample around them};
   }
+  % ---------------------------------------------------------------- 3: execute the first move and plan again
   \plstep{3}{
-    \draw[pl arrow=tdgrey] (70,40.5) -- (74,40.5);
-    \plbox{tdgold}{74}{49}{3}{Imagine}{run every path in\\the world model}
+    \draw[pl arrow=tdblue] (115.5,19) -- (120,19);
+    \plnode{tdblue}{120}{12}{24}{Execute}{first move of\\the best plan}
+    \draw[pl arrow=tdblue, rounded corners=2mm] (132,26) -- (132,36.5) -- (12,36.5) -- (12,26);
+    \node[pl label=tdblue, fill=white, inner sep=0.8mm] at (72,36.5) {next step, plan again};
   }
-  \plstep{4}{
-    \draw[pl arrow=tdgrey] (107,40.5) -- (111,40.5);
-    \plbox{tdgold}{111}{49}{4}{Score}{how well the letter's\\points fit the goal}
-  }
-  \plstep{5}{
-    \draw[pl arrow=tdgrey] (127.5,32) -- (127.5,22);
-    \plbox{tdgold}{111}{22}{5}{Keep the best}{keep 24, sample new\\paths around them}
-    \draw[pl arrow=tdgold, rounded corners=2mm] (111,15) -- (90.5,15) -- (90.5,32);
-    \node[pl label=tdgolddark, anchor=north west] at (92.5,29.5) {4 rounds\\= 1{,}024\\plans};
-  }
-  \plstep{6}{
-    \plbox{tdblue}{0}{22}{6}{Execute}{do its first move,\\then plan again}
-    \draw[pl arrow=tdblue] (111,7.5) -- node[pl label=tdblue, above=1mm, anchor=south] {after 4 rounds: the best plan}
-      (33,7.5);
-    \draw[pl arrow=tdblue] (16.5,22) -- (16.5,32);
-    \node[pl label=tdblue, anchor=west] at (18.5,27) {next step};
-  }
-  \end{scope}
 \end{tikzpicture}%

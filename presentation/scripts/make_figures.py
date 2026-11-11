@@ -106,6 +106,9 @@ NEW17 = list("ABCGHIKMNOQRSVWXZ")
 HELD = ["digit3", "digit4", "digit7", "plus", "hash", "arrow"]
 TRAINED27 = OLD10 + NEW17
 ALL33 = TRAINED27 + HELD
+# the talk counts the 26 capital letters only: deck aggregates leave out the narrow T (it stays in the training data)
+OLD9 = [s for s in OLD10 if s != "T_narrow"]                 # T Y D L E F J P U
+LETTERS26 = OLD9 + NEW17
 class _SlideDict(dict):
     """Long labels by default; the short ones in the slide versions."""
     def __init__(self, long, short):
@@ -699,9 +702,11 @@ def fmt_signed(v, nd=1):
 # ----------------------------------------------------------------------------------------------------------------------
 # curves_*: validation success over training
 # ----------------------------------------------------------------------------------------------------------------------
-def story_lines():
-    """All validation lines placed on one x-axis (rounds completed within each stage, shifted by STAGE_OFF)."""
+def story_lines(letters26=False):
+    """All validation lines placed on one x-axis (rounds completed within each stage, shifted by STAGE_OFF).
+    letters26: the last stage averaged over the 26 letters only (narrow T left out), as in the deck."""
     out = []
+    last = LETTERS26 if letters26 else None
     s, y, k, n = val_line("5 shapes", "correction rounds")
     # round 0 of the 5-shape stage: the copy-the-teacher student the correction rounds started from (typed_in JSON)
     r0 = TYPED["five_shape_round0"]
@@ -718,9 +723,9 @@ def story_lines():
     out.append(dict(key="ten96", label="10 shapes, 96 px", color=TEN, stage=1, x=s - 1 + 21, y=y, k=k, n=n))
     s, y, k, n = val_line("10 shapes", "192 px side line")
     out.append(dict(key="ten192", label="10 shapes, 192 px", color=TEN192, stage=1, x=s - 1 + 21, y=y, k=k, n=n))
-    s, y, k, n = val_line("27 shapes", "96 px line")
+    s, y, k, n = val_line("27 shapes", "96 px line", last)
     out.append(dict(key="m96", label="26 letters, 96 px", color=M96, stage=2, x=s - 1, y=y, k=k, n=n))
-    s, y, k, n = val_line("27 shapes", "192 px line")
+    s, y, k, n = val_line("27 shapes", "192 px line", last)
     out.append(dict(key="m192", label="26 letters, 192 px", color=M192, stage=2, x=s - 1, y=y, k=k, n=n))
     return out
 
@@ -736,19 +741,19 @@ PICKS = [("five", _PR["5-shape round 4"][2]), ("five", _PR["5-shape round 7"][2]
 MAIN_ROUND = _PR["26-letter 96 px round 50 (main model)"][2]
 
 
-def main_model_rate():
-    """Round-50 student (the 96 px model) on the 27 trained shapes, D054 fresh-scene test."""
-    return rate("D054", "26-letter 96 px round 50", TRAINED27)[0]
+def main_model_rate(shapes=TRAINED27):
+    """Round-50 student (the 96 px model) on the 27 trained shapes (or the given ones), D054 fresh-scene test."""
+    return rate("D054", "26-letter 96 px round 50", shapes)[0]
 
 
-def original_stage_levels():
+def original_stage_levels(last=TRAINED27):
     """Level of the original policy for each stage's band on the validation-success axis: [(percent, validated)].
     5 and 10 shapes: the original on the same 50 validation scenes per shape (typed_in_numbers.json: 41 of 250 and
     41 of 500). 27 shapes: the original was never run on those validation scenes, so the only number is its D051
-    fresh-scene test (3.7%), drawn and labelled differently."""
+    fresh-scene test (3.7%; 2.4% over the 26 letters), drawn and labelled differently."""
     o5, o10 = TYPED["original_on_teacher_validation_5shapes"], TYPED["original_on_validation_10shapes"]
     return [(100 * o5["successes"] / o5["of"], True), (100 * o10["successes"] / o10["of"], True),
-            (rate("D051", "original", TRAINED27)[0], False)]
+            (rate("D051", "original", last)[0], False)]
 
 
 ORIG_VAL_LS, ORIG_TEST_LS = (0, (4, 3)), (0, (1, 2.2))      # dashed: validation; dotted: fresh test
@@ -2451,14 +2456,18 @@ RL_SNR = TYPED["rl_signal_share"]["values"]
 RL_RANK = TYPED["rl_candidate_ranking"]["values"]
 
 
+RL_DECK_DROP = ("dense, lr 3e-6", "LoRA, lr 3e-4")      # rows left out of the deck version (lead's request)
+
+
 def fig_rl_t_collapse():
     fig, ax = plt.subplots(figsize=FULL)
-    ys = np.arange(len(RL_LONG))
+    rows = [r for r in RL_LONG if not (deck() and r[0] in RL_DECK_DROP)]
+    ys = np.arange(len(rows))
     ax.axvline(RL_T0 * 100, color=ORIG_LINE, lw=1.6, ls=(0, (4, 3)))
     ax.text(RL_T0 * 100 + (1 if not half() else -1), -0.75, SL(f"T success before RL: {RL_T0 * 100:.0f}%",
                                                                f"before: {RL_T0 * 100:.0f}%"),
             fontsize=12, color=INK2, va="bottom", ha="left" if not half() else "right")
-    for i, (name, af, nft, upd) in enumerate(RL_LONG):
+    for i, (name, af, nft, upd) in enumerate(rows):
         for v, mk, off in ((af, "o", -0.12), (nft, "s", 0.12)):
             if v is None:
                 continue
@@ -2472,8 +2481,8 @@ def fig_rl_t_collapse():
     if slide():
         ax.text(1.03, -0.75, "updates", ha="left", va="bottom", color=INK2, transform=ax.get_yaxis_transform(),
                 clip_on=False)
-    ax.set_yticks(ys, [r[0] for r in RL_LONG])
-    ax.set_ylim(len(RL_LONG) - 0.4, -0.9)
+    ax.set_yticks(ys, [r[0] for r in rows])
+    ax.set_ylim(len(rows) - 0.4, -0.9)
     ax.set_xlim(-3, 103)
     ax.set_xticks(range(0, 101, 20) if not slide() else range(0, 101, 25) if not half() else range(0, 101, 50))
     ax.xaxis.set_major_formatter(PCT)
@@ -4247,56 +4256,45 @@ def save_deck(fig, name, shows):
 
 
 def fig_deck_stages(upto):
-    """Whole training story (5 -> 10 -> 27 shapes) at 144 x 52 mm, revealed one stage at a time (upto = 1, 2, 3).
-    Same axes, bands, stage names and ticks on every step; only the data of the later stages is left out. Markers are
-    explained on the slide (circle: sent to a fresh test; star: round 50, fresh test)."""
-    lines = story_lines()
+    """Whole training story (5 -> 10 -> 26 letters) at 144 x 52 mm, revealed one stage at a time (upto = 1, 2, 3).
+    Same axes, bands, stage names and ticks on every step; only the data of the later stages is left out. The last
+    stage is averaged over the 26 letters (narrow T left out), as are its original level (D051 fresh test) and the
+    star (round 50, D054 fresh test, explained on the slide). No picks circled, no in-plot dividers."""
+    lines = story_lines(letters26=True)
     fig, ax = deck_fig(144, 52, l=12.5, r=1.5, b=9.5, t=5.5)
     top = 52
-    names = ["5 shapes", "10 shapes", "26 letters + narrow T"]
+    names = ["5 shapes", "10 shapes", "26 letters"]
     for i, (a, b) in enumerate(STAGE_SPAN):
         ax.axvspan(a, b, color=BAND if i % 2 == 0 else "#fbfbf9", zorder=0, lw=0)
         ax.text((a + b) / 2, 1.02, names[i], ha="center", va="bottom", fontsize=10, fontweight="bold",
                 color=INK if i < upto else MUTED, transform=ax.get_xaxis_transform(), clip_on=False)
     t = dict(color=INK2, fontsize=9, clip_on=False)
-    orig = original_stage_levels()
+    orig = original_stage_levels(LETTERS26)
     for i, (a, b) in enumerate(STAGE_SPAN[:upto]):
         v, validated = orig[i]
         ax.plot([a + 0.3, b - 0.3], [v] * 2, color=ORIG_LINE, lw=1.1 if validated else 1.4,
                 ls=ORIG_VAL_LS if validated else ORIG_TEST_LS, zorder=1)
-    (o5, _), (o10, _), (o27, _) = orig
+    (o5, _), (o10, _), (o26, _) = orig
     ax.text(STAGE_SPAN[0][0] + 0.4, o5 - 1.0, "original", ha="left", va="top", **t)
     byk = {L["key"]: L for L in lines}
-    sw = STAGE_OFF[1] + 16                                         # label switch inside the 10-shape stage
-    bx = STAGE_OFF[2] + 13.5                                       # larger budget per round (27 shapes)
     if upto >= 2:
         ax.text(STAGE_SPAN[1][1] - 0.4, o10 - 1.0, "original", ha="right", va="top", **t)
-        ax.axvline(sw, color=INK2, lw=0.8, ymin=0.2, ymax=1, zorder=1)
-        ax.text(sw - 1.0, top - 0.8, "executed pushes", ha="right", va="top", **t)
-        ax.text(sw + 1.0, top - 0.8, "intended plans", ha="left", va="top", **t)
         L = byk["ten192"]
         ax.text(STAGE_OFF[1] + L["x"][-1] + 0.8, L["y"][-1] + 0.4, "192 px", ha="left", va="bottom", **t)
         L = byk["ten96"]
         ax.text(STAGE_OFF[1] + L["x"][-1], min(L["y"][-6:]) - 2.2, "96 px", ha="right", va="top", **t)
     if upto >= 3:
-        ax.text(STAGE_SPAN[2][1] - 0.2, o27 + 0.9, "original, new test scenes", ha="right", va="bottom", **t)
-        ax.axvline(bx, color=INK2, lw=0.8, ymin=0.22, ymax=1, zorder=1)
-        ax.text(bx + 1.0, top - 0.8, "larger budget per round", ha="left", va="top", **t)
+        ax.text(STAGE_SPAN[2][1] - 0.2, o26 + 0.9, "original, new test scenes", ha="right", va="bottom", **t)
         L = byk["m192"]
-        ax.text((STAGE_SPAN[2][0] + bx) / 2 - 0.4, max(L["y"]) + 2.0, "192 px", ha="center", va="bottom", **t)
+        ax.text(STAGE_OFF[2] + 6.1, max(L["y"]) + 2.0, "192 px", ha="center", va="bottom", **t)
         L = byk["m96"]
         j = int(np.argmin(np.abs(L["x"] - 33)))
         ax.text(STAGE_OFF[2] + 33, min(L["y"][j - 3:j + 4]) - 2.2, "96 px", ha="center", va="top", **t)
     for L in lines:
         if L["stage"] < upto:
             ax.plot(STAGE_OFF[L["stage"]] + L["x"], L["y"], color=L["color"], lw=1.3, marker="o", ms=2.0, zorder=3)
-    for key, x in PICKS:
-        L = byk[key]
-        if L["stage"] < upto:
-            i = int(np.where(L["x"] == x)[0][0])
-            ax.plot(STAGE_OFF[L["stage"]] + x, L["y"][i], marker="o", ms=7, mfc="none", mec=INK, mew=1.1, zorder=5)
     if upto >= 3:
-        ax.plot(STAGE_OFF[2] + MAIN_ROUND, main_model_rate(), **(STAR | {"ms": 11, "mew": 0.8}))
+        ax.plot(STAGE_OFF[2] + MAIN_ROUND, main_model_rate(LETTERS26), **(STAR | {"ms": 11, "mew": 0.8}))
     ax.set_xlim(0, STAGE_SPAN[2][1] + 1.6)
     ax.set_ylim(0, top)
     ax.set_yticks([0, 10, 20, 30, 40, 50])
@@ -4315,13 +4313,14 @@ def fig_deck_stages(upto):
 
 def fig_deck_final_bars(step):
     """Headline final test (D051) by shape group at 144 x 50 mm; step 1 shows the original only, step 2 adds ours.
-    Hidden bars are drawn transparent, so both steps have the same axes and legend positions."""
-    groups = ("10 earlier shapes", "17 other letters", "27 trained shapes", "6 held-out shapes")
-    names = ["10 earlier\nshapes", "17 newer\nletters", "All 27\ntrained shapes", "6 never-seen\nshapes"]
+    Hidden bars are drawn transparent, so both steps have the same axes and legend positions. Groups of the 26
+    letters (narrow T left out of every aggregate) and the 6 never-seen shapes."""
+    groups = (OLD9, NEW17, LETTERS26, HELD)
+    names = ["9 earlier\nletters", "17 new\nletters", "All 26\nletters", "6 never-seen\nshapes"]
     keys = ["original", "ten96", "m96", "m192"]
     fig, ax = deck_fig(144, 50, l=12.5, r=1, b=9.5, t=1.5)
     w = 0.8 / len(keys)
-    R = {k: [rate("D051", D051[k], GROUP_SHAPES[g]) for g in groups] for k in keys}
+    R = {k: [rate("D051", D051[k], g) for g in groups] for k in keys}
     for j, k in enumerate(keys):
         show = step >= 2 or k == "original"
         for gi in range(len(groups)):
@@ -4343,8 +4342,8 @@ def fig_deck_final_bars(step):
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
     ax.set_ylabel("Success")
-    words = {"original": "Original", "ten96": "Ours, trained on 10 shapes", "m96": "Ours, 27 shapes, 96 px camera",
-             "m192": "Ours, 27 shapes, 192 px camera"}
+    words = {"original": "Original", "ten96": "Ours, trained on 10 shapes", "m96": "Ours, 26 letters, 96 px camera",
+             "m192": "Ours, 26 letters, 192 px camera"}
     handles = [Patch(facecolor=col(k), edgecolor="white", label=words[k]) for k in keys]
     leg = ax.legend(handles=handles, loc="upper right", ncol=2, frameon=False, borderaxespad=0.1, labelspacing=0.3,
                     columnspacing=1.6)
@@ -4356,9 +4355,10 @@ def fig_deck_final_bars(step):
 
 
 def fig_deck_dumbbell():
-    """All 33 shapes along x at 144 x 55 mm: original -> ours, 96 px (round 44), D051 final test; T and near-T bold."""
+    """26 letters and 6 never-seen shapes along x at 144 x 55 mm: original -> ours, 96 px (round 44), D051 final test;
+    T bold (narrow T left out)."""
     key = "m96"
-    order = _sorted_shapes(key)[::-1] + sorted(HELD, key=lambda s: -rate("D051", D051[key], [s])[0])
+    order = _sorted_shapes(key, LETTERS26)[::-1] + sorted(HELD, key=lambda s: -rate("D051", D051[key], [s])[0])
     a = np.array([rate("D051", "original", [s])[0] for s in order])
     b = np.array([rate("D051", D051[key], [s])[0] for s in order])
     fig, ax = deck_fig(144, 55, l=12.5, r=1, b=8.5, t=7)
@@ -4366,14 +4366,14 @@ def fig_deck_dumbbell():
     ax.vlines(xs, a, b, color=tint(col(key), 0.5), lw=1.6, zorder=2)
     ax.scatter(xs, a, s=18, color=ORIG_LINE, zorder=3, edgecolor="white", lw=0.6)
     ax.scatter(xs, b, s=24, color=col(key), zorder=4, edgecolor="white", lw=0.6)
-    ax.set_xticks(xs, ["T\nnarrow" if s == "T_narrow" else SHORT.get(s, s) for s in order], fontsize=9)
+    ax.set_xticks(xs, [SHORT.get(s, s) for s in order], fontsize=9)
     ax.tick_params(axis="x", length=0, pad=3)
     for tl, s_ in zip(ax.get_xticklabels(), order):
-        if s_ in ("T", "T_narrow"):
+        if s_ == "T":
             tl.set_fontweight("bold")
             tl.set_color(INK)
-    ax.axvline(len(TRAINED27) - 0.5, color=INK2, lw=0.8)
-    ax.text(len(TRAINED27) - 0.1, 59, "never seen", fontsize=9, color=INK2, va="top", ha="left")
+    ax.axvline(len(LETTERS26) - 0.5, color=INK2, lw=0.8)
+    ax.text(len(LETTERS26) - 0.1, 59, "never seen", fontsize=9, color=INK2, va="top", ha="left")
     ax.set_xlim(-0.7, len(order) - 0.3)
     ax.set_ylim(-2, 60)
     ax.set_yticks([0, 20, 40, 60])
@@ -4417,7 +4417,7 @@ def fig_deck_heldout():
 
 
 # Later experiments (presentation/data/architecture_*.csv, lastmile_rl.csv; scripts/build_experiment_data.py)
-TRANSF = "#9e2a8a"          # the 505M transformer policy (architecture experiment, D059); validated against M96
+TRANSF = "#9e2a8a"          # Flow-DiT, the 505M transformer policy (architecture experiment, D059/D064); validated against M96
 
 
 def _pts(frac):
@@ -4433,14 +4433,18 @@ def _read_opt(name):
 
 
 def fig_deck_arch_groups():
-    """Architecture experiment (D059) at 100 x 50 mm: main model (official network, after 50 correction rounds) vs the
-    505M transformer on the same new scenes (200 per shape), per group with the paired difference and its 95% interval
-    written at the right. Plain labels."""
+    """Architecture experiment (D064) at 100 x 50 mm: main model (official network, after 50 correction rounds) vs
+    Flow-DiT on the same new scenes (200 per shape), per group with the paired difference and its 95% interval
+    written at the right. Groups of the 26 letters (narrow T left out, build_experiment_data.py). Plain labels."""
     rows = {r["group"]: r for r in _read_opt("architecture_test_groups.csv")}
-    order = [("all 27 trained shapes", "All 27 trained"), ("10 earlier shapes", "10 earlier"),
-             ("17 newer letters", "17 newer"), ("6 never-seen shapes", "6 never seen"), ("T", "T"),
-             ("narrow T", "narrow T")]
-    fig, ax = deck_fig(100, 50, l=21, r=34, b=8.5, t=1.5)
+    order = [("all 26 letters", "All 26 letters"), ("9 earlier letters", "9 earlier letters"),
+             ("17 new letters", "17 new letters"), ("6 never-seen shapes", "6 never seen"), ("T", "T")]
+    missing = [k for k, _ in order if k not in rows]
+    if missing:          # skipped (figure left as it is) until the table has the 26-letter groups
+        print(f"  SKIPPED arch_groups: data/architecture_test_groups.csv has no {missing} rows; rerun "
+              "scripts/build_experiment_data.py on the finished D064 test first")
+        return None
+    fig, ax = deck_fig(100, 50, l=24, r=34, b=8.5, t=1.5)
     ys = np.arange(len(order))
     for i, (key, lab_) in enumerate(order):
         r = rows[key]
@@ -4469,7 +4473,7 @@ def fig_deck_arch_groups():
     ax.tick_params(axis="y", length=0)
     ax.set_xlabel("Success on new test scenes")
     handles = [Line2D([], [], marker="o", color=M96, ls="none", ms=5, label="main model"),
-               Line2D([], [], marker="o", color=TRANSF, ls="none", ms=5, label="505M transformer")]
+               Line2D([], [], marker="o", color=TRANSF, ls="none", ms=5, label="Flow-DiT")]
     ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0, 1.0), ncol=1, frameon=False,
               borderaxespad=0.1, handletextpad=0.3, labelspacing=0.25)
     return fig
@@ -4482,9 +4486,10 @@ def _deck_row_legend(fig, handles, left_mm, width_mm):
 
 def fig_deck_oracle():
     """Simulator re-ranking (best of 16) at 70 x 46 mm: original vs best-of-16 successes per letter, counts written in a
-    right-hand column; one-row legend."""
+    right-hand column; one-row legend. Four letters (narrow T left out)."""
+    shapes = [s_ for s_ in FIVE_SHAPES if s_ != "T_narrow"]
     fig, ax = deck_fig(70, 46, l=15, r=24, b=9.5, t=6)
-    for i, s_ in enumerate(FIVE_SHAPES):
+    for i, s_ in enumerate(shapes):
         n = ea("oracle_bon", "base policy", s_, "successes", "of")
         b = ea("oracle_bon", "base policy", s_, "successes")
         o = ea("oracle_bon", "simulator best-of-N (upper bound)", s_, "successes")
@@ -4494,8 +4499,8 @@ def fig_deck_oracle():
         ax.scatter([po], [i], s=22, color=TEACHER, marker="D", edgecolor="white", lw=0.6, zorder=4)
         ax.text(1.03, i, f"{b:.0f} \u2192 {o:.0f} of {n:.0f}", transform=ax.get_yaxis_transform(), va="center",
                 ha="left", fontsize=9, color=INK, clip_on=False)
-    ax.set_yticks(range(len(FIVE_SHAPES)), [disp(s_) for s_ in FIVE_SHAPES])
-    ax.set_ylim(len(FIVE_SHAPES) - 0.5, -0.5)
+    ax.set_yticks(range(len(shapes)), [disp(s_) for s_ in shapes])
+    ax.set_ylim(len(shapes) - 0.5, -0.5)
     ax.set_xlim(-3, 100)
     ax.set_xticks([0, 50, 100])
     ax.xaxis.set_major_formatter(PCT)
@@ -4511,22 +4516,20 @@ def fig_deck_oracle():
 
 def fig_deck_bptt():
     """Back-propagation teacher (BPTT) at 70 x 46 mm: goal covered at the end in the real simulator per letter, range of
-    the four runs as a bar, the original policy and the sampling planner as markers; one-row legend."""
+    the four runs as a bar and the original policy as a marker (no sampling planner); dashed: 95% = success; one-row
+    legend. Four letters (narrow T left out)."""
     conds = ea_conditions("bptt_teacher")
-    orig = {s_: coverage("D040", "original", [s_]) for s_ in FIVE_SHAPES}
+    shapes = [s_ for s_ in FIVE_SHAPES if s_ != "T_narrow"]
+    orig = {s_: coverage("D040", "original", [s_]) for s_ in shapes}
     fig, ax = deck_fig(70, 46, l=15, r=4, b=9.5, t=6)
-    for i, s_ in enumerate(FIVE_SHAPES):
+    for i, s_ in enumerate(shapes):
         v = [100 * ea("bptt_teacher", c, s_, "final_coverage") for c in conds]
         ax.plot([min(v), max(v)], [i, i], color=INK2, lw=3.2, solid_capstyle="round", zorder=3)
         ax.scatter([orig[s_]], [i], s=24, color=ORIG, edgecolor="white", lw=0.6, zorder=3)
-        sp = [r for r in EARLY if r["attempt"] == "sampling_planner" and r["shape"] == s_
-              and r["metric"] == "final_coverage"]
-        if sp:
-            ax.scatter([100 * _f(sp[0]["value"])], [i], s=22, color=TEACHER, marker="D", edgecolor="white", lw=0.6,
-                       zorder=4)
     ax.axvline(95, color=INK, lw=0.8, ls=(0, (3, 2)))
-    ax.set_yticks(range(len(FIVE_SHAPES)), [disp(s_) for s_ in FIVE_SHAPES])
-    ax.set_ylim(len(FIVE_SHAPES) - 0.5, -0.5)
+    ax.text(94, len(shapes) - 0.62, "success", ha="right", va="bottom", fontsize=9, color=INK2)
+    ax.set_yticks(range(len(shapes)), [disp(s_) for s_ in shapes])
+    ax.set_ylim(len(shapes) - 0.5, -0.5)
     ax.set_xlim(0, 100)
     ax.set_xticks([0, 25, 50, 75, 100])
     ax.xaxis.set_major_formatter(PCT)
@@ -4534,9 +4537,8 @@ def fig_deck_bptt():
     ax.grid(False, axis="y")
     ax.tick_params(axis="y", length=0)
     ax.set_xlabel("Goal covered at the end")
-    _deck_row_legend(fig, [Line2D([], [], color=INK2, lw=3, label="gradients (4 runs)"),
-                           Line2D([], [], marker="o", color=ORIG, ls="none", ms=5, label="original"),
-                           Line2D([], [], marker="D", color=TEACHER, ls="none", ms=4.5, label="planner")], 3, 70)
+    _deck_row_legend(fig, [Line2D([], [], color=INK2, lw=3, label="back-propagation (4 runs)"),
+                           Line2D([], [], marker="o", color=ORIG, ls="none", ms=5, label="original")], 3, 70)
     return fig
 
 
@@ -4565,6 +4567,56 @@ def fig_deck_copying():
     ax.grid(False, axis="y")
     ax.tick_params(axis="y", length=0)
     ax.set_xlabel("Success, 5 shapes")
+    return fig
+
+
+def fig_deck_wm_error_bar():
+    """World-model error at 72 x 17 mm (same data as the left panel of wm_accuracy): median contact error 8 controls
+    ahead, plain network (2.32 px, pooled over the five world-model shapes) vs ours (mean of the five per-shape
+    medians, 0.248 px; 0.255 px without the narrow T, both 0.25 at two decimals), with the ~1.5 px needed to finish
+    dashed. Values at the bar ends, no x axis."""
+    need = wm1("requirement", shape="all", unit="px")
+    g = wm1("contact_error", model="generic MLP", horizon=8, statistic="median", unit="px")
+    ours = float(np.mean([wm1("contact_error", model="structured (wm2 v1)", shape=s_, horizon=8, statistic="median",
+                              unit="px") for s_ in FIVE_SHAPES]))
+    fig, ax = deck_fig(72, 17, l=24.5, r=1, b=0.8, t=4.2)
+    for i, (v, c) in enumerate(((g, ORIG), (ours, TEACHER))):
+        ax.barh(i, v, 0.62, color=c, edgecolor="white", lw=0.8, zorder=3)
+        ax.text(v + 0.05, i, f"{v:.1f} px" if v >= 1 else f"{v:.2f} px", va="center", ha="left", fontsize=9,
+                color=INK)
+    ax.axvline(need, color=INK, lw=0.8, ls=(0, (3, 2)), zorder=4)
+    ax.text(need, -0.42, f"{need:g} px needed", ha="center", va="bottom", fontsize=9, color=INK2, clip_on=False)
+    ax.set_yticks([0, 1], ["plain network", "our world model"])
+    ax.set_ylim(1.45, -0.45)
+    ax.set_xlim(0, 3.0)
+    ax.set_xticks([])
+    ax.spines["bottom"].set_visible(False)
+    ax.grid(False)
+    ax.tick_params(axis="y", length=0)
+    return fig
+
+
+def fig_deck_teacher_letters():
+    """Teacher (exact state) per letter at 140 x 26 mm, the 26 letters sorted as in method_teacher_success_26letters
+    (narrow T left out), on the same 50 selection scenes per letter; dashed: the pooled rate over the 26 letters."""
+    shapes = sorted(LETTERS26, key=lambda s_: (-TEACHER_VAL[s_][0], s_))
+    k = sum(TEACHER_VAL[s_][0] for s_ in shapes)
+    n = sum(TEACHER_VAL[s_][1] for s_ in shapes)
+    fig, ax = deck_fig(140, 22, l=14, r=1, b=5.2, t=1)
+    x = np.arange(len(shapes))
+    ax.bar(x, [100 * TEACHER_VAL[s_][0] / TEACHER_VAL[s_][1] for s_ in shapes], 0.62, color=TEACHER,
+           edgecolor="white", lw=0.6, zorder=3)
+    ax.axhline(100 * k / n, color=INK, lw=0.8, ls=(0, (3, 2)), zorder=4)
+    ax.text(len(shapes) - 0.5, 100 * k / n + 2.5, f"all 26 letters {100 * k / n:.0f}%", ha="right", va="bottom",
+            fontsize=9, color=INK2, zorder=5, bbox=dict(facecolor="white", edgecolor="none", pad=0.6))
+    ax.set_xticks(x, shapes, fontsize=9)
+    ax.tick_params(axis="x", length=0, pad=2)
+    ax.set_xlim(-0.6, len(shapes) - 0.4)
+    ax.set_ylim(0, 112)
+    ax.set_yticks([0, 50, 100])
+    ax.yaxis.set_major_formatter(PCT)
+    ax.grid(False, axis="x")
+    ax.set_ylabel("Success")
     return fig
 
 
@@ -4646,33 +4698,42 @@ DECK_CUSTOM = [
     ("curves_stages_1", lambda: fig_deck_stages(1),
      "Build step 1 of the training story (validation success per correction round): only the 5-shape stage drawn; "
      "same axes, bands and stage names as steps 2 and 3."),
-    ("curves_stages_2", lambda: fig_deck_stages(2), "Build step 2: 5- and 10-shape stages (executed vs plan labels, "
-     "96 px and 192 px lines)."),
-    ("curves_stages_3", lambda: fig_deck_stages(3), "Build step 3: all three stages, larger-budget line for 27 shapes, "
-     "picks circled (sent to a fresh test), round 50 starred (its own fresh test, 34.8%); markers explained on the "
-     "slide."),
-    ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline final test (D051) by shape group: "
-     "the original only (other bars transparent, legend entries hidden)."),
-    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes, ours 96 px (round 44), "
-     "ours 192 px (round 2); one-decimal labels on the original and 96 px bars; 95% Wilson intervals."),
+    ("curves_stages_2", lambda: fig_deck_stages(2), "Build step 2: 5- and 10-shape stages (96 px and 192 px lines; "
+     "no label-switch divider or labels)."),
+    ("curves_stages_3", lambda: fig_deck_stages(3), "Build step 3: all three stages; the last stage ('26 letters') is "
+     "averaged over the 26 letters (narrow T left out), as are its original level (D051 fresh test, 2.4%) and the "
+     "round-50 star (D054 fresh test, 34.7%); no picks circled, no budget divider; markers explained on the slide."),
+    ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline final test (D051) by group (9 "
+     "earlier letters, 17 new letters, all 26 letters, 6 never-seen shapes; narrow T left out): the original only "
+     "(other bars transparent, legend entries hidden)."),
+    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes, ours 26 letters 96 px "
+     "(round 44), ours 26 letters 192 px (round 2); one-decimal labels on the original and 96 px bars; 95% Wilson "
+     "intervals."),
     ("heldout_success", fig_deck_heldout, "Six never-seen shapes (D051): success vs number of training shapes "
      "(1.2% -> 2.8% -> 4.7%; 192 px 5.9%), 95% intervals, labelled directly (no legend)."),
-    ("final_dumbbell", fig_deck_dumbbell, "All 33 shapes along x (sorted; never-seen shapes right of the line), "
-     "original vs ours 96 px (round 44), D051; T and near-T labels bold; one row of short shape names."),
-    ("arch_groups", fig_deck_arch_groups, "Architecture experiment (D059): main model (official network, 96 px, after "
-     "50 correction rounds) vs the 505M transformer (DINOv2 encoder + flow-matching action head) on the same new "
-     "scenes, 200 per shape; per group with paired change and 95% interval (architecture_test_groups.csv)."),
+    ("final_dumbbell", fig_deck_dumbbell, "26 letters and 6 never-seen shapes along x (sorted; never-seen shapes right "
+     "of the line), original vs ours 96 px (round 44), D051; T label bold; narrow T left out; one row of short names."),
+    ("arch_groups", fig_deck_arch_groups, "Architecture experiment (D064): main model (official network, 96 px, after "
+     "50 correction rounds) vs Flow-DiT (505M: DINOv2 encoder with all 16x16 tokens + flow-matching DiT action head) "
+     "on the same new scenes, 200 per shape; groups all 26 letters, 9 earlier, 17 new, 6 never seen, T (narrow T left "
+     "out) with paired change and 95% interval (architecture_test_groups.csv)."),
     ("blends_compact", fig_deck_blends, "Weight blends (D040-D043): change in T success vs the original for the six "
      "pre-registered tests with 95% intervals and the -5 point pass line; Y change and verdict as text columns "
      "(early_attempts.csv)."),
     ("oracle_compact", fig_deck_oracle, "Simulator re-ranking: original vs best of 16 plans picked in the true "
-     "simulator, per letter (successes written at the right; early_attempts.csv)."),
+     "simulator, per letter (T, Y, D, L; successes written at the right; early_attempts.csv)."),
     ("bptt_compact", fig_deck_bptt, "Back-propagation (BPTT) teacher: goal covered at the end in the real simulator, "
-     "range of four runs vs the original policy and the sampling planner (early_attempts.csv; original from the D040 "
-     "pool)."),
+     "range of four runs vs the original policy, T, Y, D, L; dashed 95% = success (early_attempts.csv; original from "
+     "the D040 pool)."),
     ("copying_pooled", fig_deck_copying, "Copying the teacher (D044, 5 shapes, same 50 selection scenes per shape): "
      "pooled success of the teacher, two copies reading the exact state, the camera copy and the original policy "
      "(early_attempts.csv)."),
+    ("wm_error_bar", fig_deck_wm_error_bar, "World-model error 8 controls ahead (left panel of wm_accuracy as two "
+     "bars): plain network 2.3 px vs our world model 0.25 px (mean of the per-shape medians), 1.5 px needed dashed "
+     "(world_model_accuracy.csv)."),
+    ("teacher_letters_bar", fig_deck_teacher_letters, "Teacher (exact state) success per letter on the 50 selection "
+     "scenes, 26 letters sorted as in method_teacher_success_26letters (no narrow T), pooled 90% dashed "
+     "(teacher_validation.csv)."),
 ]
 # existing figures drawn at deck size: (name, layout mode, width mm, height mm)
 DECK_FIGURES = [
@@ -5019,7 +5080,10 @@ def main():
         plt.rcParams.update(DECK_RC | {"figure.constrained_layout.use": False})
         for name, fn, shows in DECK_CUSTOM:
             if wanted(name):
-                save_deck(fn(), name, shows)
+                fig = fn()
+                if fig is None:      # the figure function reported why it was skipped
+                    continue
+                save_deck(fig, name, shows)
                 print(f"wrote deck/{name}")
         MODE["name"] = "default"
         style()

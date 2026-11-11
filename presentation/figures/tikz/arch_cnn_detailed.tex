@@ -42,7 +42,7 @@
   \node[ad shape, text=tdink] at (5.9,39.4) {2 frames};
   \draw[ad grp=adenc] (26,38) rectangle (101,59);
   \node[ad title=adenc] at (28.4,57.6) {Vision encoder\enspace\mdseries\adbody ResNet-18, 11.2M};
-  \draw[ad arr] (11.6,\yt) -- node[ad shape, above] {crop $84^2$} (30.4,\yt);
+  \draw[ad arr] (11.6,\yt) -- node[ad shape, above, pos=0.36] {crop $84^2$} (30.4,\yt);
   \adslab{31}{\yt}{2.0}{11}
   \adslab{38.5}{\yt}{2.0}{11}
   \adslab{46}{\yt}{3.0}{8}
@@ -72,17 +72,17 @@
   \node[ad u] (md) at (57.6,\yc) {2048};
   \node[ad u] (u1) at (67.8,\yc) {1024};
   \node[ad u] (u2) at (78.0,\yb) {512};
-  \draw[ad arr] (d1.south east) -- (d2.north west);
-  \draw[ad arr] (d2.south east) -- (d3.north west);
+  \draw[ad arr] (d1.south) |- (d2.west);
+  \draw[ad arr] (d2.south) |- (d3.west);
   \draw[ad arr] (d3) -- (md);
   \draw[ad arr] (md) -- (u1);
-  \draw[ad arr] (u1.north east) -- (u2.south west);
+  \draw[ad arr] (u1.east) -| (u2.south);
   \draw[ad arr=tdblue, dash pattern=on 2pt off 1.2pt] (d2.east) -- (u2.west);
   \draw[ad arr=tdblue, dash pattern=on 2pt off 1.2pt] (d3.south) -- ++(0,-2.4) -| (u1.south);
   \node[ad io, minimum width=12mm, minimum height=9mm] (in) at (6.4,\ya) {plan\\$a^k$};
-  \node[ad io, minimum width=12mm, minimum height=9mm] (out) at (106.0,\ya) {noise\\$\hat\epsilon$};
+  \node[ad io, minimum width=12mm, minimum height=9mm] (out) at (106.0,\yb) {noise\\$\hat\epsilon$};
   \draw[ad arr] (in) -- node[ad shape, above] {$16{\times}2$} (d1);
-  \draw[ad arr] (u2.east) -- node[ad shape, below, pos=0.42, yshift=-0.4mm] {conv} (out.west);
+  \draw[ad arr] (u2.east) -- node[ad shape, above, pos=0.55] {conv} (out.west);
   \draw[ad arr=tdblue] (out.south) -- (106.0,1.4) -- (6.4,1.4) -- (in.south);
   \node[ad shape, text=tdblue, fill=white, inner sep=1mm] at (56,1.4) {DDPM, $\times100$};
   % condition -> every residual block (FiLM)

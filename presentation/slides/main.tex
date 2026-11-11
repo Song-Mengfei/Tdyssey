@@ -6,7 +6,7 @@
 % size they are placed, in Computer Modern Sans, so they are included at natural size and their text matches the slide
 % text. Scenes come from images/slide/ (scripts/slide_images.py): video stills cropped to the scene, labels set here.
 % TikZ diagrams (figures/tikz/): overview.tex (Figure 1, shared with the paper), worldmodel.tex, planner.tex,
-% architecture.tex (the 505M transformer experiment), arch_cnn_detailed.tex and arch_flow_detailed.tex (the two networks
+% architecture.tex (the Flow-DiT experiment), arch_cnn_detailed.tex and arch_flow_detailed.tex (the two networks
 % in detail; the latter's next-run tag is hidden on the slide with \def\adnonext{}). Figure 1
 % uses images/slide/ov_icon_data.png, images/slide/ov_icon_wm.png, images/slide/ov_icon_teacher.png,
 % images/slide/ov_icon_camera.png and images/slide/shape_T.png, shape_A.png, shape_K.png, shape_R.png, shape_S.png,
@@ -27,11 +27,11 @@
 % Overlay builds: problem (original, then ours), Figure 1 (6 steps), path to a teacher (3), world model (4), teacher
 %   planning (6), intended plans (number), training curve (5 -> 10 -> 27 shapes), final-test bars (original, then
 %   ours), last millimetres, architecture (3).
-% Architecture experiment (docs D059): main model = official network after 50 correction rounds (stays the final
-%   model); the 505M transformer was trained once on the same data. Numbers: data/architecture_test_groups.csv and
-%   architecture_test_by_shape.csv; demo stills images/slide/frontier_*.png from videos/frontier/ (T, W, Z: the
-%   transformer solves, the main model does not, per videos/INDEX.md). The result of the transformer's own correction
-%   rounds (D060) is a TODO on its result slide.
+% Architecture experiment (docs D059, D061, D064): main model = official network after 50 correction rounds (stays the
+%   final model); Flow-DiT (505M, all 16x16 image tokens, runs/flow26b16) was trained once on the same data. Numbers:
+%   data/architecture_test_groups.csv and architecture_test_by_shape.csv (D064 test, seeds 15000000 + 20*i); demo
+%   stills images/slide/flowdit_*.png from videos/flowdit/ (T second scene, B, R: Flow-DiT solves, the main model
+%   stops at 93-94%, per videos/INDEX.md; local video links).
 % TODO: speakers per section.
 % The checked PPTX contains the final build of each of its 62 slides.
 % Default: one final build per page. Define \tdanimated for the original builds.
@@ -178,8 +178,8 @@
 % text arrow
 \newcommand{\too}{\textrightarrow\xspace}
 % highlighted numbers: one hero size (final-test slide) and one stat size everywhere else
-\newcommand{\heronum}[1]{{\fontsize{40}{44}\selectfont\bfseries #1}}
-\newcommand{\statnum}[1]{{\fontsize{18}{21}\selectfont\bfseries #1}}
+\newcommand{\heronum}[1]{{\fontsize{30}{34}\selectfont\bfseries #1}}
+\newcommand{\statnum}[1]{{\fontsize{15}{18}\selectfont\bfseries #1}}
 \newcommand{\corig}{\color{tdorig}}
 \newcommand{\cours}{\color{tdblue}}
 \newcommand{\cteach}{\color{tdgolddark}}
@@ -291,7 +291,7 @@
   \tikzfile{overview}
 \end{frame}
 
-\begin{frame}{First attempt: reinforcement learning in the simulator}
+\begin{frame}{We first tried RL fine-tuning}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{80mm}
     \deckfig{rl_t_collapse}
@@ -300,12 +300,13 @@
     \stat[\corig]{55\% \color{tdgrey}\too \color{tdink}5\%}{T success when the RL steps were large enough to change
       the policy}
     \vspace{5mm}
-    \stat[\color{tdink}]{16--36\%}{of a plan's score came from the plan itself; the rest was noise}
+    \stat[\color{tdink}]{16 to 36\%}{of a plan's score came from the plan itself, the rest was noise}
   \end{columns}
   \vspace{1.5mm}
-  \takeaway{Lesson: we needed a \hl{teacher} that already knows how to push every letter.}
+  \takeaway{So we needed a \hl{teacher} that already knows how to push every letter.}
   \vspace{0.5mm}
-  \cpt{RL fine-tuning of the diffusion policy in the simulator, two RL variants; T success at each run's last check.}
+  \cpt{RL fine-tuning of the diffusion policy in the simulator. Variant A is AdvantageFlow, variant B is DiffusionNFT.
+       T success at each run's last check.}
 \end{frame}
 
 \begin{frame}{The path to a teacher}
@@ -315,9 +316,9 @@
     \foreach \i/\x/\y/\c/\st/\h/\b/\v in {%
         1/0/30/tdorig/1/{RL fine-tuning}/{reward success in the simulator}/{\nok{T 55\% \too 5\%}},
         2/48/30/tdorig/1/{Re-ranking}/{pick the best of 16 plans with the simulator, then imitate}/{\nok{within noise}},
-        3/96/30/tdorig/1/{Back-propagation}/{train a teacher through the world model by gradients}/{\nok{goal covered 4--12\%}},
-        4/0/0/tdgold/2/{Sampling planner}/{search many push plans inside the world model}/{\ok{the teacher: 88\%}},
-        5/48/0/tdorig/3/{Copying the teacher}/{plain copies and weight blends}/{\color{tdgolddark}\footnotesize partly: most skill lost},
+        3/96/30/tdorig/1/{Back-propagation}/{train a teacher through the world model by gradients}/{\nok{goal covered 4 to 11\%}},
+        4/0/0/tdgold/2/{Sampling planner}/{search many push plans inside the world model}/{\ok{the teacher}},
+        5/48/0/tdorig/3/{Copying the teacher}/{train the camera policy on the teacher's moves}/{\color{tdgolddark}\footnotesize most skill lost},
         6/96/0/tdblue/3/{Correction rounds}/{the policy drives, the teacher labels}/{\ok{our method}}}{
       \uncover<\st->{%
         \draw[rounded corners=1.6mm, line width=0.9pt, draw=\c, fill=white] (\x,\y) rectangle ++(44,25);
@@ -331,9 +332,6 @@
     \uncover<2->{\draw[ar, rounded corners=2mm] (118,30) -- (118,27.5) -- (22,27.5) -- (22,25.3);}
     \uncover<3->{\foreach \x in {44,92} \draw[ar] (\x+0.3,12.5) -- (\x+3.7,12.5);}
   \end{tikzpicture}\par
-  \vspace{3mm}
-  \raggedright
-  \uncover<3->{\takeaway{Each dead end taught us something; the next two slides show the evidence.}}
 \end{frame}
 
 \begin{frame}{Two dead ends before the teacher}
@@ -342,14 +340,13 @@
     {\small\textbf{Re-ranking with the true simulator}\par}\vspace{0.5mm}
     \deckfig{oracle_compact}\par
     \vspace{1mm}
-    {\small Best of 16 helps a little (Y: 3 \too 8 of 20); imitating the picks stays within noise: the original
-     policy's plans are too alike.\par}
+    {\small The original policy's plans are too alike, so picking the best of 16 and copying it changes little.\par}
     \column{70mm}
     {\small\textbf{Back-propagating through the world model}\par}\vspace{0.5mm}
     \deckfig{bptt_compact}\par
     \vspace{1mm}
-    {\small It never pushed the block home (goal covered 4--12\%): gradients through contact get stuck, so we
-     switched to \hl{sampling} plans.\par}
+    {\small Gradients often get stuck at contact, so it never pushes the block home. We switched to \hl{sampling}
+     plans.\par}
   \end{columns}
 \end{frame}
 
@@ -359,55 +356,45 @@
   \vspace{1.2mm}
   \raggedright
   \uncover<4->{%
-    \statnum{\cours \textasciitilde0.3 px}\hspace{2.5mm}{\small\color{tdgrey}vs}\hspace{2.5mm}\statnum{\color{tdink}2.3 px}%
-    \hspace{3mm}\parbox[c]{79mm}{\footnotesize\color{tdgrey}median error 8 steps ahead: ours vs a plain network that
-      learns everything; finishing needs about 1.5 px}\par}
+    \deckfig{wm_error_bar}\hspace{4mm}%
+    \parbox[b]{62mm}{\cpt{Median error 8 steps ahead. The plain network learns everything, ours copies the pusher and
+      contact rules. Finishing needs about 1.5 px.}}\par}
 \end{frame}
 
 \begin{frame}{How the teacher plans}
   \centering
   \tikzfile{planner}\par
-  \vspace{2.5mm}
-  \raggedright
-  \uncover<6->{%
-    \statnum{\cteach 88\%}\hspace{3mm}%
-    \parbox[b]{100mm}{\small\color{tdgrey}of the selection scenes solved over the 27 shapes (50 fixed scenes per shape
-      that we use to pick models). It needs the exact state, so it only \textbf{teaches}; it is never deployed.}%
-    \par}
+  \vspace{2mm}
+  \uncover<3->{%
+    \deckfig{teacher_letters_bar}\par
+    \raggedright
+    \cpt{Teacher success per letter on the selection scenes. It reads the exact state, so it only teaches.}}
 \end{frame}
 
-\begin{frame}{The camera policy: the official Diffusion Policy network}
+\begin{frame}{The camera policy network}
   \centering
   \tikzfile{arch_cnn_detailed}\par
-  \vspace{0.4mm}
-  \raggedright
-  \takeaway{Two camera frames + pusher position in; 16 pusher targets out, 8 executed.}
 \end{frame}
 
 \begin{frame}{Copying the teacher was not enough}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{70mm}
-    {\small\textbf{Plain copying}\par}\vspace{0.5mm}
-    \deckfig{copying_pooled}\par
-    \vspace{1mm}
-    {\small Even a copy that reads the exact state keeps only 30--41\% of the teacher's successes: the skill is lost
-     in copying, not in seeing.\par}
-    \column{70mm}
-    {\small\textbf{Blending weights with the original T policy}\par}\vspace{0.5mm}
-    \deckfig{blends_compact}\par
-    \vspace{1mm}
-    {\small 3 of 6 tests passed the check that T does not drop (dashed line), but gains stayed small (best: Y 8.6\%
-     \too 14.8\%).\par}
+  \vspace{2mm}
+  \begin{columns}[c,totalwidth=\textwidth]
+    \column{74mm}
+    \deckfig{copying_pooled}
+    \column{62mm}
+    {\small Even a copy that reads the exact state keeps only \hl{30 to 41\%} of the teacher's successes.\par}
+    \vspace{3mm}
+    {\small The skill is lost in copying, not in seeing.\par}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Teaching the camera policy: correction rounds}
+\begin{frame}{Correction rounds (DAgger)}
   \vspace{1mm}
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
     \foreach \x/\c/\n/\h/\b in {2/tdblue/1/Policy drives/{practice scenes, camera only},
                                 37.7/tdgold/2/Teacher labels/{every state the policy visits},
-                                73.4/tdorig/3/Add to the data/{+ the teacher's runs\\+ 206 human demos},
+                                73.4/tdorig/3/Add to the data/{together with the\\teacher's own runs},
                                 109.1/tdblue/4/Retrain/{official network and recipe}}{
       \draw[rounded corners=1.6mm, fill=white, draw=\c, line width=0.9pt] (\x,0) rectangle ++(33.4,15);
       \node[st badge=\c] at (\x,15) {\n};
@@ -424,88 +411,98 @@
   \lbl{31mm}{K}{}\hspace{3mm}\lbl{31mm}{R}{}\hspace{3mm}\lbl{31mm}{E}{}\\[0.8mm]
   \scene{31mm}{slide/correction_K.png}\hspace{3mm}\scene{31mm}{slide/correction_R.png}\hspace{3mm}%
   \scene{31mm}{slide/correction_E.png}\hspace{4mm}%
-  \parbox[b]{36mm}{\raggedright\cpt{At states the policy reached itself: \swatch{tdblue!70} its 8 sampled plans and
+  \parbox[b]{36mm}{\raggedright\cpt{At states the policy reached itself, \swatch{tdblue!70} its 8 sampled plans and
     \swatch[2pt]{tdgold} the teacher's label.}\vspace{2.5mm}
-    {\small Equal share per shape; 5 \too 10 \too 27 shapes.\par}\vspace{1.5mm}
-    \cpt{Known as DAgger.}}
+    {\small 50 rounds, with 3.2M training examples in the last one.\par}}
 \end{frame}
 
-\begin{frame}{Copy what the teacher intends, not what it did}
+\begin{frame}{Copy the plan, not the pushes}
   \vspace{1mm}
   \centering
   \scene{40mm}{slide/labels_T.png}\hspace{3mm}\scene{40mm}{slide/labels_Y.png}\hspace{3mm}%
   \scene{40mm}{slide/labels_E.png}\par
   \vspace{1.5mm}
-  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes: it re-plans after every push,
-       so they zigzag}
+  \cpt{\swatch[2pt]{tdgold} intended 16-step plan \qquad \swatch{tdred} executed pushes, which zigzag because the
+       teacher re-plans after every push}
   \vspace{4mm}
   \uncover<2->{%
     \statnum{\corig 77 \color{tdgrey}\too \cours 129}%
-    \hspace{4mm}{\small\color{tdgrey}\begin{tabular}[b]{@{}l@{}}successes in 1000 episodes on the selection scenes:\\
-      same data and training, only the labels change; the largest single gain\end{tabular}}\par}
+    \hspace{4mm}{\small\color{tdgrey}\begin{tabular}[b]{@{}l@{}}successes in 1000 episodes on the selection scenes.\\
+      Same data and training, only the labels change.\end{tabular}}\par}
 \end{frame}
 
 % ==================================================================================== 3. results
 \section{Results and demonstration}
-\begin{frame}{Training: 5 \texorpdfstring{\too}{->} 10 \texorpdfstring{\too}{->} 27 shapes}
+\begin{frame}{From 5 to 10 to 26 shapes}
   \only<1|handout:0>{\deckfig{curves_stages_1}}%
   \only<2|handout:0>{\deckfig{curves_stages_2}}%
   \only<3-|handout:1>{\deckfig{curves_stages_3}}\par
   \vspace{1mm}
-  \cpt{\mbox{\ringsw\ tested on new scenes} \quad \mbox{\starsw\ after 6 more rounds: 34.8\% on new scenes}
+  \cpt{\mbox{\starsw\ after 6 more rounds, 34.7\% on new scenes}
        \quad \mbox{\swatch[1.1pt]{tdorig, dash pattern=on 2.4pt off 1.8pt} original, same scenes} \quad
        \mbox{\swatch[1.4pt]{tdorig, dash pattern=on 0.7pt off 1.6pt} original, new scenes}}
   \vspace{0.4mm}
-  \cpt{Selection scenes: 50 fixed scenes per shape, used to pick models; averaged over each stage's shapes.}
+  \cpt{Success on the selection scenes, 50 fixed scenes per shape used to pick models, averaged over each stage's
+       shapes.}
 \end{frame}
 
-\begin{frame}{26 letters: training per shape was the bottleneck}
-  \deckfig{curves_26letters}\par
-  \vspace{2mm}
-  \takeaway{27 shapes sharing the 10-shape training budget levelled off near \hl{24\%}; 54k training steps per round
-    and 60 practice scenes per new letter lifted it to about \hl{35\%}.}
-\end{frame}
-
-\begin{frame}{Final test: 300 new scenes per shape}
+\begin{frame}{Final test on new scenes}
   \vfill
   \centering
-  \heronum{\corig 3.7\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}\cours 33.4\%}\par
+  \heronum{\corig 2.4\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}\cours 33.6\%}\par
   \vspace{2mm}
-  {\large success on 26 letters and a narrow T, with the same 96 px camera\par}
+  {\large success on all 26 letters, with the same 96 px camera\par}
   \vfill
   \begin{tikzpicture}[x=1mm, y=1mm]
     \foreach \x/\n/\t in {0/{\cours 33.8\%}/with a sharper 192 px camera,
                           48/{\corig 0.4\% \color{tdgrey}\too \cours 33.2\%}/on the 17 letters added last,
-                          96/{\corig 0.35 \color{tdgrey}\too \cours 0.82}/share of the goal covered at the end}{
+                          96/{\corig 0.33 \color{tdgrey}\too \cours 0.82}/share of the goal covered at the end}{
       \fill[tdpanel] (\x,0) rectangle ++(44,19);
       \node[anchor=north, inner sep=0pt] at (\x+22,15) {\statnum{\n}};
       \node[anchor=north, text=tdgrey, font=\small, text width=40mm, align=flush center] at (\x+22,7.6) {\t};
     }
   \end{tikzpicture}\par
   \vspace{3mm}
-  \cpt{New scenes, never used for training or for picking models; every policy on the same scenes. Our policy here:
-       after 44 correction rounds.}
+  \cpt{300 new scenes per letter, never used for training or for picking models. Every policy plays the same scenes.
+       Our policy here is the one after 44 correction rounds.}
+\end{frame}
+
+\begin{frame}{Why the scores look low}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{68mm}
+    {\small\textbf{What the policy sees}\par}\vspace{1.5mm}
+    \lbl{32mm}{96 px camera}{}\hspace{3mm}%
+    \lbl{32mm}{192 px camera}{}\\[1mm]
+    \scene{32mm}{slide/camera_96.png}\hspace{3mm}\scene{32mm}{slide/camera_192.png}\par
+    \vspace{1.5mm}
+    \cpt{The same scene through each camera. Our main model uses the official 96 px camera.}
+    \column{68mm}
+    {\small\textbf{Success is strict}\par}\vspace{1.5mm}
+    \lbl{32mm}{94.6\%}{\nok{not solved}}\hspace{3mm}%
+    \lbl{32mm}{95.1\%}{\ok{solved}}\\[1mm]
+    \scene{32mm}{slide/near_miss_G.png}\hspace{3mm}\scene{32mm}{slide/solved_E.png}\par
+    \vspace{1.5mm}
+    \cpt{Success needs more than 95\% of the goal covered within 300 moves.}
+  \end{columns}
+  \vspace{3mm}
+  \takeaway{One 96 px camera pixel is about 5 simulator pixels, so the last nudge is smaller than what the policy can
+    see.}
 \end{frame}
 
 \begin{frame}{Final test by shape group}
   \only<1|handout:0>{\deckfig{final_bars_1}}%
   \only<2-|handout:1>{\deckfig{final_bars_2}}\par
   \vspace{1.5mm}
-  \uncover<2->{\takeaway{The 17 letters added last caught up with the earlier ten (33\%).}}
-  \vspace{1mm}
-  \cpt{After 6 more correction rounds (the policy in the videos), tested against it on other new scenes:
-       32.9\% \too 34.8\%. Bars: 95\% intervals.}
+  \cpt{Bars show 95\% intervals.}
 \end{frame}
 
-\begin{frame}{Per shape: the new letters improve most}
+\begin{frame}{Results per shape}
   \deckfig{final_dumbbell}\par
   \vspace{1mm}
-  \takeaway{All trained shapes improve except \hl{the T and the narrow T (5--8 points down)}.}
-  \vspace{0.3mm}
-  \cpt{Final test, 300 new scenes per shape. 3, 4, 7 = digits; + plus, \# hash, \too arrow.}
+  \cpt{Final test, 300 new scenes per shape. 3, 4 and 7 are digits, + plus, \# hash, \too arrow.}
 \end{frame}
 
-\begin{frame}{Demo: same scene, original vs ours}
+\begin{frame}{Original vs ours}
 % Synchronized composite for p19; underlying stills and labels are unchanged.
 \slidevideo{p19}
   \begin{columns}[c,totalwidth=\textwidth]
@@ -529,29 +526,22 @@
       inner xsep=2.2mm, inner ysep=2.2mm, align=center, font=\small\bfseries]
       {\tikz\fill[white] (0,0) -- (0,2.4mm) -- (2.1mm,1.2mm) -- cycle;\ Demo video\\
        \normalfont\footnotesize 40 seconds};}\par
-    \vspace{1.5mm}
-    \cpt{How to read the scenes, these three letters, then all 33 shapes at once.}
-    \vspace{2.5mm}
-    \cpt{Examples where ours succeeds, from the selection scenes; on new test scenes it succeeds about a third of
-         the time.}
-    \vspace{2.5mm}
-    \cpt{Interactive demo: Hugging Face Space (TODO).}
+    \vspace{4mm}
+    {\small Try it yourself\\\textbf{tinyurl.com/tdyssey}\par}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Demo: the teacher and the policy it taught}
-% Synchronized composite for p20; underlying stills and labels are unchanged.
-\slidevideo{p20}
+\begin{frame}{Teacher vs our policy}
   \vspace{1mm}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{99mm}
     \lbltwo{47mm}{Teacher (exact state)}{\ok{solved in 24 moves}}\hspace{4mm}%
     \lbltwo{47mm}{Our camera policy}{\nok{best 93.6\% covered}}\\[1mm]
-    \video{slide/tvs_K_teacher.png}{teacher_vs_student/K.mp4}{47mm}\hspace{4mm}%
+    \video{slide/tvs_K_teacher.png}{teacher_vs_student/K_teacher_slow.mp4}{47mm}\hspace{4mm}%
     \video{slide/tvs_K_policy.png}{teacher_vs_student/K.mp4}{47mm}
     \column{39mm}
     \vspace{8mm}
-    \stat[\cteach]{88\%}{teacher}
+    \stat[\cteach]{90\%}{teacher}
     \vspace{2mm}
     \stat{35\%}{our camera policy, on the same selection scenes}
     \vspace{5mm}
@@ -570,7 +560,7 @@
     \lbl{34mm}{Original}{\nok{not solved}}\hspace{3mm}\lbl{34mm}{Ours}{\ok{solved}}\\[1mm]
     \video{slide/compare_digit7_scene2_orig.png}{compare/digit7_scene2.mp4}{34mm}\hspace{3mm}%
     \video{slide/compare_digit7_scene2_ours.png}{compare/digit7_scene2.mp4}{34mm}\\[1.5mm]
-    \cpt{Digit 7, never seen in training: 19--23\% in the final test (original 2.0\%, same scenes).}
+    \cpt{Digit 7 was never seen in training. It reaches 19 to 23\% in the final test, the original 2.0\%.}
   \end{columns}
   \vspace{2.5mm}
   \takeaway{On six never-seen shapes (digits 3, 4, 7, plus, hash, arrow) transfer is small, but it grows with the
@@ -578,40 +568,38 @@
 \end{frame}
 
 \begin{frame}{The last millimetres}
-\slidevideo{p22}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{50mm}
-    \lbl{43mm}{Ours on M}{\nok{best 94.9\%}}\\[1mm]
-    \video{slide/near_miss_M.png}{near_misses/near_miss_M_400020.mp4}{43mm}
+    \lbl{40mm}{Ours on G}{\nok{best 94.6\%}}\\[1mm]
+    \video{slide/near_miss_G.png}{near_misses/near_miss_G_400000.mp4}{40mm}
     \column{88mm}
     \uncover<2->{%
-      \lbl{40mm}{Near miss: M}{\footnotesize\color{tdgrey}94.9\%}\hspace{3mm}%
-      \lbl{40mm}{Solved: narrow T}{\footnotesize\color{tdgrey}95.2\%}\\[1mm]
-      \scene{40mm}{slide/zoom_near_miss_M.png}\hspace{3mm}\scene{40mm}{slide/zoom_solved_nearT.png}\\[1mm]
-      \cpt{Share of the goal covered at the best moment; grid: one 96 px camera pixel (about 5 simulator pixels).}}
+      \lbl{37mm}{Near miss, G}{\footnotesize\color{tdgrey}94.6\%}\hspace{3mm}%
+      \lbl{37mm}{Solved, E}{\footnotesize\color{tdgrey}95.1\%}\\[1mm]
+      \scene{37mm}{last_mile/zoom_G.png}\hspace{3mm}\scene{37mm}{last_mile/zoom_E.png}\\[1mm]
+      \cpt{Close-ups from the same scene. Red is the part of the goal left uncovered. One grid square is one 96 px
+           camera pixel, about 5 simulator pixels.}}
   \end{columns}
   \vspace{1.5mm}
-  \takeaway{Most failures are near misses: \hl{91\%} of the goal covered at the best moment on average; success needs
-    \hl{95\%}.}
+  \takeaway{Most failures are near misses, \hl{91\%} of the goal covered at best. Success needs \hl{95\%}.}
 \end{frame}
 
-\begin{frame}{Does the network matter? A 505M transformer}
+\begin{frame}{Does the network matter?}
   \centering
   \tikzfile{architecture}\par
   \vspace{1.5mm}
   \raggedright
   \uncover<3->{\takeaway{Only the network changes; our main model stays the official network.}
   \vspace{0.2mm}
-  \cpt{Trained once from scratch, 160k steps, on the main model's final data, no correction rounds of its own. Frames
-       are cropped to 84 px and enlarged to 224 px (no new detail).}}
+  \cpt{Trained once from scratch, 160k steps, on the main model's final data.}}
 \end{frame}
 
-\begin{frame}{Inside the 505M transformer}
+\begin{frame}{Inside Flow-DiT}
   \centering
   {\def\adnonext{}\tikzfile{arch_flow_detailed}}\par
   \vspace{1mm}
   \raggedright
-  \takeaway{Same inputs and outputs; DINOv2 encoder + transformer head (flow matching).}
+  \takeaway{Same inputs and outputs; DINOv2 encoder + DiT action head (flow matching).}
 \end{frame}
 
 \begin{frame}{Same data, bigger network: 32.8\% \texorpdfstring{\too}{->} 45.2\%}
@@ -624,38 +612,29 @@
     \vspace{3mm}
     \stat[\color{tdtransf}]{26 of 27}{trained shapes improve; goal covered at the end 0.82 \too 0.89}
   \end{columns}
-  \vspace{0.8mm}
-  \cpt{Same new test scenes for both: 200 per shape, 6{,}600 paired episodes, 95\% intervals. The original T-only
-       policy was not run on them (no comparison with 3.7\% here).}
-  \vspace{0.3mm}
-  \cpt{Running now: correction rounds driven by the transformer itself. Result: \textbf{\color{tdbad}[TODO: pending]}.}
 \end{frame}
 
-\begin{frame}{Demo: main model vs the 505M transformer}
-% Synchronized composite for p26; underlying stills and labels are unchanged.
-\slidevideo{p26}
+\begin{frame}{Main model vs Flow-DiT}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{104mm}
     \begin{tikzpicture}[x=1mm, y=1mm]
-      \foreach \c/\n in {0/T, 1/W, 2/Z}
+      \foreach \c/\n in {0/T, 1/B, 2/R}
         \node[anchor=south, inner sep=0pt, font=\small\bfseries] at (26+\c*27.5+12.75, 1) {\n};
       \node[anchor=east, align=right, inner sep=0pt] at (23.5,-12.75)
         {\small\textbf{Main model}\\[0.2mm]\small\textbf{(official)}\\[0.6mm]\nok{not solved}};
       \node[anchor=east, align=right, inner sep=0pt] at (23.5,-40.75)
-        {\small\textbf{505M}\\[0.2mm]\small\textbf{transformer}\\[0.6mm]\ok{solved}};
-      \gridscene{26}{0}{25.5}{slide/frontier_T_main.png}{frontier/T.mp4}
-      \gridscene{53.5}{0}{25.5}{slide/frontier_W_main.png}{frontier/W.mp4}
-      \gridscene{81}{0}{25.5}{slide/frontier_Z_main.png}{frontier/Z.mp4}
-      \gridscene{26}{-28}{25.5}{slide/frontier_T_transformer.png}{frontier/T.mp4}
-      \gridscene{53.5}{-28}{25.5}{slide/frontier_W_transformer.png}{frontier/W.mp4}
-      \gridscene{81}{-28}{25.5}{slide/frontier_Z_transformer.png}{frontier/Z.mp4}
+        {\small\textbf{Flow-DiT}\\[0.2mm]\small\textbf{(505M)}\\[0.6mm]\ok{solved}};
+      \gridscene{26}{0}{25.5}{slide/flowdit_T_scene2_main.png}{flowdit/T_scene2.mp4}
+      \gridscene{53.5}{0}{25.5}{slide/flowdit_B_main.png}{flowdit/B.mp4}
+      \gridscene{81}{0}{25.5}{slide/flowdit_R_main.png}{flowdit/R.mp4}
+      \gridscene{26}{-28}{25.5}{slide/flowdit_T_scene2_flowdit.png}{flowdit/T_scene2.mp4}
+      \gridscene{53.5}{-28}{25.5}{slide/flowdit_B_flowdit.png}{flowdit/B.mp4}
+      \gridscene{81}{-28}{25.5}{slide/flowdit_R_flowdit.png}{flowdit/R.mp4}
     \end{tikzpicture}
     \column{36mm}
     \raggedright
-    {\small Same scene for both. The main model stops at 92--94\% of the goal covered; the transformer
+    {\small Same scene for both. The main model stops at 93--94\% of the goal covered; Flow-DiT
      finishes.\par}
-    \vspace{3mm}
-    \cpt{Picked from the selection scenes where the transformer succeeds and the main model does not.}
   \end{columns}
 \end{frame}
 
@@ -665,11 +644,11 @@
   \vfill
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
-    \foreach \x/\n/\t in {0/{\corig 3.7\% \color{tdgrey}\too \cours 33.4\%}/{one camera policy for all 26 letters and
-                            a narrow T, on new test scenes},
-                          48/{\color{tdink}0}/{new human demonstrations: all the new training data is
+    \foreach \x/\n/\t in {0/{\corig 2.4\% \color{tdgrey}\too \cours 33.6\%}/{one camera policy for all 26 letters,
+                            on new test scenes},
+                          48/{\color{tdink}0}/{new human demonstrations, all the new training data is
                             machine-made},
-                          96/{\corig 1.2\% \color{tdgrey}\too \cours 4.7\%}/{on six never-seen shapes: small, but growing
+                          96/{\corig 1.2\% \color{tdgrey}\too \cours 4.7\%}/{on six never-seen shapes, small but growing
                             with the number of training shapes}}{
       \fill[tdpanel] (\x,0) rectangle ++(44,38);
       \fill[tdblue] (\x,38) rectangle ++(44,-1);
@@ -682,21 +661,14 @@
   \vspace{2mm}
 \end{frame}
 
-\begin{frame}{Takeaways and limitations}
+\begin{frame}{Limitations}
   \vspace{4mm}
-  \tk{1}{A teacher that may use the exact simulator state, plus correction rounds, beat RL fine-tuning here.}
-  \tk{2}{Copy the teacher's intended plans, not its executed actions.}
-  \tk{3}{Train enough per shape; plan 16 steps, execute 8.}
-  \vfill
-  \begin{tikzpicture}[x=1mm, y=1mm]
-    \node[fill=tdpanel, inner xsep=3mm, inner ysep=2.4mm, text width=138mm, align=flush left, font=\small]
-      {\textbf{Limitations.} The teacher uses the exact simulator state and hand-designed push candidates (training
-       only). Final alignment: most failures are near misses. The T and the narrow T drop 5--8 points. One training run
-       per setting; simulation only.};
-  \end{tikzpicture}\par
-  \vspace{1.5mm}
-  \cpt{Ongoing: correction rounds for the 505M transformer policy.}
-  \vspace{1mm}
+  \tk{1}{\textbf{Privileged data.} The teacher reads the exact simulator state and uses hand-designed pushes. This is
+    for training only, the deployed policy sees only the camera.}
+  \tk{2}{\textbf{Final alignment.} Most failures are near misses, just short of covering 95\% of the goal.}
+  \tk{3}{\textbf{Only PushT.} We applied it to this one pushing task in simulation, not to other tasks or a real
+    robot.}
+  \tk{4}{\textbf{One run per setting.} Each model was trained once, so run-to-run variation is not measured.}
 \end{frame}
 
 \begin{frame}[plain]
@@ -704,10 +676,6 @@
   \vspace*{7mm}
   {\fontsize{30}{33}\selectfont\bfseries Thank you\par}
   \begin{tikzpicture}[remember picture,overlay]
-    \node[anchor=north west,inner sep=0pt,outer sep=0pt]
-      at ([xshift=86mm,yshift=-11.5mm]current page.north west)
-      {\parbox[t]{68mm}{\raggedright\fontsize{8.5}{10}\selectfont\color{tdgrey}
-        Our policy on all 33 shapes at once (recorded).}};
     \node[anchor=north west,inner sep=0pt,outer sep=0pt]
       at ([xshift=8mm,yshift=-83mm]current page.north west)
       {\parbox[t]{144mm}{\small Code: \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Demo:
@@ -749,15 +717,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Weight blends in detail}
-  \vspace{-1mm}
-  \deckfig{final_blends_all}\par
-  \vspace{1mm}
-  \cpt{All six pre-registered blend tests, change vs the original on T, Y and D with 95\% intervals. Three failed on T;
-       the 30\% and 50\% encoder blends passed (the 50\% one twice). A blend keeps the original action network, so it
-       cannot carry most of the teacher's skill.}
-\end{frame}
-
 \begin{frame}{The world model}
   \deckfig{wm_accuracy}\par
   \vspace{1mm}
@@ -792,11 +751,7 @@
   \cpt{The 192 px and 96 px policies also differ in the number of correction rounds (2 vs 44).}
 \end{frame}
 
-\begin{frame}{The T and the narrow T}
-  \deckfig{analysis_t_tradeoff}
-\end{frame}
-
-\begin{frame}{Ten shapes: 1000 new scenes per shape}
+\begin{frame}{Ten shapes on 1000 new scenes each}
   \deckfig{final_10shapes_bars}
 \end{frame}
 
@@ -847,55 +802,6 @@
   \cpt{Last frames of T, narrow T, Y / D, L, E / K, R, digit 7; click to play. All 14 models (also plain copying of the
        teacher, executed-push labels, the 192 px camera and more checkpoints): videos/models/, outcomes in
        videos/INDEX.md.}
-\end{frame}
-
-\begin{frame}{How to read the videos}
-\slidevideo{p56}
-  \begin{columns}[c,totalwidth=\textwidth]
-    \column{58mm}
-    \video{slide/compare_P_mid_ours.png}{compare/P.mp4}{56mm}
-    \column{80mm}
-    \begin{tikzpicture}[x=1mm, y=1mm, font=\small]
-      \foreach \y/\t in {30/goal outline, 24/block (the letter), 18/pusher, 12/next targets the policy will execute,
-                         6/rest of its 16-step plan, 0/top-left inset: the camera image}
-        \node[anchor=west, text=tdink, inner sep=0pt] at (8,\y) {\t};
-      \fill[vgoal] (0,28.6) rectangle ++(5,2.8);
-      \fill[vblock] (0,22.6) rectangle ++(5,2.8);
-      \fill[vpusher] (2.5,18) circle (1.6);
-      \fill[vnext] (2.5,12) circle (0.9);
-      \fill[vrest] (2.5,6) circle (0.8);
-      \draw[tdink!80, line width=0.8pt] (0.3,-1.4) rectangle ++(4.4,2.8);
-    \end{tikzpicture}\par
-    \vspace{3mm}
-    \cpt{The pink part of the plan is replaced when the policy plans again; the inset is what the policy sees.}
-  \end{columns}
-  \vspace{3mm}
-  \cpt{Playback: 3$\times$ real time (the simulator runs 10 controls per second); the demo reel runs at 6$\times$.}
-\end{frame}
-
-\begin{frame}{Limitations and disclosure in full}
-  \begin{itemize}\small
-    \item The teacher reads exact simulator state, its push candidates are hand-designed (an exploration prior), and
-          the reward uses the exact simulator state; all training only. The tested policy sees only the camera.
-    \item The 206 original human T demonstrations are reused; no new human data.
-    \item One training run per setting: variation across training seeds is not measured.
-    \item T: 46.0\% \too 40.7\% (96 px, interval includes zero); narrow T 37.3\% \too 29.0\%.
-    \item Demo clips come from the selection scenes, which were also used to pick models; rates come from new test
-          scenes.
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Data and compute}
-  \deckfig{data_growth}\par
-  \vspace{1mm}
-  {\small Training ran on single NVIDIA data-center GPUs (H100 and A100): about 120 GPU-hours of policy training over
-   128 rounds (all stages), plus practice scenes and model selection. A 26-letter round: about 1--1.7 hours of training
-   (54k steps) at 96 px, about 3 hours at 192 px, plus about half an hour of practice scenes and model selection.
-   \textcolor{tdgrey}{Per round: data/training\_rounds.csv, data/compute\_rounds.csv.}\par}
-\end{frame}
-
-\begin{frame}{Project timeline}
-  \deckfig{project_timeline}
 \end{frame}
 
 % Real-video playback pages retained separately from the new 48M PNG diagnostics.

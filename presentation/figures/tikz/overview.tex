@@ -46,29 +46,28 @@
   \ovstep{1}{
     \draw[ov lane priv] (0,34) rectangle (144,64);
     \node[anchor=west, inner sep=0pt, text=tdgolddark] at (3,62)
-      {\fontsize{9}{10}\selectfont\textbf{TRAINING ONLY}\quad uses exact simulator state};
+      {\fontsize{9}{10}\selectfont\textbf{TRAINING ONLY}\quad uses the exact simulator state};
     \ovbox{tdorig}{1.5}{59.7}{44}{24.6}{1}{ov_icon_data.png}{Machine data}
-      {the original T policy with\\random noise on its targets;\\no human demos}
+      {pushes by the original\\T policy, with noise}
   }
   \ovstep{2}{
     \draw[ov arrow=tdgrey] (45.5,47.4) -- (50,47.4);
     \ovbox{tdgold}{50}{59.7}{44}{24.6}{2}{ov_icon_wm.png}{World model}
-      {\textcolor{tdgrey}{copied:} pusher motion and\\contact geometry\\
-       \textcolor{tdgolddark}{learned:} how the letter\\moves when pushed}
+      {learns how the letter\\moves when pushed}
   }
   \ovstep{3}{
     \draw[ov arrow=tdgrey] (94,47.4) -- (98.5,47.4);
     \ovbox{tdgold}{98.5}{59.7}{44}{24.6}{3}{ov_icon_teacher.png}{Planner teacher}
-      {1{,}024 plans per step\\(128 structured pushes),\\48 steps ahead;\\re-plans every step}
+      {tries 1{,}024 plans,\\48 steps ahead}
   }
   % ---------------------------------------------------------------- camera policy (deployed)
   \ovstep{4}{
     \draw[ov lane dep] (48,0) rectangle (144,28);
     \draw[ov arrow=tdgold] (105,35.1) -- (105,26.6);
     \node[anchor=east, inner sep=0pt, text=tdgolddark, font=\ovbody] at (103,31)
-      {\textbf{imitation:} copy the teacher's \textbf{intended} 16-step plans};
+      {copy the teacher's \textbf{plans}};
     \ovbox{tdblue}{98.5}{26.5}{44}{25}{4}{ov_icon_camera.png}{Camera policy}
-      {official Diffusion Policy:\\2 camera frames (96$\times$96)\\+ pusher position;\\plans 16 steps, executes 8}
+      {official Diffusion Policy\\camera + pusher position}
   }
   \ovstep{5}{
     \draw[ov arrow=tdblue] (139.5,26.6) -- (139.5,35.1);
@@ -76,8 +75,7 @@
     \node[anchor=west, inner sep=0pt, text=tdblue] at (111,31) {\fontsize{9}{10}\selectfont\bfseries correction rounds};
     \node[ov badge=tdblue] at (3.6,24.6) {5};
     \node[ov text, text width=39.5mm, font=\ovbody] at (6.6,26.4)
-      {\textcolor{tdblue}{\textbf{Correction rounds:}} the policy drives, the teacher labels the states it visits,
-       retrain};
+      {\textcolor{tdblue}{\textbf{Correction rounds}}\\the policy drives,\\the teacher labels};
   }
   % ---------------------------------------------------------------- deployed policy and legend
   \ovstep{6}{
@@ -88,9 +86,9 @@
     \foreach \s [count=\i] in {T,A,K,R,S,W}
       \node[inner sep=0pt] at (49.4 + \i*5.8, 14.4) {\includegraphics[width=5mm]{\ovroot images/slide/shape_\s.png}};
     \node[anchor=west, inner sep=0pt, text=tdgrey, font=\ovbody] at (87.4,14.4) {\dots};
-    \node[ov text, font=\ovbody] at (52,10.2) {camera only; one policy for\\26 letters and a narrow T};
+    \node[ov text, font=\ovbody] at (52,10.2) {one camera policy\\for all 26 letters};
     \draw[ov lane priv] (1.5,6.3) rectangle ++(6.5,3.6);
-    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,8.1) {training only: exact state};
+    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,8.1) {training only, exact state};
     \draw[ov lane dep] (1.5,0.9) rectangle ++(6.5,3.6);
     \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,2.7) {camera + pusher position};
   }

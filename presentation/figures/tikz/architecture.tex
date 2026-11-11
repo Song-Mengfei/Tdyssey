@@ -1,13 +1,13 @@
 % Architecture experiment (deck slide "Does the network matter?"): the official Diffusion Policy network of the main
-% model against a 505M transformer policy, same input, same training data, same output.
-% Facts: docs/DECISIONS.md D059 (scripts/learning/flow_policy.py): DINOv2 ViT-B/14 encoder (86.6M, pretrained on
-% ordinary photos, fine-tuned), each 96 px frame cropped to 84 px and enlarged to 224 px, 16x16 patch tokens pooled to
-% 8x8 per frame plus one pusher token; transformer action head 418M (24 blocks, the 16 action tokens attend to each other
-% and to the image and pusher tokens, denoising time enters every block), flow matching, 10 sampling steps; 504.6M in
-% all; 160k training steps from scratch, no correction rounds of its own. Official network: ResNet-18 encoder (11M) and
+% model against Flow-DiT, a 505M flow-matching transformer policy, same input, same training data, same output.
+% Facts: docs/DECISIONS.md D059, D061, D064 (scripts/learning/flow_policy.py, runs/flow26b16): DINOv2 ViT-B/14 encoder
+% (86.6M, pretrained on ordinary photos, fine-tuned), each 96 px frame cropped to 84 px and enlarged to 224 px, all
+% 16x16 patch tokens + CLS per frame (no pooling) plus one pusher token; DiT action head 418.2M (24 blocks, the 16 action
+% tokens attend to each other and to the image and pusher tokens, denoising time enters every block), flow matching,
+% 10 sampling steps; 504.8M in all; 160k training steps from scratch, no correction rounds of its own. Official network: ResNet-18 encoder (11M) and
 % 1D U-Net (251M), diffusion with 100 denoising steps.
 % Overlay steps (\arstep{n}{...} = \onslide<n->{...} in beamer): 1 input and output, 2 the official network, 3 the
-% transformer. Size 144 x 46 mm; fixed font sizes in the current family.
+% Flow-DiT. Size 144 x 46 mm; fixed font sizes in the current family.
 \makeatletter%
 \@ifclassloaded{beamer}{\providecommand\arstep[2]{\onslide<#1->{#2}}}{\providecommand\arstep[2]{#2}}%
 \makeatother%
@@ -52,15 +52,15 @@
     \draw[ar arrow=tdgrey] (28,28) -- (33,33);
     \draw[ar arrow=tdgrey] (111,33) -- (116,28);
   }
-  % ---------------------------------------------------------------- 3: the 505M transformer
+  % ---------------------------------------------------------------- 3: Flow-DiT (505M)
   \arstep{3}{
     \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdtransf!60, fill=tdtransfbg] (33,0) rectangle (111,21);
-    \node[ar tag=tdtransf] at (35.5,2.6) {Experiment: 505M transformer};
+    \node[ar tag=tdtransf] at (35.5,2.6) {Experiment: Flow-DiT (505M)};
     \draw[ar box, draw=tdtransf] (36,5) rectangle (66,18);
     \node[ar title] at (38,16.1) {DINOv2 ViT-B};
     \node[ar text] at (38,11.7) {86.6M; pretrained\\on photos};
     \draw[ar box, draw=tdtransf] (75,5) rectangle (108,18);
-    \node[ar title] at (77,16.1) {Transformer head};
+    \node[ar title] at (77,16.1) {DiT head};
     \node[ar text] at (77,11.7) {418M; flow matching;\\24 blocks, 10 steps};
     \draw[ar arrow=tdgrey] (66,11.5) -- (75,11.5);
     \draw[ar arrow=tdgrey] (28,18) -- (33,13);
