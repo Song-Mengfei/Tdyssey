@@ -608,16 +608,18 @@
   \takeaway{Same inputs and outputs, with a DINOv2 encoder and a flow-matching DiT head.}
 \end{frame}
 
-\begin{frame}{Same data, bigger network: 32.8\% \texorpdfstring{\too}{->} 45.2\%}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{100mm}
-    \deckfig{arch_groups}
-    \column{38mm}
-    \vspace{3mm}
-    \stat[\color{tdtransf}]{+12.4 points}{on the 27 trained shapes (32.8\% \too 45.2\%)}
-    \vspace{3mm}
-    \stat[\color{tdtransf}]{26 of 27}{trained shapes improve; goal covered at the end 0.82 \too 0.89}
-  \end{columns}
+\begin{frame}{Same data, bigger network}
+  \deckfig{arch_letters}\par
+  \vspace{1.5mm}
+  \begin{tikzpicture}[x=1mm, y=1mm]
+    \foreach \x/\n/\c in {0/{\color{tdmuted}32.8\% \too \color{tdtransf}45.5\%}/{all 26 letters, same scenes},
+                          48/{\color{tdtransf}+12.7 points}/{95\% interval +10.9 to +14.5},
+                          96/{\color{tdtransf}24 of 26}/{letters improve}}{
+      \fill[tdpanel] (\x,0) rectangle ++(44,12);
+      \node[anchor=north, inner sep=0pt] at (\x+22,10.6) {\statnum{\n}};
+      \node[anchor=north, text=tdgrey, font=\footnotesize, text width=42mm, align=flush center] at (\x+22,4.3) {\c};
+    }
+  \end{tikzpicture}\par
 \end{frame}
 
 \begin{frame}[c]{Main model vs Flow-DiT}
