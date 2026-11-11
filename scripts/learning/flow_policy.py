@@ -28,6 +28,13 @@ Inference: x_0 ~ N(0, I) drawn row by row from the caller's torch.Generator (sam
 agent), then K = 10 Euler steps x <- x + v(x, k/K) / K, k = 0..K-1. The sampler is deterministic given the starting
 noise (useful for noise steering).
 
+Optional block-pose head (arch "pose_head": True; flow_train.py --pose-weight > 0): a small head reads the latest frame's
+full 16 x 16 patch-token grid (after the encoder's final layer norm, before pooling, whatever "pool" is) and predicts the
+block's pose, (x - 256) / 256, (y - 256) / 256, cos(angle), sin(angle). Its loss (smooth-L1 on the positions, squared
+error on cos/sin, the better of angle and angle + pi for shapes with 2-fold symmetry; only samples with a label) is
+added to the flow loss with weight "pose_weight" during training only. The labels are privileged simulator state; the
+head is never run at inference (encode / sample are unchanged), so the policy stays camera-only.
+
 FlowAgent provides the interface the evaluation and collection tools use (base_rollouts.build returns it for checkpoints
 whose arch type is "flow_dit"): device, render_size, generator, network.normalizer, encode / encode_batch (histories of
 2 observation dicts -> condition tensor (B, N, width)), sample / sample_batch (condition, generators) -> (actions
@@ -60,6 +67,13 @@ def default_arch(**overrides):
             "inference_steps": 10}
     arch.update(overrides)
     return arch
+
+
+def pose_arch(weight, beta=0.01, proj=128, hidden=512):
+    """Arch keys of the training-only block-pose head (flow_train.py --pose-weight); absent = no head."""
+    return {"pose_head": True, "pose_weight": float(weight), "pose_beta": float(beta), "pose_proj": proj, "pose_hidden": hidden,
+            "pose_input": "latest frame, all patch tokens after the encoder's final layer norm, before pooling",
+            "pose_label": "block x, y, angle of the latest frame (privileged simulator state; training only, unused at inference)"}
 
 
 # ----------------------------------------------------------------------------------------------- DINOv2 ViT-B/14
@@ -165,6 +179,40 @@ def load_dinov2(model, repo=DINO_REPO):
     return model
 
 
+# ----------------------------------------------------------------------------------------------- block-pose head
+class PoseHead(nn.Module):
+    """Training-only auxiliary head: patch tokens (B, N, dim) -> (B, 4) = normalized x, y, cos, sin of the block pose.
+    Per-token projection, then the flattened grid (keeps where each token is) -> MLP."""
+
+    def __init__(self, dim, tokens, proj=128, hidden=512):
+        super().__init__()
+        self.norm = nn.LayerNorm(dim, eps=1e-6)
+        self.proj = nn.Linear(dim, proj)
+        self.fc = nn.Linear(tokens * proj, hidden)
+        self.out = nn.Linear(hidden, 4)
+        for lin in (self.proj, self.fc):
+            nn.init.xavier_uniform_(lin.weight); nn.init.zeros_(lin.bias)
+        nn.init.zeros_(self.out.weight); nn.init.zeros_(self.out.bias)
+
+    def forward(self, tokens):
+        h = F.gelu(self.proj(self.norm(tokens))).flatten(1)
+        return self.out(F.gelu(self.fc(h)))
+
+
+def pose_targets(pose):
+    """Pose labels (B, 3) simulator px / radians -> (B, 4) head targets."""
+    return torch.cat([(pose[:, :2] - 256.0) / 256.0, torch.cos(pose[:, 2:3]), torch.sin(pose[:, 2:3])], 1)
+
+
+def pose_errors(pred, pose, sym2):
+    """Per-sample position error (simulator px, Euclidean), |dx|, |dy| and angle error (degrees, modulo the shape's
+    symmetry) of head outputs pred (B, 4) against labels pose (B, 3); sym2 (B,) bool: 2-fold symmetric shape."""
+    d = pred[:, :2].float() * 256.0 + 256.0 - pose[:, :2]
+    order = sym2.float() + 1
+    delta = (torch.atan2(pred[:, 3].float(), pred[:, 2].float()) - pose[:, 2]) * order
+    return d.norm(dim=-1), d.abs(), torch.rad2deg(torch.atan2(torch.sin(delta), torch.cos(delta)).abs() / order)
+
+
 # ----------------------------------------------------------------------------------------------- DiT action head
 class _RMSNorm(nn.Module):
     def __init__(self, dim, eps=1e-6):
@@ -251,6 +299,10 @@ class FlowPolicy(nn.Module):
         self.register_buffer("img_mean", torch.tensor(IMAGENET_MEAN).view(1, 3, 1, 1), persistent=False)
         self.register_buffer("img_std", torch.tensor(IMAGENET_STD).view(1, 3, 1, 1), persistent=False)
         self._init_head()
+        self.pose_head = None                     # created after the other weights: their initialisation is unchanged
+        if a.get("pose_head"):
+            g = a["vit_input"] // a["patch"]
+            self.pose_head = PoseHead(a["vit_dim"], g * g, a["pose_proj"], a["pose_hidden"])
 
     def _init_head(self):
         for name, m in self.named_modules():
@@ -268,8 +320,11 @@ class FlowPolicy(nn.Module):
 
     def parameter_counts(self):
         enc = sum(p.numel() for p in self.vit.parameters())
-        head = sum(p.numel() for n, p in self.named_parameters() if not n.startswith(("vit.", "normalizer.")))
-        return {"encoder": enc, "head": head, "total": enc + head}
+        head = sum(p.numel() for n, p in self.named_parameters() if not n.startswith(("vit.", "normalizer.", "pose_head.")))
+        if self.pose_head is None:
+            return {"encoder": enc, "head": head, "total": enc + head}
+        pose = sum(p.numel() for p in self.pose_head.parameters())            # training only; not used by the policy
+        return {"encoder": enc, "head": head, "pose_head": pose, "total": enc + head + pose}
 
     # -------------------------------------------------------------------------------------------- observation
     def _crop(self, x):
@@ -284,8 +339,9 @@ class FlowPolicy(nn.Module):
         o = (S - c) // 2
         return x[..., o:o + c, o:o + c]
 
-    def encode(self, image, agent_pos):
-        """image (B, T, 3, S, S) float in [0, 1]; agent_pos (B, T, 2) pixels -> condition tokens (B, N, width)."""
+    def encode(self, image, agent_pos, patch_grid=False):
+        """image (B, T, 3, S, S) float in [0, 1]; agent_pos (B, T, 2) pixels -> condition tokens (B, N, width).
+        patch_grid=True (training with the pose head) also returns the latest frame's patch tokens (B, h*w, vit_dim)."""
         B, T = image.shape[:2]
         x = self._crop(image.reshape(B * T, *image.shape[2:]).float())
         x = F.interpolate(x, size=(self.arch["vit_input"],) * 2, mode="bilinear", align_corners=False)
@@ -296,6 +352,8 @@ class FlowPolicy(nn.Module):
         feats = self.obs_proj(feats).view(B, T, self.tokens_per_frame, -1) + self.obs_pos + self.frame_emb
         pos = self.normalizer["agent_pos"].normalize(agent_pos.float()).reshape(B, -1)
         cond = torch.cat([feats.flatten(1, 2), (self.proprio(pos) + self.proprio_emb[:, 0])[:, None]], 1)
+        if patch_grid:
+            return self.cond_norm(cond), tok.view(B, T, *tok.shape[1:])[:, -1, 1:]
         return self.cond_norm(cond)
 
     # -------------------------------------------------------------------------------------------- flow head
@@ -318,14 +376,33 @@ class FlowPolicy(nn.Module):
         u = torch.rand(n, device=device, generator=generator) ** (1.0 / self.arch["beta_a"])   # Beta(a, 1) by inverse CDF
         return self.arch["flow_s"] * (1 - u)
 
-    def compute_loss(self, image, agent_pos, action, generator=None):
-        """Flow-matching loss for pixel-space plan labels action (B, H, 2)."""
+    def compute_loss(self, image, agent_pos, action, generator=None, pose=None, pose_sym2=None):
+        """Flow-matching loss for pixel-space plan labels action (B, H, 2).
+        With pose (B, 3) block-pose labels (NaN rows: no label) and pose_sym2 (B,) bool (2-fold symmetric shape):
+        returns (flow + pose_weight * pose loss, flow loss, pose loss, head outputs (B, 4)); the last three detached."""
         x1 = self.normalizer["action"].normalize(action.float())
         noise = torch.randn(x1.shape, device=x1.device, generator=generator)
         t = self.sample_flow_time(len(x1), x1.device, generator)
         xt = t[:, None, None] * x1 + (1 - t[:, None, None]) * noise
-        v = self.velocity(xt, t, self.kv_cache(self.encode(image, agent_pos)))
-        return F.mse_loss(v.float(), x1 - noise)
+        if pose is None:
+            v = self.velocity(xt, t, self.kv_cache(self.encode(image, agent_pos)))
+            return F.mse_loss(v.float(), x1 - noise)
+        cond, grid = self.encode(image, agent_pos, patch_grid=True)
+        flow = F.mse_loss(self.velocity(xt, t, self.kv_cache(cond)).float(), x1 - noise)
+        pred = self.pose_head(grid).float()
+        pose_loss = self.pose_loss(pred, pose.float(), pose_sym2)
+        return flow + self.arch["pose_weight"] * pose_loss, flow.detach(), pose_loss.detach(), pred.detach()
+
+    def pose_loss(self, pred, pose, sym2):
+        """Mean over labelled samples of smooth-L1 (beta pose_beta) on the normalized position + squared error on
+        (cos, sin), for 2-fold symmetric shapes the smaller of the errors for angle and angle + pi."""
+        lab = torch.isfinite(pose).all(-1)
+        tgt = pose_targets(torch.where(lab[:, None], pose, torch.zeros_like(pose)))
+        pos = F.smooth_l1_loss(pred[:, :2], tgt[:, :2], beta=self.arch["pose_beta"], reduction="none").mean(-1)
+        ang = (pred[:, 2:] - tgt[:, 2:]).pow(2).mean(-1)
+        if sym2 is not None:
+            ang = torch.where(sym2, torch.minimum(ang, (pred[:, 2:] + tgt[:, 2:]).pow(2).mean(-1)), ang)
+        return ((pos + ang) * lab).sum() / lab.sum().clamp(min=1)
 
     @torch.no_grad()
     def integrate(self, cond, x, steps=None):

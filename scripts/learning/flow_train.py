@@ -13,8 +13,14 @@ Optimisation: AdamW (betas 0.9/0.95), head lr --lr (1e-4), encoder lr --lr x --e
 with the official schedule (power 0.75, max 0.9999), saved for evaluation. The loss is compiled (torch.compile) unless
 --no-compile; --grad-checkpoint recomputes encoder activations (batch 128: ~18 GB GPU instead of ~40 GB, ~25% slower).
 Batches are assembled on a background thread.
-Outputs in --out: info.json, train.log (one line per --log-every steps), loss_per_step.npy, ema-step<N>.pt
-(base_rollouts.py eval --student reads them), resume.pt (latest full training state; --resume continues from it).
+--pose-weight W > 0 adds the training-only block-pose head (flow_policy.py): every teacher-episode and human-T sample is
+labelled with the block pose (x, y, angle) of its latest frame (privileged simulator state; correction records have none),
+and W x the pose loss is added to the flow loss. The head is not used at inference. train.log then also shows the pose
+loss, and every --pose-report-every steps (1000) the head's position / angle errors on that batch's labelled samples
+(all of them, and those near the goal).
+Outputs in --out: info.json, train.log (one line per --log-every steps), loss_per_step.npy (flow loss),
+pose_loss_per_step.npy (with --pose-weight), ema-step<N>.pt (base_rollouts.py eval --student reads them), resume.pt
+(latest full training state; --resume continues from it).
 
   REPO=/tmp/Tdyssey/lastmile /tmp/Tdyssey/repo/.venv/bin/python -B scripts/learning/flow_train.py \\
       --demos $R/teacher-plan-demos --human-t $HUMAN --records $R/mpc-data/dagger26m-r1/data --steps 200 --out $R/flow-smoke/train
@@ -41,8 +47,11 @@ import flow_policy as fp  # noqa: E402
 
 
 def build_data(args, normalizer, dev):
-    """bc_train.main()'s data assembly and equal-share weights (copied; the loaders are bc_train's own functions)."""
+    """bc_train.main()'s data assembly and equal-share weights (copied; the loaders are bc_train's own functions).
+    The last value: None, or with --pose-weight > 0 the per-sample pose labels (pose_labels)."""
     unnorm = lambda x: normalizer["action"].unnormalize(torch.tensor(x, device=dev)).cpu().numpy()
+    want = args.pose_weight > 0
+    poses = [] if want else None                                             # filled by build_index, one row per sample
     mm = os.environ.get("TDYSSEY_FRAMES_MMAP")
     if mm:
         path = Path(mm)/f"frames-{os.getpid()}.npy"; path.parent.mkdir(parents=True, exist_ok=True)
@@ -52,16 +61,17 @@ def build_data(args, normalizer, dev):
         print(f"frames streamed to {path} ({out.nbytes/2**30:.0f} GB)", flush=True)
         nw = int(os.environ.get("TDYSSEY_LOAD_WORKERS", "0"))                  # parallel reading and writing, same arrays
         if nw > 0:
-            frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_streamed_parallel(args, unnorm, out, nw)
+            frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_streamed_parallel(args, unnorm, out, nw, poses=poses)
         else:
-            eps = bc_train.iter_episodes(args); recs = bc_train.iter_records(args.records, unnorm, args.image_size)
-            frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage, out=out)
+            eps = bc_train.iter_episodes(args, poses=want); recs = bc_train.iter_records(args.records, unnorm, args.image_size)
+            frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage, out=out,
+                                                                                    poses=poses)
         assert len(pos) == len(frames), f"streamed {len(pos)} frames into an array of {len(frames)}"
         frames.flush()
     else:
-        eps = bc_train.load_episodes(args)
+        eps = bc_train.load_episodes(args, poses=want)
         recs = bc_train.load_records(args.records, unnorm, args.image_size)
-        frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage)
+        frames, pos, acts, obs_idx, act_idx, group, near = bc_train.build_index(eps, recs, args.near_coverage, poses=poses)
     eps = recs = None                                                        # release the loaders' references
     groups = sorted(set(group))
     letters = sorted({g.rsplit("-", 1)[0] for g in groups})
@@ -71,13 +81,34 @@ def build_data(args, normalizer, dev):
     w = np.array([share[g]/gsum[g] for g in group]) * raw
     info = {"samples": int(len(group)), "frames": int(len(frames)), "per_group": {g: int(np.sum(group == g)) for g in groups},
             "near_goal_samples": int(near.sum()), "share": share}
-    return frames, pos, acts, obs_idx, act_idx, w, info
+    return frames, pos, acts, obs_idx, act_idx, w, info, (pose_labels(poses, group, near, w, info) if want else None)
+
+
+def pose_labels(poses, group, near, w, info):
+    """Per-sample pose labels (N, 3) float32 (NaN: no label), 2-fold symmetry flags and near-goal flags; summary in info."""
+    from tdyssey.envs.official import official_shape
+    pose = np.concatenate(poses).astype(np.float32); poses.clear()
+    if len(pose) != len(group):
+        raise AssertionError(f"{len(pose)} pose rows for {len(group)} samples")
+    names, inv = np.unique(group, return_inverse=True)
+    order = np.array([official_shape(g.rsplit("-", 1)[0]).symmetry_order for g in names])
+    if order.max() > 2:
+        raise ValueError("the pose loss handles 1- and 2-fold symmetric shapes only")
+    sym2, lab = (order == 2)[inv.ravel()], np.isfinite(pose).all(1)
+    info["pose"] = {"labelled_samples": int(lab.sum()), "labelled_share_of_samples": round(float(lab.mean()), 4),
+                    "labelled_share_of_sampling_weight": round(float(w[lab].sum() / w.sum()), 4),
+                    "labelled_near_goal_samples": int((lab & near).sum()),
+                    "labelled_per_group": {g: int(lab[inv.ravel() == k].sum()) for k, g in enumerate(names)},
+                    "two_fold_symmetric_shapes": sorted({g.rsplit("-", 1)[0] for g, o in zip(names, order) if o == 2}),
+                    "label_min": np.nanmin(pose, 0).round(2).tolist(), "label_max": np.nanmax(pose, 0).round(2).tolist()}
+    return {"pose": pose, "sym2": sym2, "near": np.asarray(near, bool)}
 
 
 class Batches:
     """Weighted sampling with replacement + frame gathering + pinning on a background thread (keeps the GPU fed)."""
 
-    def __init__(self, frames, pos, acts, obs_idx, act_idx, weights, batch, seed, depth=6):
+    def __init__(self, frames, pos, acts, obs_idx, act_idx, weights, batch, seed, depth=6, extra=None):
+        self.extra = extra                                       # optional per-sample tensors, appended to each batch
         self.frames = torch.from_numpy(frames) if isinstance(frames, np.ndarray) else frames
         self.pos, self.acts = torch.from_numpy(pos), torch.from_numpy(acts)
         self.obs_idx, self.act_idx = torch.from_numpy(obs_idx), torch.from_numpy(act_idx)
@@ -93,7 +124,10 @@ class Batches:
                                                 len(self.cdf) - 1))
                 oi = self.obs_idx[b]                                                          # (B, 2)
                 img = self.frames[oi.reshape(-1)].reshape(self.batch, oi.shape[1], *self.frames.shape[1:]).pin_memory()
-                self.q.put((img, self.pos[oi].pin_memory(), self.acts[self.act_idx[b]].pin_memory()))
+                item = (img, self.pos[oi].pin_memory(), self.acts[self.act_idx[b]].pin_memory())
+                if self.extra is not None:
+                    item += tuple(x[b].pin_memory() for x in self.extra)
+                self.q.put(item)
         except BaseException as exc:                                                         # surfaced by get()
             self.error = exc; self.q.put(None)
 
@@ -126,6 +160,18 @@ def param_groups(net, args):
     return list(groups.values())
 
 
+def pose_report(step, pred, pose, sym2, near):
+    """One log line: the pose head's errors on this batch's labelled samples (all of them, and the near-goal ones)."""
+    lab = torch.isfinite(pose).all(-1)
+    dist, dxy, ang = fp.pose_errors(pred, torch.nan_to_num(pose), sym2)
+    parts = []
+    for name, sel in (("labelled", lab), ("near-goal", lab & near)):
+        n = int(sel.sum())
+        parts.append(f"{name} n {n}" + (f" pos-err {dist[sel].mean():.2f}px (|dx| {dxy[sel, 0].mean():.2f} |dy| "
+                                       f"{dxy[sel, 1].mean():.2f}) angle-err {ang[sel].mean():.2f}deg" if n else ""))
+    return f"[pose] step {step} batch " + "; ".join(parts)
+
+
 def host_memory_gb():
     out = {}
     with open("/proc/self/status") as f:
@@ -156,6 +202,10 @@ def main():
     p.add_argument("--no-cls", action="store_true", help="Drop the CLS token of each frame")
     p.add_argument("--no-qk-norm", action="store_true")
     p.add_argument("--inference-steps", type=int, default=10)
+    p.add_argument("--pose-weight", type=float, default=0.0,
+                   help="> 0: training-only block-pose head on the latest frame's patch tokens, loss weight (0 = off)")
+    p.add_argument("--pose-beta", type=float, default=0.01, help="Smooth-L1 beta of the pose position loss (units of 256 px)")
+    p.add_argument("--pose-report-every", type=int, default=1000, help="Steps between pose-error lines in train.log")
     p.add_argument("--steps", type=int, default=100000)
     p.add_argument("--batch", type=int, default=128)
     p.add_argument("--lr", type=float, default=1e-4, help="Head learning rate")
@@ -183,24 +233,32 @@ def main():
     t_start = time.time()
 
     normalizer = fp.official_normalizer()
+    pose_on = args.pose_weight > 0
     if args.init:
         init = torch.load(args.init, map_location="cpu", weights_only=True)
         net = fp.build_network(init); arch = net.arch
+        if pose_on and not arch.get("pose_head"):
+            p.error("--pose-weight with --init needs a checkpoint that has the pose head")
+        if pose_on:
+            arch.update(pose_weight=args.pose_weight, pose_beta=args.pose_beta)
     else:
         vit = {"base": {}, "large": {"encoder": "facebook/dinov2-large", "vit_dim": 1024, "vit_depth": 24, "vit_heads": 16}}[args.vit]
+        pose_keys = fp.pose_arch(args.pose_weight, args.pose_beta) if pose_on else {}
         arch = fp.default_arch(**vit, width=args.width, depth=args.depth, heads=args.heads, mlp_ratio=args.mlp_ratio, adaln=args.adaln,
                                pool=args.pool, use_cls=not args.no_cls, qk_norm=not args.no_qk_norm,
-                               inference_steps=args.inference_steps)
+                               inference_steps=args.inference_steps, **pose_keys)
         net = fp.FlowPolicy(arch, normalizer, pretrained=True)
     net.vit.grad_checkpoint = args.grad_checkpoint
     counts = net.parameter_counts()
-    print(f"flow policy parameters: encoder {counts['encoder']:,}  head {counts['head']:,}  total {counts['total']:,}", flush=True)
+    print(f"flow policy parameters: encoder {counts['encoder']:,}  head {counts['head']:,}  "
+          + (f"pose head (training only) {counts['pose_head']:,}  " if "pose_head" in counts else "") + f"total {counts['total']:,}", flush=True)
     net = net.to(dev).train()
 
-    frames, pos, acts, obs_idx, act_idx, w, info = build_data(args, net.normalizer, dev)
+    frames, pos, acts, obs_idx, act_idx, w, info, pose = build_data(args, net.normalizer, dev)
     info.update({"parameters": counts, "arch": arch, "args": {k: str(v) for k, v in vars(args).items()},
                  "data_seconds": round(time.time() - t_start, 1)})
-    print(json.dumps({k: info[k] for k in ("samples", "frames", "per_group", "parameters", "data_seconds")}), flush=True)
+    print(json.dumps({k: info[k] for k in ("samples", "frames", "per_group", "parameters", "data_seconds", "pose") if k in info}),
+          flush=True)
     if not resume:
         (args.out/"info.json").write_text(json.dumps(info, indent=1))
 
@@ -212,16 +270,18 @@ def main():
     net_params = [q for n, q in net.named_parameters() if q.requires_grad]                 # EMA pairs, same order
     ema_params = [named_ema[n] for n, q in net.named_parameters() if q.requires_grad]
     lr_mult = lambda s: s/args.warmup if s < args.warmup else 0.5*(1 + math.cos(math.pi*(s-args.warmup)/max(1, args.steps-args.warmup)))
-    step0, raw_losses = 0, []
+    step0, raw_losses, pose_losses = 0, [], []
     if resume:
         st = torch.load(resume, map_location="cpu", weights_only=True)
         net.load_state_dict(st["net"]); ema.load_state_dict(st["ema"]); opt.load_state_dict(st["opt"])
         net.to(dev); ema.to(dev)                       # the official normalizer's loader rebuilds its tables on the CPU
         step0, raw_losses = int(st["step"]), st["losses"].tolist()
+        pose_losses = st["pose_losses"].tolist() if "pose_losses" in st else []
         torch.set_rng_state(st["torch_rng"]); torch.cuda.set_rng_state(st["cuda_rng"])
         del st
         print(f"resumed from {resume} at step {step0}", flush=True)
-    batches = Batches(frames, pos, acts, obs_idx, act_idx, w, args.batch, seed=args.seed*1000003 + step0)
+    extra = (torch.from_numpy(pose["pose"]), torch.from_numpy(pose["sym2"]), torch.from_numpy(pose["near"])) if pose_on else None
+    batches = Batches(frames, pos, acts, obs_idx, act_idx, w, args.batch, seed=args.seed*1000003 + step0, extra=extra)
     frames_mm = frames if isinstance(frames, np.memmap) else None
     log = open(args.out/"train.log", "a")
 
@@ -236,25 +296,35 @@ def main():
         tmp = args.out/"resume.pt.tmp"
         torch.save({"net": net.state_dict(), "ema": ema.state_dict(), "opt": opt.state_dict(), "step": step,
                     "losses": torch.tensor(raw_losses, dtype=torch.float32), "torch_rng": torch.get_rng_state(),
-                    "cuda_rng": torch.cuda.get_rng_state()}, tmp)
+                    "cuda_rng": torch.cuda.get_rng_state(),
+                    **({"pose_losses": torch.tensor(pose_losses, dtype=torch.float32)} if pose_on else {})}, tmp)
         tmp.replace(args.out/"resume.pt")
         np.save(args.out/"loss_per_step.npy", np.array(raw_losses, dtype=np.float32))
+        if pose_on:
+            np.save(args.out/"pose_loss_per_step.npy", np.array(pose_losses, dtype=np.float32))
         say(f"saved {args.out}/ema-step{step}.pt")
 
     loss_fn = net.compute_loss if args.no_compile else torch.compile(net.compute_loss)
     torch.cuda.reset_peak_memory_stats()
     loss_buf = torch.zeros(args.log_every, device=dev); gn_buf = torch.zeros(args.log_every, device=dev)
+    pose_buf = torch.zeros(args.log_every, device=dev)
     t_log, n_buf = time.time(), 0
     try:
         for step in range(step0 + 1, args.steps + 1):
-            img, apos, act = batches.get()
+            item = batches.get()
+            img, apos, act = item[:3]
             img = img.to(dev, non_blocking=True).permute(0, 1, 4, 2, 3).float().div_(255)   # (B, 2, 3, 96, 96) in [0, 1]
             apos, act = apos.to(dev, non_blocking=True), act.to(dev, non_blocking=True)
+            if pose_on:                                                            # labels (NaN rows: none), symmetry, near goal
+                plab, psym, pnear = (x.to(dev, non_blocking=True) for x in item[3:])
             m = lr_mult(step)
             for g in opt.param_groups:
                 g["lr"] = g["base_lr"] * m
             with torch.autocast("cuda", dtype=torch.bfloat16):
-                loss = loss_fn(img, apos, act)
+                if pose_on:
+                    loss, flow_loss, pose_loss, pose_pred = loss_fn(img, apos, act, pose=plab, pose_sym2=psym)
+                else:
+                    loss = loss_fn(img, apos, act)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             gn = torch.nn.utils.clip_grad_norm_(trainable, args.clip)
@@ -262,16 +332,26 @@ def main():
             with torch.no_grad():                                                  # official EMA schedule
                 decay = min(0.9999, max(0.0, 1 - (1 + step)**-0.75))
                 torch._foreach_lerp_(ema_params, net_params, 1 - decay)
-            loss_buf[n_buf] = loss.detach(); gn_buf[n_buf] = gn.detach(); n_buf += 1
+            loss_buf[n_buf] = (flow_loss if pose_on else loss).detach(); gn_buf[n_buf] = gn.detach()
+            if pose_on:
+                pose_buf[n_buf] = pose_loss
+                if step % args.pose_report_every == 0:
+                    say(pose_report(step, pose_pred, plab, psym, pnear))
+            n_buf += 1
             if n_buf == args.log_every or step == args.steps:
                 ls = loss_buf[:n_buf].cpu().numpy(); g = gn_buf[:n_buf].cpu().numpy(); raw_losses.extend(ls.tolist())
-                if not np.isfinite(ls).all():
+                pl = pose_buf[:n_buf].cpu().numpy() if pose_on else np.zeros(0)
+                pose_losses.extend(pl.tolist())
+                if not (np.isfinite(ls).all() and np.isfinite(pl).all()):
                     raise FloatingPointError(f"non-finite loss near step {step}")
                 dt = (time.time() - t_log) / n_buf
-                say(f"[flow {time.time()-t_start:6.0f}s] step {step} loss {ls.mean():.4f} grad-norm {g.mean():.3f} "
+                say(f"[flow {time.time()-t_start:6.0f}s] step {step} loss {ls.mean():.4f}"
+                    + (f" pose-loss {pl.mean():.4f}" if pose_on else "") + f" grad-norm {g.mean():.3f} "
                     f"lr {opt.param_groups[0]['lr']:.2e} {dt:.3f}s/step {args.batch/dt:.0f} samples/s "
                     f"gpu-peak {torch.cuda.max_memory_allocated()/2**30:.1f}GB host {host_memory_gb()}")
                 np.save(args.out/"loss_per_step.npy", np.array(raw_losses, dtype=np.float32))
+                if pose_on:
+                    np.save(args.out/"pose_loss_per_step.npy", np.array(pose_losses, dtype=np.float32))
                 t_log, n_buf = time.time(), 0
             if frames_mm is not None and step % 500 == 0:                            # drop file pages read so far
                 import mmap
