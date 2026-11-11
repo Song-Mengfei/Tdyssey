@@ -1160,3 +1160,11 @@ poses (privileged, training only): the teacher demonstrations and the human T de
 do not and are left unlabelled. Everything else as the better base (same data, pooling, seed, batch 128, 160k steps).
 Test: the pose-trained policy against the better base on 200 new scenes per shape, all 33 shapes plus the D063 digit
 group, seeds 15000000 + 20*i, paired, same groups as D059, whatever the outcome.
+
+D064 implementation and start (2026-11-11). Validation of the two rebuilt bases (D061): 8 x 8 605, 16 x 16 627 of 1350
+(46.4%); the pose run therefore uses `--pool 16` (`runs/flow26p/v1`, started 17:38). Code: `--pose-weight 0.25` in
+flow_train.py; head on the latest frame's 16 x 16 patch tokens (LayerNorm, 768->128, flatten, 512, 4 outputs), 16.9M
+parameters, unused at inference (outputs bit-identical without it); smooth-L1 position (beta 2.6 px) + cos/sin angle,
+180-degree-symmetric letters (H, I, O, S, X, Z) take the closer orientation. Labelled samples: 694,012 of 3,205,500 by
+count, 50.6% by sampling weight (teacher demonstrations and human T). With the head off, the data and the losses are
+identical to the previous code.
