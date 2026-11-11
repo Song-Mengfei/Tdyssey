@@ -1174,3 +1174,13 @@ new model of the architecture experiment, named Flow-DiT (public weights: the mo
 also in the demo); the 8 x 8 rebuild is not reported further. Round 50 is added to the D064 test on the same new
 scenes (seeds 15000000 + 20*i, 33 shapes and the digit group), run after the pose and 16 x 16 parts, so the test
 reports the 16 x 16 model and the pose model against round 50, and the pose model against the 16 x 16 model.
+
+D064 amendment 2 and first outcome (2026-11-12). Lead's decisions during the night: all results in the talk and the
+paper use round 50 and Flow-DiT 16 x 16 on one set of scenes, so the original policy, the ten-shape model (dagger10m
+round 13) and the 192 px model (dagger26h round 2) also run on the D064 pool (seeds 15000000 + 20*i, 200 per shape, 33
+shapes and the digit group); the talk speaks of the 26 letters (the narrow T stays a trained shape but is left out of
+every aggregate) and of nine never-seen shapes (the six earlier ones and digits 2, 5, 8); the 8 x 8 base also runs on
+the pool afterwards ("if there is time"). Flow-DiT 16 x 16 against round 50 (complete, 200 paired scenes per shape,
+`runs/fairtest-d064/{r50,base}-part*.json`): 26 letters 32.8% -> 45.5%, +12.7 points [+10.9, +14.5]; 9 earlier letters
++10.2, 17 new letters +14.1; T 33.0% -> 49.5%; six never-seen shapes 4.5% -> 11.7%; goal covered at the end 0.82 ->
+0.89; Flow-DiT higher on 24 of 26 letters (O and Y 1 point lower). This replicates D059 (+12.4) and D060 (+12.7).
