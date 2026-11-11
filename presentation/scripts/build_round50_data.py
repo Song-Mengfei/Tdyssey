@@ -111,6 +111,9 @@ def main():
     missing = [(k, s) for k, _ in MODELS for s in SHAPES if not any(sh == s for sh, _ in E[k])]
     if missing:
         print(f"  NOTE {len(missing)} (policy, shape) pairs have no episodes yet, e.g. {missing[:4]}")
+    short = [s for s in SHAPES if len(scenes[s]) < 200]
+    print("COMPLETE: 200 paired scenes per shape for all five policies" if not short and not missing else
+          f"INCOMPLETE: {len(short)} of {len(SHAPES)} shapes below 200 paired scenes; do not keep these tables")
 
     def ok(k, s):
         return bool(scenes[s]) and all((s, q) in E[k] for q in scenes[s])
@@ -146,7 +149,7 @@ def main():
     units = [("group", g, ss) for g, ss in GROUPS.items()] + [("shape", s, [s]) for s in SHAPES]
     for base in ("orig", "r50"):
         for k, name in MODELS:
-            if k == base:
+            if k == base or (base == "r50" and k == "orig"):      # original vs round 50 is in the "orig" block
                 continue
             for kind, unit, ss in units:
                 keys = [(s, q) for s in ss if ok(base, s) and ok(k, s) for q in scenes[s]]
