@@ -51,7 +51,7 @@ MODELS = {   # key: (title, checkpoint relative to runs/, None = original offici
     "l26_r13": ("26 letters: round 13 (before the larger budget)", "dagger26m/round13/train/ema-step20000.pt", False),
     "l26_r44": ("26 letters: round 44 (final-test model)", "dagger26m/round44/train/ema-step54000.pt", False),
     "l26_r50": ("26 letters: round 50 (main model)", "dagger26m/round50/train/ema-step54000.pt", True),
-    "frontier": ("Frontier: 505M flow-matching transformer", "flow26/v1/ema-step160000.pt", True),
+    "flowdit": ("Flow-DiT (505M, experiment)", "flow26b16/v1/ema-step160000.pt", True),
     "l26_192": ("26 letters: 192 px camera", "dagger26h/round2/train/ema-step54000.pt", True),
 }
 
@@ -622,6 +622,136 @@ def have(key, seed):
     return (CACHE / f"{key}_{seed}.pkl").exists()
 
 
+def arch_clips(V):
+    """Architecture experiment: main model (official network) vs Flow-DiT (505M), side by side on the same scenes:
+    videos/flowdit/<shape>[_scene2].mp4. Returns INDEX.md rows."""
+    rows = []
+    for seed in SEEDS:
+        if not (have("l26_r50", seed) and have("flowdit", seed)):
+            continue
+        a, b = lanes_of("l26_r50", seed, ALL33), lanes_of("flowdit", seed, ALL33)
+        for la, lb in zip(a, b):
+            s = la["shape_name"]
+            tag = "" if seed == SEEDS[0] else "_scene2"
+            p = V / "flowdit" / f"{s}{tag}.mp4"
+            n = max(len(la["frames"]), len(lb["frames"])) + 45
+            with writer(p) as w:
+                for i in range(n):
+                    body = np.hstack([tile_at(la, i, TILE, name="Official network (main model)"),
+                                      tile_at(lb, i, TILE, name="Flow-DiT (experiment)")])
+                    w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(label(s), 0.8, (15, 15, 15))]), body])))
+            rows.append((p, f"{label(s)}: main model vs Flow-DiT", f"main model {outcome(la)} | Flow-DiT {outcome(lb)}"))
+    return rows
+
+
+def flowdit_clips():
+    """Only the architecture-experiment clips and their posters (last frames), without touching the other videos."""
+    import imageio.v2 as imageio
+    V = OUT / "videos"; P = V / "posters"
+    rows = arch_clips(V)
+    for path, _, _ in rows:
+        r = imageio.get_reader(path)
+        last = None
+        for last in r:
+            pass
+        r.close()
+        cv2.imwrite(str(P / f"flowdit_{path.stem}.png"), cv2.cvtColor(last, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_PNG_COMPRESSION, 9])
+    for path, title, result in rows:
+        print(f"| `{path.relative_to(V)}` | {title} | {result} |")
+
+
+def lastmile(seed=400000, near_shape="G", solved_shape="E", half=34.0):
+    """Sharp last-millimetre close-ups for the deck: replays the main model's recorded scene (same batch, seed and random
+    stream as record(), so the episodes match the cached ones) to read the exact block pose, then draws the goal (green),
+    the block (grey) and the uncovered part of the goal (red) at the near miss's best moment and at the solved
+    episode's end, cropped to a window of +-half simulator px around the largest gap, with a grid of one 96 px camera
+    pixel (512/96 sim px). Writes images/last_mile/zoom_<shape>.png, images/slide/near_miss_<shape>.png (the scene at
+    the best moment) and videos/near_misses/near_miss_<shape>_<seed>.mp4."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from shapely.geometry import MultiPolygon, Polygon
+    from tdyssey.collection import derived_seed
+    from tdyssey.envs.official import matched_reset
+    from tdyssey.official import physical_metrics
+    cached = pickle.load(open(CACHE / f"l26_r50_{seed}.pkl", "rb"))
+    agent, cls = load("l26_r50")
+    from diffusion_policy.env.pusht.pusht_env import pymunk_to_shapely     # importable once load() set up the source
+    envs = {s: cls(shape=s, legacy=True, render_size=agent.render_size) for s in ALL33}
+    observations, _ = matched_reset(envs, seed, {"reset_physics_substeps": 0})
+    want = {near_shape, solved_shape}
+    lanes = [{"shape": s, "env": envs[s], "done": False, "history": deque([observations[s]] * 2, maxlen=2),
+              "generator": torch.Generator(device=agent.device).manual_seed(derived_seed(42, "rl-eval", seed)),
+              "cov": [physical_metrics(envs[s])["coverage"]], "geo": []} for s in ALL33]
+    def geo(env):
+        return (pymunk_to_shapely(env._get_goal_pose_body(env.goal_pose), env.block.shapes), pymunk_to_shapely(env.block, env.block.shapes))
+    for l in lanes:
+        if l["shape"] in want:
+            l["geo"].append(geo(l["env"]))
+    for start in range(0, 300, 8):
+        active = [l for l in lanes if not l["done"]]
+        if not active:
+            break
+        actions, _ = agent.sample_batch(agent.encode_batch([l["history"] for l in active]), [l["generator"] for l in active])
+        for i, lane in enumerate(active):
+            for action in actions[i][:min(8, 300 - start)]:
+                obs, _, done, _ = lane["env"].step(action)
+                lane["history"].append(obs)
+                lane["cov"].append(physical_metrics(lane["env"])["coverage"])
+                if lane["shape"] in want:
+                    lane["geo"].append(geo(lane["env"]))
+                if done:
+                    lane["done"] = True
+                    break
+    I = OUT / "images"
+    for lane in lanes:
+        s = lane["shape"]
+        if s not in want:
+            continue
+        same = np.allclose(lane["cov"], cached[s]["coverage"])
+        print(f"{s}: replay matches the recorded episode: {same}", flush=True)
+        if not same:
+            raise RuntimeError("replay differs from the cached recording; record the lanes again on this GPU")
+        k = int(np.argmax(lane["cov"])) if s == near_shape else len(lane["cov"]) - 1
+        goal, block = lane["geo"][k]
+        gap = goal.difference(block)
+        parts = list(gap.geoms) if hasattr(gap, "geoms") else [gap]
+        big = max(parts, key=lambda g: g.area)
+        cx, cy = big.centroid.x, big.centroid.y
+        fig = plt.figure(figsize=(3, 3), dpi=200)
+        ax = fig.add_axes([0, 0, 1, 1])
+        def fill(g, **kw):
+            for q in (list(g.geoms) if hasattr(g, "geoms") else [g]):
+                if not q.is_empty:
+                    ax.fill(*q.exterior.xy, **kw)
+        fill(goal, color="#90EE90", lw=0)
+        fill(block, color="#778899", alpha=0.92, lw=0)
+        fill(gap, color="#E03C3C", lw=0)
+        cam = 512 / 96
+        for v in np.arange(0, 512 + cam, cam):
+            ax.axvline(v, color="#c8c8c8", lw=0.6, zorder=0.5)
+            ax.axhline(v, color="#c8c8c8", lw=0.6, zorder=0.5)
+        ax.set_xlim(cx - half, cx + half)
+        ax.set_ylim(cy + half, cy - half)                     # screen convention: y grows downward
+        ax.set_axis_off()
+        (I / "last_mile").mkdir(parents=True, exist_ok=True)
+        fig.savefig(I / "last_mile" / f"zoom_{s}.png", facecolor="white")
+        plt.close(fig)
+        print(f"{s}: coverage {100 * lane['cov'][k]:.1f}% at move {k}, largest gap {big.area:.1f} sim px^2", flush=True)
+    for e in envs.values():
+        e.close()
+    # the near miss as a scene still (at its best moment) and a clip, from the cached frames
+    l = cached[near_shape]; l["shape_name"] = near_shape
+    k = l["peak_move"]
+    img = decode(l["frames"][k]).copy()
+    cv2.imwrite(str(I / "slide" / f"near_miss_{near_shape}.png"), cv2.cvtColor(img[7:-7, 7:-7], cv2.COLOR_RGB2BGR))
+    p = OUT / "videos" / "near_misses" / f"near_miss_{near_shape}_{seed}.mp4"
+    with writer(p) as w:
+        for i in range(len(l["frames"]) + 45):
+            w.append_data(pad16(tile_at(l, i, TILE, name=f"Ours on {label(near_shape)}")))
+    print(f"wrote {p.name}: best {100 * l['peak']:.1f}% at move {k}", flush=True)
+
+
 def compose():
     V, I = OUT / "videos", OUT / "images"
     index = []
@@ -666,22 +796,8 @@ def compose():
                     body = np.hstack([tile_at(la, i, TILE, name="Original (T only)"), tile_at(lb, i, TILE, name="Tdyssey (26 letters)")])
                     w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(label(s), 0.8, (15, 15, 15))]), body])))
             index.append((p, f"{label(s)}: original vs main model", f"original {outcome(la)} | Tdyssey {outcome(lb)}"))
-    # 3b. architecture experiment: main model (official network) vs the 505M flow-matching transformer, same scenes
-    for seed in SEEDS:
-        if not (have("l26_r50", seed) and have("frontier", seed)):
-            continue
-        a, b = lanes_of("l26_r50", seed, ALL33), lanes_of("frontier", seed, ALL33)
-        for la, lb in zip(a, b):
-            s = la["shape_name"]
-            tag = "" if seed == SEEDS[0] else "_scene2"
-            p = V / "frontier" / f"{s}{tag}.mp4"
-            n = max(len(la["frames"]), len(lb["frames"])) + 45
-            with writer(p) as w:
-                for i in range(n):
-                    body = np.hstack([tile_at(la, i, TILE, name="Official network (main model)"),
-                                      tile_at(lb, i, TILE, name="505M transformer (experiment)")])
-                    w.append_data(pad16(np.vstack([text_bar(body.shape[1], 40, [(label(s), 0.8, (15, 15, 15))]), body])))
-            index.append((p, f"{label(s)}: main model vs 505M transformer", f"main model {outcome(la)} | transformer {outcome(lb)}"))
+    # 3b. architecture experiment: main model (official network) vs Flow-DiT, same scenes
+    index += arch_clips(V)
     # 4. the same scene across the whole project
     prog = ["original", "five_r7", "ten_96", "l26_r0", "l26_r13", "l26_r50"]
     if all(have(k, SEEDS[0]) for k in prog):
@@ -795,7 +911,7 @@ def posters():
     for v in sorted(V.rglob("*.mp4")):
         folder, stem = v.parent.name, v.stem
         name = (f"compare_{stem}" if folder == "compare" else f"teacher_vs_student_{stem}" if folder == "teacher_vs_student"
-                else f"frontier_{stem}" if folder == "frontier"
+                else f"flowdit_{stem}" if folder == "flowdit"
                 else f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
         r = imageio.get_reader(v)
         last = None
@@ -822,7 +938,7 @@ def mid_stills(where=0.4):
         v = V / rel
         folder, stem = v.parent.name, v.stem
         name = (f"compare_{stem}" if folder == "compare" else f"teacher_vs_student_{stem}" if folder == "teacher_vs_student"
-                else f"frontier_{stem}" if folder == "frontier"
+                else f"flowdit_{stem}" if folder == "flowdit"
                 else f"progression_{stem.replace('_across_models', '')}" if folder == "progression" else stem)
         r = imageio.get_reader(v)
         n = r.count_frames()
@@ -898,6 +1014,10 @@ if __name__ == "__main__":
         extras()
     elif sys.argv[1] == "dynamics":
         dynamics()
+    elif sys.argv[1] == "lastmile":
+        lastmile()
+    elif sys.argv[1] == "flowdit":
+        flowdit_clips()
     elif sys.argv[1] == "compose":
         compose()
     elif sys.argv[1] == "posters":
