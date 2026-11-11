@@ -1146,3 +1146,17 @@ B and D. Because a matched scene is accepted only if it is valid for every shape
 tested as their own matched group with T (`T digit2 digit5 digit8`) on the same seeds, so the 33-shape scenes of every
 test stay unchanged. From the D061 and D062 tests onward every policy also runs this group; earlier tests do not
 include them.
+
+## D064 — Pose-supervised retrain instead of correction rounds (2026-11-11, before any result)
+
+Lead's decision: after the D061 validation of the two rebuilt bases, the H100 does not start correction rounds (D061's
+rounds and their test are cancelled); it retrains the better base instead with a training-only block-pose head. Early
+result for the record: the rebuilt 8 x 8 base (`runs/flow26b/v1`, 160k steps) solved 605 of 1350 validation scenes
+(44.8%; round 44 of the CNN line: 470; the lost D059 checkpoint: 572), and its loss curve matches the lost run's to the
+third decimal. The pose head reads the latest frame's full 16 x 16 DINOv2 patch grid (before pooling) and predicts the
+block's position and angle (180-degree-symmetric letters accept both orientations); its loss is added with weight 0.25
+during training only and the head is unused at test time, so the policy stays camera-only. Labels are exact simulator
+poses (privileged, training only): the teacher demonstrations and the human T demos carry them, the correction records
+do not and are left unlabelled. Everything else as the better base (same data, pooling, seed, batch 128, 160k steps).
+Test: the pose-trained policy against the better base on 200 new scenes per shape, all 33 shapes plus the D063 digit
+group, seeds 15000000 + 20*i, paired, same groups as D059, whatever the outcome.
