@@ -1,0 +1,1201 @@
+{
+  "schema_version": 1,
+  "purpose": "Approved visual image-world-model story inserted into PR12 placeholders: nine story frames plus one architecture frame. No new research execution.",
+  "inputs": [
+    {
+      "artifact_id": "output/image-wm-story/story.json",
+      "sha256": "32bd2db3285e388514093ffb9deec47d1c47a3eaa06406bd97691b800e805eb4"
+    },
+    {
+      "artifact_id": "output/image-wm-architecture/image_world_model_balanced.tex",
+      "sha256": "345238e8463554b566682123a65f518578e851cc4e324089326cd4fff2f22cc4"
+    }
+  ],
+  "frame_order": [
+    {
+      "section_frame": 1,
+      "source": "goal cover",
+      "title": "Our goal: predict the next image across shapes"
+    },
+    {
+      "section_frame": 2,
+      "source": "approved balanced architecture",
+      "title": "Inside our image world model (8.73M)"
+    },
+    {
+      "section_frame": 3,
+      "source_story_page": 2,
+      "title": "The pretrained model grows a T-like crossbar"
+    },
+    {
+      "section_frame": 4,
+      "source_story_page": 3,
+      "title": "We added L interaction data to GPC"
+    },
+    {
+      "section_frame": 5,
+      "source_story_page": 4,
+      "title": "After adaptation, the model preserves L here"
+    },
+    {
+      "section_frame": 6,
+      "source_story_page": 5,
+      "title": "From L to representative shapes"
+    },
+    {
+      "section_frame": 7,
+      "source_story_page": 6,
+      "title": "Single-step prediction can follow the motion"
+    },
+    {
+      "section_frame": 8,
+      "source_story_page": 7,
+      "title": "Predicted history drifts over multiple steps"
+    },
+    {
+      "section_frame": 9,
+      "source_story_page": 8,
+      "title": "Long rollouts also lose shape details"
+    },
+    {
+      "section_frame": 10,
+      "source_story_page": 9,
+      "title": "Why we set this route aside"
+    }
+  ],
+  "architecture": {
+    "parameter_count": 8729827,
+    "historical_fixed_control_model": true,
+    "source_configuration": "Tdyssey-raw-tl-portable-main/manifests/gpc_world_model.json",
+    "architecture_changed_by_adaptation": false,
+    "not_target_completion_8911075": true,
+    "approved_figure_reuse": "Exact approved TikZ picture and caption,without standalone document/frame wrapper. Generic TikZ styles and colours are locally scoped."
+  },
+  "display": {
+    "master": "Original PR12 Beamer title,section kicker and footline retained.",
+    "story_coordinates": "Approved1280x720 source maps horizontally at8px/mm;body y154..688 maps to17..81mm. Images retain aspect ratio.",
+    "font": "Story native font sizes converted to points,minimum7.2pt captions. Frame title remains the original16pt master.",
+    "cropping": "Selected exported tiles copied byte-for-byte. Original case-level common crops remain documented in source manifests. No new cropping,retouching or shape repair for integration.",
+    "clip_link": "Final C recursive image links to the copied C MP4,for compatible local PDF viewers."
+  },
+  "scientific_boundaries": [
+    "Stage1 manual comparison uses prediction and matching physical endpoint,both in T1 colours. Manual left panel is not labelled input.",
+    "Stage2 rawT/L adaptation updates the whole denoiser and retains T replay. The pretrained reference has a colour-domain mismatch;visual improvement is not isolated physical-dynamics improvement.",
+    "Stage3 observed-history images are independent one-step predictions,not open-loop forecasts. C and B are seen-validation;O is a training diagnostic.",
+    "O,C,X,B,L are exposed representative shapes;T remains a reference. Unseen-shape prediction is a goal,not a demonstrated result.",
+    "Long-rollout error is illustrated. Limited coverage is a hypothesis,not a demonstrated sole cause. Setting this route aside follows the owner research narrative."
+  ],
+  "assets": [
+    {
+      "path": "presentation/images/image_wm_story/stage1/manual_middle_pretrained_H4_zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage1/manual_middle_pretrained_H4_zoom.png",
+      "sha256": "df11ad4d4cd766188bbd2239a20e1b34f3c7655724dc0ebc5962634a6eecba1b",
+      "bytes": 1845,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage1/manifest.json",
+        "sha256": "6043278ff188395ed179b8a7bb2cfd9aec52da93fb7a61d3a4e49d290d2ea2a8"
+      },
+      "original_source": {
+        "export_file": "manual_middle_pretrained_H4_full.png",
+        "sha256": "125f6332afbc5db9a93630c31928a37387d616187f0812b8ac7dfcd98bb67fb4"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage1/manual_right_truth_H4_T1_zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage1/manual_right_truth_H4_T1_zoom.png",
+      "sha256": "c03cf7723da7e80ed2d374b82e954202d49395369d96b77cd47597a396c20317",
+      "bytes": 1130,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage1/manifest.json",
+        "sha256": "6043278ff188395ed179b8a7bb2cfd9aec52da93fb7a61d3a4e49d290d2ea2a8"
+      },
+      "original_source": {
+        "export_file": "manual_right_truth_H4_T1_full.png",
+        "sha256": "469d6d917e71a7b37a09e18a998f0979c2ec2fc467c66091fc2ce0b8eaf6cd50"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_history_012.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_history_012.png",
+      "sha256": "d380cbb53618ec94ac6ef6134eef774be17a1100c360a9a9ebd8491456a5b850",
+      "bytes": 1234,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0003.npz",
+        "sha256": "afa00d655816d2e74a2a2bf25a2f48e347c6849de7dec6baf5f8d647015a135d",
+        "bytes": 72260
+      },
+      "selection": {
+        "observation_index": 12,
+        "meaning": "Consecutive real condition frame, not generated prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_history_013.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_history_013.png",
+      "sha256": "356888b0bb3d0b36681da01d79b22c23af3c2f839480d1f2197c1f7d9d0868d5",
+      "bytes": 1232,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0003.npz",
+        "sha256": "afa00d655816d2e74a2a2bf25a2f48e347c6849de7dec6baf5f8d647015a135d",
+        "bytes": 72260
+      },
+      "selection": {
+        "observation_index": 13,
+        "meaning": "Consecutive real condition frame, not generated prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_history_014.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_history_014.png",
+      "sha256": "a28ddac6c762a56c81d5a97994f8f2ffee115a93f63f046063f19fe2839b709a",
+      "bytes": 1217,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0003.npz",
+        "sha256": "afa00d655816d2e74a2a2bf25a2f48e347c6849de7dec6baf5f8d647015a135d",
+        "bytes": 72260
+      },
+      "selection": {
+        "observation_index": 14,
+        "meaning": "Consecutive real condition frame, not generated prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_history_015.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_history_015.png",
+      "sha256": "0b8d191428840a7c8cfa10792367866f2a63298096e7beb580ce7435a464bf26",
+      "bytes": 1233,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0003.npz",
+        "sha256": "afa00d655816d2e74a2a2bf25a2f48e347c6849de7dec6baf5f8d647015a135d",
+        "bytes": 72260
+      },
+      "selection": {
+        "observation_index": 15,
+        "meaning": "Consecutive real condition frame, not generated prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_initial_zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_initial_zoom.png",
+      "sha256": "781b519860d6704cb96c09296ea2cac142fb995725424daa9d1dc11244e8169a",
+      "bytes": 901,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-raw-tl-fulltrain-20261026/raw/L-official-L-c575ad75bdd898b720da-a015-initial.npy",
+        "sha256": "17ea60dfd66501beadba5574350cbf0cb2270d62ecc9fdd945ee9c23b693e066",
+        "bytes": 110720
+      },
+      "display_crop": {
+        "derived_from": {
+          "file": "L_a015_initial.png",
+          "sha256": "a83ac5cc1b751798634e2f4dd1e838b6b0a6a2a513593dbee15ef6bb9e6e7196"
+        },
+        "operation": "Same unresampled crop only, identical bbox for every role; full original96 PNG preserved.",
+        "bbox_source_px": [
+          26,
+          24,
+          90,
+          88
+        ],
+        "bbox_convention": "Zero-based [left,top,right,bottom), exclusive right/bottom"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_raw2328_zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_raw2328_zoom.png",
+      "sha256": "a98bcdc4ffcf0a177fc3e926186663d2df815ee15d6fb01cd085ed0ed1e2db2d",
+      "bytes": 1892,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-raw-tl-fulltrain-20261026/raw/L-official-L-c575ad75bdd898b720da-a015-raw2328.npy",
+        "sha256": "7811326f1563723685c291d74b6365e0bea506e448c2a2e0ed715bf557bcbf1c",
+        "bytes": 110720
+      },
+      "display_crop": {
+        "derived_from": {
+          "file": "L_a015_raw2328.png",
+          "sha256": "577313dbf87d33db7fcc07d6fd1d52bc285799bd12e7b2ba292f486dac02f3f6"
+        },
+        "operation": "Same unresampled crop only, identical bbox for every role; full original96 PNG preserved.",
+        "bbox_source_px": [
+          26,
+          24,
+          90,
+          88
+        ],
+        "bbox_convention": "Zero-based [left,top,right,bottom), exclusive right/bottom"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_target.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_target.png",
+      "sha256": "b613dc6a392c00cb73b31b2c52a9ad938718ad69e196b7837ba62288188bae5d",
+      "bytes": 1288,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-raw-tl-fulltrain-20261026/raw/L-official-L-c575ad75bdd898b720da-a015-target.npy",
+        "sha256": "bf95c08cbee86965b736ebd54ae02ef32ae25ce530b4ecd244d320fa6a40d43c",
+        "bytes": 110720
+      },
+      "selection": {
+        "meaning": "Real RGB at t+1"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_a015_target_zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_a015_target_zoom.png",
+      "sha256": "2cfe4f11979cd40e12d56a9578410a212db993709fd2f69965924384a0c6f764",
+      "bytes": 997,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-raw-tl-fulltrain-20261026/raw/L-official-L-c575ad75bdd898b720da-a015-target.npy",
+        "sha256": "bf95c08cbee86965b736ebd54ae02ef32ae25ce530b4ecd244d320fa6a40d43c",
+        "bytes": 110720
+      },
+      "display_crop": {
+        "derived_from": {
+          "file": "L_a015_target.png",
+          "sha256": "b613dc6a392c00cb73b31b2c52a9ad938718ad69e196b7837ba62288188bae5d"
+        },
+        "operation": "Same unresampled crop only, identical bbox for every role; full original96 PNG preserved.",
+        "bbox_source_px": [
+          26,
+          24,
+          90,
+          88
+        ],
+        "bbox_convention": "Zero-based [left,top,right,bottom), exclusive right/bottom"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_train_first_contact_frame_031.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_train_first_contact_frame_031.png",
+      "sha256": "c0333872943fa4533447a81f158d1e4429815fc6d1aad603d8b292773200174a",
+      "bytes": 1168,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0000.npz",
+        "sha256": "1469fe6ada1fbb0245689edb12bf8ad3b8289657dff1f7eb2d738de03de51df1",
+        "bytes": 66114
+      },
+      "selection": {
+        "observation_index": 31,
+        "meaning": "Saved real training RGB, not prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_train_first_contact_frame_032.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_train_first_contact_frame_032.png",
+      "sha256": "7d6ab82b7548e00048b74f5f38f467096ade4945b2eea766ff6727a65b7c9b95",
+      "bytes": 1147,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0000.npz",
+        "sha256": "1469fe6ada1fbb0245689edb12bf8ad3b8289657dff1f7eb2d738de03de51df1",
+        "bytes": 66114
+      },
+      "selection": {
+        "observation_index": 32,
+        "meaning": "Saved real training RGB, not prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_train_first_contact_frame_033.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_train_first_contact_frame_033.png",
+      "sha256": "a73d192c8a2694cce285b24c59329044d0aef48bb4243e4e156bc0d471050974",
+      "bytes": 1199,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0000.npz",
+        "sha256": "1469fe6ada1fbb0245689edb12bf8ad3b8289657dff1f7eb2d738de03de51df1",
+        "bytes": 66114
+      },
+      "selection": {
+        "observation_index": 33,
+        "meaning": "Saved real training RGB, not prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage2/L_train_first_contact_frame_034.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage2/L_train_first_contact_frame_034.png",
+      "sha256": "865c3fc7442b3f2926b619523513a7e8a44fdb4cab25b6970f83a8ce74ff515e",
+      "bytes": 1145,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage2/manifest.json",
+        "sha256": "8884e733740e81e8794f7d184bc7c218f93838b506631005e9db25e0686446ce"
+      },
+      "original_source": {
+        "source_id": "artifacts/gpc-data-stage-a-20261026/L-A/episode-0000.npz",
+        "sha256": "1469fe6ada1fbb0245689edb12bf8ad3b8289657dff1f7eb2d738de03de51df1",
+        "bytes": 66114
+      },
+      "selection": {
+        "observation_index": 34,
+        "meaning": "Saved real training RGB, not prediction"
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/B-seen-val/autoregressive-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/B-seen-val/autoregressive-H16-zoom.png",
+      "sha256": "c47da790cbcb93c7928d05960d084e2086719aace16e6ac8c843fe10e96a2843",
+      "bytes": 1448,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-B-00-08:AC-B-00-08:a19:H16",
+        "split": "seen_val",
+        "selection": "Original fixed formal-example order, not selected by prediction quality.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          43,
+          10,
+          96,
+          63
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-B-00-08.npz",
+            "bytes": 144348,
+            "sha256": "409af28f95bf3e785a77a51bb9db350ce830515f4735a076d670f39d6b2c4bf3"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/evaluation/epoch3/raw-001-3.npz",
+            "bytes": 60010,
+            "sha256": "fdc67e57a52d2341c757c99bf99610840a0b0ec28038556fde10b5f0408436ee"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/B-seen-val/input-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/B-seen-val/input-zoom.png",
+      "sha256": "96911e54311fbb1fc6f3a5dadc7f0132aeafcfda23481f92a2c800dbfe847815",
+      "bytes": 1164,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-B-00-08:AC-B-00-08:a19:H16",
+        "split": "seen_val",
+        "selection": "Original fixed formal-example order, not selected by prediction quality.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          43,
+          10,
+          96,
+          63
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-B-00-08.npz",
+            "bytes": 144348,
+            "sha256": "409af28f95bf3e785a77a51bb9db350ce830515f4735a076d670f39d6b2c4bf3"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/evaluation/epoch3/raw-001-3.npz",
+            "bytes": 60010,
+            "sha256": "fdc67e57a52d2341c757c99bf99610840a0b0ec28038556fde10b5f0408436ee"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/B-seen-val/truth-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/B-seen-val/truth-H16-zoom.png",
+      "sha256": "0e9ac744b018bd46c8ea90fcabfff3286bd0e897f05b0757cb9d4ec653f7e05f",
+      "bytes": 1262,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-B-00-08:AC-B-00-08:a19:H16",
+        "split": "seen_val",
+        "selection": "Original fixed formal-example order, not selected by prediction quality.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          43,
+          10,
+          96,
+          63
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-B-00-08.npz",
+            "bytes": 144348,
+            "sha256": "409af28f95bf3e785a77a51bb9db350ce830515f4735a076d670f39d6b2c4bf3"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/evaluation/epoch3/raw-001-3.npz",
+            "bytes": 60010,
+            "sha256": "fdc67e57a52d2341c757c99bf99610840a0b0ec28038556fde10b5f0408436ee"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/autoregressive-H01-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/autoregressive-H01-zoom.png",
+      "sha256": "53516524add3fd195232d5362d1007eea179abccde813105186c1128a122ddae",
+      "bytes": 1535,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/autoregressive-H04-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/autoregressive-H04-zoom.png",
+      "sha256": "cb6b4dbeeab45a0f6b5d65344307c06d6de4de4529689ba9b96de1e747f0a688",
+      "bytes": 1846,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/autoregressive-H08-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/autoregressive-H08-zoom.png",
+      "sha256": "981b3f3f4878cce5250c170453bd5ef464370c4b576fd8dfa67aedcf4a708986",
+      "bytes": 1769,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/autoregressive-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/autoregressive-H16-zoom.png",
+      "sha256": "1a80452a8f17f517cff872b48ae8ffddca6dec487822ae7eab009b380fa434e7",
+      "bytes": 1727,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/comparison-zoom-10fps.mp4",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/comparison-zoom-10fps.mp4",
+      "sha256": "743f344bebe9dbc319862f02897c741480c2950d83c1a569dbf355d5ea95a38c",
+      "bytes": 95369,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/input-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/input-zoom.png",
+      "sha256": "97998d70b79d3bdc5109679e7851e9a49612cc5345da2d5f72aa99ac8028858f",
+      "bytes": 686,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/real_history-H01-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/real_history-H01-zoom.png",
+      "sha256": "53516524add3fd195232d5362d1007eea179abccde813105186c1128a122ddae",
+      "bytes": 1535,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/real_history-H04-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/real_history-H04-zoom.png",
+      "sha256": "95a67dc0889a8d92a851c044c83742d25472f6e4d63a9b873b5f9d0558978bf8",
+      "bytes": 1936,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/real_history-H08-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/real_history-H08-zoom.png",
+      "sha256": "dcae56f814143fc68f8a50cb06e57838ed8e145984a3b6eec304a32585644195",
+      "bytes": 2147,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/real_history-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/real_history-H16-zoom.png",
+      "sha256": "bf1f67752d906bc31822c5755a4c75acc0fd6f4d10d07856037f85bd6f58ca83",
+      "bytes": 2490,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/truth-H01-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/truth-H01-zoom.png",
+      "sha256": "636c048fe4f23020c9694497b730d6b10c2f002ee4b0a5d23f9c1b797b4cb4a3",
+      "bytes": 765,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/truth-H04-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/truth-H04-zoom.png",
+      "sha256": "ec2ce0fcf6bd0492049a2d062c19fe087e89b5ef373c3d19c1b2f264b669570e",
+      "bytes": 1004,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/truth-H08-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/truth-H08-zoom.png",
+      "sha256": "2c3b788484c4628d3d3b47a66debabc3c2ab39c634ead6a1dd37da9612e692a1",
+      "bytes": 1087,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/C-seen-val/truth-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/C-seen-val/truth-H16-zoom.png",
+      "sha256": "4d60d85dc1806a03c9b70ee2c065a101ad4b58c165aa554405d81d3d03ae60b0",
+      "bytes": 1146,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-C-05-00:AC-C-05-00:a6:H16:motion-diagnostic",
+        "split": "seen_val",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          10,
+          11,
+          75,
+          76
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-C-05-00.npz",
+            "bytes": 137555,
+            "sha256": "37690b924b428da0aa6eac0947142e72be3d8d13af4a1451996de0a76772150a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-006-0.npz",
+            "bytes": 62272,
+            "sha256": "4a83caae07e08d1664ebdcc3aac896ff112cb881ddbbd12407513dd1518ef7ff"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-006-0.npz",
+            "bytes": 57628,
+            "sha256": "16217f3c9330e38b41991d2cb254f330bce54dd75abc4eebc13f60ea7d7c011f"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/L-seen-val/input-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/L-seen-val/input-zoom.png",
+      "sha256": "d1e527deb04322d95a6f287d998fef4d6ef313174ef97799a27d40714d2c90f0",
+      "bytes": 577,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-L-00-24:AC-L-00-24:a3:H16",
+        "split": "seen_val",
+        "selection": "Original fixed formal-example order, not selected by prediction quality.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          31,
+          28,
+          73,
+          70
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-L-00-24.npz",
+            "bytes": 91922,
+            "sha256": "8a76f37967abf92962e04462a2618125b736c768d919ad06131860110ea1f42a"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/evaluation/epoch3/raw-005-3.npz",
+            "bytes": 56817,
+            "sha256": "160c779a372e5f0ae36c42c73906d7c152969c0d4b7d6d6180258a466324f38b"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/O-train/autoregressive-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/O-train/autoregressive-H16-zoom.png",
+      "sha256": "9cb50926b39c2f82c967db3fdb884142e04d8ffe31eee4b8f5b23398a421d3e8",
+      "bytes": 1893,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-O-05-25:AC-O-05-25:a5:H16:motion-diagnostic",
+        "split": "train",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          26,
+          10,
+          91,
+          75
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-O-05-25.npz",
+            "bytes": 156724,
+            "sha256": "82e8eb977dfd25dd46d1997c2b522551970839fc81a64c3c04ae7be1ec60d2f4"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-001-0.npz",
+            "bytes": 65840,
+            "sha256": "319590e8606596fb9745417fe697003c8a27def81584f179188a13667a9b8a90"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-001-0.npz",
+            "bytes": 59844,
+            "sha256": "29d2cd1732f12d2c5e83b325731528c5e7d045b20c892dea183305fd7780ce4b"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/O-train/input-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/O-train/input-zoom.png",
+      "sha256": "09789b31ffc8c0b86e7259cd47fdef5294d941ceb15a88a2dceba3688b581ef1",
+      "bytes": 1035,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-O-05-25:AC-O-05-25:a5:H16:motion-diagnostic",
+        "split": "train",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          26,
+          10,
+          91,
+          75
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-O-05-25.npz",
+            "bytes": 156724,
+            "sha256": "82e8eb977dfd25dd46d1997c2b522551970839fc81a64c3c04ae7be1ec60d2f4"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-001-0.npz",
+            "bytes": 65840,
+            "sha256": "319590e8606596fb9745417fe697003c8a27def81584f179188a13667a9b8a90"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-001-0.npz",
+            "bytes": 59844,
+            "sha256": "29d2cd1732f12d2c5e83b325731528c5e7d045b20c892dea183305fd7780ce4b"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/O-train/truth-H16-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/O-train/truth-H16-zoom.png",
+      "sha256": "eda35146e110d1d22be52140c71101e6086f70de5130589c71437ca16eeeb749",
+      "bytes": 1188,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-O-05-25:AC-O-05-25:a5:H16:motion-diagnostic",
+        "split": "train",
+        "selection": "Maximum absolute saved TRUE H16 rotation among the existing frozen 32 O/C movement-diagnostic cases, within this split and letter; predictions not consulted.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          26,
+          10,
+          91,
+          75
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-O-05-25.npz",
+            "bytes": 156724,
+            "sha256": "82e8eb977dfd25dd46d1997c2b522551970839fc81a64c3c04ae7be1ec60d2f4"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/real_history/raw-001-0.npz",
+            "bytes": 65840,
+            "sha256": "319590e8606596fb9745417fe697003c8a27def81584f179188a13667a9b8a90"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/diagnostics/epoch3/autoregressive/raw-001-0.npz",
+            "bytes": 59844,
+            "sha256": "29d2cd1732f12d2c5e83b325731528c5e7d045b20c892dea183305fd7780ce4b"
+          }
+        ]
+      }
+    },
+    {
+      "path": "presentation/images/image_wm_story/stage3/X-seen-val/input-zoom.png",
+      "export_artifact_id": "output/image-wm-story/assets/stage3/X-seen-val/input-zoom.png",
+      "sha256": "97c8a1d529ad39033549ccd881fec59c1de6787e718192585b4379d03d0250e2",
+      "bytes": 1021,
+      "source_manifest": {
+        "artifact_id": "output/image-wm-story/assets/stage3/manifest.json",
+        "sha256": "0706c7473891a948a86e402beaf3eff0b78b1851eca00b9bd39a9dab93b5f1b6"
+      },
+      "case": {
+        "sample_id": "AC-X-00-24:AC-X-00-24:a3:H16",
+        "split": "seen_val",
+        "selection": "Original fixed formal-example order, not selected by prediction quality.",
+        "shared_crop_bbox_xyxy_exclusive": [
+          31,
+          22,
+          92,
+          83
+        ],
+        "sources": [
+          {
+            "artifact_id": "accelerated-rgb-run-20261031/collection/attempts/AC-X-00-24.npz",
+            "bytes": 161737,
+            "sha256": "a6baeb9ca74721cddb9e52d93ac299fef4cef49b7c5755661bf53a3c1af69348"
+          },
+          {
+            "artifact_id": "oc-continuation-20261031/evaluation/epoch3/raw-011-3.npz",
+            "bytes": 51977,
+            "sha256": "cd402071a7eb67ea91565d01b950cdee3ae7238e8b6467b6572c879d1f5fa204"
+          }
+        ]
+      }
+    }
+  ],
+  "generated_files": [
+    {
+      "path": "presentation/slides/image_world_model.tex",
+      "sha256": "76f4f57cde8d70de828f4732785c2547f29d3c3d29449a911e13c04c745bfb11"
+    },
+    {
+      "path": "presentation/figures/tikz/image_wm_architecture.tex",
+      "sha256": "c648c1d535f8099a6a62ffc553cae65a6323077405195b7937e86d87fe5751e1"
+    }
+  ],
+  "new_model_loads": 0,
+  "new_inference_calls": 0,
+  "new_physics_calls": 0,
+  "new_training_updates": 0,
+  "weights_included": false
+}

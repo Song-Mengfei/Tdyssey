@@ -1,0 +1,81 @@
+% Exact approved balanced figure, with document/frame wrappers removed.
+% Source: output/image-wm-architecture/image_world_model_balanced.tex
+\begingroup
+\definecolor{tdblue}{HTML}{2A78D6}
+\definecolor{tdink}{HTML}{1F2328}
+\definecolor{tdgrey}{HTML}{5F6670}
+\definecolor{tdmuted}{HTML}{9AA0A6}
+\definecolor{enc}{HTML}{2E7D4F}
+\definecolor{dec}{HTML}{9E2A8A}
+\definecolor{cond}{HTML}{B85C12}
+\tikzset{
+  io/.style={rounded corners=1.3mm,draw=tdgrey!70,fill=white,line width=.7pt,align=center,inner sep=.8mm,
+    font=\fontsize{10}{12}\selectfont,text=tdink},
+  module/.style={rounded corners=1.3mm,draw=#1,fill=#1!7,line width=.8pt,align=center,inner sep=.8mm,
+    font=\fontsize{10}{12}\selectfont,text=tdink},
+  arrow/.style={-{Stealth[length=1.8mm,width=1.6mm]},draw=#1,line width=.8pt},
+  arrow/.default=tdgrey,
+  label/.style={font=\fontsize{9}{11}\selectfont,text=tdgrey,inner sep=.8mm,align=center}
+}
+\centering
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \useasboundingbox (0,0) rectangle (144,58);
+  % The group is the image U-Net; sampling remains outside it.
+  \draw[rounded corners=2mm,draw=tdgrey!35,fill=tdblue!2,line width=.6pt]
+    (25.5,.6) rectangle (103.5,47);
+  \node[font=\fontsize{10}{12}\selectfont\bfseries,text=enc] at (39.5,44.5) {Encoder};
+  \node[font=\fontsize{9.2}{11}\selectfont\bfseries,text=tdink] at (65,44.5) {Conditional U-Net};
+  \node[font=\fontsize{10}{12}\selectfont\bfseries,text=dec] at (90.5,44.5) {Decoder};
+  \node[label,font=\fontsize{7.8}{9}\selectfont] at (39.5,41.6) {2 res. blocks / scale};
+  \node[label,font=\fontsize{7.8}{9}\selectfont] at (90.5,41.6) {3 res. blocks / scale};
+
+  \node[io,text width=22mm,minimum width=23.6mm,minimum height=14mm,font=\fontsize{9.2}{11}\selectfont] (input) at (11.8,36)
+    {4 RGB frames\\+ noisy RGB};
+  \foreach \i/\y/\s/\star in {1/36/96/{},2/28/48/{},3/20/24/{*},4/12/12/{*}} {
+    \node[module=enc,text width=18.8mm,minimum width=21mm,minimum height=6mm,
+      inner sep=.5mm,font=\fontsize{9.5}{11}\selectfont] (e\i) at (39.5,\y)
+      {$\s{\times}\s\,\star$};
+    \node[module=dec,text width=18.8mm,minimum width=21mm,minimum height=6mm,
+      inner sep=.5mm,font=\fontsize{9.5}{11}\selectfont] (d\i) at (90.5,\y)
+      {$\s{\times}\s\,\star$};
+  }
+  \draw[arrow] (input.east) -- (e1.west);
+  \foreach \i/\j in {1/2,2/3,3/4} {
+    \draw[arrow=enc] (e\i.south) -- (e\j.north);
+    \draw[arrow=dec] (d\j.north) -- (d\i.south);
+  }
+  \foreach \i in {1,2,3,4} \draw[arrow=tdgrey!55,dash pattern=on 1.5pt off 1pt,line width=.55pt]
+    (e\i.east) -- (d\i.west);
+  \node[label,font=\fontsize{8.3}{10}\selectfont] at (65,32) {skip features};
+  \node[label,font=\fontsize{8}{9.5}\selectfont,text width=25mm] at (65,24)
+    {96 channels\\at each scale};
+
+  \node[module=tdblue,text width=20mm,minimum width=22mm,minimum height=8mm,
+    inner sep=.5mm,font=\fontsize{8.7}{10.3}\selectfont] (mid) at (65,5.5)
+    {\textbf{Bottleneck}\\2 blocks + SA};
+  \draw[arrow=enc] (e4.south) -- (39.5,5.5) -- (mid.west);
+  \draw[arrow=dec] (mid.east) -- (90.5,5.5) -- (d4.south);
+
+  \node[module=cond,text width=35mm,minimum width=37mm,minimum height=8.5mm,
+    font=\fontsize{8.4}{9.6}\selectfont,inner sep=.55mm] (condition) at (65,53)
+    {4 XY $\to$ Action MLP\\+ noise embeddings};
+  \draw[arrow=cond] (condition.south) -- (65,47);
+
+  \node[module=dec,text width=14.8mm,minimum width=17mm,minimum height=14mm,
+    font=\fontsize{8.3}{10}\selectfont,inner sep=.5mm] (sampling) at (113.5,36)
+    {Conv head\\$96\to3$};
+  \node[io,text width=15.8mm,minimum width=18mm,minimum height=14mm,
+    font=\fontsize{9}{11}\selectfont,inner sep=.5mm] (output) at (135,36)
+    {Next\\RGB image};
+  \draw[arrow] (d1.east) -- (sampling.west);
+  \draw[arrow] (sampling.east) -- (output.west);
+
+  \node[label,text width=24mm,font=\fontsize{7.8}{9.4}\selectfont] at (12,18)
+    {*: self-attention\\at $24^2$, $12^2$\\and bottleneck};
+  \node[label,text width=36mm,font=\fontsize{8.3}{10}\selectfont] at (125,22)
+    {Sampling: 3 U-Net passes\\per predicted frame};
+\end{tikzpicture}\par
+\vspace{.7mm}
+\raggedright
+{\fontsize{10.8}{13}\selectfont Four-frame RGB history and action conditioning generate the next image.\par}
+\endgroup

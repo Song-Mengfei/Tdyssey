@@ -1,0 +1,174 @@
+% Saved48.864707M evidence: controlled intermediate-parent continuations and separate completed-baseline comparison.
+% Eleven early-attempt frames; the twelfth is in image_world_model_summary.tex.
+% The previous approved section and original47 authorframes are preserved.
+% Figures and claims: data/image_wm_48m_sources.json. No new model calls.
+\section{Early attempts: image world model}
+
+% Source/speaker context: Only historical frame. The saved pretrained8.73M L failure is separate from all new48.86M images, models, losses and conclusions. Old T1 images have matched geometry/display palette; no new historical inference.
+% Video manifest qualification: Historical saved prediction H1..H4 only. Left real image is the fixed H4 endpoint, not an input or per-step GT. No GT H1..H3 is fabricated; historical8.73M is separate from48M. Current body is the linked final video poster; the earlier static-frame speaker context above remains as source history.
+\begin{frame}{Original experiment: a T-like prior}
+\slidevideo{p27}
+\end{frame}
+
+% Source/speaker context: New48.864707M study, no pretrained checkpoint. L trajectory AC-L-05-08 uses actual consecutive array frames4,5,6,7 followed by frame8 (0.4..0.8s). All five display tiles share fixed ROI [38,27,79,60] and equal physical image scale; unchanged96x96 originals are retained. Rotation is -19.615deg across the four history frames and -7.657deg on the true one-step transition. This is a task illustration from saved seen_val RGB, not a fixed48 result or a model prediction. The shown future image is a real label, not a claimed model forecast. One prediction consumes I(t-3:t) and a(t-3:t): three past controls plus the current transition control. XY are passed_actions absolute controller targets in[0,511], normalized to[-1,1], not measured pusher positions, velocities or a future four-step plan. The only output is one3channel RGB image including visible blue pusher, with no separate coordinate, trajectory or action-plan head. Action embedding alone does not establish correct action response; no fixed-history changed-action counterfactual is shown.
+\begin{frame}{A shared image predictor for six shapes}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-19.400mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{10.000}{12.000}\selectfont Four RGB frames and aligned controls predict one next RGB image.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-30.000mm]current page.north west) {\parbox[t]{106.250mm}{\raggedright\fontsize{8.500}{10.200}\selectfont \textbf{Four observed RGB frames}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=121.250mm,yshift=-30.000mm]current page.north west) {\parbox[t]{31.250mm}{\centering\fontsize{8.150}{9.780}\selectfont \textbf{Real next frame}\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=19.875mm,yshift=-47.700mm]current page.north west) {\includegraphics[width=23.750mm,height=22.800mm,keepaspectratio]{\presroot images/image_wm_48m/p28_L_motion_history0_sameROI.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=47.000mm,yshift=-47.700mm]current page.north west) {\includegraphics[width=23.750mm,height=22.800mm,keepaspectratio]{\presroot images/image_wm_48m/p28_L_motion_history1_sameROI.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=74.125mm,yshift=-47.700mm]current page.north west) {\includegraphics[width=23.750mm,height=22.800mm,keepaspectratio]{\presroot images/image_wm_48m/p28_L_motion_history2_sameROI.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=101.250mm,yshift=-47.700mm]current page.north west) {\includegraphics[width=23.750mm,height=22.800mm,keepaspectratio]{\presroot images/image_wm_48m/p28_L_motion_history3_sameROI.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.875mm,yshift=-47.700mm]current page.north west) {\includegraphics[width=23.750mm,height=22.800mm,keepaspectratio]{\presroot images/image_wm_48m/p28_L_motion_real_next_sameROI.png}};
+  \draw[-{Stealth[length=2.3mm,width=2mm]},draw=tdblue,line width=1pt] ([xshift=115mm,yshift=-48mm]current page.north west) -- ([xshift=121mm,yshift=-48mm]current page.north west);
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-66.400mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.600}{11.520}\selectfont Three past XY targets + one current target. Output: next RGB only.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-78.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{7.000}{8.400}\selectfont One 48.86M model covers B, C, L, O, T and X. All six occur in training. Saved real frames illustrate the task.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Architecture checked against evaluation identity and hash-matched pinned source.
+\begin{frame}{Inside the 48.86M image world model}
+  \input{\presroot figures/tikz/image_wm_architecture_48m.tex}
+\end{frame}
+
+% Source/speaker context: Intermediate parent36496 effective updates,36500 attempts, originally random_from_scratch. Both arms inherit full model/optimizer/scaler/RNG/order state and add1000 effective updates. Each saw15991 anchors; mixed has60158 supervised targets and11994 feedback-sampler calls, vs15991 H1 targets and zero feedback calls in the H1 arm. No equal-compute claim. This is separate from the later comparison with completed original48M baseline49991 effective updates; the mid-training parent is never called the completed baseline.
+\begin{frame}{Two continuous fine-tuning from parents}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-19.600mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{10.000}{12.000}\selectfont Both branches inherit the same intermediate model and training state.\par}};
+  \node[draw=tdgrey!65,rounded corners=1.3mm,fill=tdblue!3,line width=.7pt,align=center,text=tdink,inner sep=2mm,font=\fontsize{10}{12}\selectfont] (p48) at ([xshift=80mm,yshift=-33mm]current page.north west) {Parent\\36,496 effective updates};
+  \node[draw=tdgrey!65,rounded corners=1.3mm,fill=white,line width=.7pt,align=center,text=tdink,inner sep=2mm,font=\fontsize{10}{12}\selectfont] (h148) at ([xshift=43mm,yshift=-55mm]current page.north west) {H1-only continuation\\+1,000 effective updates};
+  \node[draw=tdblue,rounded corners=1.3mm,fill=tdblue!4,line width=.8pt,align=center,text=tdink,inner sep=2mm,font=\fontsize{10}{12}\selectfont] (m48) at ([xshift=117mm,yshift=-55mm]current page.north west) {Mixed H1--H4 objective\\+1,000 effective updates};
+  \draw[-{Stealth[length=1.8mm]},draw=tdgrey,line width=.8pt] (p48.south) -- ++(0,-4mm) -| (h148.north);
+  \draw[-{Stealth[length=1.8mm]},draw=tdblue,line width=.8pt] (p48.south) -- ++(0,-4mm) -| (m48.north);
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: Objective from hash-matched SciGuard_pair_objective.py. Real-history H1 half plus available generated-history H2..4 joint half. Complete windows assign later losses1/6 each; short tails redistribute only the future half and H1-only anchors retain weight 1. These are loss weights, not batch proportions. H4 uses7 XY controls:3history plus4current/future rollout targets. At step s, actions[:,s:s+4] provides the3past plus current target aligned with that rolling RGB history. H16 evaluation analogously supplies19 controls. There is no directH4 image head, trajectory head or generated action plan. Feedback is native FP32 sampler detached/raw, noBPTT. Both branches separately retain the same original clean/weak history policy; that50% microbatch choice is not the loss weighting. Sampler trajectory means intermediate diffusion images, not a physical action trajectory.
+\begin{frame}{Mixed training uses its predicted histories}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-19.500mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.700}{11.640}\selectfont Keep real-history H1 supervision and train later steps on model feedback.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=10.000mm,yshift=-31.500mm]current page.north west) {\parbox[t]{65.000mm}{\raggedright\fontsize{11.000}{13.200}\selectfont \textbf{H1 target: weight 0.5}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=84.000mm,yshift=-31.500mm]current page.north west) {\parbox[t]{66.000mm}{\raggedright\fontsize{10.200}{12.240}\selectfont \textbf{H2--H4 targets: total weight 0.5}\par}};
+  \node[draw=tdgrey!65,rounded corners=1mm,line width=.7pt,text=tdink,align=center,inner sep=1.6mm,font=\fontsize{9}{11}\selectfont] (obs48) at ([xshift=24mm,yshift=-50mm]current page.north west) {Observed\\RGB history};
+  \node[draw=tdgrey!65,rounded corners=1mm,line width=.7pt,text=tdink,align=center,inner sep=1.6mm,font=\fontsize{9}{11}\selectfont] (pred48) at ([xshift=78mm,yshift=-50mm]current page.north west) {Native sampler\\next-image prediction};
+  \node[draw=tdblue,rounded corners=1mm,line width=.8pt,text=tdink,align=center,inner sep=1.6mm,font=\fontsize{9}{11}\selectfont] (hist48) at ([xshift=132mm,yshift=-50mm]current page.north west) {Shift history\\feed prediction back};
+  \draw[-{Stealth[length=1.8mm]},draw=tdgrey,line width=.8pt] (obs48.east) -- (pred48.west);
+  \draw[-{Stealth[length=1.8mm]},draw=tdblue,line width=.8pt] (pred48.east) -- (hist48.west);
+  \draw[-{Stealth[length=1.8mm]},draw=tdblue,line width=.8pt] (hist48.south) -- ++(0,-7mm) -| (pred48.south);
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-68.200mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.500}{11.400}\selectfont Generated feedback is detached. No gradient passes through the sampler.\par}};
+% Printed note omitted to match the approved PPTX; source qualification remains above.
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: Fixed seen-val O027 rotation_ccw case, sampleAC-O-02-00:a3:H16. GT movement7.852126 imagepx byH16. Parent/H1/Mixed H16 grayIoU .092803/.000000/.533333. Mixed keeps a more coherent shape but underpredicts actual motion; do not call contact/rotation solved. All methods use common full96 field, identical action sequence, case seed and sampler.
+% Video manifest qualification: Only exact saved H4/H8/H16 snapshots, held2s each, not a continuous predicted rollout and no interpolation. Parent36496, H1/Mixed37496 effective updates; this is the matched intermediate-parent study. Current body is the linked H16 video poster.
+\begin{frame}{Mixed training reduces drift in this rollout}
+\slidevideo{p32}
+\end{frame}
+
+% Source/speaker context: B002 and L018 are negative/quiet_or_micro cases with true visible-centroid displacement0 atH1/4/8/16. B002 H16IoU Parent .952830,H1 0,Mixed .956522. L018 Parent .039735,H1 0,Mixed .074866. Neither changing pusher pixels nor a better mean gray-mask score establishes learned stopping.
+\begin{frame}{Stationary scenes still expose failures}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=21.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Start}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=47.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=73.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Parent}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=99.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{H1 +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=125.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Mixed +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-35.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{11.500}{13.800}\selectfont \textbf{B}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-41.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont still\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=34.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/B002_history3.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=60.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/B002_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/B002_parent_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=112.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/B002_h1_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=138.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/B002_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-59.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{11.500}{13.800}\selectfont \textbf{L}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-65.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont still\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=34.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L018_history3.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=60.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L018_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L018_parent_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=112.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L018_h1_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=138.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L018_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-78.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{7.000}{8.400}\selectfont Both real objects remain still. Mixed is close on B002, but still drifts badly on L018. All endpoints are H16 (1.6 s).\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: Stop_response collection scenario B005, not a stop-policy output. GT centroid displacement from input is .256470 atH4 and .241218 atH8/H16. H16IoU Parent .026074,H1 .018182,Mixed .180036; improvement relative to poor baselines is not accurate stopping. Saved images only; no new simulation or playback was generated.
+\begin{frame}{A stop-response case remains difficult}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=24.500mm,yshift=-20.500mm]current page.north west) {\parbox[t]{31.000mm}{\centering\fontsize{8.800}{10.560}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=56.500mm,yshift=-20.500mm]current page.north west) {\parbox[t]{31.000mm}{\centering\fontsize{8.800}{10.560}\selectfont \textbf{Parent}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=88.500mm,yshift=-20.500mm]current page.north west) {\parbox[t]{31.000mm}{\centering\fontsize{8.800}{10.560}\selectfont \textbf{H1 +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=120.500mm,yshift=-20.500mm]current page.north west) {\parbox[t]{31.000mm}{\centering\fontsize{8.800}{10.560}\selectfont \textbf{Mixed +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-29.700mm]current page.north west) {\parbox[t]{17.000mm}{\raggedright\fontsize{7.400}{8.880}\selectfont H4\\0.4 s\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=40.000mm,yshift=-33.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_truth_H4.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=72.000mm,yshift=-33.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_parent_H4.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.000mm,yshift=-33.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_h1_H4.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.000mm,yshift=-33.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_mixed_H4.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-46.700mm]current page.north west) {\parbox[t]{17.000mm}{\raggedright\fontsize{7.400}{8.880}\selectfont H8\\0.8 s\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=40.000mm,yshift=-50.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_truth_H8.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=72.000mm,yshift=-50.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_parent_H8.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.000mm,yshift=-50.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_h1_H8.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.000mm,yshift=-50.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_mixed_H8.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-63.700mm]current page.north west) {\parbox[t]{17.000mm}{\raggedright\fontsize{7.400}{8.880}\selectfont H16\\1.6 s\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=40.000mm,yshift=-67.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=72.000mm,yshift=-67.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_parent_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.000mm,yshift=-67.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_h1_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.000mm,yshift=-67.000mm]current page.north west) {\includegraphics[width=16.000mm,height=16.000mm,keepaspectratio]{\presroot images/image_wm_48m/B005_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-78.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{7.000}{8.400}\selectfont B005: the real object settles, while the mixed prediction still drifts and changes shape. This remains a failed prediction.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: L017 depart_recontact/contact_and_move: true centroid displacement19.642259imagepx, H16IoU Parent .194667,H1 0,Mixed .024938. This individualL regression does not mean theL shape mean regressed. X046 surface_change: Parent/H1/Mixed allH16IoU0, with severe deformation/displacement. Same full96 field for every model/time; no shape repair.
+\begin{frame}{Some motions and shape details still fail}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=21.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Start}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=47.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=73.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Parent}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=99.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{H1 +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=125.500mm,yshift=-20.800mm]current page.north west) {\parbox[t]{25.000mm}{\centering\fontsize{8.400}{10.080}\selectfont \textbf{Mixed +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-35.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{11.500}{13.800}\selectfont \textbf{L}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-41.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont motion\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=34.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L017_history3.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=60.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L017_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L017_parent_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=112.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L017_h1_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=138.000mm,yshift=-40.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/L017_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-59.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{11.500}{13.800}\selectfont \textbf{X}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-65.000mm]current page.north west) {\parbox[t]{13.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont shape\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=34.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/X046_history3.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=60.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/X046_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/X046_parent_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=112.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/X046_h1_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=138.000mm,yshift=-64.000mm]current page.north west) {\includegraphics[width=21.000mm,height=21.000mm,keepaspectratio]{\presroot images/image_wm_48m/X046_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-78.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{7.000}{8.400}\selectfont L017: Mixed is worse than the parent. X046: all three models have zero H16 gray-object IoU. Full-field views keep the errors visible.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: Saved-model comparison, not matched budget or same-starting-point optimization evidence. O027 H16 gray-objectIoU completed original .106855 versus Mixed .533333, with true motion7.852126 imagepx. C015 H16 .111717 versus .766816, with true motion only .584 imagepx: this window supports better outline retention, not learned translation. Both columns use identical cases/actions/sampler/seeds and the full96RGB field. Original is the actual completed from-scratch H1 model at49991 effective updates,50000 attempts,9AMP skips, update_limit stop, checkpoint6774dda42e24abc3d9d7aa718024fc89b144df63ccec0388ade249f58daecfd1. Mixed is intermediate36496 plus1000 updates, not a continuation of the completed baseline.
+\begin{frame}{Mixed retains more shape in these windows}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=44.000mm,yshift=-20.300mm]current page.north west) {\parbox[t]{34.000mm}{\centering\fontsize{8.700}{10.440}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=80.000mm,yshift=-20.300mm]current page.north west) {\parbox[t]{34.000mm}{\centering\fontsize{8.700}{10.440}\selectfont \textbf{Original}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=116.000mm,yshift=-20.300mm]current page.north west) {\parbox[t]{34.000mm}{\centering\fontsize{8.700}{10.440}\selectfont \textbf{Mixed +1k}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-30.500mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{9.800}{11.760}\selectfont \textbf{O027}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-35.800mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{8.000}{9.600}\selectfont H16 (1.6 s)\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-41.000mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont rotation task\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=61.000mm,yshift=-37.500mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_O027_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=97.000mm,yshift=-37.500mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_O027_final_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.000mm,yshift=-37.500mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_O027_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.000mm,yshift=-58.000mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{9.800}{11.760}\selectfont \textbf{C015}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-63.300mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{8.000}{9.600}\selectfont H16 (1.6 s)\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-68.500mm]current page.north west) {\parbox[t]{33.000mm}{\raggedright\fontsize{6.600}{7.920}\selectfont translation task\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=61.000mm,yshift=-65.000mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_C015_truth_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=97.000mm,yshift=-65.000mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_C015_final_H16.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.000mm,yshift=-65.000mm]current page.north west) {\includegraphics[width=25.000mm,height=25.000mm,keepaspectratio]{\presroot images/image_wm_48m/completed_C015_mixed_H16.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.000mm,yshift=-79.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{6.500}{7.800}\selectfont Unequal training budgets: original 49,991 vs Mixed 37,496 updates. O027 still underpredicts motion. C015 shows little true movement.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Source/speaker context: Unequal-budget saved-model comparison. L023 H16 gray-objectIoU completed original .757991 versus Mixed .219298; original blue-pusher position is still wrong, so high gray overlap is not whole-image or dynamics correctness. L021 H8 .390572 versus .171429; its stop_response task label does not mean this evaluation window contains a stop. Anchor3, candidate actions3..18 atH16, target becomes held only ataction19; the shownH8 is a moving prefix. Genuine hold-stage failure is illustrated separately by B005 anchor19/actions19..34. Across all8 L cases original meanIoU is better than Mixed atH4/H8/H16 (.736/.469/.319 versus .682/.434/.266). The completed original also recovers long-range overlap compared with the shorter H1+1k continuation, so do not claim H1 training worsens with duration.
+% Video manifest qualification: Exact saved H4/H8/H16 snapshots for each named L023/L021 case, not a continuous rollout. The current final poster is L021 H16; the earlier static speaker comment mentioning shown H8 is retained as history of the replaced body. Final49991 versus Mixed37496 is unequal-budget saved-model comparison; L021 is the moving prefix before hold, not a stopping interval.
+\begin{frame}{These L cases favour the completed original}
+\slidevideo{p37}
+\end{frame}

@@ -31,52 +31,64 @@ that planner and then corrects its own mistakes.
 ## Talk plan (10 minutes; matches slides/main.tex and the course's required parts)
 
 The course asks for: problem and motivation; approach and implementation; results and demonstration (with a brief
-demo or recorded video); discussion and conclusions; team number and all members' names on the title slide. About
-2.5 minutes are left for the image world-model path, presented by the teammates who built it (placeholder slides).
+demo or recorded video); discussion and conclusions; team number and all members' names on the title slide.
+Slides 4-14 present the early image world-model investigation after the opening problem and question; its summary follows the closing slide at 41, matching the approved PPTX. Its approved architecture, scientific statements and figures are unchanged; final speaking time and cuts remain to be agreed after rehearsal.
 
-| # | Part | Slide | Time | Visual (builds = overlay steps) |
+| # | Part | Slide | Time | Visual (optional builds = overlay steps) |
 | --- | --- | --- | --- | --- |
 | 1 | Title | Team 28: Liang Wenzhong, Song Mengfei, Su Shenyi | 0:15 | 33-shape gallery |
 | 2 | Problem | A pushing policy that only knows the T | 0:25 | original vs ours on P (build), 3.7% |
 | 3 | Problem | The question | 0:10 | one question |
-| 4 | Approach | Approach at a glance | 0:40 | Figure 1 (`figures/tikz/overview.tex`), 6 steps |
-| 5 | Approach | First attempt: RL in the simulator | 0:20 | RL chart, 55% -> 5%, 16-36% |
-| 6 | Approach | The path to a teacher | 0:20 | six approaches with one number each (3 steps) |
-| 7 | Approach | Two dead ends before the teacher | 0:20 | simulator re-ranking; back-propagation through the world model (SuperMimic-style) |
-| 8 | Approach | How the world model works | 0:25 | `figures/tikz/worldmodel.tex` (4 steps), 0.2-0.3 px vs 2.3 px |
-| 9 | Approach | How the teacher plans | 0:30 | `figures/tikz/planner.tex` (6 steps), 88% |
-| 10 | Approach | Copying the teacher was not enough | 0:20 | copying keeps 30-41% of the teacher's successes; weight blends 3 of 6 passed |
-| 11 | Approach | Teaching the camera policy: correction rounds | 0:20 | TikZ loop + examples |
-| 12 | Approach | Copy what the teacher intends, not what it did | 0:15 | 77 -> 129 (build) |
-| 13 | Results | Training: 5 -> 10 -> 27 shapes | 0:20 | curves (build per stage) |
-| 14 | Results | 26 letters: training per shape | 0:10 | budget curve |
-| 15 | Results | Final test: 300 new scenes per shape | 0:20 | 3.7% -> 33.4% |
-| 16 | Results | Final test by shape group | 0:10 | bars (build) |
-| 17 | Results | Per shape: the new letters improve most | 0:10 | dumbbell |
-| 18 | Demo | Same scene, original vs ours | 0:25 | A, M, S; 40 s demo video |
-| 19 | Demo | The teacher and the policy it taught | 0:10 | K |
-| 20 | Results | Never-seen shapes | 0:10 | held-out chart, digit 7 |
-| 21 | Results | The last millimetres | 0:15 | near miss + close-ups |
-| 22 | Architecture experiment | Does the network matter? A 505M transformer | 0:20 | `figures/tikz/architecture.tex` (3 steps) |
-| 23 | Architecture experiment | Same data, bigger network: 32.8% -> 45.2% | 0:20 | group chart; correction-round result TODO |
-| 24 | Architecture experiment | Demo: main model vs the 505M transformer | 0:15 | T, W, Z |
-| 25-26 | Image world-model path | placeholders for the teammates | 2:30 | TODO (PRs #6, #7, #9-#11) |
-| 27 | Discussion | What we achieved | 0:15 | three stat tiles |
-| 28 | Discussion | Takeaways and limitations | 0:20 | three takeaways, limitations |
-| 29 | Close | Thank you | 0:10 | 33-shape grid, links |
+| 4 | Early attempts: image world model | Original experiment: a T-like prior | rehearsal | clickable8s saved four-step L prediction clip; real H4 endpoint is a fixed reference, not per-step truth |
+| 5 | Early attempts: image world model | A shared image predictor for six shapes | rehearsal | moving L: four consecutive real frames and the true next RGB; common fixed crop and equal scale; three past controls plus current |
+| 6 | Early attempts: image world model | Inside the 48.86M image world model | rehearsal | approved U-Net style with 256 channels/conditioning and 48,864,707 parameters |
+| 7 | Early attempts: image world model | Two continuous fine-tuning from parents | rehearsal | 36,496-update shared snapshot; two +1,000-update branches, equal anchors but unequal compute |
+| 8 | Early attempts: image world model | Mixed training uses its predicted histories | rehearsal | 0.5 H1 plus 0.5 total H2-H4 supervision; detached generated-history feedback |
+| 9 | Early attempts: image world model | Mixed training reduces drift in this rollout | rehearsal | clickable6s snapshot animation of the same O case: simulator, intermediate parent, H1 and mixed at saved H4/H8/H16; not continuous rollout |
+| 10 | Early attempts: image world model | Stationary scenes still expose failures | rehearsal | B improvement and L drift, without claiming contact-dynamics success |
+| 11 | Early attempts: image world model | A stop-response case remains difficult | rehearsal | B005 true hold window; recursive drift remains |
+| 12 | Early attempts: image world model | Some motions and shape details still fail | rehearsal | L017 regression and X046 failure retained |
+| 13 | Early attempts: image world model | Mixed retains more shape in these windows | rehearsal | real final-baseline predictions versus mixed on O027 and C015 |
+| 14 | Early attempts: image world model | These L cases favour the completed original | rehearsal | clickable12s final-versus-mixed L023/L021 saved H4/H8/H16 snapshot animation; unequal budgets, L021 moving prefix, not continuous rollout |
+| 15 | Approach | Approach at a glance | 0:40 | Figure 1 (`figures/tikz/overview.tex`), 6 steps |
+| 16 | Approach | First attempt: RL in the simulator | 0:20 | RL chart, 55% -> 5%, 16-36% |
+| 17 | Approach | The path to a teacher | 0:20 | six approaches with one number each (3 steps) |
+| 18 | Approach | Two dead ends before the teacher | 0:20 | simulator re-ranking; back-propagation through the world model (SuperMimic-style) |
+| 19 | Approach | How the world model works | 0:25 | `figures/tikz/worldmodel.tex` (4 steps), ~0.3 px vs 2.3 px |
+| 20 | Approach | How the teacher plans | 0:30 | `figures/tikz/planner.tex` (6 steps), 88% |
+| 21 | Approach | The camera policy: the official Diffusion Policy network | rehearsal | existing detailed camera-policy architecture |
+| 22 | Approach | Copying the teacher was not enough | 0:20 | copying keeps 30-41% of the teacher's successes; weight blends 3 of 6 passed |
+| 23 | Approach | Teaching the camera policy: correction rounds | 0:20 | TikZ loop + examples |
+| 24 | Approach | Copy what the teacher intends, not what it did | 0:15 | 77 -> 129 (build) |
+| 25 | Results | Training: 5 -> 10 -> 27 shapes | 0:20 | curves (build per stage) |
+| 26 | Results | 26 letters: training per shape | 0:10 | budget curve |
+| 27 | Results | Final test: 300 new scenes per shape | 0:20 | 3.7% -> 33.4% |
+| 28 | Results | Final test by shape group | 0:10 | bars (build) |
+| 29 | Results | Per shape: the new letters improve most | 0:10 | dumbbell |
+| 30 | Demo | Same scene, original vs ours | 0:25 | A, M, S; 40 s demo video |
+| 31 | Demo | The teacher and the policy it taught | 0:10 | K |
+| 32 | Results | Never-seen shapes | 0:10 | held-out chart, digit 7 |
+| 33 | Results | The last millimetres | 0:15 | near miss + close-ups |
+| 34 | Architecture experiment | Does the network matter? A 505M transformer | 0:20 | `figures/tikz/architecture.tex` (3 steps) |
+| 35 | Architecture experiment | Inside the 505M transformer | rehearsal | existing detailed transformer architecture |
+| 36 | Architecture experiment | Same data, bigger network: 32.8% -> 45.2% | 0:20 | group chart; correction-round result TODO |
+| 37 | Architecture experiment | Demo: main model vs the 505M transformer | 0:15 | T, W, Z |
+| 38 | Discussion | What we achieved | 0:15 | three stat tiles |
+| 39 | Discussion | Takeaways and limitations | 0:20 | three takeaways, limitations |
+| 40 | Close | Thank you | 0:10 | 33-shape grid, links |
+| 41 | Early attempts: image world model | Improved mean overlap, uneven results | rehearsal | 48 fixed development cases; final 49,991 versus mixed 37,496 updates; L counterexample and scope |
 
-Total about 12:30 with the teammates' 2:30, above the 10-minute slot: candidates to move to backup are slides 7, 10,
-14, 16, 19 and 24 (about 1:40 together).
+The earlier timing estimate predates this twelve-frame image-model section. The full 41-frame main deck (62 pages including backup by default) needs rehearsal and agreed cuts for the course's ten-minute slot. The content integration preserves the other authors' material.
 
 Slide wording avoids internal names: "our policy" (the headline test used the model after 44 correction rounds; the
 videos show it after 6 more), "narrow T" for near-T, "new test scenes" for fresh pools, "selection scenes" for the 50
 validation scenes per shape used to pick models. The 505M transformer is an experiment on the architecture; the main
 model stays the official network.
 
-Backup (18 slides): test protocol and headline table, per-shape table, what mattered, weight blends in detail, the world
+Backup (21 slides): test protocol and headline table, per-shape table, what mattered, weight blends in detail, the world
 model's accuracy, imagined vs simulator videos, round 50 vs 44 and 192 vs 96 px, T and narrow T, ten shapes, ten-shape
 policies on unseen capitals, teacher vs policy per letter, how the teacher was fixed, every model we trained, one scene
-through the whole project, how to read the videos, full disclosure, data and compute, timeline.
+through the whole project, how to read the videos, full disclosure, data and compute, timeline, and dedicated playback pages for the recorded policy reel, planner-teacher grid and historical 8.73M C diagnostic.
 
 ## Paper outline (one week after the talk)
 

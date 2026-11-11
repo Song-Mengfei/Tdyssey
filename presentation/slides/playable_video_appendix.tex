@@ -1,0 +1,44 @@
+% These are real recorded clips. No video is synthesized from evaluation PNGs.
+% Native Drive video objects are bound after the checked PPTX is imported into Slides.
+\begin{frame}{Recorded policy demonstration reel}
+\slidevideo{p60}
+  \centering
+  \tdscenelink{run:\presroot videos/talk/demo_reel.mp4}{%
+    \includegraphics[width=104mm,height=58.5mm,keepaspectratio]{\presroot images/video_playback/talk-reel-poster.png}}\par
+  \vspace{.8mm}
+  {\fontsize{7.5}{9}\selectfont\color{tdgrey}Original recorded policy demo, 39.83 seconds. This is separate from the image-model diagnostics.\par}
+\end{frame}
+
+\begin{frame}{Recorded planner-teacher demonstration}
+\slidevideo{p61}
+  \begin{columns}[c,totalwidth=\textwidth]
+    \column{54mm}
+    \centering
+    \tdscenelink{run:\presroot videos/teacher/teacher_9shapes.mp4}{%
+      \includegraphics[width=48mm,height=58mm,keepaspectratio]{\presroot images/video_playback/teacher-grid-poster.png}}
+    \column{83mm}
+    {\small Recorded planner-teacher trajectories on nine shapes.\par}
+    \vspace{4mm}
+    {\small The teacher uses exact simulator state for planning. It supplies training labels; the deployed camera policy has no access to that state.\par}
+    \vspace{4mm}
+    {\fontsize{8}{10}\selectfont\color{tdgrey}The clip is reused from the original policy presentation. It is not a SciGuard image-model evaluation.\par}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Historical image-model rollout (8.73M)}
+\slidevideo{p62}
+  \begin{columns}[c,totalwidth=\textwidth]
+    \column{48mm}
+    \centering
+    \tdscenelink{run:\presroot images/image_wm_story/stage3/C-seen-val/comparison-zoom-10fps.mp4}{%
+      \includegraphics[width=35.05mm,height=58mm,keepaspectratio]{\presroot images/video_playback/historical-c-poster.png}}
+    \column{89mm}
+    {\small Real recorded C sequence from the earlier 8.73M study.\par}
+    \vspace{3mm}
+    {\small Simulator, independent one-step prediction with observed history, and recursive prediction.\par}
+    \vspace{3mm}
+    {\small The recursive forecast drifts. This is historical evidence; it is not a SciGuard 48.86M result.\par}
+    \vspace{3mm}
+    {\fontsize{8}{10}\selectfont\color{tdgrey}4.6-second clip, including start/end holds. Original ten control frames per second; no temporal interpolation.\par}
+  \end{columns}
+\end{frame}

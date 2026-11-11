@@ -1,0 +1,173 @@
+% Image world-model section: approved nine-page story plus the approved architecture diagram.
+% Input from main.tex; relies on the existing Tdyssey Beamer master, presroot and TikZ.
+% Local sequence: goal, architecture, original story pages2..9. Ten frames, no other deck changes.
+% Native source: output/image-wm-story/story.json. Source identities: data/image_wm_story_sources.json.
+\section{Image world-model path}
+
+\begin{frame}{Our goal: predict the next image across shapes}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-19.3970mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{10.276}{12.331}\selectfont Learn how new shapes move from RGB history and actions.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-29.9438mm]current page.north west) {\parbox[t]{106.2500mm}{\raggedright\fontsize{8.504}{10.205}\selectfont \textbf{Four observed RGB frames}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=121.2500mm,yshift=-29.9438mm]current page.north west) {\parbox[t]{31.2500mm}{\centering\fontsize{8.150}{9.780}\selectfont \textbf{Real next frame}\par}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=19.8750mm,yshift=-47.6816mm]current page.north west) {\includegraphics[width=23.7500mm,height=22.7715mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_history_012.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=47.0000mm,yshift=-47.6816mm]current page.north west) {\includegraphics[width=23.7500mm,height=22.7715mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_history_013.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=74.1250mm,yshift=-47.6816mm]current page.north west) {\includegraphics[width=23.7500mm,height=22.7715mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_history_014.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=101.2500mm,yshift=-47.6816mm]current page.north west) {\includegraphics[width=23.7500mm,height=22.7715mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_history_015.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.8750mm,yshift=-47.6816mm]current page.north west) {\includegraphics[width=31.2500mm,height=22.7715mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_target.png}};
+  \draw[-{Stealth[length=2.3mm,width=2mm]},draw=tdblue,line width=1pt] ([xshift=115mm,yshift=-48mm]current page.north west) -- ([xshift=121mm,yshift=-48mm]current page.north west);
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-66.3783mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{10.276}{12.331}\selectfont Condition on four XY targets to predict what happens next.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Recorded L history and its true next image illustrate the goal. No generated prediction is shown here.\par}};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Inside our image world model (8.73M)}
+  \input{\presroot figures/tikz/image_wm_architecture.tex}
+\end{frame}
+
+% Original approved story page2; local section frame3.
+% Speaker note: 最早先拿L测试预训练的GPC world model。这个已保存的手动推动案例里，真实结果仍是L，模型却补出T式横杠。因此我们怀疑原模型对T的形状先验过强，希望用新形状数据适配。这是一个具体观察，不是对所有L案例的统计结论。输入使用固定T1点式颜色转换；转换不移动像素、不改变几何。Source: stage1/manifest.json, manual saved H4 case. 原截图左栏是执行后真值，不是输入；本页只使用中栏预测与右栏同色真值。
+\begin{frame}{The pretrained model grows a T-like crossbar}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=44.3750mm,yshift=-47.3820mm]current page.north west) {\includegraphics[width=53.7500mm,height=42.5468mm,keepaspectratio]{\presroot images/image_wm_story/stage1/manual_right_truth_H4_T1_zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=115.6250mm,yshift=-47.3820mm]current page.north west) {\includegraphics[width=53.7500mm,height=42.5468mm,keepaspectratio]{\presroot images/image_wm_story/stage1/manual_middle_pretrained_H4_zoom.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=17.5000mm,yshift=-20.1161mm]current page.north west) {\parbox[t]{53.7500mm}{\centering\fontsize{10.276}{12.331}\selectfont \textbf{Simulator after the push}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=88.7500mm,yshift=-20.1161mm]current page.north west) {\parbox[t]{53.7500mm}{\centering\fontsize{10.276}{12.331}\selectfont \textbf{Pretrained GPC forecast}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-71.8914mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.921}{11.906}\selectfont We suspected a strong T-specific shape prior.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Same saved push and endpoint. Both images use the fixed T1 display palette.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page3; local section frame4.
+% Speaker note: 接下来复用GPC权重，用采集到的L交互数据适配。这里展示真实L训练轨迹首次接触附近四帧，按接触记录选取，不是新生成的示意。这版raw T/L训练保留T回放，并更新全部inner_model参数。复用预训练权重是起点，训练时没有冻结子网络。Source: stage2/manifest.json; GPC_RAW_TL_FULLTRAIN.md.
+\begin{frame}{We added L interaction data to GPC}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=23.6250mm,yshift=-49.7191mm]current page.north west) {\includegraphics[width=31.2500mm,height=29.9625mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_train_first_contact_frame_031.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=59.3750mm,yshift=-49.7191mm]current page.north west) {\includegraphics[width=31.2500mm,height=29.9625mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_train_first_contact_frame_032.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=95.1250mm,yshift=-49.7191mm]current page.north west) {\includegraphics[width=31.2500mm,height=29.9625mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_train_first_contact_frame_033.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=130.8750mm,yshift=-49.7191mm]current page.north west) {\includegraphics[width=31.2500mm,height=29.9625mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_train_first_contact_frame_034.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-19.1573mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.921}{11.906}\selectfont Collect examples of L being pushed, then adapt the image predictor.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-27.9064mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{8.150}{9.780}\selectfont Real observations around a recorded L contact\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-67.3371mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{10.276}{12.331}\selectfont Keep the pretrained model as the starting point and retain T replay.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Recorded setup: full-denoiser adaptation, with T examples retained for replay.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page4; local section frame5.
+% Speaker note: 这页呈现当时觉得有希望的效果：适配后，灰L、蓝推杆和绿目标的图像结构都能恢复，这个具体单步案例和真实下一帧很接近。左边预训练参考还有颜色域不匹配，所以不能把全部变化都归因于动力学学习；同域早期到后期对照和全部16个原例在素材包保留。这里不声称已解决长期接触预测。所有三幅来自同一个保存窗口，适配版本是固定最终raw2328。Source: stage2/manifest.json, L_a015.
+\begin{frame}{After adaptation, the model preserves L here}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=29.2500mm,yshift=-47.4419mm]current page.north west) {\includegraphics[width=42.5000mm,height=40.7491mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_initial_zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=80.0000mm,yshift=-47.4419mm]current page.north west) {\includegraphics[width=42.5000mm,height=40.7491mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_raw2328_zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=130.7500mm,yshift=-47.4419mm]current page.north west) {\includegraphics[width=42.5000mm,height=40.7491mm,keepaspectratio]{\presroot images/image_wm_story/stage2/L_a015_target_zoom.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-21.3146mm]current page.north west) {\parbox[t]{42.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Pretrained reference}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=58.7500mm,yshift=-21.3146mm]current page.north west) {\parbox[t]{42.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Adapted model}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=109.5000mm,yshift=-21.3146mm]current page.north west) {\parbox[t]{42.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-71.6517mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.921}{11.906}\selectfont The L outline and the scene appearance return in the adapted prediction.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Saved one-step example. The pretrained reference also has a colour-domain mismatch, so this is an appearance comparison.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page5; local section frame6.
+% Speaker note: L上看见外观改善之后，思路是先学几种有代表性的形状，再尝试预测训练时没见过的形状。这里是O、C、X、B、L，实际后续六字母训练也包含T参考。这页是形状选择和研究计划，不要把已暴露形状说成未见泛化。图像都来自真实保存输入，各形状只为展示采用各自一致裁剪。Source: stage3/manifest.json.
+\begin{frame}{From L to representative shapes}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=21.1250mm,yshift=-51.1573mm]current page.north west) {\includegraphics[width=26.2500mm,height=25.1685mm,keepaspectratio]{\presroot images/image_wm_story/stage3/O-train/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=49.8750mm,yshift=-51.1573mm]current page.north west) {\includegraphics[width=26.2500mm,height=25.1685mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=78.6250mm,yshift=-51.1573mm]current page.north west) {\includegraphics[width=26.2500mm,height=25.1685mm,keepaspectratio]{\presroot images/image_wm_story/stage3/X-seen-val/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=107.3750mm,yshift=-51.1573mm]current page.north west) {\includegraphics[width=26.2500mm,height=25.1685mm,keepaspectratio]{\presroot images/image_wm_story/stage3/B-seen-val/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=136.1250mm,yshift=-51.1573mm]current page.north west) {\includegraphics[width=26.2500mm,height=25.1685mm,keepaspectratio]{\presroot images/image_wm_story/stage3/L-seen-val/input-zoom.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-19.6367mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{10.276}{12.331}\selectfont Train a shared predictor on representative shapes, then try unseen shapes.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-31.8614mm]current page.north west) {\parbox[t]{26.2500mm}{\centering\fontsize{12.756}{15.307}\selectfont \textbf{O}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=36.7500mm,yshift=-31.8614mm]current page.north west) {\parbox[t]{26.2500mm}{\centering\fontsize{12.756}{15.307}\selectfont \textbf{C}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=65.5000mm,yshift=-31.8614mm]current page.north west) {\parbox[t]{26.2500mm}{\centering\fontsize{12.756}{15.307}\selectfont \textbf{X}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=94.2500mm,yshift=-31.8614mm]current page.north west) {\parbox[t]{26.2500mm}{\centering\fontsize{12.756}{15.307}\selectfont \textbf{B}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=123.0000mm,yshift=-31.8614mm]current page.north west) {\parbox[t]{26.2500mm}{\centering\fontsize{12.756}{15.307}\selectfont \textbf{L}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-68.7753mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.921}{11.906}\selectfont Different holes, concavities and arms broaden the shapes the model sees.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont These are representative training shapes. The intended unseen-shape step is a research goal, not a success claim.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page6; local section frame7.
+% Speaker note: 先看单步效果。上排是真实C运动，下排每次都重新给最近四帧真实图像，只预测下一步，所以外观和转动跟得比较近。这里的0.1/0.4/0.8/1.6秒是沿同一真实过程的不同观察时刻，不是模型从起点自由预测到1.6秒。不要把这排图片串成视频后称作长程世界模型。样本是保存的C seen-validation运动诊断中按真实绝对转角最大选例。Source: stage3/manifest.json, C-seen-val AC-C-05-00 anchor6, epoch3.
+\begin{frame}{Single-step prediction can follow the motion}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=45.7500mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H01-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=45.7500mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/real_history-H01-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=75.1250mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H04-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=75.1250mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/real_history-H04-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.5000mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H08-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.5000mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/real_history-H08-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.8750mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H16-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.8750mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/real_history-H16-zoom.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-19.1573mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.213}{11.055}\selectfont Each prediction receives the latest observed image history.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=34.5000mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.1 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=63.8750mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.4 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=93.2500mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.8 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=122.6250mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 1.6 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-35.2172mm]current page.north west) {\parbox[t]{23.7500mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-56.9101mm]current page.north west) {\parbox[t]{23.7500mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{One-step\\ prediction}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-72.8502mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.213}{11.055}\selectfont The next image can look close when recent real history is available.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Same saved C sequence. Each bottom image is a separate one-step prediction, not a free long rollout.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page7; local section frame8.
+% Speaker note: 再把同一个案例改为连续回灌预测：模型只在开头拿真实历史，后面每步都用自己的生成图作为新输入。短时还接近，之后朝向和轮廓越来越偏，C甚至接近L形。和上一页是同一个模型、同一动作序列、同一起点，差别是后续历史是否真实。这支持长程递推是主要困难之一，但不能单独证明只是数据量造成。视频comparison-zoom-10fps.mp4可以直接播放。Source: stage3/manifest.json, same C case.
+\begin{frame}{Predicted history drifts over multiple steps}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=45.7500mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H01-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=45.7500mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/autoregressive-H01-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=75.1250mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H04-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=75.1250mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/autoregressive-H04-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.5000mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H08-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=104.5000mm,yshift=-61.2247mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/autoregressive-H08-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.8750mm,yshift=-38.9326mm]current page.north west) {\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/truth-H16-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=133.8750mm,yshift=-61.2247mm]current page.north west) {\href{run:\presroot images/image_wm_story/stage3/C-seen-val/comparison-zoom-10fps.mp4}{\includegraphics[width=22.5000mm,height=20.3745mm,keepaspectratio]{\presroot images/image_wm_story/stage3/C-seen-val/autoregressive-H16-zoom.png}}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-19.1573mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.213}{11.055}\selectfont Only the starting history is observed. Predictions then feed back.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=34.5000mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.1 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=63.8750mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.4 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=93.2500mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 0.8 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=122.6250mm,yshift=-24.6704mm]current page.north west) {\parbox[t]{22.5000mm}{\centering\fontsize{7.795}{9.354}\selectfont 1.6 s\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-35.2172mm]current page.north west) {\parbox[t]{23.7500mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{Simulator}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-56.9101mm]current page.north west) {\parbox[t]{23.7500mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{Recursive\\ prediction}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-72.8502mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.213}{11.055}\selectfont Over time, the predicted orientation and outline depart from the simulator.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Same C case, model, actions and initial history. Raw predicted frames feed back without future true images.\par}};
+  \fill[tdblue] ([xshift=143mm,yshift=-69mm]current page.north west) -- ++(0,-2mm) -- ++(1.8mm,1mm) -- cycle;
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page8; local section frame9.
+% Speaker note: 这不只是C的个例。B这个固定验证例的长程预测会把孔洞抹掉；O这个训练运动诊断的旋转和位置仍有偏差。B和O不是同一分母，本页只是可视案例，不做成功率比较。两边都保留同一case的初始状态、真实未来和递推预测。选择规则、验证/训练身份在manifest里，图像裁剪是所有方法共用的固定ROI，没有裁掉预测错误。Source: stage3/manifest.json.
+\begin{frame}{Long rollouts also lose shape details}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=46.7500mm,yshift=-36.8951mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/B-seen-val/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.7500mm,yshift=-36.8951mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/B-seen-val/truth-H16-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=126.7500mm,yshift=-36.8951mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/B-seen-val/autoregressive-H16-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=46.7500mm,yshift=-61.3446mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/O-train/input-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=86.7500mm,yshift=-61.3446mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/O-train/truth-H16-zoom.png}};
+  \node[anchor=center,inner sep=0pt,outer sep=0pt] at ([xshift=126.7500mm,yshift=-61.3446mm]current page.north west) {\includegraphics[width=32.5000mm,height=21.5730mm,keepaspectratio]{\presroot images/image_wm_story/stage3/O-train/autoregressive-H16-zoom.png}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=30.5000mm,yshift=-20.1161mm]current page.north west) {\parbox[t]{32.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Start}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=70.5000mm,yshift=-20.1161mm]current page.north west) {\parbox[t]{32.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Simulator at 1.6 s}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=110.5000mm,yshift=-20.1161mm]current page.north west) {\parbox[t]{32.5000mm}{\centering\fontsize{9.921}{11.906}\selectfont \textbf{Rollout at 1.6 s}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-33.2996mm]current page.north west) {\parbox[t]{15.0000mm}{\raggedright\fontsize{12.756}{15.307}\selectfont \textbf{B}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-39.0524mm]current page.north west) {\parbox[t]{17.5000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont validation\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-57.7491mm]current page.north west) {\parbox[t]{15.0000mm}{\raggedright\fontsize{12.756}{15.307}\selectfont \textbf{O}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-63.5019mm]current page.north west) {\parbox[t]{17.5000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont training\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-73.3296mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{9.213}{11.055}\selectfont Holes can disappear and rotation can drift during the rollout.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.8839mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont B is an existing fixed validation example. O is a training motion diagnostic. Each case uses one shared crop.\par}};
+\end{tikzpicture}
+\end{frame}
+
+% Original approved story page9; local section frame10.
+% Speaker note: 最后按当时的研究判断收束：我们怀疑步长、接触、旋转以及状态覆盖不够，单步看起来还行，但连续预测不稳定。如果要靠大量补采来解决，就偏离最初希望少量数据适配的目标，所以项目里放弃继续走这条image WM路径。数据不足只是我们的解释假说，不是本组图已证明的唯一原因；决定放弃来自用户对研究过程的梳理。这里不要转成loss实验排名，也不需要堆数值。
+\begin{frame}{Why we set this route aside}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-20.5955mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{Working hypothesis}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-25.8689mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{11.339}{13.606}\selectfont Limited coverage of contact, rotation and longer state transitions.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-39.2921mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{The trade-off}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-44.5655mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{11.339}{13.606}\selectfont Collecting much more interaction data would weaken our low-data adaptation goal.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdblue] at ([xshift=8.0000mm,yshift=-60.6255mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{8.858}{10.630}\selectfont \textbf{Our decision}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.0000mm,yshift=-65.8989mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{11.339}{13.606}\selectfont Set this image-based route aside for the project.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdgrey] at ([xshift=8.0000mm,yshift=-77.6442mm]current page.north west) {\parbox[t]{144.0000mm}{\raggedright\fontsize{7.200}{8.640}\selectfont Limited coverage was our explanation to investigate. These examples do not establish it as the sole cause.\par}};
+\end{tikzpicture}
+\end{frame}

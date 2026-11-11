@@ -19,7 +19,9 @@
 % Highlighted numbers: one hero size (final-test slide only) and one stat size; grey = original policy, blue = ours,
 % dark gold = the teacher, ink = anything else.
 %
-% Timing (about 12:30, 29 slides; builds add little time): title 0:15 | problem and question 0:45 |
+% Local follow-up: 41 main frames + 21 backups. Twelve image-model frames replace the two placeholders.
+% The historical rough timing below predates that section; rehearse and agree on cuts before a ten-minute talk.
+% Earlier timing estimate (about 12:30, 29 slides; builds add little time): title 0:15 | problem and question 0:45 |
 %   approach 4:30 (incl. what did not work) | results and demo 2:45 | architecture experiment 1:15 |
 %   image world model (teammates) 2:30 | discussion and close 0:30.
 % Overlay builds: problem (original, then ours), Figure 1 (6 steps), path to a teacher (3), world model (4), teacher
@@ -31,7 +33,13 @@
 %   transformer solves, the main model does not, per videos/INDEX.md). The result of the transformer's own correction
 %   rounds (D060) is a TODO on its result slide.
 % TODO: speakers per section.
-\documentclass[aspectratio=169,11pt,t]{beamer}
+% The checked PPTX contains the final build of each of its 62 slides.
+% Default: one final build per page. Define \tdanimated for the original builds.
+\ifdefined\tdanimated
+  \documentclass[aspectratio=169,11pt,t]{beamer}
+\else
+  \documentclass[handout,aspectratio=169,11pt,t]{beamer}
+\fi
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
@@ -119,9 +127,44 @@
   \fill[white] ($(v.south east)+(-2.7mm,2.7mm)$) circle (2.0mm);
   \fill[tdblue] ($(v.south east)+(-2.7mm,2.7mm)$) circle (1.7mm);
   \fill[white] ($(v.south east)+(-3.2mm,1.95mm)$) -- ++(0,1.5mm) -- ++(1.35mm,-0.75mm) -- cycle;}
-\newcommand{\video}[3]{\href{run:\presroot videos/#2}{\tikz[baseline=(v.south)]{\node[inner sep=0pt, outer sep=0pt]
+% Each reviewed media slide has one exact PPTX poster and one complete clip.
+% Public Drive links work in browser PDF viewers; define \tdlocalvideos to launch
+% the included relative MP4 instead. PDF viewers control local-launch support.
+\newif\iftdsynchronizedclips
+\newcommand{\tdscenelink}[2]{\iftdsynchronizedclips#2\else\href{#1}{#2}\fi}
+\newcommand{\tdcurrentclip}{}
+\newcommand{\tdcurrentclipid}{}
+\AddToHook{env/frame/before}{\global\let\tdcurrentclip\empty}
+\AddToHook{shipout/foreground}{\tdcurrentclip}
+\newcommand{\tdvideohref}[3]{%
+  \ifdefined\tdlocalvideos\href{run:\presroot#2}{#3}\else\href{#1}{#3}\fi}
+\newcommand{\tdplacevideo}[7]{%
+\tdsynchronizedclipstrue%
+\gdef\tdcurrentclip{%
+    \begin{tikzpicture}[remember picture,overlay]%
+      \ifcsname tdheader@\tdcurrentclipid\endcsname\csname tdheader@\tdcurrentclipid\endcsname\fi%
+      \ifcsname tdmask@\tdcurrentclipid\endcsname\csname tdmask@\tdcurrentclipid\endcsname\fi%
+      \begin{scope}%
+      \ifcsname tdposterclip@\tdcurrentclipid\endcsname\csname tdposterclip@\tdcurrentclipid\endcsname\fi%
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt]
+        at ([xshift=#1mm,yshift=-#2mm]current page.north west)
+        {\includegraphics[width=#3mm,height=#4mm]{\presroot#5}};%
+      \end{scope}%
+      \node[anchor=north west,inner sep=0pt,outer sep=0pt]
+        at ([xshift=#1mm,yshift=-#2mm]current page.north west)
+        {\tdvideohref{#7}{#6}{\phantom{\rule{#3mm}{#4mm}}}};%
+    \end{tikzpicture}}%
+\ignorespaces}
+\newcommand{\slidevideo}[1]{%
+\gdef\tdcurrentclipid{#1}%
+\csname tdclip@#1\endcsname%
+\ignorespaces}
+\input{\presroot slides/video_poster_masks.tex}
+\input{\presroot data/slide_video_bindings.tex}
+
+\newcommand{\video}[3]{\tdscenelink{run:\presroot videos/#2}{\tikz[baseline=(v.south)]{\node[inner sep=0pt, outer sep=0pt]
   (v) {\includegraphics[width=#3]{#1}}; \frameit\playmark}}}
-\newcommand{\mdl}[3]{\href{run:\presroot videos/models/#2_9shapes.mp4}{\tikz[baseline=(v.south)]{\node[inner sep=0pt,
+\newcommand{\mdl}[3]{\tdscenelink{run:\presroot videos/models/#2_9shapes.mp4}{\tikz[baseline=(v.south)]{\node[inner sep=0pt,
   outer sep=0pt] (v) {\includegraphics[width=\linewidth]{#1}}; \frameit\playmark}}\\[0.8mm]
   {\footnotesize #3}}
 % label line above a scene: name at the left, outcome at the right
@@ -171,7 +214,7 @@
 % one scene of a grid drawn inside a tikzpicture: \gridscene{x}{y}{width}{image}{video} (mm, anchor top left)
 \newcommand{\gridscene}[5]{%
   \node[anchor=north west, inner sep=0pt, outer sep=0pt] (v) at (#1,#2)
-    {\href{run:\presroot videos/#5}{\includegraphics[width=#3mm]{#4}}};
+    {\tdscenelink{run:\presroot videos/#5}{\includegraphics[width=#3mm]{#4}}};
   \frameit\playmark}
 
 \title{Tdyssey: one camera policy for every letter}
@@ -205,6 +248,8 @@
 % ==================================================================================== 1. problem
 \section{Problem and motivation}
 \begin{frame}{A pushing policy that only knows the T}
+% Synchronized composite for p2; underlying stills and labels are unchanged.
+\slidevideo{p2}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{98mm}
     \lbl{45mm}{Original (T only)}{\nok{not solved}}\hspace{4mm}%
@@ -234,6 +279,9 @@
   \cpt{26 capital letters and a narrow T. Six more shapes are kept aside and never seen in training.}
   \vspace{3mm}
 \end{frame}
+
+% ==================================================================================== early attempts
+\input{\presroot slides/image_world_model_48m.tex}
 
 % ==================================================================================== 2. approach
 \section{Approach and implementation}
@@ -311,7 +359,7 @@
   \vspace{1.2mm}
   \raggedright
   \uncover<4->{%
-    \statnum{\cours 0.2--0.3 px}\hspace{2.5mm}{\small\color{tdgrey}vs}\hspace{2.5mm}\statnum{\color{tdink}2.3 px}%
+    \statnum{\cours \textasciitilde0.3 px}\hspace{2.5mm}{\small\color{tdgrey}vs}\hspace{2.5mm}\statnum{\color{tdink}2.3 px}%
     \hspace{3mm}\parbox[c]{79mm}{\footnotesize\color{tdgrey}median error 8 steps ahead: ours vs a plain network that
       learns everything; finishing needs about 1.5 px}\par}
 \end{frame}
@@ -325,7 +373,7 @@
     \statnum{\cteach 88\%}\hspace{3mm}%
     \parbox[b]{100mm}{\small\color{tdgrey}of the selection scenes solved over the 27 shapes (50 fixed scenes per shape
       that we use to pick models). It needs the exact state, so it only \textbf{teaches}; it is never deployed.}%
-    \hfill\href{run:\presroot videos/teacher/teacher_9shapes.mp4}{\small\textbf{\cours watch it}}\par}
+    \par}
 \end{frame}
 
 \begin{frame}{The camera policy: the official Diffusion Policy network}
@@ -400,9 +448,9 @@
 % ==================================================================================== 3. results
 \section{Results and demonstration}
 \begin{frame}{Training: 5 \texorpdfstring{\too}{->} 10 \texorpdfstring{\too}{->} 27 shapes}
-  \only<1>{\deckfig{curves_stages_1}}%
-  \only<2>{\deckfig{curves_stages_2}}%
-  \only<3->{\deckfig{curves_stages_3}}\par
+  \only<1|handout:0>{\deckfig{curves_stages_1}}%
+  \only<2|handout:0>{\deckfig{curves_stages_2}}%
+  \only<3-|handout:1>{\deckfig{curves_stages_3}}\par
   \vspace{1mm}
   \cpt{\mbox{\ringsw\ tested on new scenes} \quad \mbox{\starsw\ after 6 more rounds: 34.8\% on new scenes}
        \quad \mbox{\swatch[1.1pt]{tdorig, dash pattern=on 2.4pt off 1.8pt} original, same scenes} \quad
@@ -440,8 +488,8 @@
 \end{frame}
 
 \begin{frame}{Final test by shape group}
-  \only<1>{\deckfig{final_bars_1}}%
-  \only<2->{\deckfig{final_bars_2}}\par
+  \only<1|handout:0>{\deckfig{final_bars_1}}%
+  \only<2-|handout:1>{\deckfig{final_bars_2}}\par
   \vspace{1.5mm}
   \uncover<2->{\takeaway{The 17 letters added last caught up with the earlier ten (33\%).}}
   \vspace{1mm}
@@ -458,6 +506,8 @@
 \end{frame}
 
 \begin{frame}{Demo: same scene, original vs ours}
+% Synchronized composite for p19; underlying stills and labels are unchanged.
+\slidevideo{p19}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{104mm}
     \begin{tikzpicture}[x=1mm, y=1mm]
@@ -475,7 +525,7 @@
       \gridscene{81}{-28}{25.5}{slide/compare_S_scene2_ours.png}{compare/S_scene2.mp4}
     \end{tikzpicture}
     \column{36mm}
-    \href{run:\presroot videos/talk/demo_reel.mp4}{\tikz\node[fill=tdblue, text=white, rounded corners=2mm,
+    \tdscenelink{run:\presroot videos/talk/demo_reel.mp4}{\tikz\node[fill=tdblue, text=white, rounded corners=2mm,
       inner xsep=2.2mm, inner ysep=2.2mm, align=center, font=\small\bfseries]
       {\tikz\fill[white] (0,0) -- (0,2.4mm) -- (2.1mm,1.2mm) -- cycle;\ Demo video\\
        \normalfont\footnotesize 40 seconds};}\par
@@ -490,6 +540,8 @@
 \end{frame}
 
 \begin{frame}{Demo: the teacher and the policy it taught}
+% Synchronized composite for p20; underlying stills and labels are unchanged.
+\slidevideo{p20}
   \vspace{1mm}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{99mm}
@@ -508,6 +560,8 @@
 \end{frame}
 
 \begin{frame}{Never-seen shapes}
+% Synchronized composite for p21; underlying stills and labels are unchanged.
+\slidevideo{p21}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{66mm}
     \deckfig{heldout_success}
@@ -524,6 +578,7 @@
 \end{frame}
 
 \begin{frame}{The last millimetres}
+\slidevideo{p22}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{50mm}
     \lbl{43mm}{Ours on M}{\nok{best 94.9\%}}\\[1mm]
@@ -577,6 +632,8 @@
 \end{frame}
 
 \begin{frame}{Demo: main model vs the 505M transformer}
+% Synchronized composite for p26; underlying stills and labels are unchanged.
+\slidevideo{p26}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{104mm}
     \begin{tikzpicture}[x=1mm, y=1mm]
@@ -600,42 +657,6 @@
     \vspace{3mm}
     \cpt{Picked from the selection scenes where the transformer succeeds and the main model does not.}
   \end{columns}
-\end{frame}
-
-% ==================================================================================== image world model (teammates)
-\section{Image world-model path}
-% TODO (teammates): about 2.5 minutes on learning a world model directly from images. Starting points in the repo:
-% PRs #6 and #7 (retraining the pretrained GPC image denoiser on official T, contact-balanced data) and #9-#11 (letter
-% world model on the GPC backbone, loss comparisons, prediction-vs-physics app). Older published figures are in
-% images/image_world_model/ (custom-L-predictions.png, palette-T-comparison.png, ...). Keep the message that it
-% motivated the structured state world model used by our teacher. Placeholder slides below: replace the dashed boxes
-% with \scene{<width>}{image_world_model/<file>.png} and the TODO lines with one takeaway each.
-\begin{frame}{Another path: a world model learned from images}
-  \begin{columns}[c,totalwidth=\textwidth]
-    \column{78mm}
-    \placeholder{76mm}{52mm}
-    \column{60mm}
-    \begin{itemize}
-      \item TODO: what was built (model, data, training).
-      \item TODO: what it predicts well and where it fails (contact, rotation, shape over several steps).
-    \end{itemize}
-  \end{columns}
-  \vspace{3mm}
-  \takeaway{TODO: one-sentence takeaway (predicted vs actual frames).}
-\end{frame}
-
-\begin{frame}{Image world model: what we learned}
-  \begin{columns}[c,totalwidth=\textwidth]
-    \column{78mm}
-    \placeholder{76mm}{52mm}
-    \column{60mm}
-    \begin{itemize}
-      \item TODO: key numbers.
-      \item TODO: why it was not used for planning, and what it taught us.
-    \end{itemize}
-  \end{columns}
-  \vspace{3mm}
-  \takeaway{TODO: one-sentence takeaway (e.g. comparison of losses or models).}
 \end{frame}
 
 % ==================================================================================== 4. discussion
@@ -679,19 +700,23 @@
 \end{frame}
 
 \begin{frame}[plain]
+\slidevideo{p41}
   \vspace*{7mm}
   {\fontsize{30}{33}\selectfont\bfseries Thank you\par}
-  \vspace{1mm}
-  {\large\color{tdgrey}Questions?\par}
-  \vfill
-  \video{slide/grid_r50_33shapes.png}{all_shapes/l26_r50_33shapes_wide.mp4}{\dimexpr\textwidth-1pt\relax}\par
-  \vspace{1mm}
-  \cpt{Our policy on all 33 shapes at once (recorded).}
-  \vspace{3mm}
-  {\small Code: \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Model:
-   \textbf{huggingface.co/LWZ19/tdyssey-pusht-26-letters}\par}
-  \vspace{5mm}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt]
+      at ([xshift=86mm,yshift=-11.5mm]current page.north west)
+      {\parbox[t]{68mm}{\raggedright\fontsize{8.5}{10}\selectfont\color{tdgrey}
+        Our policy on all 33 shapes at once (recorded).}};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt]
+      at ([xshift=8mm,yshift=-83mm]current page.north west)
+      {\parbox[t]{144mm}{\small Code: \textbf{github.com/Song-Mengfei/Tdyssey}\qquad Demo:
+        \textbf{tinyurl.com/tdyssey}}};
+  \end{tikzpicture}
 \end{frame}
+
+% The image-model summary follows the closing slide in the approved PPTX.
+\input{\presroot slides/image_world_model_summary.tex}
 
 % ==================================================================================== backup
 \appendix
@@ -740,6 +765,8 @@
 \end{frame}
 
 \begin{frame}{What the world model imagines vs the simulator}
+% Synchronized composite for p47; underlying stills and labels are unchanged.
+\slidevideo{p47}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{68mm}
     \centering
@@ -789,6 +816,8 @@
 \end{frame}
 
 \begin{frame}{One scene through the whole project}
+% Synchronized composite for p54; underlying stills and labels are unchanged.
+\slidevideo{p54}
   \vfill
   \centering
   \prog{Original}{(T only)}{original}{\nok{}}\hfill\prog{5 shapes}{7 rounds}{five_r7}{\nok{}}\hfill
@@ -803,6 +832,8 @@
 \end{frame}
 
 \begin{frame}{Every model we trained (same scene, 9 shapes)}
+% Synchronized composite for p55; underlying stills and labels are unchanged.
+\slidevideo{p55}
   \vspace{2mm}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{22mm}\mdl{slide/models_original.png}{original}{Original\\(T only)}
@@ -819,6 +850,7 @@
 \end{frame}
 
 \begin{frame}{How to read the videos}
+\slidevideo{p56}
   \begin{columns}[c,totalwidth=\textwidth]
     \column{58mm}
     \video{slide/compare_P_mid_ours.png}{compare/P.mp4}{56mm}
@@ -865,5 +897,8 @@
 \begin{frame}{Project timeline}
   \deckfig{project_timeline}
 \end{frame}
+
+% Real-video playback pages retained separately from the new 48M PNG diagnostics.
+\input{\presroot slides/playable_video_appendix.tex}
 
 \end{document}
