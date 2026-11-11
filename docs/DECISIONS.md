@@ -1168,3 +1168,8 @@ parameters, unused at inference (outputs bit-identical without it); smooth-L1 po
 180-degree-symmetric letters (H, I, O, S, X, Z) take the closer orientation. Labelled samples: 694,012 of 3,205,500 by
 count, 50.6% by sampling weight (teacher demonstrations and human T). With the head off, the data and the losses are
 identical to the previous code.
+
+D064 amendment (2026-11-11 evening, before the test; lead's decision): the 16 x 16 policy (`runs/flow26b16/v1`) is the
+new frontier model; the 8 x 8 rebuild is not reported further. Round 50 is added to the D064 test on the same new
+scenes (seeds 15000000 + 20*i, 33 shapes and the digit group), run after the pose and 16 x 16 parts, so the test
+reports the 16 x 16 model and the pose model against round 50, and the pose model against the 16 x 16 model.
