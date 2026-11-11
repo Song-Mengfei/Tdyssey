@@ -4312,34 +4312,78 @@ def fig_deck_stages(upto):
     return fig
 
 
+# Round-50 results on ONE pool of new scenes, the D064 pool (200 per shape; data/d064_test_*.csv from
+# scripts/build_round50_data.py): original, ten-shape model, main model (26 letters, 96 px, round 50), 192 px camera
+# model and Flow-DiT, every policy on the same scenes. Never-seen shapes: 9 (the six earlier ones + digits 2, 5, 8).
+D064_MODEL = {"original": "orig", "ten96": "ten", "m96": "r50", "m192": "h192", "flow": "base"}
+HELD9 = HELD + ["digit2", "digit5", "digit8"]
+
+
+def _d064_table():
+    """{(model key, shape): (successes, episodes, mean final coverage)} from d064_test_by_shape.csv ({} if missing)."""
+    return {(r["model_key"], r["shape"]): (int(r["successes"]), int(r["episodes"]), float(r["mean_final_coverage"]))
+            for r in _read_opt("d064_test_by_shape.csv")}
+
+
+def rate64(T, key, shapes):
+    """As rate(): pooled success % over the shapes this model has, successes, episodes, Wilson interval."""
+    rows = [T[(D064_MODEL[key], s)] for s in shapes if (D064_MODEL[key], s) in T]
+    k, n = sum(r[0] for r in rows), sum(r[1] for r in rows)
+    lo, hi = wilson(k, n)
+    return (100 * k / n if n else float("nan")), k, n, lo, hi
+
+
+def _d064_ready(T, keys, shapes, name):
+    """False (figure skipped) without the table; prints a PARTIAL DATA note when shapes are missing or a shape has
+    fewer than the finished test's 200 scenes."""
+    if not T:
+        print(f"  SKIPPED {name}: data/d064_test_by_shape.csv not found (run scripts/build_round50_data.py)")
+        return False
+    gaps = [(k, s) for k in keys for s in shapes if (D064_MODEL[k], s) not in T]
+    ns = sorted({T[(D064_MODEL[k], s)][1] for k in keys for s in shapes if (D064_MODEL[k], s) in T})
+    if gaps or not ns or ns[0] < 200:
+        print(f"  PARTIAL DATA {name}: {len(gaps)} model-shape pairs missing, "
+              f"{ns[0] if ns else 0}-{ns[-1] if ns else 0} scenes per shape (finished test: 200)")
+    return True
+
+
 def fig_deck_final_bars(step):
-    """Headline final test (D051) by shape group at 144 x 50 mm; step 1 shows the original only, step 2 adds ours.
-    Hidden bars are drawn transparent, so both steps have the same axes and legend positions. Groups of the 26
-    letters (narrow T left out of every aggregate) and the 6 never-seen shapes."""
-    groups = (OLD9, NEW17, LETTERS26, HELD)
-    names = ["9 earlier\nletters", "17 new\nletters", "All 26\nletters", "6 never-seen\nshapes"]
+    """Headline test on the D064 pool (200 new scenes per shape, every policy on the same scenes) by group at
+    144 x 50 mm: 9 earlier letters, 17 new letters, all 26 letters, 9 never-seen shapes (narrow T in no group); original,
+    ten-shape model, main model (96 px, round 50), 192 px camera model. Step 1 shows the original only, step 2 adds ours;
+    hidden bars are drawn transparent, so both steps have the same axes and legend positions."""
+    T = _d064_table()
+    groups = (OLD9, NEW17, LETTERS26, HELD9)
+    names = ["9 earlier\nletters", "17 new\nletters", "All 26\nletters", "9 never-seen\nshapes"]
     keys = ["original", "ten96", "m96", "m192"]
+    if not _d064_ready(T, keys, LETTERS26 + HELD9, "final_bars"):
+        return None
     fig, ax = deck_fig(144, 50, l=12.5, r=1, b=9.5, t=1.5)
     w = 0.8 / len(keys)
-    R = {k: [rate("D051", D051[k], g) for g in groups] for k in keys}
+    R = {k: [rate64(T, k, g) for g in groups] for k in keys}
     for j, k in enumerate(keys):
         show = step >= 2 or k == "original"
         for gi in range(len(groups)):
-            r, _, _, lo, hi = R[k][gi]
+            r, _, n, lo, hi = R[k][gi]
+            if n == 0:
+                continue
             x = gi - 0.4 + w * (j + 0.5)
             ax.bar(x, r, w, color=col(k), edgecolor="white", linewidth=1.0, zorder=3, alpha=1.0 if show else 0.0)
             if not show:
                 continue
             errbars(ax, [x], [r], [lo], [hi], lw=0.9)
             if k in ("original", "m96"):
-                top = max(hi, R["m192"][gi][4]) if k == "m96" and step >= 2 else hi
+                top = np.nanmax([hi, R["m192"][gi][4]]) if k == "m96" and step >= 2 else hi
                 ax.text(x, top + 0.7, f"{r:.1f}", ha="center", va="bottom", fontsize=9.5, color=INK,
                         fontweight="bold" if k == "m96" else None)
     ax.set_xticks(range(len(groups)), names, fontsize=10)
     ax.tick_params(axis="x", length=0, pad=3)
     ax.set_xlim(-0.55, len(groups) - 0.45)
-    ax.set_ylim(0, 56)
-    ax.set_yticks([0, 10, 20, 30, 40])
+    # room for the two-row legend above the tallest bar, interval and label (56 = the earlier fixed top)
+    peak = np.nanmax([R[k][gi][4] + (5 if k in ("original", "m96") else 0) for k in keys for gi in range(len(groups))])
+    top = max(56, 10 * math.ceil((peak + 13) / 10))
+    ax.set_ylim(0, top)
+    ax.set_yticks(list(range(0, top - 12, 10)))
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
     ax.set_ylabel("Success")
@@ -4356,28 +4400,39 @@ def fig_deck_final_bars(step):
 
 
 def fig_deck_dumbbell():
-    """26 letters and 6 never-seen shapes along x at 144 x 55 mm: original -> ours, 96 px (round 44), D051 final test;
-    T bold (narrow T left out)."""
+    """26 letters and the 9 never-seen shapes along x at 144 x 55 mm: original -> main model (96 px, round 50) on the
+    D064 pool (same 200 new scenes per shape); sorted by the main model within each part; T bold (narrow T left out)."""
+    T = _d064_table()
     key = "m96"
-    order = _sorted_shapes(key, LETTERS26)[::-1] + sorted(HELD, key=lambda s: -rate("D051", D051[key], [s])[0])
-    a = np.array([rate("D051", "original", [s])[0] for s in order])
-    b = np.array([rate("D051", D051[key], [s])[0] for s in order])
+    if not _d064_ready(T, ["original", key], LETTERS26 + HELD9, "final_dumbbell"):
+        return None
+
+    def r(k, s_):
+        return rate64(T, k, [s_])[0]
+
+    def by_ours(s_):
+        v = r(key, s_)
+        return -(v if v == v else -1.0)          # shapes without data (partial runs) go last
+    order = sorted(LETTERS26, key=by_ours) + sorted(HELD9, key=by_ours)
+    a = np.array([r("original", s) for s in order])
+    b = np.array([r(key, s) for s in order])
     fig, ax = deck_fig(144, 55, l=12.5, r=1, b=8.5, t=7)
     xs = np.arange(len(order))
     ax.vlines(xs, a, b, color=tint(col(key), 0.5), lw=1.6, zorder=2)
     ax.scatter(xs, a, s=18, color=ORIG_LINE, zorder=3, edgecolor="white", lw=0.6)
     ax.scatter(xs, b, s=24, color=col(key), zorder=4, edgecolor="white", lw=0.6)
-    ax.set_xticks(xs, [SHORT.get(s, s) for s in order], fontsize=9)
+    ax.set_xticks(xs, [SHORT.get(s, s.replace("digit", "")) for s in order], fontsize=9)
     ax.tick_params(axis="x", length=0, pad=3)
     for tl, s_ in zip(ax.get_xticklabels(), order):
         if s_ == "T":
             tl.set_fontweight("bold")
             tl.set_color(INK)
+    top = max(60, 10 * math.ceil((np.nanmax(np.r_[a, b]) + 2) / 10))
     ax.axvline(len(LETTERS26) - 0.5, color=INK2, lw=0.8)
-    ax.text(len(LETTERS26) - 0.1, 59, "never seen", fontsize=9, color=INK2, va="top", ha="left")
+    ax.text(len(LETTERS26) - 0.1, top - 1, "never seen", fontsize=9, color=INK2, va="top", ha="left")
     ax.set_xlim(-0.7, len(order) - 0.3)
-    ax.set_ylim(-2, 60)
-    ax.set_yticks([0, 20, 40, 60])
+    ax.set_ylim(-2, top)
+    ax.set_yticks(list(range(0, top + 1, 20)))
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success")
     ax.grid(False, axis="x")
@@ -4389,29 +4444,41 @@ def fig_deck_dumbbell():
 
 
 def fig_deck_heldout():
-    """Six never-seen shapes (D051) at 66 x 50 mm: success vs number of training shapes, labelled directly."""
-    fig, ax = deck_fig(66, 50, l=11, r=2, b=9.5, t=2)
-    xs, keys = [1, 10, 27], ("original", "ten96", "m96")
-    pts = [rate("D051", D051[k], HELD) for k in keys]
+    """The 9 never-seen shapes on the D064 pool at 66 x 50 mm: success of the original (T only), the ten-shape model and
+    the main model (26 letters, 96 px, round 50), evenly spaced and joined, plus the 192 px camera model as a diamond;
+    95% intervals; values written next to the points (no legend)."""
+    T = _d064_table()
+    keys = ("original", "ten96", "m96")
+    if not _d064_ready(T, list(keys) + ["m192"], HELD9, "heldout_success"):
+        return None
+    fig, ax = deck_fig(66, 50, l=12.5, r=2, b=9.5, t=2)
+    xs = [0, 1, 2]
+    pts = [rate64(T, k, HELD9) for k in keys]
     ax.plot(xs, [p[0] for p in pts], color=M96, lw=1.4, zorder=2)
     for x, k, p in zip(xs, keys, pts):
         ax.scatter([x], [p[0]], s=34, color=col(k), edgecolor="white", lw=0.7, zorder=4)
         errbars(ax, [x], [p[0]], [p[3]], [p[4]], lw=0.9)
-    r192 = rate("D051", D051["m192"], HELD)
-    ax.scatter([30.5], [r192[0]], s=30, color=M192, edgecolor="white", lw=0.7, zorder=4, marker="D")
-    errbars(ax, [30.5], [r192[0]], [r192[3]], [r192[4]], lw=0.9)
+    r192 = rate64(T, "m192", HELD9)
+    x192 = 2.45
+    ax.scatter([x192], [r192[0]], s=30, color=M192, edgecolor="white", lw=0.7, zorder=4, marker="D")
+    errbars(ax, [x192], [r192[0]], [r192[3]], [r192[4]], lw=0.9)
+    ymax = np.nanmax([p[4] for p in pts] + [r192[4]])
+    step_ = next(st for st in (1, 2, 5, 10, 20) if ymax / st <= 4)
+    top = ymax * 1.45
+    dy = 0.03 * top
     t = dict(fontsize=9, color=INK)
-    ax.text(3.0, pts[0][0] - 0.35, f"original\n{pts[0][0]:.1f}%", ha="left", va="top", **t)
-    ax.text(11.4, pts[1][0] - 0.25, f"ours, 10 shapes\n{pts[1][0]:.1f}%", ha="left", va="top", **t)
-    ax.text(25.8, pts[2][0] + 0.1, f"ours, 27 shapes\n{pts[2][0]:.1f}%", ha="right", va="bottom", **t)
-    ax.text(30.5, r192[0] + 1.0, f"192 px\ncamera\n{r192[0]:.1f}%", ha="center", va="bottom", **t)
-    ax.set_xticks(xs, ["1", "10", "27"])
-    ax.set_xlim(-2, 34)
-    ax.set_ylim(-0.9, 9.5)
-    ax.set_yticks([0, 2, 4, 6, 8])
+    ax.text(xs[0] + 0.1, pts[0][0] - dy, f"{pts[0][0]:.1f}%", ha="left", va="top", **t)
+    ax.text(xs[1] + 0.1, pts[1][0] - dy, f"{pts[1][0]:.1f}%", ha="left", va="top", **t)
+    ax.text(xs[2] - 0.1, pts[2][0] + dy, f"{pts[2][0]:.1f}%", ha="right", va="bottom", **t)
+    ax.text(x192, r192[4] + dy, f"192 px\ncamera\n{r192[0]:.1f}%", ha="center", va="bottom", **t)
+    ax.set_xticks(xs, ["T only", "10 shapes", "26 letters"])
+    ax.tick_params(axis="x", length=0, pad=3)
+    ax.set_xlim(-0.4, 2.75)
+    ax.set_ylim(-0.1 * top, top)
+    ax.set_yticks(np.arange(0, top, step_))
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
-    ax.set_xlabel("Shapes in training")
+    ax.set_xlabel("Trained on")
     ax.set_ylabel("Success")
     return fig
 
@@ -4777,16 +4844,19 @@ DECK_CUSTOM = [
     ("curves_stages_3", lambda: fig_deck_stages(3), "Build step 3: all three stages; the last stage ('26 letters') is "
      "averaged over the 26 letters (narrow T left out), as are its original level (D051 fresh test, 2.4%) and the "
      "round-50 star (D054 fresh test, 34.7%); no picks circled, no budget divider; markers explained on the slide."),
-    ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline final test (D051) by group (9 "
-     "earlier letters, 17 new letters, all 26 letters, 6 never-seen shapes; narrow T left out): the original only "
-     "(other bars transparent, legend entries hidden)."),
-    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes, ours 26 letters 96 px "
-     "(round 44), ours 26 letters 192 px (round 2); one-decimal labels on the original and 96 px bars; 95% Wilson "
-     "intervals."),
-    ("heldout_success", fig_deck_heldout, "Six never-seen shapes (D051): success vs number of training shapes "
-     "(1.2% -> 2.8% -> 4.7%; 192 px 5.9%), 95% intervals, labelled directly (no legend)."),
-    ("final_dumbbell", fig_deck_dumbbell, "26 letters and 6 never-seen shapes along x (sorted; never-seen shapes right "
-     "of the line), original vs ours 96 px (round 44), D051; T label bold; narrow T left out; one row of short names."),
+    ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline test on the D064 pool (200 new "
+     "scenes per shape, all policies on the same scenes; d064_test_by_shape.csv) by group (9 earlier letters, 17 new "
+     "letters, all 26 letters, 9 never-seen shapes; narrow T in no group): the original only (other bars transparent, "
+     "legend entries hidden)."),
+    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes (round 13), ours 26 "
+     "letters 96 px (round 50, the main model), ours 26 letters 192 px (round 2); one-decimal labels on the original "
+     "and 96 px bars; 95% Wilson intervals."),
+    ("heldout_success", fig_deck_heldout, "The 9 never-seen shapes on the D064 pool: success of the original (T only), "
+     "the ten-shape model and the main model (26 letters, round 50), plus the 192 px camera model; 95% intervals, "
+     "values written next to the points (d064_test_by_shape.csv)."),
+    ("final_dumbbell", fig_deck_dumbbell, "26 letters and the 9 never-seen shapes along x (sorted by the main model; "
+     "never-seen right of the line), original vs main model (96 px, round 50) on the D064 pool; T bold; no narrow T; "
+     "one row of short names (d064_test_by_shape.csv)."),
     ("arch_groups", fig_deck_arch_groups, "Architecture experiment (D064): main model (official network, 96 px, after "
      "50 correction rounds) vs Flow-DiT (505M: DINOv2 encoder with all 16x16 tokens + flow-matching DiT action head) "
      "on the same new scenes, 200 per shape; groups all 26 letters, 9 earlier, 17 new, 6 never seen, T (narrow T left "

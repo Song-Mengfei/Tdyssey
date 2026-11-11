@@ -53,13 +53,13 @@
   \node[dg tag=tdblue, anchor=west] at (58.5,9.5) {policy};%
 }%
 \begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
-  \useasboundingbox (0,0) rectangle (144,62);
+  \useasboundingbox (0,14) rectangle (144,62);   % panels only (the loop is on the next slide)
   % ---------------------------------------------------------------- 1: copying only
   \dgstep{1}{
     \draw[dg panel=tdorig] (0,14) rectangle (70,62);
     \begin{scope}[shift={(0,14)}]
-      \node[dg title=tdink] at (3,45.4) {Copying only};
-      \node[dg text=tdgrey] at (3,40.6) {trained on the teacher's own runs};
+      \node[dg title=tdink] at (3,45.4) {Teacher's runs only};
+      \node[dg text=tdgrey] at (3,40.6) {the policy never sees its own mistakes};
       % the teacher's run: shares the start with the policy's run (drawn just above it), then reaches the goal
       \draw[dg run=tdgold] (10,19.5) .. controls (14,21.5) and (17,22.9) .. (21,23) .. controls (27,23.15) and
         (33,27.8) .. (43,28.9) .. controls (48,29.4) and (52,29.3) .. (55,29.2);
@@ -83,20 +83,7 @@
       \draw[dg plan] (40,17) .. controls (44.4,19.9) .. (48.8,22.3);
       \draw[dg plan] (48,12.5) .. controls (50.4,17.8) .. (53.6,21.6);
       \foreach \p in {(21,22.5), (31,21), (40,17), (48,12.5)} \fill[tdblue] \p circle (0.9);
-      \node[dg text=tdgolddark] at (3,35.4) {\textbf{label} = the teacher's intended\\16-step plan, not its pushes};
       \node[dg text=tdgrey] at (3,13.2) {the teacher reads\\the exact state\\(training only)};
     \end{scope}
-  }
-  % ---------------------------------------------------------------- 3: the loop
-  \dgstep{3}{
-    \fill[tdpanel, rounded corners=2.4mm] (0,0) rectangle (144,11);
-    \node[dg step=tdblue, anchor=west] (a) at (9,7.6) {policy drives};
-    \node[dg step=tdgolddark, anchor=west] (b) at ([xshift=7mm]a.east) {teacher labels the visited states};
-    \node[dg step=tdink, anchor=west] (c) at ([xshift=7mm]b.east) {add to all earlier data};
-    \node[dg step=tdblue, anchor=west] (d) at ([xshift=7mm]c.east) {retrain};
-    \foreach \u/\v in {a/b, b/c, c/d} \draw[dg arrow=tdgrey] ([xshift=1.4mm]\u.east) -- ([xshift=-1.4mm]\v.west);
-    \draw[dg arrow=tdblue, rounded corners=1.6mm] ([xshift=1.2mm]d.east) -- ++(3.5,0) |- (4.5,2.6) |- ([xshift=-1.2mm]a.west);
-    \node[inner sep=1.2mm, fill=tdpanel, font=\sffamily\fontsize{9}{10}\selectfont, text=tdgrey] at (72,2.6)
-      {repeat, \textbf{\textcolor{tdblue}{50 rounds}}, \textbf{\textcolor{tdink}{3.2M}} examples in the last one};
   }
 \end{tikzpicture}%
