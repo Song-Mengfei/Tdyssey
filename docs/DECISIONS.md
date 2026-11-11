@@ -1170,6 +1170,7 @@ count, 50.6% by sampling weight (teacher demonstrations and human T). With the h
 identical to the previous code.
 
 D064 amendment (2026-11-11 evening, before the test; lead's decision): the 16 x 16 policy (`runs/flow26b16/v1`) is the
-new frontier model; the 8 x 8 rebuild is not reported further. Round 50 is added to the D064 test on the same new
+new model of the architecture experiment, named Flow-DiT (public weights: the model repo's `flow-dit/` folder,
+also in the demo); the 8 x 8 rebuild is not reported further. Round 50 is added to the D064 test on the same new
 scenes (seeds 15000000 + 20*i, 33 shapes and the digit group), run after the pose and 16 x 16 parts, so the test
 reports the 16 x 16 model and the pose model against round 50, and the pose model against the 16 x 16 model.
