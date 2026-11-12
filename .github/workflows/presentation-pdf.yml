@@ -52,10 +52,13 @@ jobs:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: presentation/pptx/requirements.txt
-      - name: Install the PowerPoint generator (pptxgenjs from package-lock.json, PyMuPDF, Pillow, NumPy, lxml)
+      - name: Install the PowerPoint generator (pptxgenjs from package-lock.json, Python packages, ffmpeg)
         run: |
           npm ci --prefix presentation/pptx --no-audit --no-fund
           python -m pip install -r presentation/pptx/requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          ffmpeg -version | head -n 1
       - name: Build the PowerPoint deck from the PDFs
         env:
           PDF: presentation/slides/main.pdf
@@ -70,7 +73,6 @@ jobs:
       # overflow in the render can be trusted. Sheets: Beamer page | PowerPoint render | both overlaid.
       - name: Render the deck with LibreOffice and write comparison sheets
         run: |
-          sudo apt-get update
           sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-crosextra-carlito fonts-dejavu-core
           soffice --version
           soffice --headless --convert-to pdf --outdir pptx/qa pptx/tdyssey-slides.pptx

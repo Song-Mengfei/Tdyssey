@@ -13,6 +13,7 @@
 #   OUT=...                 output .pptx path
 #   PYTHON=...              Python with requirements.txt installed (default: uv run with the pinned packages, else python3)
 #   CARLITO=...             Carlito-Regular.ttf for the glyph check (default: the Debian/Ubuntu fonts-crosextra-carlito path)
+# Needs ffmpeg on the PATH (the videos are re-muxed with their index first).
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRES="$(dirname "$HERE")"

@@ -10,7 +10,8 @@ VIDEOS=drive bash presentation/pptx/build.sh         # posters link to the publi
 ```
 
 Needs Node 20+ (`npm ci` installs the pinned `pptxgenjs` 4.0.1 from `package-lock.json`), Python 3.12 with
-`requirements.txt` (the script uses `uv run` when `uv` is on the PATH), and Tectonic or a TeX Live with `latexmk`.
+`requirements.txt` (the script uses `uv run` when `uv` is on the PATH), `ffmpeg`, and Tectonic or a TeX Live with
+`latexmk`.
 A full build takes about 35 seconds. GitHub builds the deck on every push that changes `presentation/` (workflow
 "Presentation PDFs", artifact `presentation-pptx`, with LibreOffice comparison sheets). Generated files stay in
 `out/`, which Git ignores.
@@ -23,8 +24,9 @@ A full build takes about 35 seconds. GitHub builds the deck on every push that c
 3. `build_deck.js` writes the deck with pptxgenjs, then edits the slide XML for what pptxgenjs cannot do (theme
    colours, picture crops, exact dash patterns, the slide number suffix, click animations).
 4. `qa.py inspect --pdf` lists fonts, sizes, pictures, videos and animations, and fails the build on duplicate
-   shape ids, animations that point to missing shapes, ligature or other broken characters, and any slide word
-   that does not occur on its Beamer page (the PDF's own text with ligatures expanded, words counted per page).
+   shape ids, animations that point to missing shapes, a video without its media node or click trigger, any object
+   above a video or linked poster that overlaps it, ligature or other broken characters, and any slide word that
+   does not occur on its Beamer page (the PDF's own text with ligatures expanded, words counted per page).
 
 | Beamer element | PowerPoint object |
 | --- | --- |
@@ -32,7 +34,7 @@ A full build takes about 35 seconds. GitHub builds the deck on every push that c
 | Footer text, progress-bar track, slide number | on the content layout; the blue progress bar is one shape per slide; main slides show the slide number field and "/ 42", backup slides keep Beamer's own "1 / 15" numbering as text |
 | Text | text boxes at the PDF baseline positions with the PDF sizes and colours; one paragraph per PDF line, so the line breaks stay as in Beamer |
 | Stills, galleries, posters | pictures with the original pixels, each its own object |
-| Video posters (`\slidevideo`) and scenes that open a local clip (`\video`) | embedded MP4 with the poster as cover; with `VIDEOS=drive` the poster links to the public Drive copy (`data/pptx_slide_media.json`) or to the local clip |
+| Video posters (`\slidevideo`) and scenes that open a local clip (`\video`) | embedded MP4 (re-muxed with `ffmpeg -c copy -movflags +faststart`, streams unchanged) with the poster as cover; the scene frame and play mark that Beamer draws over a clip are baked into the cover, so nothing lies above a video; a click on the video plays or pauses it (media node and click trigger in the slide timing, as PowerPoint writes them); with `VIDEOS=drive` the poster links to the public Drive copy (`data/pptx_slide_media.json`) or to the local clip |
 | Graphs (`figures/deck/*.pdf`) | pictures rendered from the PDF page at 400 dpi |
 | TikZ diagrams (regions in `regions.json`) | pictures rendered from the PDF page at 400 dpi, one transparent layer per build step |
 | Frames, panels, rules, bullets, play marks, arrows outside diagrams | native shapes (rectangle, rounded rectangle, oval, line, free-form path) |

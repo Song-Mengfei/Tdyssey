@@ -143,7 +143,7 @@ plainLayout("Title slide", deck.slides.find((s) => s.kind === "title"));
 plainLayout("Plain", deck.slides.find((s) => s.kind === "plain"));
 
 // ------------------------------------------------------------------------------------------------ slides
-const post = { crops: {}, dashes: {}, anim: {}, numbers: {}, lineEnds: {} };
+const post = { crops: {}, dashes: {}, anim: {}, numbers: {}, videos: {} };
 let section = null;
 const usedSections = new Set();
 const report = [];
@@ -251,9 +251,10 @@ for (const sl of deck.slides) {
       if (VIDEOS === "embed") {
         const name = nameFor(`Video ${el.video_id}`, el);
         slide.addMedia({
-          type: "video", path: path.join(PRES, el.mp4), cover: dataUri(poster), x: MM(el.x), y: MM(el.y), w: MM(el.w),
+          type: "video", path: path.join(ROOT, el.media), cover: dataUri(poster), x: MM(el.x), y: MM(el.y), w: MM(el.w),
           h: MM(el.h), objectName: name,
         });
+        (post.videos[sl.page] = post.videos[sl.page] || []).push(name);
         if (el.crop) post.crops[`${sl.page}/${name}`] = el.crop;
       } else {
         // Google Slides drops embedded MP4 files: link the poster to the public copy, or to the local clip
@@ -325,7 +326,7 @@ function addShape(slide, el, name, page) {
   const zip = await JSZip.loadAsync(buf);
   await applyTheme(zip);
   const slideFiles = Object.keys(zip.files).filter((f) => /^ppt\/slides\/slide\d+\.xml$/.test(f));
-  const counts = { animated: 0, effects: 0 };
+  const counts = { animated: 0, effects: 0, videos: 0 };
   for (const f of slideFiles) {
     const page = Number(f.match(/slide(\d+)\.xml/)[1]);
     let xml = await zip.file(f).async("string");
@@ -335,11 +336,12 @@ function addShape(slide, el, name, page) {
     xml = applyCrops(xml, page);
     xml = applyDashes(xml, page);
     xml = slideNumber(xml, page);
-    if (post.anim[page]) {
-      const r = addTiming(xml, post.anim[page]);
+    if (post.anim[page] || post.videos[page]) {
+      const r = addTiming(xml, post.anim[page] || {}, post.videos[page] || []);
       xml = r.xml;
-      counts.animated += 1;
+      if (r.effects) counts.animated += 1;
       counts.effects += r.effects;
+      counts.videos += r.videos;
     }
     zip.file(f, xml);
   }
@@ -358,7 +360,8 @@ function addShape(slide, el, name, page) {
   }
   const out = await clean.generateAsync({ type: "nodebuffer", compression: "DEFLATE", compressionOptions: { level: 6 } });
   fs.writeFileSync(OUT, out);
-  console.log(`wrote ${OUT}: ${deck.slides.length} slides, ${counts.animated} with click builds (${counts.effects} appear effects), videos: ${VIDEOS}`);
+  console.log(`wrote ${OUT}: ${deck.slides.length} slides, ${counts.animated} with click builds (${counts.effects} appear effects), ` +
+    `videos: ${VIDEOS}` + (VIDEOS === "embed" ? ` (${counts.videos} with play-on-click timing)` : ""));
 })().catch((e) => {
   console.error(e);
   process.exit(1);
@@ -518,22 +521,28 @@ function slideNumber(xml, page) {
 }
 
 // ------------------------------------------------------------------------------------------------ animations
-// One click per Beamer overlay step after the first; everything that appears at that step appears together.
-function addTiming(xml, steps) {
+// One <p:timing> per slide, laid out as PowerPoint writes it:
+//   tmRoot
+//     mainSeq          one click per Beamer overlay step after the first; a step's objects appear together
+//     interactiveSeq   one per video: a click on the video toggles play/pause (Start "When Clicked On")
+//     video            one media node per video (play controls, volume 80%)
+//   bldLst             one entry per animated shape with a text body or fill (unchanged by the videos)
+function addTiming(xml, steps, videos) {
   const blocks = shapeBlocks(xml);
   const idOf = {};
   for (const b of blocks) idOf[b.name] = b;
   let id = 2;
+  const next = () => ++id;
   const clicks = [];
   const bld = [];
   let effects = 0;
   for (const k of Object.keys(steps).map(Number).sort((a, b) => a - b)) {
     const targets = steps[k].map((n) => idOf[n]).filter(Boolean);
     if (!targets.length) continue;
-    const clickId = ++id, groupId = ++id;
+    const clickId = next(), groupId = next();
     let inner = "";
     targets.forEach((t, i) => {
-      const effId = ++id, setId = ++id;
+      const effId = next(), setId = next();
       effects += 1;
       inner +=
         `<p:par><p:cTn id="${effId}" presetID="1" presetClass="entr" presetSubtype="0" fill="hold"` +
@@ -551,13 +560,44 @@ function addTiming(xml, steps) {
         `</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par>`
     );
   }
-  if (!clicks.length) return { xml, effects: 0 };
+  const slideNext = `<p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst>`;
+  let main = "";
+  if (clicks.length) {
+    main =
+      `<p:seq concurrent="1" nextAc="seek"><p:cTn id="2" dur="indefinite" nodeType="mainSeq"><p:childTnLst>` +
+      clicks.join("") +
+      `</p:childTnLst></p:cTn><p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst>` +
+      slideNext + `</p:seq>`;
+  }
+  // videos: a click on the video plays or pauses it
+  const vids = videos.map((n) => idOf[n]).filter(Boolean);
+  let interactive = "", media = "";
+  for (const v of vids) {
+    const seqId = next(), parA = next(), parB = next(), effId = next(), cmdId = next();
+    interactive +=
+      `<p:seq concurrent="1" nextAc="seek"><p:cTn id="${seqId}" restart="whenNotActive" fill="hold" evtFilter="cancelBubble" nodeType="interactiveSeq">` +
+      `<p:stCondLst><p:cond evt="onClick" delay="0"><p:tgtEl><p:spTgt spid="${v.id}"/></p:tgtEl></p:cond></p:stCondLst>` +
+      `<p:endSync evt="end" delay="0"><p:rtn val="all"/></p:endSync><p:childTnLst>` +
+      `<p:par><p:cTn id="${parA}" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>` +
+      `<p:par><p:cTn id="${parB}" fill="hold"><p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>` +
+      `<p:par><p:cTn id="${effId}" presetID="2" presetClass="mediacall" presetSubtype="0" fill="hold" nodeType="clickEffect">` +
+      `<p:stCondLst><p:cond delay="0"/></p:stCondLst><p:childTnLst>` +
+      `<p:cmd type="call" cmd="togglePause"><p:cBhvr><p:cTn id="${cmdId}" dur="1" fill="hold"/>` +
+      `<p:tgtEl><p:spTgt spid="${v.id}"/></p:tgtEl></p:cBhvr></p:cmd>` +
+      `</p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par></p:childTnLst></p:cTn></p:par>` +
+      `</p:childTnLst></p:cTn>` + slideNext + `</p:seq>`;
+  }
+  for (const v of vids) {
+    const mid = next();
+    media +=
+      `<p:video><p:cMediaNode vol="80000"><p:cTn id="${mid}" fill="hold" display="0">` +
+      `<p:stCondLst><p:cond delay="indefinite"/></p:stCondLst></p:cTn>` +
+      `<p:tgtEl><p:spTgt spid="${v.id}"/></p:tgtEl></p:cMediaNode></p:video>`;
+  }
+  if (!main && !vids.length) return { xml, effects: 0, videos: 0 };
   const timing =
     `<p:timing><p:tnLst><p:par><p:cTn id="1" dur="indefinite" restart="never" nodeType="tmRoot"><p:childTnLst>` +
-    `<p:seq concurrent="1" nextAc="seek"><p:cTn id="2" dur="indefinite" nodeType="mainSeq"><p:childTnLst>` +
-    clicks.join("") +
-    `</p:childTnLst></p:cTn><p:prevCondLst><p:cond evt="onPrev" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:prevCondLst>` +
-    `<p:nextCondLst><p:cond evt="onNext" delay="0"><p:tgtEl><p:sldTgt/></p:tgtEl></p:cond></p:nextCondLst></p:seq>` +
+    main + interactive + media +
     `</p:childTnLst></p:cTn></p:par></p:tnLst>` +
     (bld.length ? `<p:bldLst>${bld.join("")}</p:bldLst>` : "") +
     `</p:timing>`;
@@ -565,5 +605,5 @@ function addTiming(xml, steps) {
   if (/<p:timing>/.test(xml)) throw new Error("slide already has timing");
   if (/<\/p:clrMapOvr>/.test(xml)) xml = xml.replace(/<\/p:clrMapOvr>/, `</p:clrMapOvr>${timing}`);
   else xml = xml.replace(/<\/p:cSld>/, `</p:cSld>${timing}`);
-  return { xml, effects };
+  return { xml, effects, videos: vids.length };
 }
