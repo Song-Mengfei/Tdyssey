@@ -98,6 +98,32 @@ def tex_size(bp: float) -> float:
     return half if abs(pt - half) <= 0.06 else round(pt * 10) / 10
 
 
+def span_chars(span) -> list:
+    """Characters of a PyMuPDF text-trace span in content-stream order, as dicts with text, box and baseline (mm).
+
+    A ligature glyph comes either as one code point (U+FB00-FB06, expanded here) or, when the font's ToUnicode
+    map says "fi", as several characters: the first carries the glyph's box, the rest have no glyph (-1) and a
+    zero-width box at the glyph's left edge. Those followers are appended to the first character, so the letters
+    stay in order and no gap (which would become a space) opens inside the word."""
+    font = span["font"]
+    dingbat = "Dingbat" in font or "Zapf" in font
+    out = []
+    for c in span["chars"]:
+        u, glyph = c[0], c[1]
+        ch = chr(u)
+        if dingbat and u < 0x60:  # TeX's ZapfDingbats codes without a Unicode map: \ding{51} -> U+2713
+            ch = chr(0x2700 + u)
+        ch = LIGATURES.get(ch, ch)
+        x0, y0, x1, y1 = (v / MM for v in c[3])
+        base = c[2][1] / MM
+        if out and (glyph == -1 or x1 - x0 < 1e-4) and out[-1]["x0"] - 0.05 <= x0 <= out[-1]["x1"] + 0.05 \
+                and abs(base - out[-1]["base"]) < 0.05:
+            out[-1]["ch"] += ch
+            continue
+        out.append({"ch": ch, "x0": x0, "x1": x1, "base": base})
+    return out
+
+
 def page_labels(doc) -> list:
     out = []
     for p in doc:
@@ -614,17 +640,15 @@ class Extractor:
         base = it["src"]["chars"][0][2][1]
         spans = [o["src"] for o in items if o["kind"] == "text" and abs(o["src"]["chars"][0][2][1] - base) < 1
                  and abs(o["bbox"][1] - it["bbox"][1]) < 3]
-        chars = []
-        for s in spans:
-            for c in s["chars"]:
-                chars.append((c[3][0], c[3][2], s["size"], chr(c[0])))
-        chars.sort()
+        # spans left to right, characters inside a span in stream order (never re-sorted)
+        spans.sort(key=lambda sp: sp["chars"][0][3][0])
         out, prev = "", None
-        for x0, x1, size, ch in chars:
-            if prev is not None and x0 - prev > 0.15 * size:
-                out += " "
-            out += LIGATURES.get(ch, ch)
-            prev = x1
+        for sp in spans:
+            for c in span_chars(sp):
+                if prev is not None and (c["x0"] - prev) * MM > 0.15 * sp["size"]:
+                    out += " "
+                out += c["ch"]
+                prev = c["x1"]
         return out
 
     @staticmethod
@@ -840,17 +864,9 @@ class Extractor:
             font = s["font"]
             bold = "Bold" in font or "bold" in font or "Bx" in font
             italic = "Oblique" in font or "Italic" in font
-            dingbat = "Dingbat" in font or "Zapf" in font
             col = hexcolor(s["color"])
-            for c in s["chars"]:
-                u = c[0]
-                ch = chr(u)
-                if dingbat and u < 0x100:
-                    ch = chr(0x2700 + u) if u < 0x60 else chr(u)
-                ch = LIGATURES.get(ch, ch)
-                x0, y0, x1, y1 = (v / MM for v in c[3])
-                chars.append({"ch": ch, "x0": x0, "x1": x1, "base": c[2][1] / MM, "size": s["size"],
-                              "bold": bold, "italic": italic, "color": col, "seq": it["seq"]})
+            for c in span_chars(s):
+                chars.append(dict(c, size=s["size"], bold=bold, italic=italic, color=col, seq=it["seq"]))
         # lines: consecutive characters on one baseline (smaller raised/lowered characters join as super/subscripts)
         lines = []
         for c in chars:

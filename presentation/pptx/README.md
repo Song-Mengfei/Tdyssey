@@ -22,8 +22,9 @@ A full build takes about 35 seconds. GitHub builds the deck on every push that c
 2. `pdf_to_deck.py` reads both PDFs with PyMuPDF and writes `out/deck.json` and `out/assets/`.
 3. `build_deck.js` writes the deck with pptxgenjs, then edits the slide XML for what pptxgenjs cannot do (theme
    colours, picture crops, exact dash patterns, the slide number suffix, click animations).
-4. `qa.py inspect` lists fonts, sizes, pictures, videos and animations, and fails on duplicate shape ids or
-   animations that point to missing shapes.
+4. `qa.py inspect --pdf` lists fonts, sizes, pictures, videos and animations, and fails the build on duplicate
+   shape ids, animations that point to missing shapes, ligature or other broken characters, and any slide word
+   that does not occur on its Beamer page (the PDF's own text with ligatures expanded, words counted per page).
 
 | Beamer element | PowerPoint object |
 | --- | --- |
@@ -47,8 +48,10 @@ native shapes and text boxes.
 The whole deck uses one font family, Calibri, set once in the theme (heading and body). Calibri ships with
 Office and is available in Google Slides. On this deck it is about 6% narrower than Latin Modern Sans (10% in
 bold), so with the PDF's own line breaks no text runs past its Beamer extent; Arial would be about 3% wider and
-push lines into neighbouring pictures. Symbols that Calibri lacks (the check and cross marks) are drawn by the
-viewer's fallback font. Graph and diagram pictures keep the Latin Modern text of the PDF.
+push lines into neighbouring pictures. Calibri has every character of the slide text (arrows, multiplication
+sign, quotes, dashes) except the check and cross marks from `\ding`; those runs name Segoe UI Symbol, the font
+Office itself uses for them on Windows, and other viewers substitute a font that has them (LibreOffice: DejaVu
+Sans). Ligatures in the PDF (fi, ff, fl) become plain letters. Graph and diagram pictures keep the Latin Modern text of the PDF.
 
 Sizes are the Beamer sizes in points: frame title 16, section kicker 8, footer 7, body 11 and 10 (`\small`),
 caption 9, `\large` and takeaway 12, numbered limitations 12.5, stat number 15, title-slide title and hero number
@@ -58,7 +61,7 @@ teammates' frames keep the explicit sizes of their source (6.5 to 11.5 pt).
 ## Checks without PowerPoint
 
 ```bash
-python presentation/pptx/qa.py inspect presentation/pptx/out/tdyssey-slides.pptx
+python presentation/pptx/qa.py inspect presentation/pptx/out/tdyssey-slides.pptx --pdf presentation/pptx/out/build/main.pdf
 python presentation/pptx/qa.py compare presentation/slides/main.pdf tdyssey-slides.pdf    # LibreOffice render
 python presentation/pptx/qa.py preview presentation/pptx/out/tdyssey-slides.pptx presentation/pptx/out/build/main.pdf \
   --builds-pdf presentation/pptx/out/build/tdyssey-builds.pdf --fonts /usr/share/fonts/truetype/crosextra

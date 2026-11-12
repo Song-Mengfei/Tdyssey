@@ -148,17 +148,26 @@ let section = null;
 const usedSections = new Set();
 const report = [];
 
+// Calibri has every character of the slide text except the check and cross marks (U+2713, U+2717, from Beamer's
+// \ding). Those runs name Segoe UI Symbol, the font Office itself falls back to for them on Windows; elsewhere
+// the viewer substitutes a font that has them (LibreOffice: DejaVu Sans, macOS: Apple Symbols).
+const SYMBOL_FONT = "Segoe UI Symbol";
+const SYMBOLS = /([\u2700-\u27bf]+)/;
+
 function runsOf(el, opts) {
   const out = [];
   el.paragraphs.forEach((p, pi) => {
-    p.runs.forEach((r, ri) => {
+    const pieces = [];
+    p.runs.forEach((r) => r.text.split(SYMBOLS).filter((t) => t).forEach((t) => pieces.push({ r, t })));
+    pieces.forEach(({ r, t }, ri) => {
       const o = { fontSize: r.size, bold: !!r.bold, italic: !!r.italic, color: col(r.color) };
+      if (SYMBOLS.test(t)) o.fontFace = SYMBOL_FONT;
       if (r.script === "sup") o.superscript = true;
       if (r.script === "sub") o.subscript = true;
       if (ri === 0 && p.space_before_pt) o.paraSpaceBefore = p.space_before_pt;
-      if (ri === p.runs.length - 1 && pi < el.paragraphs.length - 1) o.breakLine = true;
+      if (ri === pieces.length - 1 && pi < el.paragraphs.length - 1) o.breakLine = true;
       if (opts && opts.link && ri === 0) o.hyperlink = opts.link;
-      out.push({ text: r.text, options: o });
+      out.push({ text: t, options: o });
     });
   });
   return out;
