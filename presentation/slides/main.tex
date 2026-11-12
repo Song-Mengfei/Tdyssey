@@ -610,15 +610,15 @@
 \begin{frame}{Same data, bigger network}
   \deckfig{arch_letters}\par
   \vspace{1.5mm}
+  {\centering
   \begin{tikzpicture}[x=1mm, y=1mm]
     \foreach \x/\n/\c in {0/{\color{tdmuted}32.8\% \too \color{tdtransf}45.5\%}/{all 26 letters, same scenes},
-                          48/{\color{tdtransf}+12.7 points}/{95\% interval +10.9 to +14.5},
-                          96/{\color{tdtransf}24 of 26}/{letters improve}}{
+                          52/{\color{tdtransf}+12.7 points}/{95\% interval +10.9 to +14.5}}{
       \fill[tdpanel] (\x,0) rectangle ++(44,12);
-      \node[anchor=north, inner sep=0pt] at (\x+22,10.6) {\statnum{\n}};
+      \node[anchor=north, inner sep=0pt] at (\x+22,10.3) {\fontsize{12}{14}\selectfont\bfseries\n};
       \node[anchor=north, text=tdgrey, font=\footnotesize, text width=42mm, align=flush center] at (\x+22,4.3) {\c};
     }
-  \end{tikzpicture}\par
+  \end{tikzpicture}\par}
 \end{frame}
 
 \begin{frame}[c]{Main model vs Flow-DiT}
