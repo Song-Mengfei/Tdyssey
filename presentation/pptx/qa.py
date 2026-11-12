@@ -123,6 +123,85 @@ def check_text(z, slides, pdf: Path) -> list:
     return problems
 
 
+def main_clicks(timing) -> list:
+    """The click groups of the main sequence (the build steps)."""
+    for ctn in timing.iter("{%s}cTn" % NS["p"]):
+        if ctn.get("nodeType") == "mainSeq":
+            return ctn.findall("p:childTnLst/p:par", NS)
+    return []
+
+
+def box_of(el):
+    xf = el.find("p:spPr/a:xfrm", NS)
+    if xf is None:
+        xf = el.find("p:xfrm", NS)
+    if xf is None or xf.find("a:off", NS) is None:
+        return None
+    off, ext = xf.find("a:off", NS), xf.find("a:ext", NS)
+    x, y = int(off.get("x")) / 36000, int(off.get("y")) / 36000
+    return [x, y, x + int(ext.get("cx")) / 36000, y + int(ext.get("cy")) / 36000]
+
+
+def check_videos(z, sn, x) -> tuple:
+    """Each video needs a media node and a click trigger that toggles it; nothing above a video or a linked poster
+    may overlap it (an object on top takes the click). Returns (problems, number of videos, number of posters)."""
+    problems = []
+    num = int(re.findall(r"\d+", sn)[-1])
+    rels = {}
+    rp = sn.replace("slides/", "slides/_rels/") + ".rels"
+    if rp in z.namelist():
+        from lxml import etree
+        for r in etree.fromstring(z.read(rp)):
+            rels[r.get("Id")] = r
+    tree = x.find(".//p:spTree", NS)
+    kids = [k for k in tree if k.tag.split("}")[1] in ("sp", "pic", "cxnSp", "graphicFrame", "grpSp")]
+    timing = x.find("p:timing", NS)
+    media_t, trig_t = set(), set()
+    if timing is not None:
+        for v in timing.iter("{%s}cMediaNode" % NS["p"]):
+            t = v.find("p:tgtEl/p:spTgt", NS)
+            if t is not None:
+                media_t.add(t.get("spid"))
+        for ctn in timing.iter("{%s}cTn" % NS["p"]):
+            if ctn.get("nodeType") != "interactiveSeq":
+                continue
+            trig = ctn.find("p:stCondLst/p:cond[@evt='onClick']/p:tgtEl/p:spTgt", NS)
+            cmd = ctn.find(".//p:cmd[@cmd='togglePause']/p:cBhvr/p:tgtEl/p:spTgt", NS)
+            if trig is not None and cmd is not None and trig.get("spid") == cmd.get("spid"):
+                trig_t.add(trig.get("spid"))
+    nvid = nposter = 0
+    for i, k in enumerate(kids):
+        if not k.tag.endswith("}pic"):
+            continue
+        c = k.find("p:nvPicPr/p:cNvPr", NS)
+        is_video = k.find(".//a:videoFile", NS) is not None
+        hl = c.find("a:hlinkClick", NS) if c is not None else None
+        is_link = (not is_video and hl is not None and hl.get("{%s}id" % NS["r"]) in rels
+                   and rels[hl.get("{%s}id" % NS["r"])].get("TargetMode") == "External")
+        if not (is_video or is_link):
+            continue
+        sid, name = c.get("id"), c.get("name")
+        if is_video:
+            nvid += 1
+            if sid not in media_t:
+                problems.append(f"slide {num}: video {name!r} has no media node (p:video/p:cMediaNode)")
+            if sid not in trig_t:
+                problems.append(f"slide {num}: video {name!r} has no click trigger that plays it")
+        else:
+            nposter += 1
+        b = box_of(k)
+        for o in kids[i + 1:]:
+            ob = box_of(o)
+            if b is None or ob is None:
+                continue
+            ix = min(b[2], ob[2]) - max(b[0], ob[0])
+            iy = min(b[3], ob[3]) - max(b[1], ob[1])
+            if (ix > 0.01 and iy >= 0) or (iy > 0.01 and ix >= 0):
+                oc = o.find(".//p:cNvPr", NS)
+                problems.append(f"slide {num}: {oc.get('name')!r} lies above {name!r} and overlaps it")
+    return problems, nvid, nposter
+
+
 # ------------------------------------------------------------------------------------------------- inspect
 def inspect(pptx: Path, pdf: Path = None, font: Path = None) -> int:
     from lxml import etree
@@ -137,7 +216,7 @@ def inspect(pptx: Path, pdf: Path = None, font: Path = None) -> int:
     faces = collections.Counter()
     sizes = collections.Counter()
     problems = []
-    n_pic = n_vid = n_txt = n_anim_slides = n_effects = 0
+    n_pic = n_vid = n_txt = n_anim_slides = n_effects = n_vid_checked = n_posters = 0
     for sn in slides:
         x = etree.fromstring(z.read(sn))
         num = int(re.findall(r"\d+", sn)[-1])
@@ -166,7 +245,7 @@ def inspect(pptx: Path, pdf: Path = None, font: Path = None) -> int:
             missing = sorted(set(tgts) - set(ids))
             if missing:
                 problems.append(f"slide {num}: animation targets missing shapes {missing}")
-            clicks = timing.findall(".//p:seq/p:cTn/p:childTnLst/p:par", NS)
+            clicks = main_clicks(timing)
             eff = [c for c in timing.iter("{%s}cTn" % NS["p"]) if c.get("presetClass") == "entr"]
             if eff:
                 n_anim_slides += 1
@@ -175,12 +254,18 @@ def inspect(pptx: Path, pdf: Path = None, font: Path = None) -> int:
             ctn_ids = [int(c.get("id")) for c in timing.iter("{%s}cTn" % NS["p"])]
             if len(ctn_ids) != len(set(ctn_ids)):
                 problems.append(f"slide {num}: duplicate timing node ids")
+        vp, nv, npost = check_videos(z, sn, x)
+        problems += vp
+        n_vid_checked += nv
+        n_posters += npost
     print(f"slides: {len(slides)}")
     print(f"theme fonts: heading {major}, body {minor}")
     print(f"explicit font faces in slides: {dict(faces) or 'none (all text uses the theme font)'}")
     print("font sizes used (pt: count): " + ", ".join(f"{k:g}: {v}" for k, v in sorted(sizes.items())))
     print(f"text shapes: {n_txt}, pictures: {n_pic}, embedded videos: {n_vid}")
     print(f"slides with click builds: {n_anim_slides}, appear effects: {n_effects}")
+    print(f"videos with media node and play-on-click trigger checked: {n_vid_checked}; linked posters checked: "
+          f"{n_posters}; objects above a video or poster are reported as problems")
     media = [n for n in names if n.startswith("ppt/media/")]
     total = sum(z.getinfo(n).file_size for n in media)
     print(f"media parts: {len(media)} ({total / 1e6:.1f} MB)")
@@ -393,7 +478,7 @@ class PptxPreview:
         timing = x.find("p:timing", NS)
         if timing is None or step is None:
             return set()
-        clicks = timing.findall(".//p:seq/p:cTn/p:childTnLst/p:par", NS)
+        clicks = main_clicks(timing)
         hidden = set()
         for k, c in enumerate(clicks):
             if step is not None and k < step:
@@ -679,7 +764,7 @@ def preview(pptx: Path, beamer: Path, out_dir: Path, dpi: int, fontdir: Path, pa
         for i in sel:
             x = etree.fromstring(pv.z.read(pv.slides[i]))
             t = x.find("p:timing", NS)
-            nclicks = len(t.findall(".//p:seq/p:cTn/p:childTnLst/p:par", NS)) if t is not None else 0
+            nclicks = len(main_clicks(t)) if t is not None else 0
             if nclicks == 0 and len(groups[i]) == 1:
                 continue
             for k, page in enumerate(groups[i]):

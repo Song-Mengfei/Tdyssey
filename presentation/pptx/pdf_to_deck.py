@@ -581,6 +581,7 @@ class Extractor:
                     cover = self.save_png(Image.open(self.out / cover).convert("RGB"), "cover")
                 el.update({"type": "video", "video_id": Path(ln["file"]).stem, "mp4": ln["file"], "cover": cover,
                            "poster": None, "local": True})
+        elements = self.videos_on_top(idx, elements)
 
         # frame decoration of this page
         number_text, progress_w = None, None
@@ -1050,6 +1051,79 @@ class Extractor:
                 "line_pt": round(lead_pt, 2), "paragraphs": paragraphs,
                 "bbox": [x0, min(s["top"] for s in blk), x1, blk[-1]["base"] + 0.25 * size_pt / MM],
                 "baseline": round(first["base"], 3)}
+
+    # ---- videos: nothing may sit above a video, or it swallows the click that plays it
+    def videos_on_top(self, idx, elements):
+        """Drawings and pictures that Beamer draws over a video (frame, play mark) are baked into the cover: the
+        cover becomes the PDF page rendered over the video's box, and those objects are dropped. Each video's MP4
+        is re-muxed with its index first (ffmpeg -c copy -movflags +faststart; the streams are not re-encoded)."""
+        order = sorted(range(len(elements)), key=lambda k: (elements[k]["seq"], elements[k].get("sub", 0)))
+        rank = {k: r for r, k in enumerate(order)}
+        drop = set()
+        for k, v in enumerate(elements):
+            if v["type"] != "video":
+                continue
+            box = [v["x"], v["y"], v["x"] + v["w"], v["y"] + v["h"]]
+            if v.get("crop"):
+                c = v["crop"]
+                box = [v["x"] + c["l"] * v["w"], v["y"] + c["t"] * v["h"], v["x"] + v["w"] * (1 - c["r"]),
+                       v["y"] + v["h"] * (1 - c["b"])]
+            above = []
+            for j, e in enumerate(elements):
+                if j == k or j in drop or rank[j] < rank[k]:
+                    continue
+                eb = [e["x"], e["y"], e["x"] + e["w"], e["y"] + e["h"]]
+                if e["type"] == "shape" and e.get("geom") == "line":
+                    eb = [min(e["x1"], e["x2"]), min(e["y1"], e["y2"]), max(e["x1"], e["x2"]), max(e["y1"], e["y2"])]
+                ix = min(box[2], eb[2]) - max(box[0], eb[0])
+                iy = min(box[3], eb[3]) - max(box[1], eb[1])
+                if ix > 0.02 and iy > -0.02 or iy > 0.02 and ix > -0.02:
+                    above.append(j)
+            if not above:
+                continue
+            bad = [elements[j] for j in above if elements[j]["type"] in ("text", "video") or
+                   elements[j].get("step", 1) > v.get("step", 1) or not contains(box, self._box(elements[j]), tol=0.6)]
+            if bad or v.get("crop"):
+                self.warnings.append(f"page {idx + 1}: objects above video {v['video_id']} were left in place: "
+                                     + ", ".join(e["type"] for e in bad))
+                continue
+            arr = self.rend.crop(idx, box, self.args.dpi)
+            v["cover"] = self.save_png(arr, f"cover-{v['video_id']}")
+            v["baked"] = len(above)
+            drop.update(above)
+        out = [e for j, e in enumerate(elements) if j not in drop]
+        for v in out:
+            if v["type"] == "video":
+                v["media"] = self.faststart(PRES / v["mp4"])
+        return out
+
+    @staticmethod
+    def _box(e):
+        if e["type"] == "shape" and e.get("geom") == "line":
+            return [min(e["x1"], e["x2"]), min(e["y1"], e["y2"]), max(e["x1"], e["x2"]), max(e["y1"], e["y2"])]
+        return [e["x"], e["y"], e["x"] + e["w"], e["y"] + e["h"]]
+
+    def faststart(self, src: Path) -> str:
+        import shutil
+        import subprocess
+        import tempfile
+
+        data = src.read_bytes()
+        h = hashlib.sha1(data).hexdigest()[:12]
+        key = "mp4:" + h
+        if key in self.saved:
+            return self.saved[key]
+        ffmpeg = shutil.which("ffmpeg")
+        if not ffmpeg:
+            raise SystemExit("ffmpeg is needed to re-mux the videos (-c copy -movflags +faststart)")
+        name = f"video-{src.stem}-{h}.mp4"
+        with tempfile.TemporaryDirectory() as tmp:
+            dst = Path(tmp) / name
+            subprocess.run([ffmpeg, "-v", "error", "-y", "-i", str(src), "-map", "0", "-c", "copy",
+                            "-movflags", "+faststart", str(dst)], check=True)
+            (self.assets / name).write_bytes(dst.read_bytes())
+        self.saved[key] = "assets/" + name
+        return self.saved[key]
 
     # ---- raster regions with build layers
     def raster_elements(self, idx, bpages, reg):
