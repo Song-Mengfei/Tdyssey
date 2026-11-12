@@ -19,6 +19,35 @@ shares one time -> 9 x width projection across blocks plus a learned per-block o
 "full" gives every block its own projection (original DiT; +9.4M parameters per block, ~630M head at depth 24).
 Queries and keys are RMS-normalized per head (QK-norm) for stable bf16 training.
 
+Optional prefix head (arch "head": "prefix"; flow_train.py --head prefix; absent = the cross-attention head above,
+unchanged): pi0-style block-causal joint attention (arXiv 2410.24164). Each block has two token streams with their own
+weights (projections, norms, MLPs), joined only inside one attention over the sequence [condition tokens | action
+tokens] with a prefix mask: condition tokens attend only to condition tokens, action tokens attend to all tokens.
+  - Condition stream: a plain pre-norm transformer layer (LayerNorm, QK-normed self-attention, MLP; no time input) that
+    refines the condition tokens layer by layer. Its residual output projections start at zero, so at initialisation
+    every layer passes the encoder tokens through unchanged (the action tokens then read the same condition at every
+    layer, as in the cross head). It never sees the noisy plan or the flow time, so its per-layer keys and values are
+    computed once per decision and reused by all Euler steps (kv_cache).
+  - Action stream: the cross head's block without the cross-attention: adaLN-Zero modulated attention (queries from
+    the action tokens, keys/values [condition | action]) and MLP; 6 time-modulation vectors per block instead of 9.
+  - Parameter split: the condition stream takes exactly the parameters of the cross-attention it replaces (cq, ckv,
+    cproj = 4 w^2 per block). At half the action width ("cond_width" 512) with the standard MLP ratio 4
+    ("cond_mlp_ratio") it costs 3/2 (q, k, v: 512 -> the shared 16 heads x 64) + 1/2 (output) + 2 (MLP) = 4 w^2; the
+    action stream keeps the cross head's self-attention and MLP weights unchanged. The head therefore stays the same
+    size (410.6M against 418.2M at 16 x 16, 97.7M of it the condition stream; the 6-vector time projection is
+    smaller), and what changes is only how the action tokens read the observation and that the condition tokens are
+    refined. pi0 likewise joins two streams of different widths (2048 and 1024) with equal heads and head size.
+    Narrow condition tokens also keep the cost down: there are 131 (8 x 8 pool) or 515 (16 x 16) of them against 16
+    action tokens, and each costs 4 w^2 multiply-adds per block (the cross head's key/value projection: 2 w^2). The
+    condition tokens (encoder projection, pusher token, embeddings, cond_norm) are built at the condition width. The
+    last block's condition stream supplies only keys and values (anything more would be unused): no query, output
+    projection or MLP.
+  - Computation: training runs both streams in one forward with two attention calls that equal the masked joint
+    attention (condition queries over condition keys; action queries over [condition | action] keys), both plain
+    SDPA calls (flash path, no mask tensor). Inference (integrate) fills each layer's key/value buffer [condition |
+    16 action slots] once per decision and writes the action keys/values into the slots at every Euler step.
+    head_checkpoint = True (flow_train.py --head-checkpoint) recomputes each block of both streams in the backward.
+
 Flow matching (convention used everywhere here): t = 0 is noise, t = 1 is data,
     x_t = t * x1 + (1 - t) * eps,  target velocity v = x1 - eps,
 with x1 the normalized 16 x 2 plan label. Training time: t = 0.999 * (1 - u), u ~ Beta(1.5, 1) (pi0, arXiv 2410.24164:
@@ -67,6 +96,12 @@ def default_arch(**overrides):
             "inference_steps": 10}
     arch.update(overrides)
     return arch
+
+
+def prefix_arch(cond_width=512, cond_mlp_ratio=4.0):
+    """Arch keys of the pi0-style prefix head (flow_train.py --head prefix); absent = the cross-attention head."""
+    return {"head": "prefix", "cond_width": int(cond_width), "cond_mlp_ratio": float(cond_mlp_ratio),
+            "head_mask": "block-causal: condition tokens attend to condition tokens, action tokens to all tokens"}
 
 
 def pose_arch(weight, beta=0.01, proj=128, hidden=512):
@@ -269,6 +304,87 @@ class DiTBlock(nn.Module):
         return x + g3[:, None] * self.mlp(_modulate(self.norm3(x), s3, c3))
 
 
+def _maybe_checkpoint(on, fn, *args):
+    if on and torch.is_grad_enabled():
+        return torch.utils.checkpoint.checkpoint(fn, *args, use_reentrant=False)
+    return fn(*args)
+
+
+class CondBlock(nn.Module):
+    """Condition stream of one prefix-head block: plain pre-norm layer at width cdim, attention in heads x dh.
+    forward(c) -> (k, v) of this layer's condition tokens and the refined c for the next layer (None for the last)."""
+
+    def __init__(self, cdim, heads, dh, mlp_ratio=4.0, qk_norm=True, last=False):
+        super().__init__()
+        self.heads, self.dh, self.last = heads, dh, last
+        self.norm1 = nn.LayerNorm(cdim, eps=1e-6)
+        norm = (lambda: _RMSNorm(dh)) if qk_norm else (lambda: nn.Identity())
+        self.k_norm = norm()
+        if last:                                         # the last layer's condition outputs would be unused
+            self.kv = nn.Linear(cdim, 2 * heads * dh)
+            return
+        self.qkv, self.proj = nn.Linear(cdim, 3 * heads * dh), nn.Linear(heads * dh, cdim)
+        self.q_norm = norm()
+        self.norm2 = nn.LayerNorm(cdim, eps=1e-6)
+        hidden = int(cdim * mlp_ratio)
+        self.mlp = nn.Sequential(nn.Linear(cdim, hidden), nn.GELU(approximate="tanh"), nn.Linear(hidden, cdim))
+
+    def heads_view(self, x):
+        return x.view(x.shape[0], x.shape[1], self.heads, self.dh).transpose(1, 2)
+
+    def forward(self, c):
+        B, N, _ = c.shape
+        h = self.norm1(c)
+        if self.last:
+            k, v = self.kv(h).chunk(2, -1)
+            return self.k_norm(self.heads_view(k)), self.heads_view(v), None
+        q, k, v = self.qkv(h).chunk(3, -1)
+        k, v = self.k_norm(self.heads_view(k)), self.heads_view(v)
+        a = F.scaled_dot_product_attention(self.q_norm(self.heads_view(q)), k, v)       # condition -> condition only
+        c = c + self.proj(a.transpose(1, 2).reshape(B, N, -1))
+        return k, v, c + self.mlp(self.norm2(c))
+
+
+class PrefixBlock(nn.Module):
+    """Action stream of one prefix-head block: adaLN-Zero attention over [condition | action] keys, then MLP.
+    kv: (k, v) of the condition tokens (training: concatenated with the action keys/values), or (k_buf, v_buf, n) of the
+    inference cache: buffers (B, heads, n + H, dh) whose first n rows hold the condition keys/values and whose last H
+    rows receive this step's action keys/values in place."""
+
+    def __init__(self, dim, heads, mlp_ratio=4.0, adaln="single", qk_norm=True):
+        super().__init__()
+        self.heads, self.dh = heads, dim // heads
+        self.norm1, self.norm2 = (nn.LayerNorm(dim, elementwise_affine=False, eps=1e-6) for _ in range(2))
+        self.qkv, self.proj = nn.Linear(dim, 3 * dim), nn.Linear(dim, dim)
+        hidden = int(dim * mlp_ratio)
+        self.mlp = nn.Sequential(nn.Linear(dim, hidden), nn.GELU(approximate="tanh"), nn.Linear(hidden, dim))
+        norm = (lambda: _RMSNorm(self.dh)) if qk_norm else (lambda: nn.Identity())
+        self.q_norm, self.k_norm = norm(), norm()
+        if adaln == "single":
+            self.mod_table = nn.Parameter(torch.zeros(6, dim))
+        else:
+            self.ada = nn.Sequential(nn.SiLU(), nn.Linear(dim, 6 * dim))
+
+    def heads_view(self, x):
+        return x.view(x.shape[0], x.shape[1], self.heads, self.dh).transpose(1, 2)
+
+    def forward(self, x, mod, kv):
+        B, N, C = x.shape
+        s1, c1, g1, s2, c2, g2 = mod.unbind(1)
+        q, k, v = self.qkv(_modulate(self.norm1(x), s1, c1)).chunk(3, -1)
+        q, k, v = self.q_norm(self.heads_view(q)), self.k_norm(self.heads_view(k)), self.heads_view(v)
+        if len(kv) == 3:                                                  # inference cache: write the action slots
+            kbuf, vbuf, n = kv
+            kbuf[:, :, n:] = k
+            vbuf[:, :, n:] = v
+            k, v = kbuf, vbuf
+        else:
+            k, v = torch.cat([kv[0], k], 2), torch.cat([kv[1], v], 2)
+        a = F.scaled_dot_product_attention(q, k, v)                       # action -> condition and action
+        x = x + g1[:, None] * self.proj(a.transpose(1, 2).reshape(B, N, C))
+        return x + g2[:, None] * self.mlp(_modulate(self.norm2(x), s2, c2))
+
+
 class FlowPolicy(nn.Module):
     def __init__(self, arch, normalizer, pretrained=True):
         super().__init__()
@@ -279,19 +395,31 @@ class FlowPolicy(nn.Module):
         if pretrained:
             load_dinov2(self.vit, a["encoder"])
         w, T, H = a["width"], a["obs_steps"], a["horizon"]
+        head = a.get("head", "cross")
+        if head not in ("cross", "prefix"):
+            raise ValueError(f"unknown head {head!r}")
+        self.prefix, self.head_checkpoint = head == "prefix", False
+        cw = a["cond_width"] if self.prefix else w                        # width of the condition tokens
         self.tokens_per_frame = a["pool"] ** 2 + int(a["use_cls"])
-        self.obs_proj = nn.Linear(a["vit_dim"], w)
-        self.obs_pos = nn.Parameter(torch.zeros(1, 1, self.tokens_per_frame, w))
-        self.frame_emb = nn.Parameter(torch.zeros(1, T, 1, w))
-        self.proprio = nn.Sequential(nn.Linear(2 * T, w), nn.SiLU(), nn.Linear(w, w))
-        self.proprio_emb = nn.Parameter(torch.zeros(1, 1, w))
-        self.cond_norm = nn.LayerNorm(w, eps=1e-6)
+        self.obs_proj = nn.Linear(a["vit_dim"], cw)
+        self.obs_pos = nn.Parameter(torch.zeros(1, 1, self.tokens_per_frame, cw))
+        self.frame_emb = nn.Parameter(torch.zeros(1, T, 1, cw))
+        self.proprio = nn.Sequential(nn.Linear(2 * T, cw), nn.SiLU(), nn.Linear(cw, cw))
+        self.proprio_emb = nn.Parameter(torch.zeros(1, 1, cw))
+        self.cond_norm = nn.LayerNorm(cw, eps=1e-6)
         self.act_in = nn.Linear(2, w)
         self.act_pos = nn.Parameter(torch.zeros(1, H, w))
         self.t_mlp = nn.Sequential(nn.Linear(a["time_freq_dim"], w), nn.SiLU(), nn.Linear(w, w))
-        self.blocks = nn.ModuleList(DiTBlock(w, a["heads"], a["mlp_ratio"], a["adaln"], a["qk_norm"]) for _ in range(a["depth"]))
+        self.n_mod = 6 if self.prefix else 9                               # modulation vectors per block
+        if self.prefix:
+            D = a["depth"]
+            self.cond_blocks = nn.ModuleList(CondBlock(cw, a["heads"], w // a["heads"], a["cond_mlp_ratio"], a["qk_norm"],
+                                                       last=i == D - 1) for i in range(D))
+            self.blocks = nn.ModuleList(PrefixBlock(w, a["heads"], a["mlp_ratio"], a["adaln"], a["qk_norm"]) for _ in range(D))
+        else:
+            self.blocks = nn.ModuleList(DiTBlock(w, a["heads"], a["mlp_ratio"], a["adaln"], a["qk_norm"]) for _ in range(a["depth"]))
         if a["adaln"] == "single":
-            self.t_mod = nn.Sequential(nn.SiLU(), nn.Linear(w, 9 * w))
+            self.t_mod = nn.Sequential(nn.SiLU(), nn.Linear(w, self.n_mod * w))
         self.final_norm = nn.LayerNorm(w, elementwise_affine=False, eps=1e-6)
         self.final_mod = nn.Sequential(nn.SiLU(), nn.Linear(w, 2 * w))
         self.out = nn.Linear(w, 2)
@@ -315,16 +443,21 @@ class FlowPolicy(nn.Module):
         for lin in (self.t_mlp[0], self.t_mlp[2]):
             nn.init.normal_(lin.weight, std=0.02)
         zero = [self.final_mod[1], self.out] + ([self.t_mod[1]] if self.arch["adaln"] == "single" else [b.ada[1] for b in self.blocks])
+        if self.prefix:                                       # condition stream: residual outputs zero, identity at start
+            zero += [m for b in self.cond_blocks if not b.last for m in (b.proj, b.mlp[2])]
         for lin in zero:                                                         # adaLN-Zero: identity blocks at start
             nn.init.zeros_(lin.weight); nn.init.zeros_(lin.bias)
 
     def parameter_counts(self):
         enc = sum(p.numel() for p in self.vit.parameters())
         head = sum(p.numel() for n, p in self.named_parameters() if not n.startswith(("vit.", "normalizer.", "pose_head.")))
+        out = {"encoder": enc, "head": head}
+        if self.prefix:                                                       # part of "head"
+            out["head_condition_stream"] = sum(p.numel() for p in self.cond_blocks.parameters())
         if self.pose_head is None:
-            return {"encoder": enc, "head": head, "total": enc + head}
+            return {**out, "total": enc + head}
         pose = sum(p.numel() for p in self.pose_head.parameters())            # training only; not used by the policy
-        return {"encoder": enc, "head": head, "pose_head": pose, "total": enc + head + pose}
+        return {**out, "pose_head": pose, "total": enc + head + pose}
 
     # -------------------------------------------------------------------------------------------- observation
     def _crop(self, x):
@@ -357,14 +490,39 @@ class FlowPolicy(nn.Module):
         return self.cond_norm(cond)
 
     # -------------------------------------------------------------------------------------------- flow head
-    def kv_cache(self, cond):
-        return [blk.cross_kv(cond) for blk in self.blocks]
+    def kv_cache(self, cond, slots=0):
+        """Per-block keys/values of the condition, computed once per decision. Cross head: the cross-attention K/V.
+        Prefix head: runs the condition stream; slots > 0 (inference) returns buffers (B, heads, N + slots, dh) holding
+        the condition K/V in the first N rows and room for the action tokens' own K/V (PrefixBlock.forward)."""
+        if not self.prefix:
+            return [blk.cross_kv(cond) for blk in self.blocks]
+        out, c = [], cond
+        ckpt = self.head_checkpoint and self.training
+        for blk in self.cond_blocks:
+            k, v, c = _maybe_checkpoint(ckpt and not blk.last, blk, c)
+            if slots:
+                n = k.shape[2]
+                kbuf = k.new_empty(k.shape[0], k.shape[1], n + slots, k.shape[3]); kbuf[:, :, :n] = k
+                vbuf = v.new_empty(v.shape[0], v.shape[1], n + slots, v.shape[3]); vbuf[:, :, :n] = v
+                out.append((kbuf, vbuf, n))
+            else:
+                out.append((k, v))
+        return out
 
     def velocity(self, x, t, kv):
         """x (B, H, 2) normalized plan at flow time t (B,) in [0, 1] -> velocity (B, H, 2)."""
         B, w = len(x), self.arch["width"]
         h = self.act_in(x) + self.act_pos
         te = self.t_mlp(timestep_embedding(t * self.arch["time_scale"], self.arch["time_freq_dim"]))
+        if self.prefix:
+            M = self.n_mod
+            shared = self.t_mod(te).view(B, M, w) if self.arch["adaln"] == "single" else None
+            ckpt = self.head_checkpoint and self.training
+            for blk, cache in zip(self.blocks, kv):
+                mod = shared + blk.mod_table if shared is not None else blk.ada(te).view(B, M, w)
+                h = _maybe_checkpoint(ckpt, blk, h, mod, cache)
+            shift, scale = self.final_mod(te).chunk(2, -1)
+            return self.out(_modulate(self.final_norm(h), shift, scale))
         shared = self.t_mod(te).view(B, 9, w) if self.arch["adaln"] == "single" else None
         for blk, cache in zip(self.blocks, kv):
             mod = shared + blk.mod_table if shared is not None else blk.ada(te).view(B, 9, w)
@@ -408,7 +566,7 @@ class FlowPolicy(nn.Module):
     def integrate(self, cond, x, steps=None):
         """Euler integration from noise x (t = 0) to a plan (t = 1)."""
         steps = steps or self.arch["inference_steps"]
-        kv = self.kv_cache(cond)
+        kv = self.kv_cache(cond, slots=x.shape[1]) if self.prefix else self.kv_cache(cond)
         x = x.float()
         for k in range(steps):
             t = torch.full((len(x),), k / steps, device=x.device)
