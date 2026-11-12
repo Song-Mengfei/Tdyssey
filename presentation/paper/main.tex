@@ -50,7 +50,7 @@
 \begin{abstract}
 The official camera-based Diffusion Policy for the PushT task learned from 206 human demonstrations of a single
 T-shaped block. On the 26 capital letters it succeeds in \numHeadOrig\% of new test scenes. We adapt it to all 26
-letters without any new human demonstrations. A structured world model copies the pusher's motion and the contact
+letters without any new human demonstrations. A state world model copies the pusher's motion and the contact
 geometry from the simulator and learns only how the letter moves in contact, from noisy rollouts of the original
 policy. A sampling planner that reads the exact simulator state plans inside this model and serves as a teacher during
 training only. The camera policy copies the teacher's intended 16-step plans and then improves over 50 correction
@@ -58,7 +58,7 @@ rounds, in which the policy drives and the teacher labels every state it reaches
 shape, success on the 26 letters rises from \numHeadOrig\% to \numHeadMain\% with the original network and camera,
 and on nine shapes never seen in training from \numUnseenOrig\% to \numUnseenMain\%. The same data trains a
 505M-parameter flow-matching transformer, Flow-DiT, to \numHeadFlow\%. Reinforcement-learning fine-tuning, re-ranking
-with the simulator, gradients through the world model and plain copying of the teacher all failed, and we report why.
+with the simulator, gradients through the state world model and plain copying of the teacher all failed, and we report why.
 Most remaining failures are near misses just short of the 95\% goal coverage that success requires.
 \end{abstract}
 \paperdatanote
@@ -80,7 +80,7 @@ original sees, two camera frames and the pusher position. Exact simulator state 
 and we disclose every use of it (Section~\ref{sec:limits}). The robot and the task stay the same. Only the pushed
 object changes (Fig.~\ref{fig:shapes}).
 
-Our recipe has four parts (Fig.~\ref{fig:method}, Algorithm~\ref{alg:train}). A structured world model of pushing
+Our recipe has four parts (Fig.~\ref{fig:method}, Algorithm~\ref{alg:train}). A state world model of pushing
 learns from noisy rollouts of the original policy. A sampling planner reads the exact state, plans inside this model
 and acts as a teacher. The camera policy, the official Diffusion Policy network, first copies the teacher's intended
 plans. Correction rounds in the style of DAgger~\citep{ross2011dagger} then let the policy drive while the teacher
@@ -104,7 +104,7 @@ misses, and a larger network trained on the same data closes part of the gap.
   \centering
   \input{../figures/tikz/overview.tex}
   \caption{Overview. (1) Machine data, pushes by the original T policy with noise on its targets and no new human
-  demonstrations. (2) A structured world model copies the pusher's motion and the contact geometry from the simulator
+  demonstrations. (2) A state world model copies the pusher's motion and the contact geometry from the simulator
   and learns only how the letter moves in contact. (3) A sampling planner inside that model tries 1,024 plans of 48
   steps at every control and acts as the teacher. (4) The camera policy, the official Diffusion Policy network, copies
   the teacher's intended 16-step plans. (5) In correction rounds the policy drives, the teacher labels the states it
@@ -160,7 +160,7 @@ GPC~\citep{qi2025gpc} ranks and refines a generative policy's proposals with a p
 SuperMimic~\citep{liao2026supermimic} trains a policy by back-propagating through a learned differentiable world model.
 \citet{suh2022differentiable} show that exact gradients through stiff contact are biased or have high variance in
 contact-rich systems, which matches our failure with gradients in planar pushing~\citep{mason1986mechanics}. We use
-the world model only inside a privileged planner whose behaviour is distilled into the camera policy.
+the state world model only inside a privileged planner whose behaviour is distilled into the camera policy.
 
 \paragraph{Generalist manipulation.}
 Large multi-task policies (RT-1~\citep{brohan2023rt1}, Octo~\citep{octo2024}, OpenVLA~\citep{kim2024openvla},
@@ -232,7 +232,7 @@ for a measurable reason, and each shaped the method.
   \caption{Three dead ends before the teacher. Left, RL fine-tuning in the simulator destroyed the T skill once the
   steps were large enough to change the policy (variant A is AdvantageFlow, variant B DiffusionNFT, T success at each
   run's last check). Middle, picking the best of 16 policy plans with the true simulator helps little, because the
-  original policy's plans are too alike. Right, a teacher trained by back-propagation through the world model never
+  original policy's plans are too alike. Right, a teacher trained by back-propagation through the state world model never
   pushes the block home. Selection scenes and small pools, typed in from the experiment log.}
   \label{fig:negative}
 \end{figure*}
@@ -255,8 +255,8 @@ simulator uses the true simulator at decision time, so it is an upper bound and 
 The original policy's samples were too similar to each other, with a spread of about 0.02 in normalized action units,
 to contain new behaviour. % LEARNING_FINDINGS section 3, D037
 
-\paragraph{Gradients through the world model.}
-We trained a deterministic state-based teacher by back-propagating through 32 imagined steps of our world model, in
+\paragraph{Gradients through the state world model.}
+We trained a deterministic state-based teacher by back-propagating through 32 imagined steps of our state world model, in
 the style of SuperMimic~\citep{liao2026supermimic}. It learned to approach the block, closing the gap from 21 to
 3.7~px. In the real simulator it covered only 4 to 11\% of the goal at the end on T, Y, D and L, with no success, after
 250 to 2000 iterations and for every reward we tried (Fig.~\ref{fig:negative}, right). Gradients through contact
@@ -273,15 +273,20 @@ original action network and half of the student's encoder, and it raised Y from 
 1.1\% on 2000 scenes per letter. A blend that keeps the original action network cannot carry most of the teacher's
 skill, so we moved to training a full new policy. % D040-D044
 
-\paragraph{An image world model.}
-In a parallel line of work we studied a world model that predicts camera images instead of states. Its first version, a
-pretrained 8.73M-parameter model with a T-like prior, failed on L. The second is a 48.86M-parameter U-Net trained from
+\paragraph{DPPO and an image world model.}
+In a parallel line of work we fine-tuned the official camera policy with DPPO~\citep{ren2025dppo} in the simulator,
+with coverage-based rewards. Its mean score reached 0.842, below the 0.91 published for the image policy (from our run
+summary, the run logs were not kept). To practise in imagination instead, we studied world models that predict camera
+images. The first adapted the released 8.73M-parameter GPC world model~\citep{qi2025gpc} to the official PushT images.
+Its best checkpoint drifted 0.55~px per step without contact and missed the block's centre by 3.08~px on contact
+samples, and its T-like prior failed on L. The second is a 48.86M-parameter U-Net trained from
 scratch. It takes four $96\times96$ RGB frames with the three past and the current pusher targets and predicts the
 next RGB frame, with one model for six shapes (B, C, L, O, T and X). Training it partly on its own predicted frames
 raised the mean overlap of the predicted and the real block 16 steps (1.6~s) ahead from 0.21 to 0.33 on 48 fixed
 development cases. Stopping, rotation and shape details still failed, the fully trained plain model kept a better mean
 overlap on L, and image overlap does not measure task success. It did not reach reliable contact prediction, so it did
-not become part of the method. % slides/image_world_model_48m.tex and image_world_model_summary.tex
+not become part of the method. Planning needs only the letter and pusher state, so we moved to a state world model
+(Section~\ref{sec:method}). % slides/image_world_model_48m.tex, image_world_model_summary.tex and the final deck
 
 % =====================================================================================================================
 \section{Method}
@@ -298,9 +303,9 @@ Algorithm~\ref{alg:train} gives the whole training procedure and Algorithm~\ref{
   \small
   \begin{algorithmic}[1]
     \Require original policy $\pi_0$, its human T demonstrations $\mathcal{H}$, training shapes $\mathcal{S}$
-    \Statex \textit{World model}
+    \Statex \textit{State world model}
     \State Roll out $\pi_0$ on $\mathcal{S}$ with 0, 10 or 25~px noise on its targets
-    \State Fit the world model $f_\phi$ on these rollouts
+    \State Fit the state world model $f_\phi$ on these rollouts
     \Statex \textit{Teacher demonstrations}
     \For{each shape in $\mathcal{S}$ and each teacher scene}
       \State Run the teacher (Alg.~\ref{alg:teacher}) for up to 300 controls
@@ -329,7 +334,7 @@ Algorithm~\ref{alg:train} gives the whole training procedure and Algorithm~\ref{
   \label{alg:teacher}
   \small
   \begin{algorithmic}[1]
-    \Require state $x_t$ read with 1~px and 1$^\circ$ noise, world model $f_\phi$, goal pose $g$
+    \Require state $x_t$ read with 1~px and 1$^\circ$ noise, state world model $f_\phi$, goal pose $g$
     \State Start the sampler at the previous plan, shifted by one control
     \For{$j = 1, \dots, 4$}
       \State Sample 256 smooth paths of 48 targets (in round 1, 128 of them are structured pushes)
@@ -342,34 +347,44 @@ Algorithm~\ref{alg:train} gives the whole training procedure and Algorithm~\ref{
   \end{algorithmic}
 \end{algorithm}
 
-\paragraph{Structured world model.}
-The world model predicts the next state from the current state and the next pusher target (Fig.~\ref{fig:wm}). The
-state holds the letter's position, angle and velocity and the pusher's position. Two parts are copied from the
-simulator and not learned. The pusher follows the simulator's PD rule exactly, with 10 substeps per control, which
+\paragraph{State world model.}
+A camera image holds $96\times96\times3 = 27{,}648$ numbers, but planning needs only the state, 10 numbers for
+the letter's position, angle, velocity and turning rate and the pusher's position and velocity. The simulator gives this
+state exactly during training. The state world model predicts the next state from the current state and the next
+pusher target (Fig.~\ref{fig:wm}). Two parts are copied from the simulator and not learned. The pusher follows the simulator's PD rule exactly, with 10 substeps per control, which
 matches the simulator to $10^{-4}$~px. The pusher-to-letter distance comes from the letter's rectangles, and a contact
 gate keeps an untouched letter still. Only the letter's motion while in contact is learned, by a small MLP in the
-letter's own frame. It learns from rollouts of the frozen original policy with Gaussian noise of 0, 10 and 25~px on
+letter's own frame with 0.83M parameters, against 48.86M for the image world model of Section~\ref{sec:negative}. It learns from rollouts of the frozen original policy with Gaussian noise of 0, 10 and 25~px on
 its targets, 1500 episodes and 431k controls for the first five shapes, and later versions add the shapes of each new
 stage. No human demonstrations enter it. Over 8 controls its median contact error is 0.25~px, against 2.3~px for a
 plain network that learns everything from the same state. Finishing a push needs about 1.5~px. Run 48 times in a row,
 the model imagines a whole push plan. % LEARNING_FINDINGS section 4, world_model_accuracy.csv, D051
+
+\paragraph{State world model or simulator.}
+The teacher could plan in the simulator itself, which is exact. One teacher decision imagines 1,024 plans of 48
+controls from the current state and scores every control. The state world model does this in 0.07~s on one H100 GPU,
+with all plans in one batch, one small network pass per control and one exact distance for contact. The simulator
+takes 14.2~s on one CPU core (AMD EPYC 9334), because it steps one plan at a time, restores the scene for every plan
+and runs 10 collision-checked substeps per control. The state world model is about 200 times faster than one core and
+9 times faster than 32 simulator processes (0.6~s). Over the 300 decisions of an episode this is 20~s against 3
+minutes, for thousands of teacher episodes per stage. % timed 2026-11-12 on the same node, same job on both sides
 
 \begin{figure*}[t]
   \centering
   \input{../figures/tikz/worldmodel.tex}\par
   \vspace{2mm}
   \includegraphics{../figures/deck/wm_error_bar.pdf}
-  \caption{How the world model predicts one step. Grey parts are copied from the simulator, the gold part is learned
+  \caption{How the state world model predicts one step. Grey parts are copied from the simulator, the gold part is learned
   from recorded pushes of the original policy with noise. Bottom, median error 8 controls ahead on the first five
   shapes. The plain network learns everything, ours copies the pusher and contact rules. Finishing needs about 1.5~px.}
   \label{fig:wm}
 \end{figure*}
 
 \paragraph{Planner teacher.}
-At every control the teacher reads the letter and pusher state, plans pusher targets inside the world model and
+At every control the teacher reads the letter and pusher state, plans pusher targets inside the state world model and
 executes the first target of the best plan (Algorithm~\ref{alg:teacher}, Fig.~\ref{fig:teacher}). It runs the
 cross-entropy method~\citep{rubinstein1999cem,deboer2005tutorial} over smooth random target paths 48 controls ahead.
-Each of 4 rounds samples 256 paths, imagines each in the world model, scores how well the letter's points match the
+Each of 4 rounds samples 256 paths, imagines each in the state world model, scores how well the letter's points match the
 goal, and refits the sampling distribution to the best 24. In the first round, 128 of the samples are structured
 pushes that move out to a safe circle, travel around the letter and push one boundary point. After 1,024 plans it
 executes the first target of the single best plan, not of the elite mean, and plans again at the next control. The
@@ -638,7 +653,7 @@ and Flow-DiT is a single training run.
 \paragraph{Privileged data.}
 The teacher reads the exact simulator state and uses hand-designed push candidates. This is for training only, and the
 deployed policy sees only the camera and the pusher position. The planner's score uses privileged geometry (the letter's
-rectangles, the goal pose and coverage), and the world model copies the pusher dynamics and contact geometry from the
+rectangles, the goal pose and coverage), and the state world model copies the pusher dynamics and contact geometry from the
 simulator. Every policy also reuses the 206 human T demonstrations of the released checkpoint next to the
 machine-generated data.
 
@@ -666,7 +681,7 @@ and A100 GPUs, plus about 36 logged hours of practice scenes and selection tests
 
 A camera Diffusion Policy that knew only the T now pushes all 26 capital letters. On new scenes, success on the 26
 letters rose from \numHeadOrig\% to \numHeadMain\% with the original network and camera and without any new human
-demonstrations. The levers that mattered were a world-model planner as a privileged teacher, labels that use the
+demonstrations. The levers that mattered were a planner in a state world model as a privileged teacher, labels that use the
 teacher's intended plans, correction rounds on the policy's own states and enough training per shape. Reinforcement
 learning in the simulator failed because its training signal was mostly noise. The open problem is final alignment, and
 a larger network trained on the same data, Flow-DiT at \numHeadFlow\%, closes part of that gap. The code is at
@@ -740,7 +755,7 @@ test, so their numbers are not compared with Table~\ref{tab:main}. % D051, D054
     State noise & 1~px and 1$^\circ$ (checks and correction rounds), 1$^\circ$ angle only (intended-plan
       demonstrations) \\
     \midrule
-    \multicolumn{2}{l}{\textit{World model}} \\
+    \multicolumn{2}{l}{\textit{State world model}} \\
     Data & 1500 rollouts of the original policy (431k controls) on the first five shapes with target noise of 0, 10
       and 25~px, later versions add each stage's shapes \\
     Copied parts & exact PD pusher law with 10 substeps per control (matches the simulator to $10^{-4}$~px), exact
@@ -792,7 +807,7 @@ test, so their numbers are not compared with Table~\ref{tab:main}. % D051, D054
     RL fine-tuning in the simulator & Oct 24 to 25 & T from 55\% to 5\% with large steps, 16 to 36\% of the score
       from the plan itself & failed \\
     Re-ranking with the true simulator & Oct 25 & Y from 3 to 8 of 20, imitation within noise & no new skill \\
-    Back-propagation through the world model & Oct 26 & 4 to 11\% of the goal covered at the end, 0 of 20 solved
+    Back-propagation through the state world model & Oct 26 & 4 to 11\% of the goal covered at the end, 0 of 20 solved
       & failed \\
     First planner distillation & Oct 26 & T 15 to 25 of 100 against 35 for the original, worse everywhere & failed \\
     Encoder training, longer runs, DAgger & Oct 26 to 27 & first D and L successes (up to 5 and 6 of 100), T 10 to
@@ -801,6 +816,8 @@ test, so their numbers are not compared with Table~\ref{tab:main}. % D051, D054
       too weak \\
     Plain copying of the teacher & Oct 30 & a copy that reads the exact state keeps 30 to 41\% of the teacher's
       successes & not enough \\
+    DPPO in the simulator & in parallel & mean score 0.842 against 0.91 published & led to a learned simulator \\
+    Image world model (8.73M GPC, adapted) & in parallel & 0.55~px drift without contact, 3.08~px on contact & not used \\
     Image world model (48.86M) & in parallel & mean overlap 16 steps ahead 0.21 to 0.33, contact unreliable & not used \\
     \bottomrule
   \end{tabular}
