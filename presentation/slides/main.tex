@@ -444,7 +444,7 @@
   \only<2|handout:0>{\deckfig{curves_stages_2}}%
   \only<3-|handout:1>{\deckfig{curves_stages_3}}\par
   \vspace{1mm}
-  \cpt{\mbox{\starsw\ after 6 more rounds, 34.7\% on new scenes}
+  \cpt{\mbox{\starsw\ round 50 on the new test scenes, 32.8\%}
        \quad \mbox{\swatch[1.1pt]{tdorig, dash pattern=on 2.4pt off 1.8pt} original, same scenes} \quad
        \mbox{\swatch[1.4pt]{tdorig, dash pattern=on 0.7pt off 1.6pt} original, new scenes}}
   \vspace{0.4mm}
@@ -455,22 +455,22 @@
 \begin{frame}{Final test on new scenes}
   \vfill
   \centering
-  \heronum{\corig 2.4\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}\cours 33.6\%}\par
+  \heronum{\corig 2.0\%\hspace{4mm}\color{tdmuted}\too\hspace{4mm}\cours 32.8\%}\par
   \vspace{2mm}
   {\large success on all 26 letters, with the same 96 px camera\par}
   \vfill
   \begin{tikzpicture}[x=1mm, y=1mm]
-    \foreach \x/\n/\t in {0/{\cours 33.8\%}/with a sharper 192 px camera,
-                          48/{\corig 0.4\% \color{tdgrey}\too \cours 33.2\%}/on the 17 letters added last,
+    \foreach \x/\n/\t in {0/{\cours 34.0\%}/with a sharper 192 px camera,
+                          48/{\corig 0.3\% \color{tdgrey}\too \cours 32.2\%}/on the 17 letters added last,
                           96/{\corig 0.33 \color{tdgrey}\too \cours 0.82}/share of the goal covered at the end}{
-      \fill[tdpanel] (\x,0) rectangle ++(44,19);
-      \node[anchor=north, inner sep=0pt] at (\x+22,15) {\statnum{\n}};
-      \node[anchor=north, text=tdgrey, font=\small, text width=40mm, align=flush center] at (\x+22,7.6) {\t};
+      \fill[tdpanel] (\x,0) rectangle ++(44,21);
+      \node[anchor=north, inner sep=0pt] at (\x+22,17) {\statnum{\n}};
+      \node[anchor=north, text=tdgrey, font=\small, text width=40mm, align=flush center] at (\x+22,9.6) {\t};
     }
   \end{tikzpicture}\par
   \vspace{3mm}
-  \cpt{300 new scenes per letter, never used for training or for picking models. Every policy plays the same scenes.
-       Our policy here is the one after 44 correction rounds.}
+  \cpt{200 new scenes per letter, never used for training or for picking models. Every policy plays the same scenes.
+       Our policy here is the main model after 50 correction rounds.}
 \end{frame}
 
 \begin{frame}{Why the scores look low}
@@ -505,7 +505,7 @@
 \begin{frame}{Results per shape}
   \deckfig{final_dumbbell}\par
   \vspace{1mm}
-  \cpt{Final test, 300 new scenes per shape. 3, 4 and 7 are digits, + plus, \# hash, \too arrow.}
+  \cpt{200 new scenes per shape. 2, 3, 4, 5, 7 and 8 are digits, + plus, \# hash, \too arrow.}
 \end{frame}
 
 \begin{frame}[c]{Original vs ours}
@@ -566,11 +566,10 @@
     \lbl{34mm}{Original}{\nok{not solved}}\hspace{3mm}\lbl{34mm}{Ours}{\ok{solved}}\\[1mm]
     \video{slide/compare_digit7_scene2_orig.png}{compare/digit7_scene2.mp4}{34mm}\hspace{3mm}%
     \video{slide/compare_digit7_scene2_ours.png}{compare/digit7_scene2.mp4}{34mm}\\[1.5mm]
-    \cpt{Digit 7 was never seen in training. It reaches 19 to 23\% in the final test, the original 2.0\%.}
+    \cpt{Digit 7 was never seen in training. Ours solves 18.5\% of it on the new scenes, the original 3.0\%.}
   \end{columns}
   \vspace{2.5mm}
-  \takeaway{On six never-seen shapes (digits 3, 4, 7, plus, hash, arrow) transfer is small, but it grows with the
-    number of training shapes.}
+  \takeaway{On nine never-seen shapes, success grows with the number of training shapes, from 1.0\% to 8.0\%.}
 \end{frame}
 
 \begin{frame}{The last millimetres}
@@ -587,7 +586,7 @@
            camera pixel, about 5 simulator pixels.}}
   \end{columns}
   \vspace{1.5mm}
-  \takeaway{Most failures are near misses, \hl{91\%} of the goal covered at best. Success needs \hl{95\%}.}
+  \takeaway{Most failures are near misses. Two in three cover \hl{90\%} of the goal or more, success needs \hl{95\%}.}
 \end{frame}
 
 \begin{frame}[c]{Does the network matter?}
@@ -652,11 +651,11 @@
   \vfill
   \centering
   \begin{tikzpicture}[x=1mm, y=1mm]
-    \foreach \x/\n/\t in {0/{\corig 2.4\% \color{tdgrey}\too \cours 33.6\%}/{one camera policy for all 26 letters,
+    \foreach \x/\n/\t in {0/{\corig 2.0\% \color{tdgrey}\too \cours 32.8\%}/{one camera policy for all 26 letters,
                             on new test scenes},
                           48/{\color{tdink}0}/{new human demonstrations, all the new training data is
                             machine-made},
-                          96/{\corig 1.2\% \color{tdgrey}\too \cours 4.7\%}/{on six never-seen shapes, small but growing
+                          96/{\corig 1.0\% \color{tdgrey}\too \cours 8.0\%}/{on nine never-seen shapes, small but growing
                             with the number of training shapes}}{
       \fill[tdpanel] (\x,0) rectangle ++(44,38);
       \fill[tdblue] (\x,38) rectangle ++(44,-1);
@@ -665,7 +664,7 @@
     }
   \end{tikzpicture}\par
   \vfill
-  \cpt{All rates from the final test on new scenes (96 px camera).}
+  \cpt{All rates from the test on new scenes, main model after 50 rounds (96 px camera).}
   \vspace{2mm}
 \end{frame}
 
