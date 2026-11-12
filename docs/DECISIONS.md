@@ -1184,3 +1184,13 @@ the pool afterwards ("if there is time"). Flow-DiT 16 x 16 against round 50 (com
 `runs/fairtest-d064/{r50,base}-part*.json`): 26 letters 32.8% -> 45.5%, +12.7 points [+10.9, +14.5]; 9 earlier letters
 +10.2, 17 new letters +14.1; T 33.0% -> 49.5%; six never-seen shapes 4.5% -> 11.7%; goal covered at the end 0.82 ->
 0.89; Flow-DiT higher on 24 of 26 letters (O and Y 1 point lower). This replicates D059 (+12.4) and D060 (+12.7).
+
+D064 outcome (2026-11-12, complete, 200 paired scenes per shape, `runs/fairtest-d064/{base,pose}-part*.json`): the
+pose-supervised Flow-DiT 16 x 16 (`runs/flow26p/v1`) against Flow-DiT 16 x 16 without the pose head: 26 letters 45.5%
+-> 45.7%, +0.2 points [-1.6, +2.0]; T 49.5% -> 53.0%, +3.5 [-6.2, +13.2]; six never-seen shapes 11.7% -> 10.1%, -1.6
+[-4.0, +0.8]; digits 2/5/8 against round 50 28.7% (Flow-DiT) and 31.7% (pose). No measurable gain: the head located the
+block within about 0.5 px near the goal on its training batches, but the policy did not finish more often, so the
+encoder's knowledge of the block pose is not what limits the last millimetres in this setting. Flow-DiT 16 x 16 stays
+the architecture result; the pose head is not used further. Round 50 against the other models on the same scenes
+(26 letters): original 2.0%, ten-shape 16.7%, round 50 32.8%, 192 px 34.0%, Flow-DiT 45.5%; nine never-seen shapes
+1.0%, 4.3%, 8.0%, 9.4%, 17.3% (`presentation/data/d064_test_*.csv` on docs/presentation).
