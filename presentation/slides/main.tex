@@ -380,21 +380,11 @@
   \tikzfile{arch_cnn_detailed}\par
 \end{frame}
 
-\begin{frame}[c]{Copying the teacher was not enough}
-  \vspace{2mm}
-  \begin{columns}[c,totalwidth=\textwidth]
-    \column{74mm}
-    \deckfig{copying_pooled}
-    \column{62mm}
-    {\small Even a copy that reads the exact state keeps only \hl{30 to 41\%} of the teacher's successes.\par}
-    \vspace{3mm}
-    {\small The skill is lost in copying, not in seeing.\par}
-  \end{columns}
-\end{frame}
-
-\begin{frame}[c]{Why correction rounds work}
+\begin{frame}{Why correction rounds work}
   \centering
-  \tikzfile{dagger}
+  \tikzfile{copy_strip}\par
+  \vspace{2mm}
+  \scalebox{0.9}{\tikzfile{dagger}}\par
 \end{frame}
 
 \begin{frame}{Correction rounds (DAgger)}
@@ -497,13 +487,6 @@
   \vspace{3mm}
   \takeaway{One 96 px camera pixel is about 5 simulator pixels, so the last nudge is smaller than what the policy can
     see.}
-\end{frame}
-
-\begin{frame}[c]{Final test by shape group}
-  \only<1|handout:0>{\deckfig{final_bars_1}}%
-  \only<2-|handout:1>{\deckfig{final_bars_2}}\par
-  \vspace{1.5mm}
-  \cpt{Bars show 95\% intervals.}
 \end{frame}
 
 \begin{frame}{Results per shape}
@@ -745,7 +728,7 @@
     \centering
     \video{slide/wm_imagined_T.png}{world_model/imagined_vs_real_T.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{T, red outline = imagined 32 steps ahead without correction. Error at most 0.9 px.}
+    \cpt{T, red outline = imagined 32 steps ahead without correction. Error at most 2.3 px.}
   \end{columns}
 \end{frame}
 
