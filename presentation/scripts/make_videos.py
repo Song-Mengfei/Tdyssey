@@ -218,13 +218,15 @@ def teacher(shapes):
     pickle.dump(lanes, open(CACHE / f"teacher_{SEEDS[0]}.pkl", "wb"))
 
 
-def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3, scan=None, max_err=None):
+def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3, scan=None, max_err=None, min_move=None,
+               record=None, scene=0):
     """What the world model imagines vs what really happens: replay a recorded teacher episode in the simulator and, at
     moments when the pusher is about to touch the block, roll the model forward open-loop over the next `horizon`
     controls with the actions that were really executed. The predicted block outline (red, dashed) is drawn over the
     real block; the caption gives the centre-of-mass error. Needs the world model (runs/wm2/v3) and teacher records.
     With max_err, up to `scan` contact windows are checked and only the first `windows` whose error `horizon` controls
-    ahead is at most max_err px are drawn (used for the backup slide's accurate T example)."""
+    ahead is at most max_err px (and, with min_move, whose letter really moves at least min_move px) are drawn. record
+    and scene pick another teacher record and scene (used for the backup slide's T example)."""
     import math
     from collections import defaultdict
     os.environ["TDYSSEY_SHAPES"] = LETTERS27
@@ -243,11 +245,11 @@ def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3, sca
     V.mkdir(parents=True, exist_ok=True); I.mkdir(parents=True, exist_ok=True)
     summary = []
     for s in shapes:
-        z = np.load(WORK / "slides_data" / "teacher" / f"{s}.npz")
-        n = int(z["mask"][0].sum())
+        z = np.load(record or WORK / "slides_data" / "teacher" / f"{s}.npz")
+        n = int(z["mask"][scene].sum())
         k_sh = wm2.SHAPES.index(s)
         sh = torch.tensor([k_sh], device=dev)
-        st, pv, act, con = z["state"][0], z["pusher_velocity"][0], z["action"][0], z["contacts"][0]
+        st, pv, act, con = z["state"][scene], z["pusher_velocity"][scene], z["action"][scene], z["contacts"][scene]
         starts, t0 = [], 0                                     # window starts: a few controls before contact begins
         while t0 < n - horizon - 1 and len(starts) < (scan or windows):
             if con[t0 + 1:t0 + 9].max() > 0 and con[max(0, t0 - 4):t0 + 1].max() == 0:
@@ -263,14 +265,17 @@ def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3, sca
                                           dtype=torch.float32), sh, hard=True)[0, -1].cpu().numpy()
                 r_end = wm2.to_cog(torch.tensor([[*st[t0 + horizon, :6], 0, 0, 0, 0]], device=dev, dtype=torch.float32), sh,
                                    geo.cogs)[0].cpu().numpy()
-                if math.hypot(p_end[0] - r_end[0], p_end[1] - r_end[1]) <= max_err:
+                r_0 = wm2.to_cog(torch.tensor([[*st[t0, :6], 0, 0, 0, 0]], device=dev, dtype=torch.float32), sh,
+                                 geo.cogs)[0].cpu().numpy()
+                moved = math.hypot(r_end[0] - r_0[0], r_end[1] - r_0[1])
+                if math.hypot(p_end[0] - r_end[0], p_end[1] - r_end[1]) <= max_err and moved >= (min_move or 0):
                     kept.append(t0)
             starts = kept[:windows]
         partner = "L" if s == "T" else s
         frames_out, stills_out = [], []
         for t0 in starts:
             envs = {"T": cls(shape="T", legacy=True), partner: cls(shape=partner, legacy=True)}
-            matched_reset(envs, int(z["seed"][0]), defaultdict(int))
+            matched_reset(envs, int(z["seed"][scene]), defaultdict(int))
             env = envs[s]
             for k in range(t0):
                 env.step(act[k])
@@ -1077,9 +1082,10 @@ if __name__ == "__main__":
         teacher(sys.argv[2:] or TRAINED27)
     elif sys.argv[1] == "stills":
         stills()
-    elif sys.argv[1] == "worldmodel":                     # worldmodel [shapes...] [--windows N --scan N --max-error PX]
+    elif sys.argv[1] == "worldmodel":   # worldmodel [shapes] [--windows N --scan N --max-error PX --min-move PX --record F --scene K]
         args, opts = [a for a in sys.argv[2:] if not a.startswith("--")], {}
-        for flag, key, cast in (("--windows", "windows", int), ("--scan", "scan", int), ("--max-error", "max_err", float)):
+        for flag, key, cast in (("--windows", "windows", int), ("--scan", "scan", int), ("--max-error", "max_err", float),
+                                ("--min-move", "min_move", float), ("--record", "record", Path), ("--scene", "scene", int)):
             if flag in sys.argv:
                 v = sys.argv[sys.argv.index(flag) + 1]; opts[key] = cast(v); args.remove(v)
         worldmodel(tuple(args) or ("T", "D", "K", "R", "E", "A"), **opts)
