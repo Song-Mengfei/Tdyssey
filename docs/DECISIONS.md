@@ -1210,3 +1210,15 @@ shared GPU): 8 x 8 about 1.2x Flow-DiT 8 x 8 per step (~12.4 h for 160k steps); 
 head recomputation, ~56 GB). Full run (not started): the Flow-DiT command (same data and order, seed 0, batch 128, 160k
 steps) plus `--head prefix --head-checkpoint`. Test as D064: 200 new scenes per shape, seeds 15000000 + 20*i, 33 shapes
 and the digit group, paired against Flow-DiT (same pooling) and round 50, whatever the outcome.
+
+D065 amendment (2026-11-13, recorded before any pilot result) — short A100 pilot. Lead's request: try the prefix head on
+the A100 job (1106762) after D062. The full run does not fit the time left there (about 9 h after the D062 test;
+estimated 19-25 h for 160k steps at 8 x 8 on an A100), so this is a pilot, not the D065 full run. Run: the full-run
+command with 8 x 8 tokens (`runs/joint-smoke/full_run_command.sh`, POOL=8, run folder runs/flow26j8; same data, order,
+seed 0, batch 128 and `--steps 160000`, so the learning-rate schedule matches Flow-DiT 8 x 8). It starts only after the
+D062 test and only if at least 5 h remain, and it stops about 1.5 h before the job ends. Pilot test: its newest
+checkpoint (step N, a multiple of 10k) against Flow-DiT 8 x 8 at the same step (runs/flow26b/v1/ema-step<N>.pt) on the
+26 letters' selection scenes (validation seeds 400000 + 20*i, i < 50, 8 controls per plan), both run with the branch's
+code (it reproduces Flow-DiT plans bit-identically), paired by scene. Reported: success over the 26 letters (mean over
+shapes) and the paired difference with a 95% interval, as an equal-step early-training comparison. The deciding
+experiment stays the D065 full run and its D064-pool test.
