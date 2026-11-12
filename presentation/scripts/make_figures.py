@@ -4270,6 +4270,10 @@ def fig_deck_stages(upto):
                 color=INK if i < upto else MUTED, transform=ax.get_xaxis_transform(), clip_on=False)
     t = dict(color=INK2, fontsize=9, clip_on=False)
     orig = original_stage_levels(LETTERS26)
+    d064 = {r["model_key"]: float(r["success_rate"]) * 100 for r in _read_opt("d064_test_groups.csv")
+            if r["group"] == "all 26 letters"}                        # the round-50 test (lead: one set of scenes)
+    if d064:
+        orig[2] = (d064["orig"], False)
     for i, (a, b) in enumerate(STAGE_SPAN[:upto]):
         v, validated = orig[i]
         ax.plot([a + 0.3, b - 0.3], [v] * 2, color=ORIG_LINE, lw=1.1 if validated else 1.4,
@@ -4295,7 +4299,7 @@ def fig_deck_stages(upto):
             col = TEN if L["key"] == "exec" else L["color"]           # one colour for the 10-shape 96 px line (lead)
             ax.plot(STAGE_OFF[L["stage"]] + L["x"], L["y"], color=col, lw=1.3, marker="o", ms=2.0, zorder=3)
     if upto >= 3:
-        ax.plot(STAGE_OFF[2] + MAIN_ROUND, main_model_rate(LETTERS26), **(STAR | {"ms": 11, "mew": 0.8}))
+        ax.plot(STAGE_OFF[2] + MAIN_ROUND, d064.get("r50", main_model_rate(LETTERS26)), **(STAR | {"ms": 11, "mew": 0.8}))
     ax.set_xlim(0, STAGE_SPAN[2][1] + 1.6)
     ax.set_ylim(0, top)
     ax.set_yticks([0, 10, 20, 30, 40, 50])
