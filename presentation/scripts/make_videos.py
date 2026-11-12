@@ -218,11 +218,13 @@ def teacher(shapes):
     pickle.dump(lanes, open(CACHE / f"teacher_{SEEDS[0]}.pkl", "wb"))
 
 
-def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3):
+def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3, scan=None, max_err=None):
     """What the world model imagines vs what really happens: replay a recorded teacher episode in the simulator and, at
     moments when the pusher is about to touch the block, roll the model forward open-loop over the next `horizon`
     controls with the actions that were really executed. The predicted block outline (red, dashed) is drawn over the
-    real block; the caption gives the centre-of-mass error. Needs the world model (runs/wm2/v3) and teacher records."""
+    real block; the caption gives the centre-of-mass error. Needs the world model (runs/wm2/v3) and teacher records.
+    With max_err, up to `scan` contact windows are checked and only the first `windows` whose error `horizon` controls
+    ahead is at most max_err px are drawn (used for the backup slide's accurate T example)."""
     import math
     from collections import defaultdict
     os.environ["TDYSSEY_SHAPES"] = LETTERS27
@@ -247,11 +249,23 @@ def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3):
         sh = torch.tensor([k_sh], device=dev)
         st, pv, act, con = z["state"][0], z["pusher_velocity"][0], z["action"][0], z["contacts"][0]
         starts, t0 = [], 0                                     # window starts: a few controls before contact begins
-        while t0 < n - horizon - 1 and len(starts) < windows:
+        while t0 < n - horizon - 1 and len(starts) < (scan or windows):
             if con[t0 + 1:t0 + 9].max() > 0 and con[max(0, t0 - 4):t0 + 1].max() == 0:
                 starts.append(t0); t0 += horizon
             else:
                 t0 += 1
+        if max_err is not None:                                # keep only windows predicted within max_err px
+            kept = []
+            for t0 in starts:
+                raw = torch.tensor([[*st[t0, :6], *st[t0, 6:8], *pv[t0]]], device=dev, dtype=torch.float32)
+                with torch.no_grad():
+                    p_end = model.rollout(wm2.to_cog(raw, sh, geo.cogs), torch.tensor(act[None, t0:t0 + horizon], device=dev,
+                                          dtype=torch.float32), sh, hard=True)[0, -1].cpu().numpy()
+                r_end = wm2.to_cog(torch.tensor([[*st[t0 + horizon, :6], 0, 0, 0, 0]], device=dev, dtype=torch.float32), sh,
+                                   geo.cogs)[0].cpu().numpy()
+                if math.hypot(p_end[0] - r_end[0], p_end[1] - r_end[1]) <= max_err:
+                    kept.append(t0)
+            starts = kept[:windows]
         partner = "L" if s == "T" else s
         frames_out, stills_out = [], []
         for t0 in starts:
@@ -300,8 +314,12 @@ def worldmodel(shapes=("T", "D", "K", "R", "E", "A"), horizon=32, windows=3):
             rows = [np.hstack(stills_out[i:i + 4]) for i in range(0, len(stills_out) - len(stills_out) % 4, 4)]
             cv2.imwrite(str(I / f"imagined_vs_real_{s}.png"), cv2.cvtColor(np.vstack(rows), cv2.COLOR_RGB2BGR))
         print(f"world model {s}: {len(starts)} windows", flush=True)
-    with open(OUT / "data" / "world_model_examples.csv", "w") as f:
+    csv_path = OUT / "data" / "world_model_examples.csv"
+    keep = [l for l in csv_path.read_text().splitlines()[1:] if l.split(",")[0] not in shapes] if csv_path.exists() else []
+    with open(csv_path, "w") as f:
         f.write("shape,window_start,controls_ahead,centre_error_px,angle_error_deg\n")
+        for l in keep:
+            f.write(l + "\n")
         for r in summary:
             f.write(",".join(map(str, r)) + "\n")
 
@@ -1059,8 +1077,12 @@ if __name__ == "__main__":
         teacher(sys.argv[2:] or TRAINED27)
     elif sys.argv[1] == "stills":
         stills()
-    elif sys.argv[1] == "worldmodel":
-        worldmodel()
+    elif sys.argv[1] == "worldmodel":                     # worldmodel [shapes...] [--windows N --scan N --max-error PX]
+        args, opts = [a for a in sys.argv[2:] if not a.startswith("--")], {}
+        for flag, key, cast in (("--windows", "windows", int), ("--scan", "scan", int), ("--max-error", "max_err", float)):
+            if flag in sys.argv:
+                v = sys.argv[sys.argv.index(flag) + 1]; opts[key] = cast(v); args.remove(v)
+        worldmodel(tuple(args) or ("T", "D", "K", "R", "E", "A"), **opts)
     elif sys.argv[1] == "dataviews":
         dataviews()
     elif sys.argv[1] == "extras":

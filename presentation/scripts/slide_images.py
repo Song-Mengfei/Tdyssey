@@ -138,7 +138,7 @@ def main():
         written.append(save(grid(tiles, 3, gap=6), f"models_{key}.png"))
 
     # world model: imagined (red outline) vs simulator, posters (384 px under a 40 px bar) and one still for Figure 1
-    for s in ("D", "E"):
+    for s in ("D", "E", "T"):
         written.append(save(scene(load(POST / f"imagined_vs_real_{s}.png"), 0, 40, TILE), f"wm_imagined_{s}.png"))
     img = load(IMG / "world_model" / "imagined_vs_real_D.png")
     written.append(save(scene(img, TILE, 40, TILE), "wm_D_8ahead.png"))

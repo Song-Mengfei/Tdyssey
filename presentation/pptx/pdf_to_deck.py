@@ -229,6 +229,29 @@ def placed_forms(page) -> list:
 
 
 # ------------------------------------------------------------------------------------------------- rendering
+
+def norm_title(s: str) -> str:
+    """Frame title as a lookup key: ligatures expanded, case and spaces ignored."""
+    for lig, rep in (("\ufb00", "ff"), ("\ufb01", "fi"), ("\ufb02", "fl"), ("\ufb03", "ffi"), ("\ufb04", "ffl"),
+                     ("\ufb05", "st"), ("\ufb06", "st")):
+        s = s.replace(lig, rep)
+    return re.sub(r"\s+", "", s).replace("\u2019", "'").lower()
+
+
+def frame_title(page, layout: dict) -> str:
+    """The frame title text on a page (spans at the layout's title baseline and size), or '' if there is none."""
+    ref = layout.get("title") if layout else None
+    if not ref:
+        return ""
+    flags = fitz.TEXTFLAGS_DICT & ~fitz.TEXT_PRESERVE_LIGATURES
+    parts = []
+    for block in page.get_text("dict", flags=flags)["blocks"]:
+        for line in block.get("lines", []):
+            for span in line["spans"]:
+                if abs(span["size"] - ref["size"]) < 0.3 and abs(span["origin"][1] / MM - ref["baseline"]) < 0.6:
+                    parts.append(span["text"])
+    return " ".join(parts)
+
 class Renderer:
     def __init__(self, doc):
         self.doc = doc
@@ -269,6 +292,7 @@ class Extractor:
         self.rend = Renderer(self.doc)
         self.brend = Renderer(self.bdoc)
         self.regions = json.loads(Path(args.regions).read_text())
+        self.regions["titles"] = {norm_title(k): v for k, v in self.regions.get("titles", {}).items()}
         self.videos = self._read_video_bindings()
         self.clips = self._read_poster_clips()
         self.media = json.loads((PRES / "data" / "pptx_slide_media.json").read_text())
@@ -406,7 +430,8 @@ class Extractor:
     def page(self, idx: int, bpages: list, appendix: bool, layout: dict) -> dict:
         page = self.doc[idx]
         W, H = page.rect.width / MM, page.rect.height / MM
-        spec = self.regions.get("pages", {}).get(str(idx + 1), {})
+        spec = (self.regions.get("titles", {}).get(norm_title(frame_title(page, layout)))
+                or self.regions.get("pages", {}).get(str(idx + 1), {}))
         log = page.get_bboxlog()
         drawings = page.get_drawings()
         trace = page.get_texttrace()
