@@ -1194,3 +1194,19 @@ encoder's knowledge of the block pose is not what limits the last millimetres in
 the architecture result; the pose head is not used further. Round 50 against the other models on the same scenes
 (26 letters): original 2.0%, ten-shape 16.7%, round 50 32.8%, 192 px 34.0%, Flow-DiT 45.5%; nine never-seen shapes
 1.0%, 4.3%, 8.0%, 9.4%, 17.3% (`presentation/data/d064_test_*.csv` on docs/presentation).
+
+## D065 — Prefix (pi0-style) action head, built and speed-tested (2026-11-12, before any result)
+
+Lead's decision: build the parked joint-attention head now and train it in full on a later GPU job. `flow_train.py
+--head prefix` (branch feat/joint-head, commit 6721fb0): each of the 24 head blocks keeps Flow-DiT's time-modulated
+plan stream and replaces the cross-attention with one block-causal attention over [camera and pusher tokens | 16 plan
+tokens]. The condition tokens attend only to each other and are refined layer by layer by their own 512-wide layers
+(own weights, no time input); the plan tokens attend to all tokens (pi0, arXiv 2410.24164). The condition stream takes
+the parameters of the removed cross-attention: head 410.6M (Flow-DiT 418.2M). Its keys and values are computed once per
+decision for all 10 Euler steps. Checks (`flow_head_check.py`): condition states bit-identical under changes of plan or
+time; cached and uncached sampling agree to 1.6e-6 (fp32); the existing head and checkpoints are unchanged
+(bit-identical plans from the Flow-DiT step-160k checkpoint). Cost at batch 128 on the H100 (measured as ratios on a
+shared GPU): 8 x 8 about 1.2x Flow-DiT 8 x 8 per step (~12.4 h for 160k steps); 16 x 16 about 2x Flow-DiT (~25 h with
+head recomputation, ~56 GB). Full run (not started): the Flow-DiT command (same data and order, seed 0, batch 128, 160k
+steps) plus `--head prefix --head-checkpoint`. Test as D064: 200 new scenes per shape, seeds 15000000 + 20*i, 33 shapes
+and the digit group, paired against Flow-DiT (same pooling) and round 50, whatever the outcome.
