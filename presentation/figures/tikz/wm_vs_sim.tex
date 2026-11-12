@@ -1,0 +1,63 @@
+% State world model vs planning in the simulator directly (deck slide after "How the state world model works").
+% Moving the pusher and the contact check work the same way in both, so only the letter's motion is compared, with
+% the reasons for the speed gap: the state world model runs all plans as one batch on the GPU, one small network pass
+% per step and one exact distance for contact; the simulator steps one plan at a time on the CPU, restores the scene
+% for every plan and runs 10 physics substeps with collision checks per step.
+% Timing of one teacher decision, 1,024 plans x 48 controls from one state, each scored at every control
+% (measured 2026-11-12): state world model plus scoring on the GPU 0.066 s; the official simulator (restore the state,
+% 10 physics substeps per control, coverage at every control, no rendering) 14.2 s on one CPU process. Error of the
+% state world model: median 0.25 px 8 controls ahead (wm_accuracy).
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdorig}{HTML}{8F8D86}%
+\providecolor{tdgoldbg}{HTML}{FFF6E0}%
+\providecolor{tdpanel}{HTML}{F3F5F8}%
+\tikzset{%
+  vs box/.style={rounded corners=1.6mm, line width=0.9pt},%
+  vs title/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink},%
+  vs text/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, align=flush left},%
+  vs tag/.style={anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, font=\sffamily\fontsize{7}{8}\selectfont\bfseries},%
+  vs head/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=tdgrey},%
+}%
+\newcommand{\vsbox}[8]{% x, y(top), title, text, tag, draw, fill, text colour
+  \draw[vs box, draw=#6, fill=#7] (#1,#2) rectangle ++(64,-10.6);
+  \node[vs title] at (#1+2.2,#2-1.5) {#3};
+  \node[vs tag, fill=#6!25, text=#8] at (#1+62.6,#2-1.3) {#5};
+  \node[vs text, text=#8] at (#1+2.2,#2-6.2) {#4};}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,64);
+  % ---------------------------------------------------------------- left: the state world model
+  \draw[rounded corners=2.4mm, line width=0.9pt, draw=tdink!45, dash pattern=on 3pt off 2pt] (0,19) rectangle (70,64);
+  \node[vs head] at (2.5,63.2) {STATE WORLD MODEL};
+  \vsbox{3}{58.4}{How the letter moves}{a small network, learned from pushes}{learned}{tdgold}{tdgoldbg}{tdgolddark}
+  \node[vs title, text=tdgolddark] at (3,44.6) {Why it is fast};
+  \node[vs text, text=tdink, text width=62mm] at (3,39.6) {\makebox[3mm][l]{\textbullet}all 1{,}024 plans in one batch on the GPU};
+  \node[vs text, text=tdink, text width=62mm] at (3,35.1) {\makebox[3mm][l]{\textbullet}one small network pass per step};
+  \node[vs text, text=tdink, text width=62mm] at (3,30.6) {\makebox[3mm][l]{\textbullet}contact is one exact distance};
+  \node[anchor=north, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdgolddark] at (35,24.6)
+    {error 0.25 px, 8 steps ahead};
+  % ---------------------------------------------------------------- right: the simulator
+  \draw[rounded corners=2.4mm, line width=0.9pt, draw=tdink!45, dash pattern=on 3pt off 2pt] (74,19) rectangle (144,64);
+  \node[vs head] at (76.5,63.2) {SIMULATOR};
+  \vsbox{77}{58.4}{How the letter moves}{full physics with friction}{exact}{tdblue}{tdblue!7}{tdink}
+  \node[vs title, text=tdgrey] at (77,44.6) {Why it is slow};
+  \node[vs text, text=tdink, text width=62mm] at (77,39.6) {\makebox[3mm][l]{\textbullet}one plan at a time on the CPU};
+  \node[vs text, text=tdink, text width=62mm] at (77,35.1) {\makebox[3mm][l]{\textbullet}the scene is restored for every plan};
+  \node[vs text, text=tdink, text width=62mm] at (77,30.6) {\makebox[3mm][l]{\textbullet}10 collision-checked substeps per step};
+  \node[anchor=north, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdgrey] at (109,24.6)
+    {exact, no prediction error};
+  % ---------------------------------------------------------------- bottom: time for one teacher decision
+  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont\bfseries, text=tdink] at (0,11.6)
+    {Time for one teacher decision, 1{,}024 plans x 48 steps};
+  \node[anchor=east, inner sep=0pt, font=\sffamily\fontsize{15}{18}\selectfont\bfseries, text=tdgolddark] at (144,8.2)
+    {about 200x faster};
+  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdgolddark] at (0,6) {state world model};
+  \fill[tdgold] (30,4.6) rectangle ++(0.8,2.8);
+  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont\bfseries, text=tdgolddark] at (32.2,6) {0.07 s};
+  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdgrey] at (0,1.4) {simulator};
+  \fill[tdorig] (30,0) rectangle ++(70,2.8);
+  \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont\bfseries, text=tdgrey] at (101.5,1.4) {14 s};
+\end{tikzpicture}%

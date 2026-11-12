@@ -1,0 +1,59 @@
+% How the planner teacher picks each move (deck slide "How the teacher plans"; also usable in an article).
+% Facts: docs/LEARNING_FINDINGS.md section 5 and scripts/learning/mpc_teacher.py: each control step it reads the exact
+% simulator state, samples 256 smooth pusher-target paths 48 steps ahead (in the first round 128 of them are structured
+% pushes), rolls each out in the world model, scores how well the letter's points match the goal, keeps the 24 best
+% and samples around them, 4 rounds (4 x 256 = 1,024 plans), then executes the first target of the best plan and
+% plans again at the next step. Drawn as a plan-ahead loop: an inner search in the world model (sample, imagine, score,
+% keep the best, 4 rounds) inside the outer act-and-replan loop. Overlay steps (\plstep{n}{...} = \onslide<n->{...} in
+% beamer): 1 read the state, 2 the search, 3 execute and plan again. Size 144 x 38 mm; fixed font sizes.
+\makeatletter%
+\@ifclassloaded{beamer}{\providecommand\plstep[2]{\onslide<#1->{#2}}}{\providecommand\plstep[2]{#2}}%
+\makeatother%
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdgoldbg}{HTML}{FFF6E0}%
+\tikzset{%
+  pl arrow/.style={-{Stealth[length=2.2mm,width=1.9mm]}, line width=1pt, draw=#1},%
+  pl badge/.style={circle, fill=#1, text=white, font=\sffamily\fontsize{8}{8}\selectfont\bfseries, inner sep=0pt,%
+    minimum size=4.4mm},%
+  pl text/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=tdink,%
+    align=flush left},%
+  pl label/.style={inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont\bfseries, text=#1, align=left},%
+}%
+% \plnode{colour}{x0}{y bottom}{width}{title}{text}: a step box 14 mm high
+\providecommand\plnode[6]{%
+  \draw[rounded corners=1.6mm, line width=0.9pt, draw=#1, fill=white] (#2,#3) rectangle ++(#4,14);%
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink]%
+    at ($(#2,#3)+(2,12.2)$) {#5};%
+  \node[pl text, text width=#4 mm - 3mm] at ($(#2,#3)+(2,7.4)$) {#6};%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,38);
+  % ---------------------------------------------------------------- 1: read the exact state
+  \plstep{1}{\plnode{tdgold}{0}{12}{24}{Read state}{exact, training\\only}}
+  % ---------------------------------------------------------------- 2: search inside the world model
+  \plstep{2}{
+    \draw[rounded corners=2.4mm, line width=0.8pt, draw=tdgold, dash pattern=on 3pt off 2pt, fill=tdgoldbg]
+      (28.5,1) rectangle (115.5,33);
+    \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=tdgolddark]
+      at (31,31.6) {SEARCH IN THE STATE WORLD MODEL\enspace\mdseries 4 rounds, 1{,}024 plans};
+    \draw[pl arrow=tdgrey] (24,19) -- (31.5,19);
+    \plnode{tdgold}{31.5}{12}{25}{Sample}{256 push paths,\\48 steps ahead}
+    \draw[pl arrow=tdgrey] (56.5,19) -- (60,19);
+    \plnode{tdgold}{60}{12}{25}{Imagine}{run each one\\in the model}
+    \draw[pl arrow=tdgrey] (85,19) -- (88.5,19);
+    \plnode{tdgold}{88.5}{12}{25}{Score}{how well it\\fits the goal}
+    \draw[pl arrow=tdgold, rounded corners=2mm] (101,12) -- (101,6) -- (44,6) -- (44,12);
+    \node[pl label=tdgolddark, fill=tdgoldbg, inner sep=0.8mm] at (72.5,6) {keep the best 24, sample around them};
+  }
+  % ---------------------------------------------------------------- 3: execute the first move and plan again
+  \plstep{3}{
+    \draw[pl arrow=tdblue] (115.5,19) -- (120,19);
+    \plnode{tdblue}{120}{12}{24}{Execute}{first move of\\the best plan}
+    \draw[pl arrow=tdblue, rounded corners=2mm] (132,26) -- (132,36.5) -- (12,36.5) -- (12,26);
+    \node[pl label=tdblue, fill=white, inner sep=0.8mm] at (72,36.5) {next step, plan again};
+  }
+\end{tikzpicture}%

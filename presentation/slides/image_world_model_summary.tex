@@ -1,0 +1,18 @@
+\section{Early attempts: image world model}
+
+% Source/speaker context: Source JSON full precision, rounded only for display. Parent/H1/Mixed H4 .669553/.493485/.683298,H8 .442510/.224138/.455003,H16 .214438/.109313/.332507. Completed original49991 updates H4 .6786233682351032,H8 .3909663512065065,H16 .2301168958702625. MixedH16 vs completed original27better1tie20worse. L-shape mean completed original .736/.469/.319 is higher than Mixed .682/.434/.266 atall3 horizons. Completed original long-range mean recovers versus H1+1k; no training-duration deterioration claim. Mixed versus intermediateParent35better1tie12worse and versus H1+1k40better1tie7worse belong only to the controlled intermediate-parent study. GrayIoU excludes blue pusher and measures visible palette overlap, not physicalpose, reward, success or rigidity. All48 cases8perseen-shape and same seeds are reused fixed seen-val development; no independent finaltest, unseen-shape, equal-compute or equal-total-budget claim.
+\begin{frame}{Improved mean overlap, uneven results}
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-20.200mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.800}{11.760}\selectfont Mean gray-object IoU on 48 fixed development cases (higher is better).\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=18.000mm,yshift=-28.200mm]current page.north west) {\parbox[t]{124.000mm}{\centering\fontsize{9.300}{11.160}\selectfont \begin{tabular}{lrrrr}\toprule Model & Updates & H4 & H8 & H16\\\midrule
+Parent & 36,496 & 0.670 & 0.443 & 0.214\\
+H1 +1k & 37,496 & 0.493 & 0.224 & 0.109\\
+Mixed +1k & 37,496 & 0.683 & 0.455 & 0.333\\
+Original & 49,991 & 0.679 & 0.391 & 0.230\\
+\bottomrule\end{tabular}\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-55.800mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.500}{11.400}\selectfont Mixed improves 27 of 48 H16 cases over the completed original.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-63.000mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.500}{11.400}\selectfont The original has better mean overlap on L at H4, H8 and H16.\par}};
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text=tdink] at ([xshift=8.000mm,yshift=-70.200mm]current page.north west) {\parbox[t]{144.000mm}{\raggedright\fontsize{9.500}{11.400}\selectfont Stopping and geometry still fail. Overlap is not task success.\par}};
+% Printed note omitted to match the approved PPTX; source qualification remains above.
+\end{tikzpicture}
+\end{frame}

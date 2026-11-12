@@ -1,0 +1,5 @@
+% Step-by-step build of the talk deck (every Beamer overlay on its own page), used by build.sh and CI to turn
+% overlay builds into PowerPoint click animations. Compile from this folder: pdflatex tdyssey-builds.tex (twice),
+% latexmk -pdf tdyssey-builds.tex, or tectonic -X compile tdyssey-builds.tex. The deck finds its files through ../
+\def\tdanimated{1}
+\input{../slides/main.tex}

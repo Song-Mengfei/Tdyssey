@@ -1,0 +1,95 @@
+% Figure 1: method overview (shared by slides/main.tex and paper/main.tex).
+%
+% Usage: \input{<presentation root>/figures/tikz/overview.tex} inside a figure or frame. Needs graphicx, xcolor and
+% tikz with the libraries arrows.meta and calc. In beamer every part appears on its own overlay step
+% (\ovstep{n}{...} = \onslide<n->{...}): 1 data, 2 world model, 3 teacher, 4 camera policy and its labels,
+% 5 correction rounds, 6 deployed policy and legend. In an article everything is drawn at once (static figure).
+% Size: 144 x 64 mm (the slide's text width); fixed font sizes (10 pt titles, 9 pt text) in the current family.
+% Images: images/slide/ov_icon_data.png, ov_icon_wm.png, ov_icon_teacher.png, ov_icon_camera.png, shape_T.png,
+% shape_A.png, shape_K.png, shape_R.png, shape_S.png, shape_W.png (made by scripts/slide_images.py). The path prefix is
+% \presroot when the deck defined it, otherwise ../ (the paper builds from paper/).
+\makeatletter%
+\@ifclassloaded{beamer}{\providecommand\ovstep[2]{\onslide<#1->{#2}}}{\providecommand\ovstep[2]{#2}}%
+\makeatother%
+\ifdefined\presroot\def\ovroot{\presroot}\else\def\ovroot{../}\fi%
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdorig}{HTML}{8F8D86}%
+\providecolor{tdgoldbg}{HTML}{FFF6E0}%
+\providecolor{tdbluebg}{HTML}{EAF2FC}%
+\providecolor{tdblueline}{HTML}{9CC3F0}%
+\providecommand\ovtitle{\sffamily\fontsize{10}{12}\selectfont\bfseries}%
+\providecommand\ovbody{\sffamily\fontsize{9}{10.4}\selectfont}%
+\tikzset{%
+  ov arrow/.style={-{Stealth[length=2.3mm,width=2mm]}, line width=1.1pt, draw=#1},%
+  ov lane priv/.style={rounded corners=2.5mm, fill=tdgoldbg, draw=tdgold, dash pattern=on 3pt off 2pt, line width=0.8pt},%
+  ov lane dep/.style={rounded corners=2.5mm, fill=tdbluebg, draw=tdblueline, line width=0.8pt},%
+  ov badge/.style={circle, fill=#1, text=white, font=\sffamily\fontsize{8}{8}\selectfont\bfseries, inner sep=0pt,%
+    minimum size=4.4mm},%
+  ov text/.style={anchor=north west, inner sep=0pt, align=flush left, text=tdink},%
+}%
+% \ovbox{colour}{x0}{y top}{width}{height}{step number}{icon file}{title}{text}  (mm; text lines broken by hand)
+\providecommand\ovbox[9]{%
+  \draw[rounded corners=1.6mm, fill=white, draw=#1, line width=0.9pt] (#2,#3) rectangle ++(#4,-#5);%
+  \node[ov badge=#1] at ($(#2,#3)+(3.6,-4.4)$) {#6};%
+  \node[anchor=north east, inner sep=0pt] at ($(#2,#3)+(#4,0)+(-1.3,-1.2)$)%
+    {\includegraphics[width=7.6mm]{\ovroot images/slide/#7}};%
+  \node[ov text, font=\ovtitle] at ($(#2,#3)+(7,-2.8)$) {#8};%
+  \node[ov text, font=\ovbody] at ($(#2,#3)+(2,-9)$) {#9};%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,64);
+  % ---------------------------------------------------------------- training only (privileged)
+  \ovstep{1}{
+    \draw[ov lane priv] (0,34) rectangle (144,64);
+    \node[anchor=west, inner sep=0pt, text=tdgolddark] at (3,62)
+      {\fontsize{9}{10}\selectfont\textbf{TRAINING ONLY}\quad uses the exact simulator state};
+    \ovbox{tdorig}{1.5}{59.7}{44}{24.6}{1}{ov_icon_data.png}{Machine data}
+      {pushes by the original\\T policy, with noise}
+  }
+  \ovstep{2}{
+    \draw[ov arrow=tdgrey] (45.5,47.4) -- (50,47.4);
+    \ovbox{tdgold}{50}{59.7}{44}{24.6}{2}{ov_icon_wm.png}{World model}
+      {learns how the letter\\moves when pushed}
+  }
+  \ovstep{3}{
+    \draw[ov arrow=tdgrey] (94,47.4) -- (98.5,47.4);
+    \ovbox{tdgold}{98.5}{59.7}{44}{24.6}{3}{ov_icon_teacher.png}{Planner teacher}
+      {tries many plans,\\keeps the best}
+  }
+  % ---------------------------------------------------------------- camera policy (deployed)
+  \ovstep{4}{
+    \draw[ov lane dep] (48,0) rectangle (144,28);
+    \draw[ov arrow=tdgold] (105,35.1) -- (105,26.6);
+    \node[anchor=east, inner sep=0pt, text=tdgolddark, font=\ovbody] at (103,31)
+      {copy the teacher's \textbf{plans}};
+    \ovbox{tdblue}{98.5}{26.5}{44}{25}{4}{ov_icon_camera.png}{Camera policy}
+      {official Diffusion Policy\\camera + pusher position}
+  }
+  \ovstep{5}{
+    \draw[ov arrow=tdblue] (139.5,26.6) -- (139.5,35.1);
+    \node[ov badge=tdblue] at (108.3,31) {5};
+    \node[anchor=west, inner sep=0pt, text=tdblue] at (111,31) {\fontsize{9}{10}\selectfont\bfseries correction rounds};
+    \node[ov badge=tdblue] at (3.6,24.6) {5};
+    \node[ov text, text width=39.5mm, font=\ovbody] at (6.6,26.4)
+      {\textcolor{tdblue}{\textbf{Correction rounds}}\\the policy drives,\\the teacher labels};
+  }
+  % ---------------------------------------------------------------- deployed policy and legend
+  \ovstep{6}{
+    \draw[ov arrow=tdblue] (98.5,14) -- (94,14);
+    \draw[rounded corners=1.6mm, fill=white, draw=tdblue, line width=0.9pt] (50,26.5) rectangle ++(44,-25);
+    \node[ov badge=tdblue] at (53.6,22.1) {6};
+    \node[ov text, font=\ovtitle] at (57,23.7) {Deployed policy};
+    \foreach \s [count=\i] in {T,A,K,R,S,W}
+      \node[inner sep=0pt] at (49.4 + \i*5.8, 14.4) {\includegraphics[width=5mm]{\ovroot images/slide/shape_\s.png}};
+    \node[anchor=west, inner sep=0pt, text=tdgrey, font=\ovbody] at (87.4,14.4) {\dots};
+    \node[ov text, font=\ovbody] at (52,10.2) {one camera policy\\for all 26 letters};
+    \draw[ov lane priv] (1.5,6.3) rectangle ++(6.5,3.6);
+    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,8.1) {training only, exact state};
+    \draw[ov lane dep] (1.5,0.9) rectangle ++(6.5,3.6);
+    \node[anchor=west, inner sep=0pt, text=tdink, font=\ovbody] at (9.6,2.7) {camera + pusher position};
+  }
+\end{tikzpicture}%

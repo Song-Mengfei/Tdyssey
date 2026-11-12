@@ -1,0 +1,93 @@
+name: Presentation PDFs
+
+# Compiles the talk slides and the paper draft whenever presentation/ changes, so every author can download the
+# latest PDFs from the run's artifacts (Actions tab -> run -> "presentation-pdfs"). The same run builds the editable
+# PowerPoint version of the slides from those PDFs (artifact "presentation-pptx", with QA sheets).
+on:
+  push:
+    paths: ["presentation/**", ".github/workflows/presentation-pdf.yml"]
+  pull_request:
+    paths: ["presentation/**", ".github/workflows/presentation-pdf.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      # pptx/tdyssey-builds.tex is slides/main.tex with every overlay step on its own page (\def\tdanimated{1});
+      # those pages give the click order of the PowerPoint build animations.
+      - name: Compile slides, paper and step-by-step slides (TeX Live 2024, pdflatex via latexmk)
+        uses: xu-cheng/latex-action@v3
+        with:
+          texlive_version: 2024
+          working_directory: presentation
+          root_file: |
+            slides/main.tex
+            paper/main.tex
+            pptx/tdyssey-builds.tex
+          work_in_root_file_dir: true
+      - name: Name the PDFs
+        run: |
+          mkdir -p pdf
+          cp presentation/slides/main.pdf pdf/tdyssey-slides.pdf
+          cp presentation/paper/main.pdf pdf/tdyssey-paper.pdf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: presentation-pdfs
+          path: pdf/
+          if-no-files-found: error
+
+      # ---- editable PowerPoint deck (presentation/pptx/README.md)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.18.0"
+          cache: npm
+          cache-dependency-path: presentation/pptx/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: presentation/pptx/requirements.txt
+      - name: Install the PowerPoint generator (pptxgenjs from package-lock.json, Python packages, ffmpeg)
+        run: |
+          npm ci --prefix presentation/pptx --no-audit --no-fund
+          python -m pip install -r presentation/pptx/requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          ffmpeg -version | head -n 1
+      - name: Build the PowerPoint deck from the PDFs
+        env:
+          PDF: presentation/slides/main.pdf
+          BUILDS_PDF: presentation/pptx/tdyssey-builds.pdf
+          PYTHON: python
+        run: |
+          bash presentation/pptx/build.sh
+          node presentation/pptx/build_deck.js --videos drive --out presentation/pptx/out/tdyssey-slides-drive-links.pptx
+          mkdir -p pptx
+          cp presentation/pptx/out/tdyssey-slides.pptx presentation/pptx/out/tdyssey-slides-drive-links.pptx pptx/
+      # LibreOffice from Ubuntu's own packages renders the deck. Carlito has Calibri's metrics, so line breaks and
+      # overflow in the render can be trusted. Sheets: Beamer page | PowerPoint render | both overlaid.
+      - name: Render the deck with LibreOffice and write comparison sheets
+        run: |
+          sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-crosextra-carlito fonts-dejavu-core
+          soffice --version
+          soffice --headless --convert-to pdf --outdir pptx/qa pptx/tdyssey-slides.pptx
+          python presentation/pptx/qa.py inspect pptx/tdyssey-slides.pptx --pdf presentation/slides/main.pdf \
+            --font /usr/share/fonts/truetype/crosextra/Carlito-Regular.ttf \
+            > pptx/qa/structure.txt || { cat pptx/qa/structure.txt; exit 1; }
+          cat pptx/qa/structure.txt
+          python presentation/pptx/qa.py compare presentation/slides/main.pdf pptx/qa/tdyssey-slides.pdf \
+            --out pptx/qa/libreoffice
+          python presentation/pptx/qa.py preview pptx/tdyssey-slides.pptx presentation/slides/main.pdf \
+            --builds-pdf presentation/pptx/tdyssey-builds.pdf --fonts /usr/share/fonts/truetype/crosextra \
+            --out pptx/qa/xml-preview
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: presentation-pptx
+          path: pptx/
+          if-no-files-found: warn

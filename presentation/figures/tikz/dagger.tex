@@ -1,0 +1,89 @@
+% Why correction rounds (DAgger) are needed and what they add (deck slide after "Copy the plan, not the pushes").
+% Facts: docs/LEARNING_FINDINGS.md ("Teacher-relabelled DAgger works", D045, D046) and the deck's "Correction rounds
+% (DAgger)" and "Copy the plan, not the pushes" slides. Copying only trains the camera policy on the teacher's own runs,
+% so after a small mistake it reaches states the teacher never visited and has no example of how to recover. In a
+% correction round the policy drives; at the states it reaches, the teacher (which reads the exact simulator state,
+% training only) plans from there, and its intended 16-step plan is the label, not its executed pushes. The labelled
+% states are added to all earlier data and the policy is retrained; 50 rounds, 3.2M training examples in the last one.
+% Drawn as two panels with the same drifting policy run (left without labels, right with the teacher's plans) above a
+% thin loop strip. Abstract shapes only (no images): green T = goal, grey T = block at the start, dots = states.
+% Overlay steps (\dgstep{n}{...} = \onslide<n->{...} in beamer): 1 copying only, 2 correction rounds, 3 the loop; the
+% final state reads on its own. Size 144 x 62 mm; fixed font sizes (10 pt titles, 9 pt text).
+\makeatletter%
+\@ifclassloaded{beamer}{\providecommand\dgstep[2]{\onslide<#1->{#2}}}{\providecommand\dgstep[2]{#2}}%
+\makeatother%
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdorig}{HTML}{8F8D86}%
+\providecolor{tdgoldbg}{HTML}{FFF6E0}%
+\providecolor{tdbluebg}{HTML}{EAF2FC}%
+\providecolor{tdpanel}{HTML}{F3F5F8}%
+\providecolor{vgoal}{RGB}{144,238,144}%
+\providecolor{vblock}{RGB}{119,136,153}%
+\tikzset{%
+  dg arrow/.style={-{Stealth[length=2.2mm,width=1.9mm]}, line width=1pt, draw=#1},%
+  dg panel/.style={rounded corners=2.4mm, line width=0.9pt, draw=#1, fill=white},%
+  dg title/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=#1},%
+  dg text/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10.6}\selectfont, text=#1,%
+    align=flush left},%
+  dg tag/.style={inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=#1},%
+  dg run/.style={line width=1.4pt, draw=#1, -{Stealth[length=1.9mm,width=1.7mm]}},%
+  dg plan/.style={-{Stealth[length=1.9mm,width=1.7mm]}, line width=1.3pt, draw=tdgold},%
+  dg ask/.style={circle, draw=tdgrey, fill=white, line width=0.7pt, inner sep=0pt, minimum size=3.6mm,%
+    text=tdgrey, font=\sffamily\fontsize{8}{8}\selectfont\bfseries},%
+  dg step/.style={inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=#1},%
+}%
+% \dgT{x}{y}{angle}{fill}: a small T-shaped block, 8 mm wide
+\providecommand\dgT[4]{%
+  \fill[#4, shift={(#1,#2)}, rotate=#3] (-4,3) -- (4,3) -- (4,1) -- (1,1) -- (1,-3.6) -- (-1,-3.6) -- (-1,1) -- (-4,1)%
+    -- cycle;%
+}%
+% \dgscene: what both panels share (panel coordinates): goal, block at the start, the policy's run drifting away
+% (its states at (21,22.5), (31,21), (40,17) and (48,12.5))
+\providecommand\dgscene{%
+  \dgT{59}{28}{0}{vgoal}%
+  \node[anchor=south, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont, text=tdgrey] at (59,32) {goal};%
+  \draw[dg run=tdblue] (10,19) .. controls (14,21) and (17,22.4) .. (21,22.5) .. controls (25,22.6) and (27.5,21.9)%
+    .. (31,21) .. controls (34.5,20.1) and (37,18.6) .. (40,17) .. controls (43,15.4) and (45,13.6) .. (48,12.5)%
+    .. controls (51,11.4) and (53.5,10.4) .. (56,9.5);%
+  \dgT{9}{19}{-25}{vblock}%
+  \node[dg tag=tdblue, anchor=west] at (58.5,9.5) {policy};%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,14) rectangle (144,62);   % panels only (the loop is on the next slide)
+  % ---------------------------------------------------------------- 1: copying only
+  \dgstep{1}{
+    \draw[dg panel=tdorig] (0,14) rectangle (70,62);
+    \begin{scope}[shift={(0,14)}]
+      \node[dg title=tdink] at (3,45.4) {Teacher's runs only};
+      \node[dg text=tdgrey] at (3,40.6) {the policy never sees its own mistakes};
+      % the teacher's run: shares the start with the policy's run (drawn just above it), then reaches the goal
+      \draw[dg run=tdgold] (10,19.5) .. controls (14,21.5) and (17,22.9) .. (21,23) .. controls (27,23.15) and
+        (33,27.8) .. (43,28.9) .. controls (48,29.4) and (52,29.3) .. (55,29.2);
+      \node[dg tag=tdgolddark, anchor=south] at (33,29.4) {teacher};
+      \dgscene
+      \fill[tdblue] (21,22.5) circle (0.9);
+      \foreach \p in {(31,21), (40,17), (48,12.5)} \node[dg ask] at \p {?};
+      \node[dg text=tdgrey] at (3,13.2) {off the teacher's path\\it has no example\\of how to recover};
+    \end{scope}
+  }
+  % ---------------------------------------------------------------- 2: correction rounds
+  \dgstep{2}{
+    \draw[dg panel=tdblue] (74,14) rectangle (144,62);
+    \begin{scope}[shift={(74,14)}]
+      \node[dg title=tdblue] at (3,45.4) {Correction rounds};
+      \node[dg text=tdgrey] at (3,40.6) {the policy drives, the teacher labels};
+      \dgscene
+      % the teacher plans from each state the policy reached, back toward the goal
+      \draw[dg plan] (21,22.5) .. controls (27,24.7) .. (32,25.2);
+      \draw[dg plan] (31,21) .. controls (36.6,23.1) .. (41.5,24.2);
+      \draw[dg plan] (40,17) .. controls (44.4,19.9) .. (48.8,22.3);
+      \draw[dg plan] (48,12.5) .. controls (50.4,17.8) .. (53.6,21.6);
+      \foreach \p in {(21,22.5), (31,21), (40,17), (48,12.5)} \fill[tdblue] \p circle (0.9);
+      \node[dg text=tdgrey] at (3,13.2) {the teacher reads\\the exact state\\(training only)};
+    \end{scope}
+  }
+\end{tikzpicture}%

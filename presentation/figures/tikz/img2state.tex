@@ -1,0 +1,41 @@
+% From images to states (deck slide before "How the state world model works"). A 96 px camera frame from the image
+% world model's data (images/image_wm_48m/L018_truth_H16.png) holds 27,648 numbers; planning only needs the state, 10
+% numbers, which the simulator gives exactly during training. Numbers: image world model 48.86M parameters and mean
+% overlap 0.74 / 0.47 / 0.32 at 4 / 8 / 16 steps on its 8 L cases (slides/image_world_model_48m.tex); state world model
+% 832,518 learned parameters (runs/wm2/v3/model.pt) and median error 0.25 px 8 controls ahead (wm_accuracy).
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdorig}{HTML}{8F8D86}%
+\providecolor{tdgoldbg}{HTML}{FFF6E0}%
+\providecolor{tdpanel}{HTML}{F3F5F8}%
+\tikzset{%
+  is head/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{10}{12}\selectfont\bfseries, text=tdink},%
+  is text/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10.8}\selectfont, text=tdink, align=flush left},%
+  is small/.style={anchor=north west, inner sep=0pt, font=\sffamily\fontsize{8}{9.6}\selectfont, text=tdgrey, align=flush left},%
+  is arrow/.style={-{Stealth[length=2.4mm,width=2mm]}, line width=1.2pt, draw=#1},%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,64);
+  \node[anchor=south west, inner sep=0pt] at (0,37) {\includegraphics[width=27mm]{\presroot images/image_wm_48m/L018_truth_H16.png}};
+  \draw[tdorig, line width=0.4pt] (0,37) rectangle ++(27,27);
+  \node[is small] at (0,35.6) {camera image\\96 x 96 pixels, 27{,}648 numbers};
+  \draw[is arrow=tdblue] (30,50.5) -- (46,50.5);
+  \node[anchor=south, align=center, inner sep=0pt, font=\sffamily\fontsize{8}{9.6}\selectfont\bfseries, text=tdblue] at (38,52.2)
+    {pull out\\the state};
+  \fill[tdpanel, rounded corners=1.6mm] (48,37) rectangle (92,64);
+  \node[is head] at (50.5,61.8) {State, 10 numbers};
+  \node[is text] at (50.5,56) {letter x, y, angle\\letter speed and turn\\pusher x, y and speed};
+  \draw[is arrow=tdgrey] (93.5,50.5) -- (100,50.5);
+  \draw[rounded corners=1.6mm, line width=0.9pt, draw=tdgold, fill=tdgoldbg] (101.5,37) rectangle (144,64);
+  \node[is head, text=tdgolddark] at (104,61.8) {State world model};
+  \node[is text, text=tdgolddark] at (104,56) {predicts the same 10\\numbers one step later};
+  \fill[tdpanel, rounded corners=1.6mm] (0,0) rectangle (70,25);
+  \node[is text, text width=65mm] at (2.5,22.6) {\textbf{Image world model}, 48.86M parameters\\must learn the shape, the pusher and the
+    physics from pixels\\overlap with the true frame 0.74, 0.47, 0.32\\at 4, 8, 16 steps ahead (8 L cases)};
+  \fill[tdgoldbg, rounded corners=1.6mm] (74,0) rectangle (144,25);
+  \node[is text, text width=65mm] at (76.5,22.6) {\textbf{State world model}, 0.83M parameters\\shape and pusher rule are known, only the
+    motion is learned\\median error 0.25 px 8 steps ahead\\the simulator gives the state in training only};
+\end{tikzpicture}%

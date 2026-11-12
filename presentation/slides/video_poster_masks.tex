@@ -1,0 +1,27 @@
+% Geometry-only poster masks. Original JPG/MP4 bytes and full link boxes stay intact.
+% These white rectangles clear only the old scene frames/play marks, not captions.
+\newcommand{\tdclearvideoarea}[4]{%
+\fill[white] ([xshift=#1mm,yshift=-#2mm]current page.north west)
+  rectangle ([xshift=#3mm,yshift=-#4mm]current page.north west);}
+\expandafter\def\csname tdmask@p22\endcsname{\tdclearvideoarea{7.64858}{21.328248}{51.351426}{65.029673}}
+\expandafter\def\csname tdmask@p47\endcsname{\tdclearvideoarea{16.648653}{18.414302}{143.3517}{69.118722}}
+\expandafter\def\csname tdmask@p55\endcsname{\tdclearvideoarea{7.64858}{20.726762}{152.35142}{43.428374}}
+% Three tall legacy bodies pull their flow-based frame title upwards. Restore
+% only the header band at the same baselines as an unchanged normal frame.
+\newcommand{\tdrestorevideoheader}[2]{%
+\tdclearvideoarea{0}{0}{160}{15}%
+\node[anchor=base west,inner sep=0pt,outer sep=0pt,text=tdblue,font={\usebeamerfont{kicker}}]
+  at ([xshift=8mm,yshift=-5.562953mm]current page.north west) {#1};%
+\node[anchor=base west,inner sep=0pt,outer sep=0pt,text=tdink,font={\usebeamerfont{frametitle}}]
+  at ([xshift=8mm,yshift=-12.440708mm]current page.north west) {#2};}
+\expandafter\def\csname tdheader@p22\endcsname{\tdrestorevideoheader{Results and demonstration}{The last millimetres}}
+\expandafter\def\csname tdheader@p54\endcsname{\tdrestorevideoheader{Backup}{One scene through the whole project}}
+\expandafter\def\csname tdheader@p61\endcsname{\tdrestorevideoheader{Backup}{Recorded planner-teacher demonstration}}
+% Only the original video union is drawn. Expanded v3 context stays transparent
+% so the editable TeX headings and captions remain whole at the poster boundary.
+\expandafter\def\csname tdposterclip@p54\endcsname{%
+\clip ([xshift=7.6mm,yshift=-32.1mm]current page.north west)
+  rectangle ([xshift=152.4mm,yshift=-54.7mm]current page.north west);}
+\expandafter\def\csname tdposterclip@p55\endcsname{%
+\clip ([xshift=9.4mm,yshift=-20.7mm]current page.north west)
+  rectangle ([xshift=150.6mm,yshift=-43.5mm]current page.north west);}

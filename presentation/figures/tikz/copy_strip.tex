@@ -1,0 +1,27 @@
+% Copying the teacher is not enough (strip above the DAgger diagram on "Why correction rounds work").
+% Numbers: D044 copying gap, success on the same 50 selection scenes for each of 5 shapes (the copying_pooled chart):
+% teacher 76%, copy reading the exact state that re-plans every step 31%, the same copy executing 8 of 16 steps 23%,
+% camera copy 19%, original policy 16%. Shown: teacher, the better exact-state copy and the camera copy;
+% 31/76 gives "at most 41% of the teacher's successes".
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdgold}{HTML}{EDA100}%
+\providecolor{tdgolddark}{HTML}{8A5A00}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{tdorig}{HTML}{8F8D86}%
+\providecolor{tdpanel}{HTML}{F3F5F8}%
+\begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
+  \useasboundingbox (0,0) rectangle (144,22);
+  \fill[tdpanel, rounded corners=1.6mm] (0,0) rectangle (144,22);
+  \foreach \i/\lab/\v/\c in {0/{teacher, exact state}/76/tdgold, 1/{copy, exact state}/31/tdink!75, 2/{copy, camera}/19/tdblue}{
+    \node[anchor=east, inner sep=0pt, font=\sffamily\fontsize{8.5}{10}\selectfont, text=tdink] at (35,17.6-4.6*\i) {\lab};
+    \fill[\c] (36.5,17.6-4.6*\i-1.5) rectangle ++(0.45*\v,3);
+    \node[anchor=west, inner sep=0pt, font=\sffamily\fontsize{8.5}{10}\selectfont\bfseries, text=tdink] at (37.5+0.45*\v,17.6-4.6*\i) {\v\%};
+  }
+  \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{7}{8}\selectfont, text=tdgrey] at (36.5,6.2) {success on 5 shapes};
+  \node[anchor=north west, inner sep=0pt, text width=60mm, align=flush left, font=\sffamily\fontsize{10}{12}\selectfont\bfseries,
+        text=tdink] at (82,19.2) {Copying alone is not enough};
+  \node[anchor=north west, inner sep=0pt, text width=60mm, align=flush left, font=\sffamily\fontsize{9}{10.8}\selectfont,
+        text=tdink] at (82,14) {Even a copy that reads the exact state keeps at most \textcolor{tdblue}{\textbf{41\%}} of the
+        teacher's successes. The skill is lost in copying, not in seeing.};
+\end{tikzpicture}%
