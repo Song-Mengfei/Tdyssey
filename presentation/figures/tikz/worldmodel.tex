@@ -1,9 +1,9 @@
-% How the structured world model predicts one step (deck slide "How the world model works"; also usable in an article).
+% How the state world model predicts one step (deck slide "How the state world model works"; also in the paper).
 % Facts: docs/LEARNING_FINDINGS.md section 4 (wm2): the pusher's controller and the exact pusher-to-letter distance are
-% copied from the simulator, a contact gate keeps an untouched letter still, and a small network in the letter's own
-% frame learns the letter's motion in contact; trained on the original policy's rollouts with noise on its targets.
-% Overlay steps (\wmstep{n}{...} = \onslide<n->{...} in beamer): 1 inputs and output, 2 the copied parts, 3 the learned
-% part and its data, 4 the repeat loop. Size 144 x 52 mm; fixed font sizes in the current family.
+% copied from the simulator (tagged "copied"), a contact gate keeps an untouched letter still, and a small network in the
+% letter's own frame learns the letter's motion in contact ("learned"); trained on the original policy's rollouts with
+% noise on its targets. Overlay steps (\wmstep{n}{...} = \onslide<n->{...} in beamer): 1 inputs and output, 2 the copied
+% parts and the legend, 3 the learned part and its data, 4 the repeat loop. Size 144 x 67 mm; fixed font sizes.
 \makeatletter%
 \@ifclassloaded{beamer}{\providecommand\wmstep[2]{\onslide<#1->{#2}}}{\providecommand\wmstep[2]{#2}}%
 \makeatother%
@@ -26,50 +26,49 @@
     align=flush left},%
 }%
 \begin{tikzpicture}[x=1mm, y=1mm, font=\sffamily]
-  \useasboundingbox (0,0) rectangle (144,52);
-  % ---------------------------------------------------------------- 1: inputs, the model as a box, output
+  \useasboundingbox (0,-8) rectangle (144,59);
   \wmstep{1}{
-    \draw[wm io] (0,22) rectangle (36,42);
-    \node[wm title] at (2.2,40) {Current state};
-    \node[wm text] at (2.2,34.8) {letter position,\\angle and speed\\pusher position};
-    \draw[wm io] (0,4) rectangle (36,17);
-    \node[wm title] at (2.2,15) {Next pusher target};
-    \node[wm text] at (2.2,9.8) {where the pusher is sent};
-    \draw[rounded corners=2.4mm, line width=0.9pt, draw=tdink!45, dash pattern=on 3pt off 2pt] (42,0) rectangle (108,46);
+    \draw[wm io] (0,26) rectangle (34,46);
+    \node[wm title] at (2.2,44) {Current state};
+    \node[wm text] at (2.2,38.8) {letter position,\\angle and speed\\pusher position};
+    \draw[wm io] (0,3) rectangle (34,18);
+    \node[wm title] at (2.2,16) {Next pusher target};
+    \node[wm text] at (2.2,10.8) {where the pusher\\is sent};
+    \draw[rounded corners=2.4mm, line width=0.9pt, draw=tdink!45, dash pattern=on 3pt off 2pt] (39,0) rectangle (111,52);
     \node[anchor=north west, inner sep=0pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=tdgrey]
-      at (44.5,45.2) {WORLD MODEL, ONE STEP};
-    \draw[wm arrow=tdgrey] (36,32) -- (42,32);
-    \draw[wm arrow=tdgrey] (36,10.5) -- (42,10.5);
-    \draw[wm io] (113,20) rectangle (144,34);
-    \node[wm title] at (115.2,32) {Next state};
-    \node[wm text] at (115.2,26.8) {letter and pusher,\\one step later};
-    \draw[wm arrow=tdgrey] (108,27) -- (113,27);
+      at (41.5,51.2) {STATE WORLD MODEL, ONE STEP};
+    \draw[wm arrow=tdgrey] (34,36) -- (39,36);
+    \draw[wm arrow=tdgrey] (34,11.5) -- (39,11.5);
+    \draw[wm io] (115,24) rectangle (144,38);
+    \node[wm title] at (117.2,36) {Next state};
+    \node[wm text] at (117.2,30.8) {letter and pusher,\\one step later};
+    \draw[wm arrow=tdgrey] (111,31) -- (115,31);
   }
-  % ---------------------------------------------------------------- 2: copied from the simulator
   \wmstep{2}{
-    \draw[wm copied] (45,32.3) rectangle (105,42);
-    \node[wm title] at (47.2,40.5) {1\enspace Move the pusher};
-    \node[wm text, text=tdgrey] at (47.2,36.5) {same rule as the simulator (not learned)};
-    \draw[wm copied] (45,16) rectangle (105,29.6);
-    \node[wm title] at (47.2,28.1) {2\enspace Is the pusher touching?};
-    \node[wm text, text=tdgrey] at (47.2,24.1) {exact distance to the letter (not learned)\\if not touching, the letter stays still};
-    \draw[wm arrow=tdgrey] (75,32.3) -- (75,29.6);
+    \draw[wm copied] (42,34) rectangle (108,47.6);
+    \node[wm title] at (44.2,46.1) {1\enspace Move the pusher};
+    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,46.3) {copied};
+    \node[wm text, text=tdgrey, text width=62mm] at (44.2,42.1) {follows its target, the same formula as the simulator};
+    \draw[wm copied] (42,17.2) rectangle (108,30.8);
+    \node[wm title] at (44.2,29.3) {2\enspace Is the pusher touching?};
+    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,29.5) {copied};
+    \node[wm text, text=tdgrey, text width=62mm] at (44.2,25.3) {exact distance to the letter's true shape\\if not touching, the letter stays still};
+    \fill[tdpanel, draw=tdorig, line width=0.6pt, rounded corners=0.5mm] (39,-6.6) rectangle ++(3.4,2.6);
+    \node[wm text, text=tdgrey, anchor=west] at (43.6,-5.3) {copied = exact rule from the simulator};
+    \draw[wm arrow=tdgrey] (75,34) -- (75,30.8);
   }
-  % ---------------------------------------------------------------- 3: learned from machine data
   \wmstep{3}{
-    \draw[wm learned] (45,0.8) rectangle (105,14);
-    \node[wm title] at (47.2,12.5) {3\enspace How the letter moves};
-    \node[wm text, text=tdgolddark] at (47.2,8.5) {a small network learns this\\from recorded pushes};
-    \draw[wm arrow=tdgrey] (75,16) -- (75,14);
-    \node[wm text, text=tdgolddark, text width=30.5mm] at (113.3,15.6)
-      {recorded pushes of the original T policy with noise, no human demos};
-    \draw[-{Stealth[length=1.8mm,width=1.6mm]}, line width=0.8pt, tdgold, dash pattern=on 2pt off 1.5pt]
-      (112.6,7.2) -- (105.5,7.2);
+    \draw[wm learned] (42,0.8) rectangle (108,14.4);
+    \node[wm title] at (44.2,12.9) {3\enspace How the letter moves};
+    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdgold!30, text=tdgolddark, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,13.1) {learned};
+    \node[wm text, text=tdgolddark] at (44.2,8.9) {a small network learns this\\from recorded pushes};
+    \draw[wm arrow=tdgrey] (75,17.2) -- (75,14.4);
+    \node[wm text, text=tdgolddark, text width=28.5mm] at (115.3,16) {recorded pushes of the original T policy with noise, no human demos};
+    \draw[-{Stealth[length=1.8mm,width=1.6mm]}, line width=0.8pt, tdgold, dash pattern=on 2pt off 1.5pt] (114.6,7.6) -- (108.5,7.6);
   }
-  % ---------------------------------------------------------------- 4: repeated to imagine a plan
   \wmstep{4}{
-    \draw[wm arrow=tdblue, rounded corners=2mm] (128.5,34) -- (128.5,50) -- (18,50) -- (18,42.4);
+    \draw[wm arrow=tdblue, rounded corners=2mm] (129.5,38) -- (129.5,57) -- (17,57) -- (17,46.4);
     \node[anchor=center, inner sep=1.2pt, font=\sffamily\fontsize{9}{10}\selectfont\bfseries, text=tdblue, fill=white]
-      at (73.2,50) {repeat 48 times to imagine a whole push plan};
+      at (73.2,57) {repeat 48 times to imagine a whole push plan};
   }
 \end{tikzpicture}%

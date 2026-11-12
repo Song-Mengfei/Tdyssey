@@ -316,8 +316,8 @@
     \foreach \i/\x/\y/\c/\st/\h/\b/\v in {%
         1/0/30/tdorig/1/{RL fine-tuning}/{reward success in the simulator}/{\nok{T 55\% \too 5\%}},
         2/48/30/tdorig/1/{Re-ranking}/{pick the best of 16 plans with the simulator, then imitate}/{\nok{within noise}},
-        3/96/30/tdorig/1/{Back-propagation}/{train a teacher through the world model by gradients}/{\nok{goal covered 4 to 11\%}},
-        4/0/0/tdgold/2/{Sampling planner}/{search many push plans inside the world model}/{\ok{the teacher}},
+        3/96/30/tdorig/1/{Back-propagation}/{gradients through the state world model}/{\nok{goal covered 4 to 11\%}},
+        4/0/0/tdgold/2/{Sampling planner}/{search many push plans inside the state world model}/{\ok{the teacher}},
         5/48/0/tdorig/3/{Copying the teacher}/{train the camera policy on the teacher's moves}/{\color{tdgolddark}\footnotesize most skill lost},
         6/96/0/tdblue/3/{Correction rounds}/{the policy drives, the teacher labels}/{\ok{our method}}}{
       \uncover<\st->{%
@@ -342,7 +342,7 @@
     \vspace{1mm}
     {\small The original policy's plans are too alike, so picking the best of 16 and copying it changes little.\par}
     \column{70mm}
-    {\small\textbf{Back-propagating through the world model}\par}\vspace{0.5mm}
+    {\small\textbf{Back-propagating through the state world model}\par}\vspace{0.5mm}
     \deckfig{bptt_compact}\par
     \vspace{1mm}
     {\small Gradients often get stuck at contact, so it never pushes the block home. We switched to \hl{sampling}
@@ -350,15 +350,19 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{How the world model works}
+\begin{frame}{From images to states}
+  \centering
+  \tikzfile{img2state}\par
+\end{frame}
+
+\begin{frame}{How the state world model works}
   \centering
   \tikzfile{worldmodel}\par
-  \vspace{1.2mm}
-  \raggedright
-  \uncover<4->{%
-    \deckfig{wm_error_bar}\hspace{4mm}%
-    \parbox[b]{62mm}{\cpt{Median error 8 steps ahead. The plain network learns everything, ours copies the pusher and
-      contact rules. Finishing needs about 1.5 px.}}\par}
+\end{frame}
+
+\begin{frame}{State world model vs simulator}
+  \centering
+  \tikzfile{wm_vs_sim}\par
 \end{frame}
 
 \begin{frame}{How the teacher plans}
@@ -724,15 +728,13 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{The world model}
+\begin{frame}{The state world model}
   \deckfig{wm_accuracy}\par
   \vspace{1mm}
   \cpt{Copied from the simulator, the pusher motion and contact geometry. Learned, how the block moves in contact.}
 \end{frame}
 
-\begin{frame}{What the world model imagines vs the simulator}
-% Synchronized composite for p47; underlying stills and labels are unchanged.
-\slidevideo{p47}
+\begin{frame}{What the state world model imagines vs the simulator}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{68mm}
     \centering
@@ -741,9 +743,9 @@
     \cpt{D, red outline = imagined 32 steps ahead without correction. Error at most 1.5 px.}
     \column{68mm}
     \centering
-    \video{slide/wm_imagined_E.png}{world_model/imagined_vs_real_E.mp4}{50mm}\par
+    \video{slide/wm_imagined_T.png}{world_model/imagined_vs_real_T.mp4}{50mm}\par
     \vspace{1.5mm}
-    \cpt{E, 1 to 2 px in most windows, but one 32-step window drifted 43 px. The teacher re-plans after every push.}
+    \cpt{T, red outline = imagined 32 steps ahead without correction. Error at most 0.9 px.}
   \end{columns}
 \end{frame}
 
