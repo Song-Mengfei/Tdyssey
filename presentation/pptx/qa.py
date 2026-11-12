@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Checks for the generated PowerPoint deck.
 
-  qa.py inspect deck.pptx            structure: fonts and sizes used, pictures, videos, animations, slide count
+  qa.py inspect deck.pptx [--pdf beamer.pdf] [--font Carlito-Regular.ttf]
+                                     structure: fonts and sizes used, pictures, videos, animations, slide count;
+                                     with --pdf every slide's words must occur on its Beamer page, with --font every
+                                     character in the theme font must exist in it (both fail the check otherwise)
   qa.py compare beamer.pdf pptx.pdf  side-by-side sheets: Beamer page | PowerPoint render | overlay of both
   qa.py preview deck.pptx beamer.pdf [--builds-pdf builds.pdf]
                                      the same sheets drawn from the .pptx XML with a Calibri-metric font (Carlito),
@@ -31,8 +34,97 @@ NS = {
 }
 
 
+# ------------------------------------------------------------------------------------------------- text check
+BAD_CHARS = re.compile("[\ufb00-\ufb06\ufffd\ue000-\uf8ff\x00-\x08\x0b\x0c\x0e-\x1f]")
+TOKEN = re.compile(r"\w+|[^\w\s]")
+
+
+def tokens(text: str) -> list:
+    """Words and single symbols, after Unicode compatibility folding (ligatures -> letters)."""
+    import unicodedata
+
+    return TOKEN.findall(unicodedata.normalize("NFKC", text))
+
+
+def pdf_page_text(page) -> str:
+    """The page's own text with ligatures expanded (MuPDF), lines separated by newlines."""
+    import fitz
+
+    flags = fitz.TEXTFLAGS_DICT & ~fitz.TEXT_PRESERVE_LIGATURES
+    lines = []
+    for b in page.get_text("dict", flags=flags)["blocks"]:
+        for ln in b.get("lines", []):
+            parts = []
+            for sp in ln["spans"]:
+                t = sp["text"]
+                if "Dingbat" in sp["font"] or "Zapf" in sp["font"]:  # TeX codes without a Unicode map
+                    t = "".join(chr(0x2700 + ord(c)) if ord(c) < 0x60 else c for c in t)
+                parts.append(t)
+            lines.append(" ".join(parts))
+    return "\n".join(lines)
+
+
+def check_glyphs(z, slides, font: Path) -> list:
+    """Every character of a run in the theme font must exist in the font (Carlito has Calibri's character set
+    for this deck's text); runs that name another font (the check-mark symbol font) are left to that font."""
+    from fontTools.ttLib import TTFont
+    from lxml import etree
+
+    cmap = TTFont(str(font)).getBestCmap()
+    problems = []
+    for i, sn in enumerate(slides):
+        x = etree.fromstring(z.read(sn))
+        missing = {}
+        for r in x.iter("{%s}r" % NS["a"]):
+            lat = r.find("a:rPr/a:latin", NS)
+            if lat is not None and not lat.get("typeface", "").startswith("+"):
+                continue
+            for ch in r.findtext("a:t", default="", namespaces=NS):
+                if ord(ch) > 32 and ord(ch) not in cmap:
+                    missing[ch] = missing.get(ch, 0) + 1
+        if missing:
+            problems.append(f"slide {i + 1}: characters missing from {font.stem}: "
+                            + ", ".join(f"{c!r} U+{ord(c):04X}" for c in sorted(missing)))
+    return problems
+
+
+def check_text(z, slides, pdf: Path) -> list:
+    """Every word of every slide must occur on the matching Beamer page (counted, so a split word like "fi ne"
+    or a reordered "ifrst" fails); no ligature, replacement, private-use or control characters anywhere."""
+    import collections
+    import fitz
+    from lxml import etree
+
+    problems = []
+    doc = fitz.open(pdf)
+    if len(doc) != len(slides):
+        problems.append(f"text check: {len(slides)} slides but {len(doc)} PDF pages")
+    for i, sn in enumerate(slides[: len(doc)]):
+        x = etree.fromstring(z.read(sn))
+        texts = []
+        for sp in x.iter("{%s}sp" % NS["p"]):
+            ph = sp.find(".//p:nvPr/p:ph", NS)
+            if ph is not None and ph.get("type") in ("sldNum", "ftr", "dt"):
+                continue
+            for para in sp.iter("{%s}p" % NS["a"]):
+                t = "".join(e.text or "" for e in para.iter("{%s}t" % NS["a"]))
+                if t.strip():
+                    texts.append(t)
+        for t in texts:
+            bad = sorted(set(BAD_CHARS.findall(t)))
+            if bad:
+                problems.append(f"slide {i + 1}: bad characters {[f'U+{ord(c):04X}' for c in bad]} in {t!r}")
+        have = collections.Counter(tokens(pdf_page_text(doc[i])))
+        need = collections.Counter(tok for t in texts for tok in tokens(t))
+        extra = {tok: n - have[tok] for tok, n in need.items() if n > have[tok]}
+        if extra:
+            words = ", ".join(f"{tok!r}" + (f" x{n}" if n > 1 else "") for tok, n in sorted(extra.items()))
+            problems.append(f"slide {i + 1}: words not on Beamer page {i + 1}: {words}")
+    return problems
+
+
 # ------------------------------------------------------------------------------------------------- inspect
-def inspect(pptx: Path) -> int:
+def inspect(pptx: Path, pdf: Path = None, font: Path = None) -> int:
     from lxml import etree
 
     z = zipfile.ZipFile(pptx)
@@ -92,6 +184,16 @@ def inspect(pptx: Path) -> int:
     media = [n for n in names if n.startswith("ppt/media/")]
     total = sum(z.getinfo(n).file_size for n in media)
     print(f"media parts: {len(media)} ({total / 1e6:.1f} MB)")
+    if pdf:
+        tp = check_text(z, slides, pdf)
+        print(f"text check against {pdf.name}: " + ("every word matches its Beamer page" if not tp else
+                                                     f"{len(tp)} problem(s)"))
+        problems += tp
+    if font:
+        gp = check_glyphs(z, slides, font)
+        print(f"glyph check against {font.name}: " + ("every character is in the font" if not gp else
+                                                       f"{len(gp)} problem(s)"))
+        problems += gp
     for p in problems:
         print("PROBLEM:", p)
     return 1 if problems else 0
@@ -598,6 +700,8 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     a = sub.add_parser("inspect")
     a.add_argument("pptx")
+    a.add_argument("--pdf", default="", help="default Beamer PDF: also check every slide's words against its page")
+    a.add_argument("--font", default="", help="Carlito-Regular.ttf: check that the theme font has every character")
     b = sub.add_parser("compare")
     b.add_argument("beamer_pdf")
     b.add_argument("pptx_pdf")
@@ -613,7 +717,7 @@ def main():
     c.add_argument("--pages", type=int, nargs="*")
     args = ap.parse_args()
     if args.cmd == "inspect":
-        sys.exit(inspect(Path(args.pptx)))
+        sys.exit(inspect(Path(args.pptx), Path(args.pdf) if args.pdf else None, Path(args.font) if args.font else None))
     if args.cmd == "compare":
         sys.exit(compare(Path(args.beamer_pdf), Path(args.pptx_pdf), Path(args.out), args.dpi))
     sys.exit(preview(Path(args.pptx), Path(args.beamer_pdf), Path(args.out), args.dpi,

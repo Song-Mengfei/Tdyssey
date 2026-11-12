@@ -4,13 +4,15 @@
 #   bash presentation/pptx/build.sh
 #
 # Output: presentation/pptx/out/tdyssey-slides.pptx (videos embedded). Steps: compile the default Beamer PDF and the
-# step-by-step PDF, describe every page (pdf_to_deck.py), write the deck (build_deck.js), check it (qa.py inspect).
+# step-by-step PDF, describe every page (pdf_to_deck.py), write the deck (build_deck.js), check its structure and that
+# every slide's words occur on its Beamer page (qa.py inspect; the build fails otherwise).
 # Environment (all optional):
 #   TEX=tectonic|pdflatex   TeX engine (default: tectonic when on PATH or in $TECTONIC, else pdflatex via latexmk)
 #   PDF=..., BUILDS_PDF=... use these PDFs instead of compiling (CI compiles them with the LaTeX action)
 #   VIDEOS=embed|drive      embed the MP4 files (default) or link posters to the public Drive copies (Google Slides)
 #   OUT=...                 output .pptx path
 #   PYTHON=...              Python with requirements.txt installed (default: uv run with the pinned packages, else python3)
+#   CARLITO=...             Carlito-Regular.ttf for the glyph check (default: the Debian/Ubuntu fonts-crosextra-carlito path)
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PRES="$(dirname "$HERE")"
@@ -50,5 +52,7 @@ echo "== extracting pages from $PDF"
 "${PY[@]}" "$HERE/pdf_to_deck.py" --pdf "$PDF" --builds-pdf "$BUILDS_PDF" --out "$HERE/out"
 echo "== writing the deck"
 node "$HERE/build_deck.js" --deck "$HERE/out/deck.json" --out "${OUT:-$HERE/out/tdyssey-slides.pptx}" --videos "${VIDEOS:-embed}"
-echo "== structure check"
-"${PY[@]}" "$HERE/qa.py" inspect "${OUT:-$HERE/out/tdyssey-slides.pptx}"
+echo "== structure and text check"
+CARLITO="${CARLITO:-/usr/share/fonts/truetype/crosextra/Carlito-Regular.ttf}"
+"${PY[@]}" "$HERE/qa.py" inspect "${OUT:-$HERE/out/tdyssey-slides.pptx}" --pdf "$PDF" \
+  $([[ -f "$CARLITO" ]] && echo --font "$CARLITO")

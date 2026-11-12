@@ -74,7 +74,10 @@ jobs:
           sudo apt-get install -y --no-install-recommends libreoffice-impress fonts-crosextra-carlito fonts-dejavu-core
           soffice --version
           soffice --headless --convert-to pdf --outdir pptx/qa pptx/tdyssey-slides.pptx
-          python presentation/pptx/qa.py inspect pptx/tdyssey-slides.pptx | tee pptx/qa/structure.txt
+          python presentation/pptx/qa.py inspect pptx/tdyssey-slides.pptx --pdf presentation/slides/main.pdf \
+            --font /usr/share/fonts/truetype/crosextra/Carlito-Regular.ttf \
+            > pptx/qa/structure.txt || { cat pptx/qa/structure.txt; exit 1; }
+          cat pptx/qa/structure.txt
           python presentation/pptx/qa.py compare presentation/slides/main.pdf pptx/qa/tdyssey-slides.pdf \
             --out pptx/qa/libreoffice
           python presentation/pptx/qa.py preview pptx/tdyssey-slides.pptx presentation/slides/main.pdf \
