@@ -1,10 +1,19 @@
 # Paper
 
-`main.tex` is the course paper: two-column `article`, natbib with `plainnat`, figures from `../figures/` (mostly the
-deck graphs in `../figures/deck/` and the TikZ diagrams in `../figures/tikz/`), images from `../images/`. `refs.bib`
-holds the references. The text follows the current talk deck (`../slides/main.tex`): the 26 letters (the narrow T is an
-extra training shape left out of every aggregate), the main model after 50 correction rounds, nine never-seen shapes,
-and Flow-DiT (the 16x16 version) as the architecture experiment.
+`main.tex` is the final course report: two-column `article`, natbib with `plainnat`, figures from `../figures/` (mostly
+the deck graphs in `../figures/deck/` and the TikZ diagrams in `../figures/tikz/`), images from `../images/`. `refs.bib`
+holds the references. The sections follow the order of the final talk (the 37-slide deck sent to the professor on
+2026-11-12) and answer the questions raised there: the 26 letters (the narrow T is an extra training shape left out of
+every aggregate), the main model after 50 correction rounds, nine never-seen shapes, and Flow-DiT (the 16x16 version)
+as the architecture experiment.
+
+Outline: 1 Introduction, 2 Related work, 3 Setup (task, shapes, camera policy network, test protocol), 4 Early
+attempts and why they failed (RL fine-tuning, re-ranking with the simulator, back-propagation through a learned model,
+the team's DPPO run and image world models, with a summary table), 5 From images to states (state world model, its
+accuracy and its speed against the simulator), 6 The planner teacher, 7 From copying to correction rounds, 8 Results
+(training, final test, per shape, never-seen shapes, the T, the last millimetres), 9 Does the network matter
+(Flow-DiT), 10 Limitations and future work (with the professor's red-overlay suggestion, experiment D066, pending, no
+result reported), 11 Conclusion, appendix (settings, per-shape table, steps, earlier tests, attempts, networks).
 
 Style rules for edits: plain words and short sentences, no hedging words, and no semicolons, colons or em dashes in
 prose, captions and table text (colons only where LaTeX or math needs them, ranges as "4 to 11%").
@@ -55,19 +64,21 @@ latexmk -pdf main.tex                         # TeX Live
 tectonic -X compile main.tex --outdir <dir>   # or Tectonic
 ```
 
-Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, booktabs, adjustbox, xcolor, tikz
+Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, booktabs, float, array, adjustbox, xcolor, tikz
 (arrows.meta, positioning, calc), algorithm, algpseudocode, natbib, hyperref. Overleaf: upload `presentation/` without
 `videos/` and set `paper/main.tex` as the main document (or import it from a root file with
 `\import{paper/}{main.tex}`).
 
-## State (2026-11-12)
+## State (2026-11-13)
 
-- Compiles with Tectonic to 15 pages (about 10 pages of text, 2 of references, 3 of appendix), no overfull boxes, no
-  undefined references or citations. Checked with a partial test (25 of 200 scenes per shape), so every round-50 test
-  number and the red note are placeholders until the refresh above.
-- `final_bars_2`, `final_dumbbell` and `heldout_success` in `../figures/deck/` still show the earlier round-44 test
-  until they are regenerated; `arch_letters` does not exist yet, so the paper shows a framed note in its place.
-- The validation-curve figure (`curves_stages_3`) marks an earlier test (original 2.4%, round 50 34.7%); its caption
-  says so.
-- New references (from memory of the published record): Lipman et al. 2023 (flow matching), Peebles and Xie 2023
-  (DiT), Oquab et al. 2024 (DINOv2).
+- Reworked into the final report: talk order, Section 4 explains each early failure with its measured cause (sources in
+  comments next to each number, `docs/` paths on `feat/last-mile-rl`, the team's numbers from their PRs 6, 7, 9 and 11,
+  `../slides/image_world_model*.tex` and the final deck's slides 8 to 18 and notes).
+- Compiles with Tectonic 0.15.0 to 19 pages (14 pages of text, 2 of references, 3 of appendix), no undefined
+  references or citations, no overfull boxes. All round-50 test numbers are final (`numbers.tex`, complete test).
+- New in the text: the summary table of the dead ends (Table 1), the RL score diagnostic (Table 2), a figure of the
+  team's image world models (cropped in LaTeX from `../images/image_wm_48m/`), the images-to-states diagram
+  (`../figures/tikz/img2state.tex`), and the near-miss share (64.5% of round-50 failures reach 90% coverage, from
+  `../data/final_tests_episodes.csv`, test D054).
+- References are from memory of the published record (Lipman et al. 2023, Peebles and Xie 2023, Oquab et al. 2024 as
+  before).
