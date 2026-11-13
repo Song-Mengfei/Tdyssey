@@ -1222,3 +1222,51 @@ checkpoint (step N, a multiple of 10k) against Flow-DiT 8 x 8 at the same step (
 code (it reproduces Flow-DiT plans bit-identically), paired by scene. Reported: success over the 26 letters (mean over
 shapes) and the paired difference with a 95% interval, as an equal-step early-training comparison. The deciding
 experiment stays the D065 full run and its D064-pool test.
+
+## D066 — Goal overlay: show the camera policy the uncovered goal (draft 2026-11-13, before any run)
+
+Professor's suggestion at the final talk, lead's choice of design ("thick red overlay"). Most failures of round 50 are
+near misses (two in three reach 90% coverage) and one 96 px camera pixel spans about 5.3 simulator pixels, so the
+camera barely shows the last misalignment. The overlay paints the part of the goal the block does not cover in red on
+the 512 px canvas (after the goal, before the block and pusher; the official resize to 96 px follows): goal minus block
+from the coverage metric's collision polygons, with parts thinner than R = 9 simulator px grown by R so a zero-width
+sliver still shows about 6.5 px of red past the block's drawn outline; wider parts keep their true outline, so the
+letter shape stays readable far from the goal. Drawn the same way above 95% (no success threshold in the image).
+Definition, choice of R and checks: `docs/GOAL_OVERLAY.md`; code: `goal_overlay` in `tdyssey/envs/official.py`, off by
+default. Rejected: finding the visible goal-green pixels in the 512 px render; the block's 4 px edge line hides
+slivers up to about 2 px even there. Disclosure: privileged simulator geometry enters every image the policy sees in
+training and testing; reported as a rendering aid, separately from the camera-only results (like the 192 px sensor
+change), and as a test of whether this information limits the last nudge, not as a deployable policy.
+
+Data: the teacher demonstrations and human T demonstrations (694,012 of round 50's 3,205,500 samples, 50.6% of the
+sampling weight) are re-rendered with the overlay from their recorded states (`scripts/learning/overlay_frames.py`).
+The 116 earlier correction folders (49.4% of the weight) store frames without block poses and cannot be re-rendered;
+both arms keep them with their official frames. New records carry an overlay tag and the block pose of both frames.
+
+Experiment (H100 job 1131943; `scripts/learning/experiments/chain_d066.sh` per arm, started by a job launcher). Two
+arms start from the 96 px round-50 student and run concurrently with the same seeds, steps and data rules; the only
+difference is the overlay (with it, the human T frames come from the project's renderer instead of the dataset's
+images, about 0.5% of their pixels). Overlay arm: every camera image with the overlay (R = 9). Control arm: identical
+without it, so a gain cannot come from the extra rounds. Round 0: 54k steps on the arm's data, no new practice data (the
+overlay changes the goal's colour: on one CPU check scene round 50 solved T and G with official images and never
+covered either goal with overlay images). Rounds 1-K: the D053 recipe (teacher wm2 v3 takes 30% of 8-control decisions,
+intended-plan labels, 30 practice scenes for the ten earlier shapes and 60 for the 17 new letters, 54k steps from
+the previous student, batch 256, seed 0), training on the teacher demonstrations, human T, the 116 earlier folders and
+the arm's own new folders. Practice seeds 800000 + 20*i, i = 32000 + 70*k (32070-33039 for k = 1-14, unused by any
+earlier collection), the same scenes for both arms. K = 14 rounds per arm (lead's decision, 2026-11-13); no round
+starts later than 13.5 h before the job ends, so a last round of up to about 3.5 h leaves at least 10 h for its
+validation, the test, the report and slack; both arms are stopped 4.5 h before the end if still running. The test
+uses the last round both arms completed (K*), whatever their validation.
+Validation, monitoring only (lead's decision): every round's student of both arms (rounds 0 to K*) and round 50 once
+(official images) on the selection scenes (seeds 400000 + 20*i, i < 50, 27 trained shapes, 8 executed targets, the same
+policy-noise seed), paired by scene between the arms. It runs in the background as soon as a student exists, so it
+does not hold up the next round, and is reported as a progress curve (26 letters, overlay minus control with 95%
+intervals; `d066_report.py validation`). It is never used to pick the tested checkpoint.
+
+Test (fixed before any result): round K* of both arms on the D064 pool (seeds 15000000 + 20*i, i < 200, 33 shapes and
+the T/digit2/digit5/digit8 group, 8 executed targets), paired by shape and scene with round 50's existing D064 episodes.
+Primary: success over the 26 letters (mean over shapes; near-T excluded), overlay minus control, paired difference
+with a 95% interval: a gain if the interval is above zero, a loss if below, otherwise no measurable effect.
+Secondary: each arm against round 50; among failed episodes, the share whose best coverage reached 0.90-0.95 (near
+misses), and among episodes reaching 0.90, the share solved, overlay against control; final coverage; T and the nine
+never-seen shapes. Reported whatever the outcome (`scripts/learning/d066_report.py`).

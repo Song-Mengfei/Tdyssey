@@ -52,7 +52,7 @@ def privileged(env, cov):
     return v + onehot
 
 
-def worker(conn, render_size):
+def worker(conn, render_size, goal_overlay=0):
     os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
     torch.set_num_threads(1)
     import base_rollouts  # noqa: F401  (sets up the official source path)
@@ -72,7 +72,8 @@ def worker(conn, render_size):
             for slot, rec in payload:
                 env = envs.get((slot, rec["shape"]))
                 if env is None:
-                    env = envs[(slot, rec["shape"])] = cls(shape=rec["shape"], legacy=True, render_size=render_size)
+                    env = envs[(slot, rec["shape"])] = cls(shape=rec["shape"], legacy=True, render_size=render_size,
+                                                           **({"goal_overlay": goal_overlay} if goal_overlay else {}))
                 o1 = env.restore_state(Snapshot.from_dict(rec["previous"]))
                 o2 = env.restore_state(Snapshot.from_dict(rec["state"]))
                 slots[slot] = env
@@ -99,12 +100,12 @@ def worker(conn, render_size):
 
 
 class Pool:
-    def __init__(self, n_workers, slots, render_size):
+    def __init__(self, n_workers, slots, render_size, goal_overlay=0):
         ctx = mp.get_context("spawn")
         self.conns, self.procs = [], []
         for _ in range(n_workers):
             a, b = ctx.Pipe()
-            p = ctx.Process(target=worker, args=(b, render_size), daemon=True)
+            p = ctx.Process(target=worker, args=(b, render_size, goal_overlay), daemon=True)
             p.start()
             self.conns.append(a); self.procs.append(p)
         self.owner = {s: s % n_workers for s in range(slots)}
@@ -136,6 +137,7 @@ class Base:
         self.agent, _ = base_rollouts.build(student)
         self.device = self.agent.device
         self.size = getattr(self.agent, "render_size", 96)
+        self.overlay = getattr(self.agent, "goal_overlay", 0)            # D066 overlay students render the same way
         self.ddim = DDIMScheduler.from_config(self.agent.network.noise_scheduler.config)
         self.ddim.set_timesteps(steps)
         self.norm = self.agent.network.normalizer["action"]
@@ -242,7 +244,7 @@ def run(args, train=True):
     for r in recs:
         by_shape.setdefault(r["shape"], []).append(r)
     shapes = sorted(by_shape)
-    pool = Pool(args.workers, args.slots, base.size)
+    pool = Pool(args.workers, args.slots, base.size, base.overlay)
 
     def draw():                                                     # equal share per shape
         return random.choice(by_shape[random.choice(shapes)])
@@ -456,14 +458,15 @@ def episodes(args):
     seeds = [args.seed_base + 20 * (args.start + k) for k in range(args.count)]
     jobs = []                                                       # (seed, shape, snapshot json)
     for seed in seeds:
-        envs = {s: cls(shape=s, legacy=True, render_size=base.size) for s in (shapes if "T" in shapes else ["T"] + shapes)}
+        envs = {s: cls(shape=s, legacy=True, render_size=base.size, **({"goal_overlay": base.overlay} if base.overlay else {}))
+                for s in (shapes if "T" in shapes else ["T"] + shapes)}
         matched_reset(envs, seed, {"reset_physics_substeps": 0})
         for s in shapes:
             snap = json.loads(envs[s].capture_state().to_json())
             jobs.append((seed, s, {"shape": s, "previous": snap, "state": snap}))
         for e in envs.values():
             e.close()
-    pool = Pool(args.workers, args.slots, base.size)
+    pool = Pool(args.workers, args.slots, base.size, base.overlay)
     rows = []
     for start in range(0, len(jobs), args.slots):
         batch = jobs[start:start + args.slots]
