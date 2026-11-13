@@ -12,6 +12,122 @@ from ..letters import NOVEL_PATTERNS, PATTERNS, block_letter
 PROTOCOL = "official-t-l-com-v1"
 T_REFERENCE_COG = (0.0, 45.0)
 
+# Goal overlay (D066, off by default; docs/GOAL_OVERLAY.md). The part of the goal the block does not cover is painted
+# red on the 512 px canvas after the goal and before the block and pusher. Parts thinner than R = `goal_overlay`
+# simulator px (removed by a morphological opening of radius R/2; pieces at least R long) are grown by R, so a sliver
+# far below one camera pixel (512/96 = 5.33 simulator px; the block's drawn outline hides another ~2 px) still reaches
+# the 96 px image; wider parts keep their true outline, so the goal's letter shape stays readable far from the goal.
+# Computed from the same collision polygons as the coverage metric: privileged simulator geometry, a rendering aid.
+# Changing this definition changes what an overlay checkpoint was trained on: give it a new name, not the same flag.
+OVERLAY_COLOR = (255, 0, 0)
+OVERLAY_MIN_AREA = 1.0        # simulator px^2; smaller uncovered pieces (e.g. floating-point slivers) are not drawn
+OVERLAY_HAIRLINE = 0.1        # simulator px; thin parts narrower than this (numerical; <= ~0.3% coverage) are not grown
+OVERLAY_QUAD_SEGS = 4         # round joins: 4 segments per quarter circle (<= 0.17 px from the true arc at R = 9)
+
+
+def _polygons(geometry, min_area):
+    return [p for p in getattr(geometry, "geoms", [geometry]) if p.geom_type == "Polygon" and p.area >= min_area]
+
+
+def _length(polygon):
+    """Largest distance between two points of the polygon (diameter of its convex hull)."""
+    import numpy as np
+    c = np.asarray(polygon.convex_hull.exterior.coords)[:, :2]
+    return float(np.sqrt(((c[:, None] - c[None]) ** 2).sum(-1)).max())
+
+
+def uncovered_goal(env):
+    """Shapely region of the goal not covered by the block: the coverage metric's polygons (pymunk_to_shapely, as in
+    physical_metrics), each side merged into one polygon."""
+    from diffusion_policy.env.pusht.pusht_env import pymunk_to_shapely
+    from shapely.ops import unary_union
+
+    goal = unary_union(list(pymunk_to_shapely(env._get_goal_pose_body(env.goal_pose), env.block.shapes).geoms))
+    block = unary_union(list(pymunk_to_shapely(env.block, env.block.shapes).geoms))
+    return goal.difference(block)
+
+
+def _uncovered_goal_fast(env):
+    """uncovered_goal from the block's local outline (merged once per env) moved by the goal and block poses; the same
+    rigid transform as pymunk's local_to_world, equal to uncovered_goal up to floating-point rounding."""
+    import math
+    from shapely.affinity import affine_transform
+    from shapely.geometry import Polygon
+    from shapely.ops import unary_union
+
+    local = getattr(env, "_overlay_outline", None)
+    if local is None:
+        local = env._overlay_outline = unary_union([Polygon(list(s.get_vertices())) for s in env.block.shapes])
+
+    def placed(x, y, angle):
+        c, s = math.cos(angle), math.sin(angle)
+        return affine_transform(local, (c, -s, s, c, x, y))
+    goal = placed(float(env.goal_pose[0]), float(env.goal_pose[1]), float(env.goal_pose[2]))
+    return goal.difference(placed(*env.block.position, env.block.angle))
+
+
+def goal_overlay_region(env, radius, uncovered=None):
+    """Uncovered goal plus its thin parts grown by R. Thin parts: what an opening of radius R/2 removes, keeping pieces at
+    least R long (slivers along an edge or rotation wedges; this skips the small corner pieces an opening also cuts
+    from wide parts and from the letter's own corners, which are under R long for corners above about 53 degrees).
+    Returns None when nothing is left to draw."""
+    from shapely.ops import unary_union
+
+    parts = _polygons(_uncovered_goal_fast(env) if uncovered is None else uncovered, OVERLAY_MIN_AREA)
+    if not parts:
+        return None
+    region = unary_union(parts)
+    half = radius / 2
+    q = OVERLAY_QUAD_SEGS
+    cut = region.difference(region.buffer(-half, quad_segs=q).buffer(half, quad_segs=q))
+    cut = cut.buffer(-OVERLAY_HAIRLINE / 2, quad_segs=1).buffer(OVERLAY_HAIRLINE / 2, quad_segs=1)   # numerical hairlines
+    thin = [p for p in _polygons(cut, OVERLAY_MIN_AREA) if p.length >= 2 * radius and _length(p) >= radius]
+    return unary_union([region] + [unary_union(thin).buffer(radius, quad_segs=q)]) if thin else region
+
+
+def _rasterize(region, x0, y0, width, height):
+    """uint8 (height, width) mask of a shapely region over canvas pixels [x0, x0 + width) x [y0, y0 + height)."""
+    import cv2
+    import numpy as np
+
+    mask = np.zeros((height, width), np.uint8)
+    rings = []
+    for polygon in _polygons(region, 0.0):
+        rings.append(polygon.exterior.coords)
+        rings.extend(hole.coords for hole in polygon.interiors)
+    # 1/8 px precision; holes are cut out because fillPoly fills overlapping contours with the even-odd rule.
+    cv2.fillPoly(mask, [np.round((np.asarray(r)[:, :2] - (x0, y0)) * 8).astype(np.int32) for r in rings], 1,
+                 cv2.LINE_8, shift=3)
+    return mask
+
+
+def goal_overlay_mask(env, radius, width=512, height=512, uncovered=None):
+    """Boolean (height, width) canvas mask of goal_overlay_region (canvas pixel (x, y) = simulator point (x, y))."""
+    import numpy as np
+
+    region = goal_overlay_region(env, radius, uncovered)
+    return np.zeros((height, width), bool) if region is None else _rasterize(region, 0, 0, width, height).astype(bool)
+
+
+def paint_goal_overlay(env, surface, radius):
+    """Paint goal_overlay_region on a pygame surface (called between drawing the goal and the bodies)."""
+    import math
+    import pygame
+
+    region = goal_overlay_region(env, radius)
+    if region is None:
+        return
+    width, height = surface.get_width(), surface.get_height()
+    left, top, right, bottom = region.bounds
+    x0, y0 = max(0, math.floor(left) - 1), max(0, math.floor(top) - 1)
+    x1, y1 = min(width, math.ceil(right) + 2), min(height, math.ceil(bottom) + 2)
+    if x1 <= x0 or y1 <= y0:
+        return
+    mask = _rasterize(region, x0, y0, x1 - x0, y1 - y0).astype(bool)
+    pixels = pygame.surfarray.pixels3d(surface)                       # (x, y, 3) view; released below
+    pixels[x0:x1, y0:y1][mask.T] = OVERLAY_COLOR
+    del pixels
+
 
 def official_shape(name):
     """Local collision coordinates; screen y increases downward.
@@ -70,9 +186,12 @@ def _write_body(body, state):
 
 def make_official_shape_env_class(base_class):
     class OfficialShapeEnv(base_class):
-        def __init__(self, *args, shape="T", **kwargs):
+        def __init__(self, *args, shape="T", goal_overlay=0, **kwargs):
             self.project_shape = official_shape(shape).name
             self.control_step = 0
+            self.goal_overlay = int(goal_overlay)                        # simulator px; 0 = official rendering
+            if self.goal_overlay < 0:
+                raise ValueError("goal_overlay must be >= 0 simulator px")
             super().__init__(*args, **kwargs)
             if self.project_shape != "T" and self.block_cog is not None:
                 raise ValueError("Non-T shapes fix their mass center; custom center of gravity is unsupported")
@@ -107,6 +226,15 @@ def make_official_shape_env_class(base_class):
                 # center with the original T target's mass center.
                 goal = Pose(point(self.goal_pose[:2]), float(self.goal_pose[2]))
                 self.goal_pose[:2] = goal.transform(T_REFERENCE_COG)
+            if self.goal_overlay:
+                # The official renderer draws the goal, then calls space.debug_draw for the bodies; painting the
+                # overlay just before that keeps the rest of the official image pipeline (canvas, resize) unchanged.
+                draw_bodies = self.space.debug_draw
+
+                def debug_draw(options):
+                    paint_goal_overlay(self, options.surface, self.goal_overlay)
+                    draw_bodies(options)
+                self.space.debug_draw = debug_draw
 
         def _set_state(self, state):
             if self.project_shape != "T":

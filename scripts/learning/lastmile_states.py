@@ -41,11 +41,12 @@ def main():
         raise SystemExit("last-mile scenes must use i in [20000, 30000)")
     agent, cls = base_rollouts.build(a.student)
     size = getattr(agent, "render_size", 96)
+    cam = {"goal_overlay": agent.goal_overlay} if getattr(agent, "goal_overlay", 0) else {}   # D066 overlay students
     a.out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     for i in range(a.start, a.start + a.scenes):
         seed = 800000 + 20 * i
-        envs = {s: cls(shape=s, legacy=True, render_size=size) for s in TRAINED27}
+        envs = {s: cls(shape=s, legacy=True, render_size=size, **cam) for s in TRAINED27}
         obs, _ = matched_reset(envs, seed, {"reset_physics_substeps": 0})
         lanes = [{"shape": s, "env": envs[s], "done": False, "history": deque([obs[s]] * 2, maxlen=2), "prev": envs[s].capture_state(),
                   "gen": torch.Generator(device=agent.device).manual_seed(derived_seed(42, "lastmile-harvest", seed)),
