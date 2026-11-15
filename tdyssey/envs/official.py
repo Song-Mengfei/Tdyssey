@@ -19,6 +19,9 @@ T_REFERENCE_COG = (0.0, 45.0)
 # the 96 px image; wider parts keep their true outline, so the goal's letter shape stays readable far from the goal.
 # Computed from the same collision polygons as the coverage metric: privileged simulator geometry, a rendering aid.
 # Changing this definition changes what an overlay checkpoint was trained on: give it a new name, not the same flag.
+# goal_overlay = -R (D066 amendment, "slivers only"): only the grown thin parts are painted; wide uncovered parts keep
+# the official green, so the image matches the official one except where a thin sliver of goal is left uncovered (the
+# final misalignment). The negative value gives these frames, records and checkpoints their own name (frames-ov-9).
 OVERLAY_COLOR = (255, 0, 0)
 OVERLAY_MIN_AREA = 1.0        # simulator px^2; smaller uncovered pieces (e.g. floating-point slivers) are not drawn
 OVERLAY_HAIRLINE = 0.1        # simulator px; thin parts narrower than this (numerical; <= ~0.3% coverage) are not grown
@@ -67,12 +70,15 @@ def _uncovered_goal_fast(env):
 
 
 def goal_overlay_region(env, radius, uncovered=None):
-    """Uncovered goal plus its thin parts grown by R. Thin parts: what an opening of radius R/2 removes, keeping pieces at
+    """radius > 0: uncovered goal plus its thin parts grown by R. radius < 0: only the thin parts grown by |R| (slivers
+    only; wide uncovered parts are not drawn). Thin parts: what an opening of radius R/2 removes, keeping pieces at
     least R long (slivers along an edge or rotation wedges; this skips the small corner pieces an opening also cuts
     from wide parts and from the letter's own corners, which are under R long for corners above about 53 degrees).
     Returns None when nothing is left to draw."""
     from shapely.ops import unary_union
 
+    slivers_only = radius < 0
+    radius = abs(radius)
     parts = _polygons(_uncovered_goal_fast(env) if uncovered is None else uncovered, OVERLAY_MIN_AREA)
     if not parts:
         return None
@@ -82,6 +88,8 @@ def goal_overlay_region(env, radius, uncovered=None):
     cut = region.difference(region.buffer(-half, quad_segs=q).buffer(half, quad_segs=q))
     cut = cut.buffer(-OVERLAY_HAIRLINE / 2, quad_segs=1).buffer(OVERLAY_HAIRLINE / 2, quad_segs=1)   # numerical hairlines
     thin = [p for p in _polygons(cut, OVERLAY_MIN_AREA) if p.length >= 2 * radius and _length(p) >= radius]
+    if slivers_only:
+        return unary_union(thin).buffer(radius, quad_segs=q) if thin else None
     return unary_union([region] + [unary_union(thin).buffer(radius, quad_segs=q)]) if thin else region
 
 
@@ -189,9 +197,7 @@ def make_official_shape_env_class(base_class):
         def __init__(self, *args, shape="T", goal_overlay=0, **kwargs):
             self.project_shape = official_shape(shape).name
             self.control_step = 0
-            self.goal_overlay = int(goal_overlay)                        # simulator px; 0 = official rendering
-            if self.goal_overlay < 0:
-                raise ValueError("goal_overlay must be >= 0 simulator px")
+            self.goal_overlay = int(goal_overlay)                        # simulator px; 0 = official; < 0 = slivers only
             super().__init__(*args, **kwargs)
             if self.project_shape != "T" and self.block_cog is not None:
                 raise ValueError("Non-T shapes fix their mass center; custom center of gravity is unsupported")

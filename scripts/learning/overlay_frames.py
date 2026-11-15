@@ -125,8 +125,8 @@ def main():
         q.add_argument("--size", type=int, default=96)
         q.add_argument("--workers", type=int, default=16)
     a = p.parse_args()
-    if a.goal_overlay <= 0:
-        raise SystemExit("--goal-overlay must be > 0 (the official frames already exist)")
+    if a.goal_overlay == 0:
+        raise SystemExit("--goal-overlay must not be 0 (the official frames already exist; < 0 = slivers only)")
     demos(a) if a.mode == "demos" else human(a)
 
 
