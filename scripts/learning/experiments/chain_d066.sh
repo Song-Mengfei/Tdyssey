@@ -35,7 +35,7 @@ W="--wm $R/wm2/v3/model.pt --select best --gate-margin 0 --pushes 128 --horizon 
 OLD="$R/mpc-data/dagger-bc1/data $(ls -d $R/mpc-data/dagger-r*/data $R/mpc-data/dagger10-r*/data $R/mpc-data/dagger10[pmh]-r*/data $R/lastmile/lastmile-r*/data 2>/dev/null | tr '\n' ' ')"
 OLD="$OLD $(ls -d $R/mpc-data/dagger26m-r*/data 2>/dev/null | tr '\n' ' ')"      # round 50's data set: 116 folders
 [ "$OLD_RECORDS" = drop ] && OLD=""
-CAM=""; [ $OV -gt 0 ] && CAM="--goal-overlay $OV"; [ $OV -gt 0 ] && [ -n "$OLD" ] && CAM="$CAM --mixed-records"
+CAM=""; [ $OV -ne 0 ] && CAM="--goal-overlay=$OV"; [ $OV -ne 0 ] && [ -n "$OLD" ] && CAM="$CAM --mixed-records"   # OV < 0: slivers only
 log "start $student, rounds $first-$last, overlay $OV, earlier correction folders $(echo $OLD | wc -w) ($OLD_RECORDS)"
 
 train() {   # round

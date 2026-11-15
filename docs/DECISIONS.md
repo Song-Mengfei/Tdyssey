@@ -1270,3 +1270,25 @@ with a 95% interval: a gain if the interval is above zero, a loss if below, othe
 Secondary: each arm against round 50; among failed episodes, the share whose best coverage reached 0.90-0.95 (near
 misses), and among episodes reaching 0.90, the share solved, overlay against control; final coverage; T and the nine
 never-seen shapes. Reported whatever the outcome (`scripts/learning/d066_report.py`).
+
+### D066 amendment 1 (2026-11-15 17:20, before any result of the new overlay arm)
+
+Finding (monitoring only, selection scenes): the overlay as first defined paints the whole uncovered goal red, so far
+from the goal the goal outline is red instead of green. The 116 earlier correction folders (49% of the training weight)
+exist only with green goals, so for red-goal images the overlay arm had only the teacher demonstrations, the plain
+copying setting. Round 0 of that arm scored 4.6% against 33.6% for the control, and rounds 1 to 4 reached 10.8, 13.2,
+14.5 and 14.6% (control 33.4 to 34.0%). The same round-0 checkpoint rendered with official images scored 31.2% (81 of
+260 episodes, seeds 400000 + 20*i, i < 10, 26 letters), so the skill was intact and the drop came from the changed look.
+That arm measures the change of appearance, not whether the policy can use the misalignment, so it was stopped (kept as
+runs/d066/overlay_v1_wholegoal) after the lead's decision.
+
+Change: the overlay arm restarts from round 50 with the "slivers only" overlay, `goal_overlay = -9`: only the thin
+uncovered parts (thinner than R = 9 simulator px, at least R long) are painted, grown by R. Wide uncovered parts keep
+the official green, so an image differs from the official one only where a thin sliver of goal is left uncovered (the
+final misalignment the professor pointed at). On three D teacher episodes the first frame is identical to the official
+frame and mid and late frames differ in 81 to 164 pixels. Frames, records and checkpoints carry -9, so they never mix
+with the first version. Everything else is unchanged: same seeds, practice scenes, steps, validation and test. The
+control arm keeps running. The restarted arm starts about 12 h after the control, so it completes fewer rounds. The
+test still compares round K* of both arms, now the last round the overlay arm completes, and the control's round-K*
+checkpoint already exists.
+
