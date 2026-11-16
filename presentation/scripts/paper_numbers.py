@@ -79,7 +79,7 @@ def signed(text):
     v = Decimal(text)
     if v > 0:
         return "+" + text
-    if v < 0:
+    if v < 0 or text.startswith("-"):              # "-0.0": a value just below zero keeps its sign
         return "$-$" + text.lstrip("-")
     return "0.0"
 
