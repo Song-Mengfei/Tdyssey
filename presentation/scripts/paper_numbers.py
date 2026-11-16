@@ -16,6 +16,9 @@ Writes, into --paper (default presentation/paper):
   tables/steps.tex         steps executed per plan, D056 (26 letters, narrow T left out)
   tables/history.tex       the earlier fixed tests, averaged over letters only
 
+Numbers of experiments that finished later (Flow-DiT variants D062/D064/D065, the goal overlay D066, the near-miss share
+on the D064 pool) are typed in, with their sources, in --history/paper_late_numbers.json; each entry becomes one macro.
+
 Groups follow the talk: all 26 letters, 9 earlier letters (T Y D L E F J P U), 17 new letters, 9 never-seen shapes
 (digits 2, 3, 4, 5, 7, 8, plus, hash, arrow) and T; the narrow T (an extra training shape) is in no group. Rates are
 pooled successes / episodes; paired changes and their 95% intervals come from d064_test_paired.csv (normal
@@ -31,6 +34,7 @@ Typical use after the test:
 """
 import argparse
 import csv
+import json
 import math
 from decimal import Decimal, ROUND_HALF_EVEN
 from pathlib import Path
@@ -367,6 +371,19 @@ def main():
     with open(paper / "tables" / "per_shape.tex", "w") as f:
         f.write(head + block(left) + "\n\\hspace{6mm}\n" + block(right) + "\n")
 
+    # ---------------------------------------------------------------- later experiments (typed in, final)
+    late = hist / "paper_late_numbers.json"
+    if late.exists():
+        with open(late) as f:
+            groups = json.load(f)["groups"]
+        n_late = 0
+        for g in groups:
+            M.lines.append(f"% {g['name']}. Source: {g['source']}")
+            for name, e in g["macros"].items():
+                M.add(name, signed(e["value"]) if e.get("signed") else e["value"], f"{e['what']} ({late.name})")
+                n_late += 1
+        print(f"{late.name}: {n_late} macros from {len(groups)} later experiments")
+
     try:                                                       # no machine-specific paths in the written file
         shown = str(data.resolve().relative_to(ROOT.parent))
     except ValueError:
@@ -379,7 +396,8 @@ def main():
                 f"shape and policy; {'complete' if complete else 'PARTIAL'}).\n"
                 "% Rates in %, one decimal; changes in points; coverage as a share of the goal.\n")
         f.write(M.text())
-    print(f"wrote {paper / 'numbers.tex'} ({len(M.lines)} macros) and 5 tables in {paper / 'tables'}")
+    n_macros = sum(line.startswith("\\newcommand") for line in M.lines)
+    print(f"wrote {paper / 'numbers.tex'} ({n_macros} macros) and 5 tables in {paper / 'tables'}")
 
 
 if __name__ == "__main__":
