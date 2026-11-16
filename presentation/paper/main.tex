@@ -1,7 +1,8 @@
 % Tdyssey final course project report (CS5478). Build: see README.md in this folder (latexmk -pdf main.tex, or Tectonic).
 % The main text follows the content and order of the final talk (37-slide deck sent to the professor on 2026-11-12)
 % and answers the questions raised at the talk (why RL fine-tuning, re-ranking and back-propagation failed, Section 4,
-% and the red-overlay suggestion, Section 10 and Appendix K). Material that is not in the talk is in the appendix.
+% and the red-overlay suggestion, end of Section 8.1 and Appendix K). Material that is not in the talk is in the
+% appendix. The rendered text never says "the talk" (it says "our final presentation").
 % Every number from the round-50 test on new scenes (seeds 15000000 + 20*i, 200 scenes per shape, five policies on the
 % same scenes; docs/DECISIONS.md D061-D064) is a macro from numbers.tex, which scripts/paper_numbers.py writes from the
 % CSV files of scripts/build_round50_data.py. Tables in tables/ come from the same script. Numbers of the later
@@ -21,6 +22,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{float}
+\usepackage{placeins}
 \usepackage{array}
 \usepackage{adjustbox}
 \usepackage{xcolor}
@@ -79,15 +81,18 @@
 \begin{abstract}
 The released camera-based Diffusion Policy for the PushT task learned from 206 human demonstrations of a T-shaped
 block. Over the 26 capital letters it solves \numHeadOrig\% of new scenes. We adapted it to all 26 letters without new
-human demonstrations. Reinforcement-learning fine-tuning, re-ranking the policy's own plans and back-propagation
-through a learned model all failed, because the sampled plans were nearly identical, the outcome of a push was
-chaotic and gradients carried little information at contact. The method that worked uses a state world model that
-copies the pusher's motion and the contact geometry from the simulator and learns how the letter moves in contact. A
-sampling planner reads the exact simulator state, plans in this model and teaches the camera policy, which copies the
-teacher's plans and improves over 50 correction rounds. On \numTestScenes{} new scenes per shape, success on the 26
-letters rises from \numHeadOrig\% to \numHeadMain\% with the original network and camera, and on nine never-seen
-shapes from \numUnseenOrig\% to \numUnseenMain\%. Flow-DiT, a 505M-parameter transformer policy trained on the same
-data, reaches \numHeadFlow\%. Most remaining failures end just short of the 95\% goal coverage that success requires.
+human demonstrations. Reinforcement-learning fine-tuning in the simulator failed because a plan's score came mostly
+from the chaotic pushes that followed it. Re-ranking the policy's own plans with the simulator taught the policy
+nothing, because the chosen plan differed from the others by about one camera pixel. Back-propagation through a
+learned model brought the pusher to the letter but never placed the letter on the goal, a known weakness of gradients
+through contact. The method that worked uses a state world model that reuses the simulator's exact pusher rule and
+contact geometry and learns how the letter moves in contact. A sampling planner reads the exact simulator state,
+plans in this model and is the teacher. The camera policy copies the teacher's plans and improves over 50 correction
+rounds. On \numTestScenes{} new scenes per shape, success on the 26 letters rises from \numHeadOrig\% to
+\numHeadMain\% with the original network and camera, and on nine never-seen shapes from \numUnseenOrig\% to
+\numUnseenMain\%. Flow-DiT, a 505M-parameter transformer policy trained on the same data with a pretrained DINOv2
+encoder (the head is trained from scratch), reaches \numHeadFlow\%. Most remaining failures end just short of the 95\%
+goal coverage that success requires.
 \end{abstract}
 \paperdatanote
 
@@ -96,29 +101,32 @@ data, reaches \numHeadFlow\%. Most remaining failures end just short of the 95\%
 \label{sec:intro}
 
 Behaviour cloning trains a policy to imitate human demonstrations. Diffusion Policy~\citep{chi2023diffusion} does this
-well, but its skill stays tied to the object in the demonstrations. The released PushT checkpoint pushes a T-shaped
-block onto a goal outline from a camera image and solves the T in \numTOrig\% of new test scenes. On the other 25
-capital letters it rarely succeeds, and over all 26 letters it reaches \numHeadOrig\% (Table~\ref{tab:main}).
-Collecting new human demonstrations for every shape would fix this, and we ruled that out.
+well, but its skill stays tied to the object in the demonstrations. The released PushT checkpoint, which we call the
+original policy, pushes a T-shaped block onto a goal outline from a camera image and solves the T in \numTOrig\% of new
+test scenes. On the other 25 capital letters it solves \numOtherOrig\% (\numOtherOrigMaxName{} is highest at
+\numOtherOrigMax\%), and over all 26 letters it reaches \numHeadOrig\% (Table~\ref{tab:main}). Collecting new human
+demonstrations for every shape would fix this, and we ruled that out.
 
 Our question was whether one camera policy can learn every letter from machine-generated data. We collected no new
-human demonstrations, teleoperation or success labels. The deployed policy receives the same input as the original,
-which is two camera frames and the pusher position. During training we used the exact simulator state to create data,
+human demonstrations, teleoperation or success labels. Like the original policy, the deployed policy sees only two
+camera frames and the pusher position. During training we used the exact simulator state to create data,
 and the deployed policy never sees it. We call such information privileged and list every use in
 Section~\ref{sec:limits}. The robot and the task stay the same, and only the pushed object changes
 (Fig.~\ref{fig:shapes}).
 
-Three approaches failed first (Section~\ref{sec:negative}, Table~\ref{tab:why}). Reinforcement-learning (RL)
-fine-tuning in the simulator fitted noise, because a candidate plan sets 8 of the 32 steps that score it and pushing is
-chaotic. Re-ranking the policy's own plans with the true simulator added no behaviour, because the plans were nearly
-identical. Back-propagation through a learned model taught a teacher to approach the letter but not to place it on the
-goal, because gradients through contact say little about where and when to push. A fourth line, practice in a learned
-simulator that predicts camera images, stalled because our image models were far less accurate at contact than a push
-needs.
+Three approaches failed first, and two attempts to practise in a simulator stalled (Section~\ref{sec:negative},
+Table~\ref{tab:why}). Reinforcement-learning (RL) fine-tuning in the simulator fitted noise. A plan sets only 8 of the
+32 steps that score it, and pushing is chaotic. Re-ranking the policy's own plans with the true simulator raised
+coverage but rarely success. The chosen plan differed from the others by about one camera pixel, too little for the
+policy to learn the choice. Back-propagation through a learned model trained a state-based policy network that
+approached the letter but never placed it on the goal. DPPO in the physical simulator reached a mean score of 0.842,
+against the 0.84 to 0.91 published for the original policy, and each update needed many slow rollouts. Image world models, meant to let DPPO
+practise on imagined rollouts, missed the block's centre at contact by 3.08 camera pixels. That is about 16 simulator
+pixels, while a finished push must end within about 1.5.
 
 The method that worked has four parts (Fig.~\ref{fig:method}, Algorithm~\ref{alg:train}). A state world model learns
 how letters move from noisy rollouts of the original policy (Section~\ref{sec:wm}). A sampling planner reads the exact
-state, plans inside this model and acts as a teacher (Section~\ref{sec:teacher}). The camera policy keeps the official
+state, plans inside this model and is the teacher (Section~\ref{sec:teacher}). The camera policy keeps the official
 Diffusion Policy network and first copies the teacher's plans by supervised training. Correction rounds, as in
 DAgger (dataset aggregation)~\citep{ross2011dagger}, then let the policy drive while the teacher labels every state it reaches
 (Section~\ref{sec:copy}). We grew the shape set in three stages, from 5 to 10 to 26 letters, and ran 50 correction
@@ -127,35 +135,37 @@ rounds in the last stage.
 \begin{figure*}[t]
   \centering
   \input{../figures/tikz/overview.tex}
-  \caption{Approach at a glance. (1) Machine data, which are pushes by the original T policy with noise on its targets.
-  (2) A state world model copies the pusher's motion and the contact geometry from the simulator and learns how the
-  letter moves in contact. (3) A sampling planner inside that model tries 1,024 plans of 48 steps at every step and
-  acts as the teacher. (4) The camera policy, the official Diffusion Policy network, copies the teacher's intended
-  16-step plans. (5) In correction rounds the policy drives, the teacher labels the states it reaches, and the policy
-  is retrained. (6) The deployed policy sees two camera frames and the pusher position, exactly like the original.
-  Gold and dashed parts use the exact simulator state and run during training only.}
+  \caption{Approach at a glance. (1) Machine data are pushes by the original policy with noise on its targets.
+  (2) A state world model reuses the simulator's exact pusher rule and contact geometry and learns how the letter moves
+  in contact. (3) A sampling planner inside that model tries 1,024 plans of 48 targets at every step and is the
+  teacher. (4) The camera policy, the official Diffusion Policy network, copies the teacher's intended 16-target plans.
+  (5) In correction rounds the policy drives, the teacher labels the states it reaches, and the policy is retrained.
+  (6) The deployed policy sees two camera frames and the pusher position, exactly like the original policy. Gold and
+  dashed parts use the exact simulator state and run during training only.}
   \label{fig:method}
 \end{figure*}
 
 \begin{algorithm}[!tb]
   \caption{Training the camera policy. $o_t$ is the policy's input (two camera frames and the pusher position) and
-  $P_t$ the teacher's intended plan (the first 16 targets of its best plan at step $t$). Round 0 uses 30k training
-  steps. Each correction round uses 30 practice scenes per shape (60 per new letter from round 14 of the 26-letter
-  stage) and 20k training steps, 54k from round 14.}
+  $P_t$ the teacher's intended plan (the first 16 targets of its best plan at step $t$). Teacher scenes are training
+  scenes on which the teacher runs alone. Round 0 uses 30k training steps. Each correction round uses 30 practice
+  scenes per shape (60 per new letter from round 14 of the 26-letter stage) and 20k training steps, 54k from round
+  14.}
   \label{alg:train}
   \small
   \begin{algorithmic}[1]
-    \Require original policy $\pi_0$, its human T demonstrations $\mathcal{H}$, training shapes $\mathcal{S}$
+    \Require original policy $\pi_{\mathrm{orig}}$, its human T demonstrations $\mathcal{H}$, training shapes
+      $\mathcal{S}$
     \Statex \textit{State world model}
-    \State Roll out $\pi_0$ on $\mathcal{S}$ with 0, 10 or 25~px noise on its targets
+    \State Roll out $\pi_{\mathrm{orig}}$ on $\mathcal{S}$ with 0, 10 or 25 simulator px of noise on its targets
     \State Fit the state world model $f_\phi$ on these rollouts
     \Statex \textit{Teacher demonstrations}
     \For{each shape in $\mathcal{S}$ and each teacher scene}
       \State Run the teacher (Alg.~\ref{alg:teacher}) for up to 300 steps
       \State Store $(o_t, P_t)$ at every step $t$
     \EndFor
-    \State $\mathcal{D} \gets$ teacher examples $\cup\ \mathcal{H}$
-    \State Train $\pi_\theta$ from the released weights on $\mathcal{D}$
+    \State $\mathcal{D} \gets$ teacher demonstrations $\cup\ \mathcal{H}$
+    \State Train $\pi_\theta$ from the weights of $\pi_{\mathrm{orig}}$ on $\mathcal{D}$
     \Statex \textit{Correction rounds}
     \For{$k = 1, \dots, K$} \Comment{$K = 50$}
       \For{each shape and each new practice scene}
@@ -172,21 +182,20 @@ rounds in the last stage.
   \end{algorithmic}
 \end{algorithm}
 
-One test measures every model on the same \numTestScenes{} new scenes per shape (Section~\ref{sec:results}). Success on
-the 26 letters rises from \numHeadOrig\% to \numHeadMain\%, and the share of the goal covered at the end of an episode
-rises from \numCovOrig{} to \numCovMain. On nine shapes never seen in training, success rises from \numUnseenOrig\% to
-\numUnseenMain\%. The state world model evaluates 1,024 push plans in 0.07~s, about 200 times faster than one
-simulator process, which made the teacher affordable. Most remaining failures are near misses. Flow-DiT, a
-505M-parameter transformer policy trained once on the same data, reaches \numHeadFlow\% (Section~\ref{sec:arch}). The
-appendix holds the settings, further details and later experiments, including variants of Flow-DiT
-(Appendix~\ref{sec:app-flow}) and a test that paints the final misalignment into the camera image
-(Appendix~\ref{sec:app-overlay}).
+One final test measures every model on the same \numTestScenes{} new scenes per shape (Section~\ref{sec:results}).
+Success on the 26 letters rises from \numHeadOrig\% to \numHeadMain\%, and the share of the goal covered at the end of
+an episode rises from \numCovOrig{} to \numCovMain. On nine shapes never seen in training, success rises from
+\numUnseenOrig\% to \numUnseenMain\%. The state world model evaluates 1,024 push plans in 0.07~s, about 200 times
+faster than one simulator process. This speed made the teacher affordable. Flow-DiT, a 505M-parameter transformer
+policy trained on the same data, reaches \numHeadFlow\% (Section~\ref{sec:arch}). Appendix~\ref{sec:app-flow} reports
+variants of Flow-DiT, and Appendix~\ref{sec:app-overlay} a test that paints the final misalignment into the camera
+image.
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\columnwidth]{../images/slide/shapes_title.png}
-  \caption{The 26 capital letters (trained) and the nine shapes never seen in training (light), which are the digits
-  2, 3, 4, 5, 7 and 8, a plus, a hash and an arrow.}
+  \caption{The 26 capital letters (trained) and the nine shapes never seen in training (light). The never-seen shapes
+  are the digits 2, 3, 4, 5, 7 and 8, a plus, a hash and an arrow.}
   \label{fig:shapes}
 \end{figure}
 
@@ -210,7 +219,7 @@ We tried this family first (Section~\ref{sec:rl}).
 Training a policy that sees through sensors from a teacher with privileged state goes back to guided policy
 search~\citep{levine2016end} and includes PLATO~\citep{kahn2017plato}, Learning by Cheating~\citep{chen2019lbc},
 asymmetric actor-critic~\citep{pinto2018asymmetric} and quadruped locomotion~\citep{lee2020quadruped}.
-DAgger~\citep{ross2011dagger} lets the learner drive while the teacher labels, which reduces the mismatch between the
+DAgger~\citep{ross2011dagger} lets the learner drive while the teacher labels. This reduces the mismatch between the
 states each of them visits.
 
 Learned dynamics models support sampling-based planning (PETS~\citep{chua2018pets}, PlaNet~\citep{hafner2019planet},
@@ -218,10 +227,10 @@ TD-MPC2~\citep{hansen2024tdmpc2}) with the cross-entropy method (CEM)~\citep{rub
 MPPI~\citep{williams2017mppi}. They also support policy learning in
 imagination~\citep{ha2018worldmodels,hafner2020dreamer,janner2019mbpo}. Generative predictive control
 (GPC)~\citep{qi2025gpc} ranks a generative
-policy's proposals with a predictive image world model, and SuperMimic~\citep{liao2026supermimic} back-propagates
+policy's sampled plans with a predictive image world model, and SuperMimic~\citep{liao2026supermimic} back-propagates
 through a learned world model. \citet{suh2022differentiable} show that exact gradients through stiff contact are biased
-or have high variance in systems such as planar pushing~\citep{mason1986mechanics}, which matches what we saw
-(Section~\ref{sec:bptt}).
+or have high variance in systems such as planar pushing~\citep{mason1986mechanics}. Our back-propagation results fit
+this picture (Section~\ref{sec:bptt}).
 
 % =====================================================================================================================
 \section{Setup}
@@ -230,42 +239,46 @@ or have high variance in systems such as planar pushing~\citep{mason1986mechanic
 \begin{figure*}[t]
   \centering
   \input{../figures/tikz/arch_cnn_detailed.tex}
-  \caption{The camera policy network, which is the official Diffusion Policy network and the network of our main
-  model. A ResNet-18 encoder with 11.2M parameters turns two cropped frames into keypoint features. A 1D U-Net with
-  251.5M parameters, conditioned through FiLM on these features, the pusher position and the denoising step $k$,
-  removes noise from a plan of 16 targets in 100 DDPM steps.}
+  \caption{The camera policy network. It is the official Diffusion Policy network and the network of our main model. A
+  ResNet-18 encoder with 11.2M parameters turns two cropped frames into keypoint features. A 1D U-Net with 251.5M
+  parameters, conditioned through FiLM on these features, the pusher position and the denoising step $k$, removes noise
+  from a plan of 16 targets in 100 denoising steps.}
   \label{fig:cnn}
 \end{figure*}
 
 \paragraph{Task and simulator.}
 We use the original planar PushT simulator released with Diffusion Policy~\citep{chi2023diffusion} and change only
 the object. A disk-shaped pusher, moved by a PD controller towards commanded target positions, pushes a rigid block
-in a $512\times512$ arena towards a fixed goal pose. Time advances in control steps of 0.1~s, which we call steps. With
-$B_t$ the block's footprint and $G$ the goal's, the goal coverage at step $t$ is
+in a $512\times512$ arena towards a fixed goal pose. Distances in px are simulator pixels of this arena unless we write
+camera pixels. One pixel of the 96~px camera image spans about 5.3 simulator pixels. Time advances in control steps of
+0.1~s, which we call steps, and optimizer updates of a network are training steps. With $B_t$ the block's footprint and
+$G$ the goal's, the goal coverage at step $t$ is
 \begin{equation}
   c_t = \frac{|B_t \cap G|}{|G|}, \qquad \text{success} \;\Leftrightarrow\; \max_{t \le 300} c_t > 0.95 .
   \label{eq:success}
 \end{equation}
 An episode ends at success or after 300 steps. We also report the final coverage at the end of an episode and the
-peak coverage, which is its maximum over the episode.
+peak coverage, its maximum over the episode.
 
 \paragraph{Shapes.}
 The T keeps the original mass and inertia, and every other capital letter is one rigid body built from a $5\times7$
-block pattern (Appendix~\ref{sec:app-settings}). We call T, Y, D, L, E, F, J, P and U the 9 earlier letters, because
-the first two stages trained them, and the other 17 the new letters. Nine shapes that were never used for training,
-data collection, fitting the state world model or tuning measure transfer (Fig.~\ref{fig:shapes}). A new letter
-changes both the appearance and the dynamics of the block, so the results do not isolate visual recognition. Training
+block pattern (Appendix~\ref{sec:app-settings}). The first two training stages used T, Y, D, L, E, F, J, P and U, which
+we call the 9 earlier letters. The other 17 are the new letters. We measure transfer on nine shapes that we never used
+for training, data collection, fitting the state world model or tuning (Fig.~\ref{fig:shapes}). Because a new letter
+changes both the appearance and the dynamics of the block, the results do not isolate visual recognition. Training
 also included a narrower T, which we leave out of every average (Appendix~\ref{sec:app-results}).
 
 \paragraph{The camera policy network.}
-The baseline is the released visual CNN Diffusion Policy checkpoint for PushT~\citep{chi2023diffusion}, trained on 206
-human demonstrations of the T (Fig.~\ref{fig:cnn}). A ResNet-18 encoder~\citep{he2016resnet} with 11.2M parameters
+The original policy is the released visual CNN Diffusion Policy checkpoint for PushT~\citep{chi2023diffusion}, trained
+on 206 human demonstrations of the T (Fig.~\ref{fig:cnn}). A ResNet-18 encoder~\citep{he2016resnet} with 11.2M parameters
 reads the two latest $96\times96$ camera frames, cropped to $84\times84$. A one-dimensional
 U-Net~\citep{ronneberger2015unet} with 251.5M parameters takes the image features and the pusher position through
 feature-wise linear modulation (FiLM) and denoises a plan of 16 future pusher targets in 100 denoising steps (DDPM).
 The policy executes the first 8 targets and plans again. All our camera policies keep this network and this
-interface. The 192~px model differs in two ways. It sees a sharper $192\times192$ camera image, which is a sensor
-change, and it comes from 2 correction rounds of its own 26-letter training line.
+interface. We call a sequence of correction rounds from one starting policy a line. The main model is our policy after
+round 50 of the 26-letter stage, with the 96~px camera of the original policy. The ten-shape model ends the ten-shape
+stage (round 13) and never trained on the 17 new letters. The 192~px model sees a sharper $192\times192$ camera image
+and comes from round 2 of its own 26-letter line.
 
 \begin{table*}[t]
   \centering\small
@@ -279,17 +292,19 @@ change, and it comes from 2 correction rounds of its own 26-letter training line
     Attempt & What we measured & Why it failed & What the method kept \\
     \midrule
     RL fine-tuning in the simulator & updates large enough to change the policy took T from 55\% to 5\%, no gain on Y,
-      D or L & a candidate sets 8 of the 32 scored steps, so 16 to 36\% of its score comes from the plan, and nothing
-      held the policy near the released weights & a label for each state from a teacher, and the human T
-      demonstrations in every batch \\ \addlinespace
-    Re-ranking with the simulator & Y from 3 to 8 of 20, imitation of the choices within test noise & the 16 sampled
-      plans differ by about 5 simulator pixels, so the best of them won by chance & a planner that proposes its own
-      pushes, including going around the letter \\ \addlinespace
-    Back-propagation through a learned model & gap to the block from 21 to 3.7~px, goal covered 4 to 11\% at the end,
-      no success & gradients through contact point toward the block but carry no information about where and when to
-      push & the same state world model, searched by sampling whole plans \\ \addlinespace
-    DPPO in the simulator & mean score 0.842, at the published average (0.84) & the same noisy reward over many steps,
-      and slow practice in the physical simulator & the plan to practise in a learned model \\ \addlinespace
+      D or L & a plan sets 8 of the 32 scored steps, and only 16 to 36\% of the variance of its score came from the
+      plan. Nothing held the policy near the original weights (the likely cause of the T loss) & a label for each state from a teacher, and
+      the human T demonstrations in every batch \\ \addlinespace
+    Re-ranking with the simulator & Y from 3 to 8 of 20, D and L coverage up without success, imitation of the choices
+      within test noise & the 16 sampled plans differ by about 5 simulator pixels (one camera pixel), too little for a
+      camera policy to learn the choice. D and L need pushes around the letter that no sample made & a planner that proposes its own pushes,
+      including going around the letter \\ \addlinespace
+    Back-propagation through a learned model & distance from pusher to letter from 21 to 3.7~px, goal covered 4 to 11\%
+      at the end, no success & gradients through contact carry little information about where and when to push (our
+      reading, not measured) & the same state world model, searched by sampling whole plans \\ \addlinespace
+    DPPO in the simulator & mean score 0.842 (published 0.91 best checkpoint, 0.84 average of the last 10) & the same
+      noisy reward over many steps, and slow practice in the physical simulator & the plan to practise in a learned
+      model \\ \addlinespace
     Image world models & one-step contact error 3.08 camera pixels, overlap with the real block 16 steps ahead 0.21 to
       0.33 & errors grow when predictions feed back, and contact is about 16 simulator pixels off & a model of the
       10-number state \\
@@ -303,64 +318,64 @@ change, and it comes from 2 correction rounds of its own 26-letter training line
   \includegraphics[width=0.30\textwidth]{../figures/deck/oracle_compact.pdf}\hfill
   \includegraphics[width=0.30\textwidth]{../figures/deck/bptt_compact.pdf}
   \caption{Three attempts before the teacher. Left, RL fine-tuning in the simulator lost the T skill once the updates
-  were large enough to change the policy (variant A is AdvantageFlow and variant B DiffusionNFT, T success on 20
-  development scenes at each run's last check). Middle, picking the best of 16 policy plans (8 for D and L) with the
-  true simulator helps little, because the original policy's plans are too alike. Right, a teacher trained by
-  back-propagation through a learned state model never places the block on the goal. Pools of 5 to 20 scenes per
-  shape.}
+  were large enough to change the policy. The plot shows T success on 20 development scenes at each run's last check.
+  Middle, picking the best of 16 policy plans (8 for D and L) with the true simulator raised Y but gave no success on D
+  and L. Right, a state-based policy network trained by back-propagation through a learned model (a plain network or
+  the state world model) never placed the block on the goal. Pools of 5 to 20 scenes per shape.}
   \label{fig:negative}
 \end{figure*}
 
 \paragraph{Test protocol.}
-Every scene comes from a seed $\text{base} + 20i$. Each shape has 50 selection scenes (base 400{,}000), which we used
-to pick models, so their success rates are biased upward. Training scenes use base 800{,}000 with $i < 60{,}000$. All
-main results come from one test on \numTestScenes{} new scenes per shape (base 15{,}000{,}000) that never trained or
-picked any of the five policies we test. These are the original policy, the ten-shape model, the main model, the
-192~px model and Flow-DiT, and all five play the same scenes. Success rates are pooled over shapes. We pair changes
-between policies by scene and give 95\% normal-approximation intervals on the per-scene differences. Bar charts
-show 95\% Wilson intervals~\citep{wilson1927probable}. The early attempts of Section~\ref{sec:negative} used smaller
-pools, which we name where they appear.
+Scene $i$ of a pool uses random seed $\text{base} + 20i$, and pools never overlap. Each shape has 50 selection scenes
+(base 400{,}000). Because we used them to pick models and tune the teacher, their success rates are biased upward. The
+early attempts of Section~\ref{sec:negative} used development scenes (base 100{,}000), which the RL trainer checked
+during training, a 100-scene monitor test (base 300{,}000) and a few other small pools, which we name where they
+appear. Training scenes use base 800{,}000 with $i < 60{,}000$. We fixed each test's scenes and comparison before
+running it. All main results come from one final test on \numTestScenes{} new scenes per shape (base 15{,}000{,}000)
+that never trained or picked any of the five policies we test. These are the original policy, the ten-shape model, the
+main model, the 192~px model and Flow-DiT, and all five play the same scenes. Success rates are pooled over shapes. We
+pair changes between policies by scene, give them in points (percentage points) and add 95\% normal-approximation
+intervals on the per-scene differences. Bar charts show 95\% Wilson intervals~\citep{wilson1927probable}.
 
 % =====================================================================================================================
 \section{Early attempts and why they failed}
 \label{sec:negative}
 
-Before the method of Sections~\ref{sec:wm} to \ref{sec:copy} we tried three approaches and then a learned image
-simulator (Table~\ref{tab:why}, Fig.~\ref{fig:negative}). Appendix~\ref{sec:app-early} gives further details and a
-timeline.
+Before the method of Sections~\ref{sec:wm} to \ref{sec:copy} we tried three approaches, and two attempts to practise in a
+simulator stalled (Table~\ref{tab:why}, Fig.~\ref{fig:negative}). Appendix~\ref{sec:app-early} gives further details,
+and Table~\ref{tab:attempts} lists the attempts in time order.
 
 % ---------------------------------------------------------------------------------------------------------------------
 \subsection{RL fine-tuning in the simulator}
 \label{sec:rl}
 
-\paragraph{What we did.}
 We first fine-tuned the camera policy in the simulator with DiffusionNFT~\citep{zheng2026diffusionnft} and
 AdvantageFlow~\citep{kveton2026advantageflow}, with its image encoder frozen. Both weight the ordinary denoising loss
-by a score. From one state the policy sampled a group of candidate plans of 16 targets. Each candidate ran its first 8
-steps in a restored copy of the scene, the policy then continued for 24 more steps, and the coverage reward over these
-32 steps scored the candidate. Each candidate's weight was its score relative to its group. % D030, D031, D033
+by a score. From one state the policy sampled a group of plans of 16 targets. For each plan we restored the scene, ran
+the plan's first 8 steps and let the policy continue for 24 more steps. The coverage reward over these 32 steps scored
+the plan. Each plan's weight was its score relative to its group. The long runs made up to about 150 updates
+from about a million simulator steps each, with learning rates from $3\times10^{-6}$ to $3\times10^{-4}$, and the trainer
+checked them on 20 development scenes per shape. % D030, D031, D033, LEARNING_EXPERIMENT_LOG section 2 (long-s2)
 
-\paragraph{What happened.}
-Runs with low-rank (LoRA~\citep{hu2022lora}) updates barely moved the weights, so they tell us nothing about the score
-(Appendix~\ref{sec:app-early}). Full-weight updates of the action network did change the policy, and they destroyed
-the T skill. At a learning rate of $3\times10^{-5}$, T success fell from 55\% to 5\% by update 75 on 20 development
-scenes. Every full-weight run at $10^{-5}$ or above ended with T between 0 and 30\% (Fig.~\ref{fig:negative}, left). No
-run raised Y, D or L by more than the noise of testing the same policy twice.
+The first runs used low-rank (LoRA~\citep{hu2022lora}) updates at a learning rate of $10^{-5}$. They changed the
+policy's output by about $10^{-6}$ (Appendix~\ref{sec:app-early}), too little to test the score. Full-weight updates of
+the action network did change the policy, and they destroyed the T skill. At a learning rate of $3\times10^{-5}$, T
+success fell from 55\% to 5\% by update 75. Every full-weight run at $10^{-5}$ or above ended with T between 0 and 30\%
+(Fig.~\ref{fig:negative}, left). No run raised Y, D or L by more than the noise of testing the same policy twice.
 % LEARNING_FINDINGS sections 1-2, LEARNING_EXPERIMENT_LOG sections 1-2, D035
 
-\paragraph{Why it failed.}
-Two causes explain this. First, the score was mostly noise. A candidate sets the first 8 of the 32 steps that score
-it. The other 24 steps come from fresh random samples of the policy, and pushing is chaotic. Rerunning the same policy
-with another noise seed changes 37 to 40\% of T outcomes. We scored candidate groups of the frozen policy with 8
-independent follow-up draws per candidate and found that 16 to 36\% of the variance of a candidate's score came from
-the candidate itself (Appendix Table~\ref{tab:snr}). An update that fits this score fits mostly noise, so Y, D and L
-never improved. Second, nothing kept the policy close to the released weights. The update kept each new policy close
-to the previous one, and the loss term meant to preserve the T was about $10^{-4}$ of the main loss. Steps in mostly
-random directions therefore added up like a random walk, and the T skill fell once the policy had drifted far enough
-to behave differently. % LEARNING_FINDINGS section 2, D035, D036, docs/research/diffusion-policy-rl-learning-signal.md
+The score was mostly noise. A plan sets the first 8 of the 32 steps that score it. The other 24 steps come from fresh
+random samples of the policy, and pushing is chaotic. Rerunning the same policy with another noise seed changes 37 to
+40\% of T outcomes. We took plan groups of the frozen policy and scored each plan with 8 independent follow-up draws.
+Only 16 to 36\% of the variance of a plan's score came from the plan itself (Appendix Table~\ref{tab:snr}). An update
+that fits this score fits mostly noise. Y, D and L never improved. Also, nothing kept the policy close to the
+original weights, and this is the likely cause of the lost T skill. The update kept each new policy close to the
+previous one, and the loss term meant to preserve the T was about $10^{-4}$ of the main loss. Steps in mostly random
+directions then add up like a random walk until the policy behaves differently. We did not run a strong pull towards
+the original weights to confirm this.
+% LEARNING_FINDINGS section 2, D035, D036, docs/research/diffusion-policy-rl-learning-signal.md
 
-\paragraph{What we changed.}
-We replaced the score with a label for each state that a teacher computes from the true state, so the label does not
+We replaced the score with a label for each state that a teacher computes from the true state. This label does not
 depend on the next random plan. The 206 human T demonstrations stay in every training batch to keep the T.
 
 % ---------------------------------------------------------------------------------------------------------------------
@@ -368,40 +383,46 @@ depend on the next random plan. The 206 human T demonstrations stay in every tra
 \label{sec:rerank}
 
 Next we let the true simulator choose among the policy's own plans. At every decision we sampled 16 plans from the
-frozen policy (8 for D and L) and ran each in a replayed copy of the episode, for its own 8 steps and 16 more steps of
-the policy. We then executed the plan that scored best. This uses the simulator at decision time, so it is an upper
-bound and not a policy. Re-ranking helped little. On the same scenes T went from 6 to 7 of 10 and Y from 3 to 8 of 20,
-while D and L stayed at 0 of 5 (Fig.~\ref{fig:negative}, middle). Camera policies trained to imitate the chosen plans
-showed no consistent gain (Appendix~\ref{sec:app-early}). % LEARNING_FINDINGS section 3, D037
+frozen policy (8 for D and L) and ran each from a replay of the episode, for its own 8 steps and 16 more steps of the
+policy. We then executed the plan that scored best. Because it runs the simulator at every decision, this is a
+simulator-assisted reference and not a deployable policy. With 16 samples and a 24-step look-ahead it is not an upper
+bound either. % LEARNING_FINDINGS section 3, LEARNING_EXPERIMENT_LOG section 4, D037
 
-The 16 samples at one observation were nearly identical. Their spread was about 0.02 in the policy's normalized action
-units, which is about 5 simulator pixels or one camera pixel. % normalizer of the released checkpoint: 1 unit = 250 px
-A chosen plan therefore won through a lucky outcome of the chaotic pushes that followed it. The camera image holds
-nothing that predicts this luck, so imitating the choice teaches the policy nothing. RL fine-tuning failed for the same
-reason, because its samples were just as alike and their outcomes differed by chance. Choosing among 32 samples with
-our state world model instead of the simulator gave the same small Y gain (7 of 20). D and L, which need pushes that
-first go around the letter, gained no success at all.
+Re-ranking raised coverage but rarely produced success. On the same scenes T went from 6 to 7 of 10 and Y from 3 to 8
+of 20, while D and L stayed at 0 of 5 (Fig.~\ref{fig:negative}, middle). The final coverage rose from 0.17 to 0.44 on D
+and from 0.31 to 0.43 on L. These pools hold 5 to 20 scenes per shape, and we computed no intervals. Ranking 32 samples
+with our state world model instead of the simulator repeated the Y gain (7 of 20), which argues against pure luck.
 
-We therefore built a planner that proposes its own plans, including structured pushes that circle the letter at a safe
+The chosen plans could not be imitated. Camera policies trained on them showed no consistent gain
+(Appendix~\ref{sec:app-early}). The 16 samples at one observation spread by only about 0.02 in the policy's normalized
+action units, about 5 simulator pixels or one camera pixel. % normalizer of the released checkpoint: 1 unit = 250 px
+Imitating the chosen plan moves the policy by less than one camera pixel. RL fine-tuning drew its plans from the same
+narrow spread, which fits the small share of the score that a plan explained (Section~\ref{sec:rl}). D and L need
+pushes that first go around the letter, and the policy never sampled them.
+
+This led us to a planner that proposes its own plans, including structured pushes that circle the letter at a safe
 distance and push one point of its boundary (Section~\ref{sec:teacher}).
 
 % ---------------------------------------------------------------------------------------------------------------------
 \subsection{Back-propagation through a learned model}
 \label{sec:bptt}
 
-We then trained a teacher network on the exact state, as SuperMimic~\citep{liao2026supermimic} does, by
-back-propagating the return of 32 imagined steps through a learned model. We used a plain network over the state
-first and then our state world model (Section~\ref{sec:wm}). The teacher learned to approach the letter and closed the
-gap from 21 to 3.7~px. In the simulator it covered 4 to 11\% of the goal at the end on T, Y, D and L and solved no
-scene, for every reward we tried (Fig.~\ref{fig:negative}, right). % early_attempts.csv bptt_teacher, teacher2.py
+We then trained a state-based policy network by back-propagation through a learned model, as
+SuperMimic~\citep{liao2026supermimic} does. The network read the exact state, and we back-propagated the return of 32
+imagined steps, first through a plain network over the state and then through our state world model
+(Section~\ref{sec:wm}). The network learned to approach the letter and cut the distance from the pusher to the letter
+from 21 to 3.7~px. In the simulator it covered 4 to 11\% of the goal at the end on T, Y, D and L and solved no scene,
+for every reward we tried (Fig.~\ref{fig:negative}, right). % early_attempts.csv bptt_teacher, teacher2.py,
+% LEARNING_FINDINGS section 5 ("gap 21 -> 3.7 px")
 
 The return changes smoothly with the plan only while the pattern of contacts stays the same. Away from the letter, the
-letter's motion does not depend on the pusher's position, so the gradient says almost nothing about where to touch
-it. Near the letter, the imagined contact switches on within half a pixel, so the gradient is very steep and changes
-as contacts start and end. Placing a letter on the goal also needs discrete choices, such as which side to push and
-when to let go and walk around. A gradient reports the effect of a tiny change to the current plan and cannot make
-these choices. \citet{suh2022differentiable} describe the same problem for stiff contact in general.
-% wm2.py forward() (soft gate sigmoid(near/0.5) while imagining)
+letter's motion does not depend on the pusher's position. The gradient there says almost nothing about where to touch
+it. Near the letter, the imagined contact switches on within half a simulator pixel. There the gradient is very steep
+and changes as contacts start and end. Placing a letter on the goal also needs discrete choices, such as which side to
+push and when to let go and walk around. A gradient reports the effect of a tiny change to the current plan and cannot
+make these choices. \citet{suh2022differentiable} describe the same problem for stiff contact, but we did not measure it
+here (no gradient diagnostic, a half-pixel gate of our own choosing, 250 to 2000 training iterations and no softer gate
+tried). % wm2.py forward() (soft gate sigmoid(near/0.5) while imagining)
 
 We kept the state world model and the reward and searched whole plans by sampling. The sampling planner of
 Section~\ref{sec:teacher} succeeds with the same model, helped by the hand-designed structured pushes
@@ -418,7 +439,7 @@ Section~\ref{sec:teacher} succeeds with the same model, helped by the hand-desig
   ahead (red L, black goal and blue pusher in the display colours of that test). Right, the 48.86M model on an O pushed
   for 16 steps (1.6~s). From left to right are the last real input, the simulator, the parent model and the parent
   after 1000 updates of mixed training. In this case the predicted block overlaps the real one by 0.09 for the parent
-  and 0.53 after mixed training, which keeps the shape but moves the block too little.}
+  and 0.53 after mixed training. Mixed training keeps the shape but moves the block too little.}
   \label{fig:iwm}
   % images/image_wm_48m (saved frames), overlaps from slides/image_world_model_48m.tex (case O027)
 \end{figure}
@@ -426,34 +447,38 @@ Section~\ref{sec:teacher} succeeds with the same model, helped by the hand-desig
 \begin{figure*}[t]
   \centering
   {\def\presroot{../}\input{../figures/tikz/img2state.tex}}
-  \caption{From images to states. A $96\times96$ camera image holds 27,648 numbers. Planning needs the state, which
-  is 10 numbers that the simulator gives exactly during training. The image world model must learn the shape, the
-  pusher and the physics from pixels, while the state world model copies the known parts and learns the letter's
-  motion.}
+  \caption{From images to states. A $96\times96$ camera image holds 27,648 numbers. Planning needs only the state, 10
+  numbers that the simulator gives exactly during training. The image world model must learn the shape, the pusher and
+  the physics from pixels. The state world model reuses the simulator's exact pusher rule and contact geometry and
+  learns only the letter's motion.}
   \label{fig:img2state}
 \end{figure*}
 
 \begin{figure*}[t]
   \centering
   \input{../figures/tikz/worldmodel.tex}
-  \caption{How the state world model predicts one step. Grey parts are copied from the simulator. The gold part is
+  \caption{How the state world model predicts one step. Grey parts reuse the simulator's exact rules. The gold part is
   learned from recorded pushes of the original policy with noise and covers the letter's motion in contact.}
   \label{fig:wm}
 \end{figure*}
 
 % ---------------------------------------------------------------------------------------------------------------------
-\subsection{DPPO and a learned simulator}
+\subsection{DPPO in the physical simulator}
 \label{sec:dppo}
 
 In parallel we fine-tuned the camera policy in the physical simulator with DPPO~\citep{ren2025dppo} and coverage
 rewards. DPPO applies PPO to the denoising chain. The policy kept its inputs and its 16-target plans, of which it
-executes 8. Its mean score reached 0.842. The Diffusion Policy paper reports 0.84 for
-this policy as the average over its last checkpoints and 0.91 for its best checkpoint, so DPPO changed the policy
-without improving it. DPPO learns from the same kind of signal as our RL fine-tuning, which is a coverage reward over
-executed plans in a chaotic simulator, and each update needs many rollouts in the physical simulator. Our next step
-was a learned simulator that predicts the next camera image, so that DPPO could practise on imagined rollouts. That
-raised the question of whether predicted images are accurate enough to score rewards over many steps.
-% final deck slide 8 and notes; Chi et al. 2023, Table 2 (Push-T image, DiffusionPolicy-C 0.91/0.84, max/average)
+executes 8. We report the PushT mean score of the Diffusion Policy paper. It is the mean over test scenes of each
+episode's highest reward, where the reward is the goal coverage divided by 0.95 and capped at 1. DPPO reached a mean
+score of 0.842. The Diffusion Policy paper reports 0.91 for its best checkpoint and 0.84 as the average of its last 10
+checkpoints. We did not score the original policy with our evaluation. DPPO learns from the same kind of signal as our
+RL fine-tuning, a coverage reward over executed plans in a chaotic simulator, and each update needs many rollouts in
+the physical simulator. Our next step was an image world model that predicts the next camera image, so that DPPO could
+practise on imagined rollouts. That raised the question of whether predicted images are accurate enough to score
+rewards over many steps.
+% final deck slide 8 and notes; Chi et al. 2023, Table 2 (Push-T image, DiffusionPolicy-C 0.91/0.84, max/average of
+% the last 10 checkpoints); mean score = test/mean_score, the mean of each episode's max of min(coverage / 0.95, 1)
+% (docs/OFFICIAL_BASELINE.md; reward checked in tests/test_official_shapes_runtime.py)
 
 % ---------------------------------------------------------------------------------------------------------------------
 \subsection{Image world models}
@@ -461,34 +486,33 @@ raised the question of whether predicted images are accurate enough to score rew
 
 An image world model predicts the next camera frame from recent frames and pusher targets. We built two. The first
 adapts the released 8.73M-parameter world model of GPC~\citep{qi2025gpc}, pretrained on its own version of PushT. Out
-of the box it drew a T-like crossbar on a pushed L (Fig.~\ref{fig:iwm}, left), which shows a strong T prior. We adapted
-it to the official images with more varied play data. Its best checkpoint still moved an untouched block by 0.546
+of the box it drew a T-like crossbar on a pushed L 0.4~s ahead (Fig.~\ref{fig:iwm}, left). We adapted it to the
+official images with more varied play data. Its best checkpoint still moved an untouched block by 0.546
 camera pixels in one predicted step and missed the block's centre by 3.08 camera pixels on steps with contact.
 
 The second is a 48.86M-parameter U-Net that we trained from scratch for six shapes (B, C, L, O, T and X). It takes
 four $96\times96$ RGB frames with the three past and the current pusher targets and predicts the next frame. Its errors
-grew when it fed on its own predictions. We therefore took a parent model trained for one-step prediction and
-continued it with mixed training on its own predicted frames. On 48 fixed development cases, the mean overlap between
+grew when it fed on its own predictions. We took a parent model trained for one-step prediction and continued it with
+mixed training on its own predicted frames. On 48 fixed cases, the mean overlap between
 the predicted and the real block 16 steps (1.6~s) ahead rose from 0.21 for the parent to 0.33 after 1000 updates of
 mixed training. Stationary scenes, stopping, rotation and shape details still failed (Fig.~\ref{fig:iwm}, right).
 % final deck slides 10-18 and notes, slides/image_world_model_48m.tex, PRs 6, 7, 9, 11
 
-Four findings kept image models out of the method. Errors grew when predictions fed back. Single steps looked right,
+Four findings kept image world models out of the method. Errors grew when predictions fed back. Single steps looked right,
 but over 16 steps shapes deformed, with a C drifting towards an L and the hole of a B closing. A plan runs 8 steps
 without re-planning, and the planner looks 48 steps ahead. Contact was far too coarse. A one-step contact error of 3.08
 camera pixels is about 16 simulator pixels, 6 to 13 times the 1.3 to 2.7 simulator pixels that decide a success
-(Section~\ref{sec:lastmm}). Pixel losses also gave little signal about contact, because almost every pixel stays the
-same from one step to the next and repeating the last frame is already a strong prediction
-(Appendix~\ref{sec:app-early}). Finally, a planner that imagines 1,024 plans of 48 steps would need 49,152 predicted
+(Section~\ref{sec:lastmm}). Pixel losses also gave little signal about contact. Almost every pixel stays the same from
+one step to the next, and repeating the last frame is already a strong prediction (Appendix~\ref{sec:app-early}). Finally, a planner that imagines 1,024 plans of 48 steps would need 49,152 predicted
 frames per decision, each from three denoising passes.
 
 % =====================================================================================================================
-\section{From images to states, the state world model}
+\section{The state world model}
 \label{sec:wm}
 
-Planning needs the state of the letter and the pusher, which is 10 numbers (Fig.~\ref{fig:img2state}). A
-$96\times96$ camera image holds 27,648 numbers, and during training the simulator gives the state exactly. The
-pusher's controller and the letter's shape are known exactly, so a model can copy them and learn the rest.
+Planning needs the state of the letter and the pusher, 10 numbers in all (Fig.~\ref{fig:img2state}). A $96\times96$
+camera image holds 27,648 numbers, and during training the simulator gives the state exactly. The pusher's controller
+and the letter's shape are known exactly. A model can reuse them and learn only the rest.
 
 The state holds the letter's position, angle, velocity and turning rate and the pusher's position and velocity. The
 state world model predicts the next state from the current state and the next pusher target (Fig.~\ref{fig:wm}). The
@@ -496,31 +520,33 @@ pusher follows the simulator's PD rule exactly, with 10 substeps per step, and m
 The distance between pusher and letter comes from the letter's rectangles. A contact gate keeps an untouched letter
 still. The simulator behaves the same way, because a letter that nobody touches stops within one step. A small
 multilayer perceptron (MLP) with 0.83M parameters learns the letter's motion during contact in the letter's own frame.
-It learns from rollouts of the frozen original policy with random noise on its targets, and no human demonstration
-enters it. Over 8 steps its median error in contact is 0.25~px, against 2.3~px for a plain network that learns
-everything from the same state (Appendix~\ref{sec:app-wm}). % LEARNING_FINDINGS section 4, world_model_accuracy.csv
+It learns from rollouts of the original policy with random noise on its targets, and no human demonstration enters it.
+On the first five shapes, the first version's median error in contact over 8 steps is 0.25~px, against 2.3~px for a
+plain network that learns everything from the same state (Appendix~\ref{sec:app-wm}).
+% LEARNING_FINDINGS section 4, world_model_accuracy.csv
 
 \begin{figure*}[t]
   \centering
   \input{../figures/tikz/planner.tex}\par
   \vspace{2mm}
   \includegraphics{../figures/deck/teacher_letters_bar.pdf}
-  \caption{How the teacher plans. It reads the exact state (training only), searches 1,024 push plans in the state
-  world model over 4 rounds, executes the first move of the best plan and plans again. Bottom, teacher success per
-  letter on the 50 selection scenes per letter, 90\% over the 26 letters.}
+  \caption{How the teacher plans. It reads the exact state, searches 1,024 push plans in the state world model over 4
+  rounds, executes the first target of the best plan and plans again. Bottom, teacher success per letter on the 50
+  selection scenes per letter in the latest check per letter, made with three versions of the state world model. Over
+  the 26 letters it solves 90\%.}
   \label{fig:teacher}
 \end{figure*}
 
-The teacher could plan in the simulator itself, which is exact. One teacher decision imagines 1,024 plans of 48 steps.
+Planning in the simulator itself would be exact but too slow. One teacher decision imagines 1,024 plans of 48 steps.
 The state world model does this in 0.07~s on one GPU. It runs all plans in one batch, with one small network pass per
 step and one exact distance for contact. The simulator needs 14.2~s on one CPU core, because it steps one plan at a
 time, restores the scene for every plan and runs 10 collision-checked substeps per step. The state world model is
-therefore about 200 times faster than one simulator process and 9 times faster than 32 processes in parallel
+about 200 times faster than one simulator process and 9 times faster than 32 processes in parallel
 (Appendix~\ref{sec:app-wm}). % timed 2026-11-12 on the same node
 
-Started from a true state and run for 32 steps without correction, the imagined D in the talk ends 1.5~px from the
-simulator and the imagined T 5.3~px. Other examples drift further (Appendix~\ref{sec:app-wm}). The teacher reads the
-true state again at every step, so such errors do not accumulate. % data/world_model_examples.csv
+Started from a true state and run for 32 steps without correction, the model ends 1.0 to 42.5~px from the simulator in
+eight example windows, with a median of about 3.4~px (Appendix~\ref{sec:app-wm}). Because the teacher reads the true
+state again at every step, such errors do not accumulate. % data/world_model_examples.csv (median of 8 = 3.39 px)
 
 % =====================================================================================================================
 \section{The planner teacher}
@@ -528,60 +554,67 @@ true state again at every step, so such errors do not accumulate. % data/world_m
 
 At every step the teacher reads the letter and pusher state, plans pusher targets inside the state world model and
 executes the first target of its best plan (Algorithm~\ref{alg:teacher}, Fig.~\ref{fig:teacher}). It runs the
-cross-entropy method~\citep{rubinstein1999cem,deboer2005tutorial} over smooth random target paths 48 steps ahead. Each
-of 4 rounds samples 256 paths, imagines each in the state world model, scores how well the letter's points match the
-goal, and refits the sampling distribution to the best 24. In the first round, 128 of the samples are structured
-pushes that move out to a safe circle, travel around the letter and push one point of its boundary. Re-ranking lacked
-exactly these proposals (Section~\ref{sec:rerank}). After 1,024 plans the teacher executes the first target of the
+cross-entropy method~\citep{rubinstein1999cem,deboer2005tutorial} over smooth random plans of 48 targets. Each of 4
+rounds samples 256 plans, imagines each in the state world model, scores how well the letter's points match the goal,
+and refits the sampling distribution to the best 24. In the first round, 128 of the samples are structured pushes that
+move out to a safe circle, travel around the letter and push one point of its boundary. Re-ranking lacked exactly these
+plans (Section~\ref{sec:rerank}). After 1,024 plans the teacher executes the first target of the
 single best plan, instead of the average of the best 24 plans, and plans again at the next step.
 
 \begin{algorithm}[t]
-  \caption{Planner teacher at one step (training only).}
+  \caption{Planner teacher at one step. The state noise is Gaussian.}
   \label{alg:teacher}
   \small
   \begin{algorithmic}[1]
-    \Require state $x_t$ read with 1~px and 1$^\circ$ noise, state world model $f_\phi$, goal pose $g$
+    \Require state $x_t$ read with 1$^\circ$ of angle noise (and 1~px of position noise in checks and correction
+      rounds), state world model $f_\phi$, goal pose $g$
     \State Start the sampler at the previous plan, shifted by one step
     \For{$j = 1, \dots, 4$}
-      \State Sample 256 smooth paths of 48 targets (in round 1, 128 of them are structured pushes)
-      \State Imagine each path in $f_\phi$ from $x_t$
+      \State Sample 256 smooth plans of 48 targets (in round 1, 128 of them are structured pushes)
+      \State Imagine each plan in $f_\phi$ from $x_t$
       \State Score how well the letter's points match $g$
-      \State Refit the sampler to the best 24 and keep the best path
+      \State Refit the sampler to the best 24 and keep the best plan
     \EndFor
-    \State Execute the first target of the best path
-    \Ensure intended plan, the first 16 targets of the best path
+    \State Execute the first target of the best plan
+    \Ensure intended plan, the first 16 targets of the best plan
   \end{algorithmic}
 \end{algorithm}
 
-We arrived at this design by removing one stall near the goal at a time, and small random noise on the state it reads
-made the planner a better teacher (Appendix~\ref{sec:app-teacher}). Over the 26 letters the teacher solves 1170 of 1300
-selection scenes (90\%, Fig.~\ref{fig:teacher}). It reads the exact state, so we use it for training only.
-% LEARNING_FINDINGS sections 5-6, mpc_teacher.py, teacher_validation.csv (26 letters, latest check per letter)
+We arrived at this design by removing one stall near the goal at a time. Small random noise on the state it reads
+made the planner a better teacher (Appendix~\ref{sec:app-teacher}). In the latest check per letter, the teacher solves
+1170 of the 1300 selection scenes of the 26 letters (90\%, Fig.~\ref{fig:teacher}). These checks used three versions
+of the state world model, on the selection scenes on which we tuned the teacher.
+% LEARNING_FINDINGS sections 5-6, mpc_teacher.py, teacher_validation.csv (26 letters, latest check per letter, wm2 v1
+% to v3); state noise: chain_26prep.sh (checks --state-noise 1 --angle-noise 1, plan-label demonstrations
+% --state-noise 0 --angle-noise 1), chain_dagger_loop26c.sh (correction rounds 1 px and 1 deg)
 
 % =====================================================================================================================
 \section{From copying to correction rounds}
 \label{sec:copy}
 
-\subsection{Copying alone is not enough}
+\subsection{Copying the teacher}
 \label{sec:copygap}
-The camera policy starts from the released checkpoint and trains with the official Diffusion Policy training settings. Both the
-image encoder and the action network learn with the denoising loss, random crops, an exponential moving average (EMA)
-of the weights and a cosine learning rate. Training uses every step of the teacher demonstrations and the 206 human T
-demonstrations, with equal shares of each shape in every batch. Copying alone keeps little of the teacher's skill
-(Fig.~\ref{fig:copy}). On the same 50 selection scenes for five shapes, the teacher solves 76\%. A diffusion copy that
-reads the exact state solves 31\% when it re-plans every step like the teacher and 23\% when it executes 8 of its 16
-targets. The camera copy solves 19\%. The copies that read the exact state already lose most of the skill, so the loss
-comes from copying itself. Copying shows the policy the teacher's runs and nothing else. After a small mistake the
-policy reaches states the teacher never visited and has no example of how to recover. Appendix~\ref{sec:app-blends}
-describes our earlier attempts to distil the planner into the released weights.
-% D044, early_attempts.csv copying_gap (teacher 191, state copy 78 and 57, camera copy 48 of 250)
+The camera policy starts from the weights of the original policy and trains with the official Diffusion Policy
+training settings. Both the image encoder and the action network learn with the denoising loss, random crops, an
+exponential moving average (EMA) of the weights and a cosine learning rate. Training uses every step of the teacher
+demonstrations and the 206 human T demonstrations, with equal shares of each shape in every batch. Teacher
+demonstrations come from teacher scenes, training scenes on which the teacher runs alone. Copying alone keeps little of
+the teacher's skill (Fig.~\ref{fig:copy}). On the same 50 selection scenes for five shapes, the teacher solves 76\%. A
+diffusion copy that reads the exact state solves 31\% when it re-plans every step like the teacher and 23\% when it
+executes 8 of its 16 targets. The camera copy solves 19\%, and the original policy 16\%. Because the copies that read
+the exact state already lose most of the skill, the loss comes from copying itself and not from the camera. Copying
+shows the policy the teacher's runs and nothing else. After a small mistake the policy reaches states the teacher never
+visited and has no example of how to recover. Appendix~\ref{sec:app-blends} describes our earlier attempts to distil
+the planner into the weights of the original policy.
+% D044, early_attempts.csv copying_gap (teacher 191, state copy 78 and 57, camera copy 48 of 250); original 41 of 250
+% (typed_in_numbers.json original_on_teacher_validation_5shapes)
 
 \begin{figure}[tb]
   \centering
   \includegraphics{../figures/deck/copying_pooled.pdf}
   \caption{Copying the teacher on five shapes, with the same 50 selection scenes per shape. A copy that reads the exact
   state solves 31\% when it re-plans every step and 23\% when it executes 8 of 16 targets. The camera copy solves
-  19\% and keeps 25\% of the teacher's successes.}
+  19\% and keeps 25\% of the teacher's successes. The original policy solves 16\% of these scenes.}
   \label{fig:copy}
 \end{figure}
 
@@ -591,12 +624,12 @@ Correction rounds add examples from the states that the policy reaches itself (A
 round the policy plays new practice scenes, 30 per shape. Every 8 steps it samples 8 plans and, with probability 0.7,
 executes 8 targets of the first one. Otherwise the teacher drives the next 8 steps. At each of these states the
 teacher plans from the true state, and its plan becomes the label (Fig.~\ref{fig:corrections}). The label is the
-teacher's intended plan, which is the first 16 targets of the best plan it found at that state. We do not use the
-pushes the teacher executed, because the teacher re-plans every step while the policy executes 8 targets without
-re-planning (Appendix~\ref{sec:app-labels}). The new examples join all earlier ones, and the policy is fine-tuned from
-its previous weights on everything. A planner that reads the true state computes each label, so the label does not
-depend on the random plans that follow, unlike the RL score of Section~\ref{sec:rl}. The 26-letter stage ran 50
-rounds, and its last round trained on 3.2M examples. % chain_dagger_loop26c.sh, dataset_sizes.csv
+teacher's intended plan, the first 16 targets of the best plan it found at that state. We do not use the pushes the
+teacher executed. The teacher re-plans every step, while the policy executes 8 targets without re-planning
+(Appendix~\ref{sec:app-labels}). The new examples join all earlier ones, and the policy is fine-tuned from its previous
+weights on everything. Unlike the RL score of Section~\ref{sec:rl}, the label does not depend on the random plans that
+follow, because a planner that reads the true state computes it. The 26-letter stage ran 50 rounds, and its last round
+trained on 3.2M examples. % chain_dagger_loop26c.sh, dataset_sizes.csv
 
 \begin{figure}[tb]
   \centering
@@ -604,7 +637,7 @@ rounds, and its last round trained on 3.2M examples. % chain_dagger_loop26c.sh, 
   \framed{../images/slide/correction_R.png}\hfill
   \framed{../images/slide/correction_E.png}
   \caption{Correction examples for K, R and E. Each picture is a state that the policy reached itself. Blue lines are
-  the 8 plans it sampled there, and gold is the teacher's plan, which becomes the label.}
+  the 8 plans it sampled there. Gold is the teacher's plan, the label.}
   \label{fig:corrections}
 \end{figure}
 
@@ -612,17 +645,20 @@ rounds, and its last round trained on 3.2M examples. % chain_dagger_loop26c.sh, 
   \centering
   \includegraphics{../figures/deck/curves_stages_3.pdf}
   \caption{Success on the selection scenes per correction round, averaged over each stage's shapes (the 26 letters in
-  the last stage). The dotted line and the star come from an earlier test on new scenes (original 2.4\%, main model
-  34.7\%). The final results are in Table~\ref{tab:main}.}
+  the last stage). Dashed lines are the original policy on the same selection scenes. In the last stage the dotted
+  line is the original policy on the final test (\numHeadOrig\%) and the star the main model on the final test
+  (\numHeadMain\%, Table~\ref{tab:main}).}
   \label{fig:curves}
+  % make_figures.py fig_deck_stages(3): dashed = typed_in_numbers.json (41 of 250, 41 of 500); dotted and star =
+  % d064_test_groups.csv (orig, r50; all 26 letters)
 \end{figure*}
 
 \begin{table*}[t]
   \centering
   \caption{Final test. Success (\%) on \numTestScenes{} new scenes per shape, with every policy on the same scenes.
-  The change is the main model minus the original in points, paired by scene. Its 95\% interval covers the variation
-  between scenes, and each model was trained once. The ten-shape model trained on the 9 earlier letters and the narrow
-  T. Flow-DiT is the larger network of Section~\ref{sec:arch}.}
+  The change is the main model minus the original policy in points, paired by scene. The 95\% interval covers
+  variation between scenes. The ten-shape model trained on the 9 earlier letters and the narrow T. Flow-DiT is the
+  larger network of Section~\ref{sec:arch}.}
   \label{tab:main}
   \begin{adjustbox}{max width=\textwidth}
   \input{tables/main_test.tex}
@@ -649,14 +685,14 @@ rose to about 35\% (Appendix~\ref{sec:app-stages}). % D053
 \section{Results}
 \label{sec:results}
 
-Over the 26 letters the main model, after round 50 of the 26-letter stage, raises success from \numHeadOrig\% to
-\numHeadMain\%, a paired change of \numDiffHeadMain{} points (95\% interval \numDiffHeadMainLo{} to \numDiffHeadMainHi,
-Table~\ref{tab:main}). It keeps the original network, camera and interface. The 17 new letters rise from \numNewOrig\%
-to \numNewMain\% and the 9 earlier letters from \numEarlyOrig\% to \numEarlyMain\%. The share of the goal covered at
-the end rises from \numCovOrig{} to \numCovMain. The ten-shape model reaches \numNewTen\% on the 17 letters it never
-trained on, so the gain on those letters comes from practising them. With the sharper 192~px camera, success is
-\numHeadHiRes\%, a change of \numVsMainHeadHiRes{} points against the main model whose interval
-\numVsMainHeadHiResSig{} zero (Appendix~\ref{sec:app-results}).
+The main model raises success over the 26 letters from \numHeadOrig\% to \numHeadMain\%, a paired change of
+\numDiffHeadMain{} points (95\% interval \numDiffHeadMainLo{} to \numDiffHeadMainHi, Table~\ref{tab:main}). The 17 new
+letters rise from \numNewOrig\% to \numNewMain\% and the 9 earlier letters from \numEarlyOrig\% to \numEarlyMain\%
+(Appendix Fig.~\ref{fig:bars}). The share of the goal covered at the end rises from \numCovOrig{} to \numCovMain. The
+ten-shape model, which never trained on the 17 new letters, reaches \numNewTen\% on them. Practice on those letters
+brings the main model to \numNewMain\%. With the sharper 192~px camera, success is \numHeadHiRes\%,
+\numVsMainHeadHiRes{} points over the main model (interval \numVsMainHeadHiResLo{} to \numVsMainHeadHiResHi, which
+\numVsMainHeadHiResSig{} zero, Appendix~\ref{sec:app-results}).
 
 \numLettersUpMain{} of the 26 letters improve, and the main model's success per letter ranges from
 \numMainLetterMin\% (\numMainLetterMinName) to \numMainLetterMax\% (\numMainLetterMaxName, Fig.~\ref{fig:final},
@@ -665,38 +701,48 @@ Appendix Table~\ref{tab:pershape}). The T does not improve. The main model solve
 \numDiffTMainHi) \numDiffTMainSig{} zero. A live demo at \href{https://tinyurl.com/tdyssey}{tinyurl.com/tdyssey} runs
 both policies on the same scenes.
 
-Success on the nine never-seen shapes \numUnseenTrend, from \numUnseenOrig\% for the original policy to
-\numUnseenTen\% for the ten-shape model and \numUnseenMain\% for the main model (change \numDiffUnseenMain{} points,
-interval \numDiffUnseenMainLo{} to \numDiffUnseenMainHi, Fig.~\ref{fig:heldout}). Digit 7 shares strokes with trained
-letters and reaches \numDigitSevenMain\% (original \numDigitSevenOrig\%). Transfer stays small, and the gains come from
-practising on the target shapes.
+Success on the nine never-seen shapes rises from the original policy (\numUnseenOrig\%) to the ten-shape model
+(\numUnseenTen\%) to the main model (\numUnseenMain\%, change \numDiffUnseenMain{} points, interval
+\numDiffUnseenMainLo{} to \numDiffUnseenMainHi, Fig.~\ref{fig:heldout}). These are three single training runs that also
+differ in rounds and data. Digit 7 shares strokes with trained letters and reaches \numDigitSevenMain\% (original
+policy \numDigitSevenOrig\%). Never-seen shapes reach \numUnseenMain\%, against \numHeadMain\% on the trained
+letters.
 
 \begin{figure}[tb]
   \centering
   \deckgraph{heldout_success}
-  \caption{The nine never-seen shapes, success by the shapes each policy trained on, with 95\% intervals. The diamond
-  is the 192~px model.}
+  \caption{The nine never-seen shapes, success of the original policy (T only), the ten-shape model (10 shapes) and the
+  main model (26 letters), with 95\% intervals. These are three single runs that also differ in rounds and data. The
+  diamond is the 192~px model.}
   \label{fig:heldout}
 \end{figure}
 
 \subsection{The last millimetres}
 \label{sec:lastmm}
 Most failures are near misses. Over the 26 letters the main model leaves on average \numCovMain{} of the goal covered
-at the end and reaches \numPeakMain{} at its best moment, while success needs more than 0.95. Of its failures,
-\numNearMissMain\% reached 90\% coverage at their best moment, which is about two in three. A pure shift of 1.3 to 2.7
-simulator pixels, depending on the letter, already ends a success. That is 0.24 to 0.51 of a camera pixel
-(Fig.~\ref{fig:zoom}). Rotation errors add to the shift, so a finished push has to end within about 1.5~px and 2$^\circ$ of the goal. A near miss
-at 94.6\% and a success at 95.1\% therefore differ by a sliver of goal much narrower than one camera pixel. Painting the
-uncovered sliver red in the camera image did not raise success (Appendix~\ref{sec:app-overlay}), and
-Appendix~\ref{sec:app-lastmm} reports further tests of the frozen policy.
+at the end and reaches a mean peak coverage of \numPeakMain, while success needs more than 0.95. About two in three
+failures (\numNearMissMain\%) reached a peak coverage of 90\%. A pure shift of 1.3 to 2.7 simulator pixels, depending
+on the letter, already ends a success. That is 0.24 to 0.51 of a camera pixel (Fig.~\ref{fig:zoom}). With rotation
+errors added to the shift, a finished push has to end within about 1.5 simulator pixels and 2$^\circ$ of the goal. A near
+miss at 94.6\% and a success at 95.1\% differ by a sliver of goal much narrower than one camera pixel.
+Appendix~\ref{sec:app-lastmm} reports further tests of the main model with its weights fixed.
 % D048 (1.3-2.7 px, E tightest, T loosest), LEARNING_FINDINGS section 5 (about 1.5 px and 2 deg)
+
+At our final presentation the professor suggested making this misalignment visible to the policy. We painted the
+uncovered goal red in the camera image, grown so that even a sliver of zero width shows about one camera pixel of red,
+and continued the main model for \numOverlayRounds{} correction rounds in two arms, with the overlay and without it
+(Appendix~\ref{sec:app-overlay}). The overlay did not raise success. Overlay minus control is \numOverlayVsControl{}
+points (interval \numOverlayVsControlLo{} to \numOverlayVsControlHi), and the share of failures that were near misses
+stayed at \numOverlayNearMiss\% against \numControlNearMiss\%. Three limits apply. About half of the training weight,
+the earlier correction examples, was shown without the overlay. The arms ran \numOverlayRounds{} rounds. We tested a
+deliberately minimal version that paints only thin slivers. %OVERLAYOFF%
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.48\columnwidth]{../images/last_mile/zoom_G.png}\hfill
   \includegraphics[width=0.48\columnwidth]{../images/last_mile/zoom_E.png}
-  \caption{Close-ups from the same scene. Left, a near miss on G with 94.6\% covered at best. Right, a success on E
-  with 95.1\%. Red is the part of the goal left uncovered. One grid square is one 96~px camera pixel, about 5
+  \caption{Close-ups from the same scene. Left, a near miss on G with a peak coverage of 94.6\%. Right, a success on E
+  with 95.1\%. Red is the part of the goal left uncovered. One grid square is one 96~px camera pixel, about 5.3
   simulator pixels.}
   \label{fig:zoom}
 \end{figure}
@@ -720,46 +766,46 @@ Appendix~\ref{sec:app-lastmm} reports further tests of the frozen policy.
 Flow-DiT keeps the inputs, the outputs and the training data of the main model and changes the network
 (Fig.~\ref{fig:arch}). A DINOv2 ViT-B/14 encoder~\citep{oquab2024dinov2} with 86.6M parameters, pretrained on
 ordinary images and fine-tuned here, reads each 96~px frame, cropped to 84~px and enlarged to 224~px. It passes all
-$16\times16$ patch tokens and the class token of both frames and one pusher token to the action head, which makes 515
-condition tokens. The action head is a diffusion transformer (DiT)~\citep{peebles2023dit} with 418.2M parameters in 24
+$16\times16$ patch tokens and the class token of both frames and one pusher token to the action head, 515 condition
+tokens in all. The action head is a diffusion transformer (DiT)~\citep{peebles2023dit} with 418.2M parameters in 24
 blocks of width 1024. Its 16 action tokens attend to each other and to the condition tokens, and the time step enters
-every block through adaptive layer norm. The head is trained by flow matching~\citep{lipman2023flow} with the time
-sampling of $\pi_0$~\citep{black2025pi0} and draws a plan in 10 Euler steps. The policy has 505M parameters in all. We
-trained it once for 160k training steps with batches of 128 on the main model's final data, with no correction rounds
-of its own. % D059, D061, D064
+every block through adaptive layer norm. The head is trained from scratch by flow matching~\citep{lipman2023flow} with
+the time sampling of $\pi_0$~\citep{black2025pi0} and draws a plan in 10 Euler steps. The policy has 505M parameters in
+all. We trained it for 160k training steps with batches of 128 on the main model's final data, with no correction
+rounds of its own. % D059, D061, D064
 
 On the same new scenes Flow-DiT reaches \numHeadFlow\% on the 26 letters against \numHeadMain\% for the main model, a
 paired change of \numVsMainHeadFlow{} points (interval \numVsMainHeadFlowLo{} to \numVsMainHeadFlowHi,
 Table~\ref{tab:main}). It reaches \numUnseenFlow\% on the never-seen shapes and leaves \numCovFlow{} of the goal
 covered at the end. Its point estimate is higher than the main model's on \numLettersUpFlow{} of the 26 letters. The
-same machine-generated data therefore supports a stronger policy once the network and its pretrained encoder change,
-and the 96~px camera does not cap success near one third. We keep the official network as the main model so that it
-matches the baseline. Variants with $8\times8$ pooled tokens, a larger encoder, a training-only pose head and a
-joint-attention action head did no better (Appendix~\ref{sec:app-flow}).
+same machine-generated data support a policy that is 12.7 points better once the network and its pretrained encoder
+change, and the 96~px camera supports at least \numHeadFlow\%. % 12.7 = \numVsMainHeadFlow
+We keep the official network as the main model so that it matches the original
+policy. A larger ViT-L/14 encoder was worse (\numFlowLargeVsFlow{} points, interval \numFlowLargeVsFlowLo{} to
+\numFlowLargeVsFlowHi), and $8\times8$ pooled tokens, a training-only pose head and a joint-attention action head did no
+better (Appendix~\ref{sec:app-flow}).
 
 % =====================================================================================================================
 \section{Limitations}
 \label{sec:limits}
 
-The teacher reads the exact simulator state and uses hand-designed push candidates during training. Its score uses
-privileged geometry, namely the letter's rectangles, the goal pose and the coverage, and the state world model copies
-the pusher's dynamics and the contact geometry from the simulator. Every policy also trains on the 206 human T
-demonstrations of the released checkpoint. Two appendix tests give privileged information to the policy at test time.
-The noise steering of Appendix~\ref{sec:app-lastmm} gives a steering network the exact block pose, and the goal overlay
-of Appendix~\ref{sec:app-overlay} paints the uncovered goal from exact poses. We report both apart from the camera-only
-results.
-
-Most failures end just short of 95\% coverage (Section~\ref{sec:lastmm}). At the final talk the professor suggested
-making this misalignment visible by painting the uncovered goal red in the camera image. We tested this after the
-talk, and it did not raise success over a control without the overlay (\numOverlayVsControl{} points, interval
-\numOverlayVsControlLo{} to \numOverlayVsControlHi, Appendix~\ref{sec:app-overlay}).
+The teacher reads the exact simulator state and uses hand-designed structured pushes during training. Its score uses
+privileged geometry, namely the letter's rectangles, the goal pose and the coverage. The state world model reuses the
+simulator's exact pusher rule and contact geometry. Every policy also trains on the 206 human T demonstrations of the
+original policy. The early attempts scored plans with the simulator's coverage reward, and re-ranking ran the true
+simulator at every decision (Section~\ref{sec:rerank}). The training-only pose head of Appendix~\ref{sec:app-flow}
+learns from exact simulator poses. Two tests give privileged information to the policy at test time. The noise steering
+of Appendix~\ref{sec:app-lastmm} gives a steering network the exact block pose, and the goal overlay of
+Section~\ref{sec:lastmm} and Appendix~\ref{sec:app-overlay} paints the uncovered goal from exact poses. We report both
+apart from the camera-only results.
 
 We applied the method to one pushing task in simulation and did not test other tasks or a real robot. Success on
-never-seen shapes grows with the number of training shapes (\numUnseenOrig\%, \numUnseenTen\% and \numUnseenMain\%),
-so a broader shape set is the natural next step towards transfer.
+never-seen shapes rises from the original policy to the ten-shape model to the main model (\numUnseenOrig\%,
+\numUnseenTen\% and \numUnseenMain\%). These are three single runs that also differ in rounds and data. A broader shape
+set is the next thing to test for transfer.
 
-Each model was trained once, so the intervals cover the variation between scenes and not between training runs. The
-selection scenes picked checkpoints and overstate their success, so all results come from new scenes. The 192~px model
+Because each model was trained once, the intervals cover the variation between scenes and not between training runs.
+Because the selection scenes picked checkpoints and overstate their success, all results come from new scenes. The 192~px model
 uses a sharper camera than the original policy, and Flow-DiT's encoder starts from DINOv2 weights pretrained on
 ordinary images. Appendix~\ref{sec:app-disclosure} reports a test-seed incident and the compute we used.
 
@@ -769,11 +815,12 @@ ordinary images. Appendix~\ref{sec:app-disclosure} reports a test-seed incident 
 
 A camera Diffusion Policy that knew the T now pushes all 26 capital letters. On new scenes its success on the 26
 letters rose from \numHeadOrig\% to \numHeadMain\% with the original network and camera and no new human
-demonstrations, and on nine never-seen shapes from \numUnseenOrig\% to \numUnseenMain\%. We measured why each early
-approach failed (Section~\ref{sec:negative}, Table~\ref{tab:why}). What worked was a sampling planner in a state world
+demonstrations, and on nine never-seen shapes from \numUnseenOrig\% to \numUnseenMain\%. Section~\ref{sec:negative}
+and Table~\ref{tab:why} report how each early approach failed. What worked was a sampling planner in a state world
 model as a privileged teacher, labels from the teacher's intended plans, correction rounds on the policy's own states
-and enough training per shape. Final alignment is the open problem. Flow-DiT, a larger network trained on the same
-data, reaches \numHeadFlow\% and closes part of that gap. The code is at
+and enough training per shape. Painting the remaining misalignment into the camera image, as the professor suggested,
+did not raise success after \numOverlayRounds{} rounds. Flow-DiT, a larger network with a pretrained DINOv2 encoder
+trained on the same data, raises success to \numHeadFlow\%. The code is at
 \href{https://github.com/Song-Mengfei/Tdyssey}{github.com/Song-Mengfei/Tdyssey} and the demo at
 \href{https://tinyurl.com/tdyssey}{tinyurl.com/tdyssey}.
 
@@ -791,14 +838,14 @@ data, reaches \numHeadFlow\% and closes part of that gap. The code is at
 \onecolumn
 
 \noindent Numbers in parentheses such as (D035) point to entries of the decision log \texttt{docs/DECISIONS.md} in our
-repository, where each experiment and its test were written down before the result.
+repository.
 
 \section{Shapes and settings}
 \label{sec:app-settings}
 
 The T keeps the original mass, inertia and centre-of-mass convention. The other capitals are built from a $5\times7$
-block pattern, 120 simulator pixels tall and 100 wide, except L, which has its own definition with a 120~px stem and a
-90~px foot, 30~px thick. Each letter is one rigid body with mass 1 and the inertia of a uniform plate. Rendering,
+block pattern, 120 simulator pixels tall and 100 wide. L has its own definition, with a 120~px stem and a 90~px foot,
+both 30~px thick. Each letter is one rigid body with mass 1 and the inertia of a uniform plate. Rendering,
 collision and reward use the same rectangles, and the coverage score accepts the half-turn symmetry of H, I, O, S, X and
 Z. The never-seen shapes use the same block system and are one connected piece each. Table~\ref{tab:hyper} lists the
 settings of training, correction rounds, the planner teacher, the state world model and Flow-DiT.
@@ -806,7 +853,7 @@ settings of training, correction rounds, the planner teacher, the state world mo
 % Every value was checked against bc_train.py, mpc_teacher.py, mpc_dagger.py, flow_train.py,
 % scripts/learning/experiments/chain_dagger_loop26c.sh and chain_26prep.sh, docs/DECISIONS.md D048-D064 and
 % docs/LEARNING_FINDINGS.md.
-\begin{table}[tbp]
+\begin{table}[!htbp]
   \centering\small
   \caption{Training and planning settings. Run flags are the settings of the experiment scripts, and other values are
   script defaults.}
@@ -816,7 +863,7 @@ settings of training, correction rounds, the planner teacher, the state world mo
     Setting & Value \\
     \midrule
     \multicolumn{2}{l}{\textit{Camera policy (official Diffusion Policy training)}} \\
-    Start & released PushT checkpoint, each stage continues from the previous stage's policy \\
+    Start & the original policy, each stage continues from the previous stage's policy \\
     Loss and augmentation & official denoising loss with random crops, image encoder and action network both trained \\
     Optimizer & AdamW, learning rate $10^{-4}$, betas 0.95 and 0.999, weight decay $10^{-6}$ \\
     Schedule & 500 warm-up training steps, then cosine decay within each round \\
@@ -825,7 +872,7 @@ settings of training, correction rounds, the planner teacher, the state world mo
     Training steps per round & round 0 30k, correction rounds 20k (5 and 10 shapes, 26-letter rounds 1 to 13), 54k
       (26-letter rounds 14 to 50) \\
     Observation and action & two latest frames (96~px, cropped to 84~px) and the pusher position, plans of 16 targets
-      of which the first 8 are executed, 100 DDPM denoising steps \\
+      of which the first 8 are executed, 100 denoising steps (DDPM) \\
     \midrule
     \multicolumn{2}{l}{\textit{Correction rounds}} \\
     Who drives & every 8 steps the policy drives the next 8 with probability 0.7, the teacher otherwise \\
@@ -838,10 +885,10 @@ settings of training, correction rounds, the planner teacher, the state world mo
     \midrule
     \multicolumn{2}{l}{\textit{Planner teacher}} \\
     Plans per step & 1,024, 4 rounds of 256 samples, each round refits to the best 24 \\
-    Push candidates & 128 structured pushes replace samples of the first round \\
-    Paths & 48 steps, smooth paths through 8 knots, initial spread 40~px, discount 0.99, warm start from the previous
+    Structured pushes & 128 structured pushes replace samples of the first round \\
+    Plans & 48 targets, smooth curves through 8 knots, initial spread 40~px, discount 0.99, warm start from the previous
       plan \\
-    Executed action & first target of the best sample (not the average of the best 24), plans again every step in
+    Executed action & first target of the best plan (not the average of the best 24), plans again every step in
       demonstrations and every 8 steps in correction rounds \\
     Score & pose error over points across the letter's area plus a sharp final term $\exp(-d^2/2^2)$ with weight 2 \\
     State noise & 1~px and 1$^\circ$ (checks and correction rounds), 1$^\circ$ angle only (teacher demonstrations
@@ -850,7 +897,7 @@ settings of training, correction rounds, the planner teacher, the state world mo
     \multicolumn{2}{l}{\textit{State world model}} \\
     Data & 1500 rollouts of the original policy (431k steps) on the first five shapes with target noise of 0, 10
       and 25~px, later versions add each stage's shapes \\
-    Copied parts & exact PD pusher law with 10 substeps per step (matches the simulator to $10^{-4}$~px), exact
+    Exact parts from the simulator & PD pusher law with 10 substeps per step (matches the simulator to $10^{-4}$~px),
       pusher-to-letter distance, contact gate (a hard rule when checked, a steep sigmoid while imagining) \\
     \midrule
     \multicolumn{2}{l}{\textit{Flow-DiT}} \\
@@ -865,30 +912,31 @@ settings of training, correction rounds, the planner teacher, the state world mo
 \end{table}
 
 % ---------------------------------------------------------------------------------------------------------------------
+\FloatBarrier
 \section{Early attempts in detail}
 \label{sec:app-early}
 
 \paragraph{RL fine-tuning.}
 The low-rank updates (LoRA) start at exactly zero, because one of their two factors is initialized to zero. With a
-learning rate of $10^{-5}$ and about four optimizer steps per update they hardly grew. Over a million steps of
-interaction the policy's output on fixed probe inputs changed by about $10^{-6}$. These runs therefore say nothing about
-the score. With full-weight updates a learning rate of $10^{-4}$ collapsed by update 25, and we stopped all runs at
+learning rate of $10^{-5}$ and about four training steps per update they hardly grew. Over a million steps of
+interaction the policy's output on fixed probe inputs changed by about $10^{-6}$. These runs say nothing about the
+score. With full-weight updates a learning rate of $10^{-4}$ collapsed by update 25, and we stopped all runs at
 about update 150. Tiny numerical differences, such as GPU rounding that depends on the batch size, keep two runs with
 the same seeds within 0.02~px for dozens of steps before they diverge (D033). Table~\ref{tab:snr} gives the score
 diagnostic per shape. Split-half reliability is the correlation between the mean scores of two halves of the 8
-follow-up draws, and it was 0.14 to 0.29. The shaped reward adds up per-step changes of coverage, so within a group
-the score reduces to the coverage after 32 steps, which the follow-up plans decide more than the candidate does. A
-privileged value function in place of the follow-ups ($R^2$ of 0.64 on held-out scenes) ranked candidates no better.
+follow-up draws, and it was 0.14 to 0.29. Because the shaped reward adds up per-step changes of coverage, the score
+within a group reduces to the coverage after 32 steps. The follow-up plans decide that coverage more than the plan
+being scored does. A privileged value function in place of the follow-ups ($R^2$ of 0.64 on held-out scenes) ranked
+plans no better.
 Drift from the starting policy grew with the number of updates on a log-log slope of 0.6 to 1.2, as random steps do.
 The change concentrated at the high-noise denoising steps, which set the overall shape of a plan.
 % LEARNING_FINDINGS section 2, LEARNING_EXPERIMENT_LOG sections 2-3, D029, D033, D035,
 % docs/research/diffusion-policy-rl-learning-signal.md (drift slope)
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
-  \caption{The RL training signal. Candidate groups of the frozen policy, 6 states per shape, each candidate scored
-  with 8 independent follow-up draws. Plan share is the part of the score variance that the candidate's own plan
-  explains.}
+  \caption{The RL training signal. Plan groups of the frozen policy, 6 states per shape, each plan scored with 8
+  independent follow-up draws. Plan share is the part of the score variance that the plan itself explains.}
   \label{tab:snr}
   \begin{tabular}{@{}lrr@{}}
     \toprule
@@ -907,35 +955,35 @@ The change concentrated at the high-noise denoising steps, which set the overall
 On the narrow T, re-ranking went from 10 to 13 successes of 20. It raised the final coverage on D and L (0.17 to 0.44
 and 0.31 to 0.43) without a success. The camera policies learned the chosen plans with the denoising loss and a pull
 towards the original weights over three data rounds. On a 100-scene monitor test the best T score, 49 against 38 to 40
-for the original, came with the lowest narrow-T score, 31. With 37 to 40\% of outcomes changing between noise seeds,
-differences of this size come from noise. The spread of 0.02 normalized units converts to pixels through the released
-checkpoint's action normalizer, which maps the action range of its training data (12 to 511~px) to $[-1, 1]$, so one
+for the original policy, came with the lowest narrow-T score, 31. With 37 to 40\% of outcomes changing between noise
+seeds, differences of this size are within noise. The spread of 0.02 normalized units converts to pixels through the
+original policy's action normalizer. It maps the action range of its training data (12 to 511~px) to $[-1, 1]$. One
 unit is about 250~px. % LEARNING_FINDINGS section 3 tables, D037; ema_policy.pt normalizer (scale 0.0040 and 0.0041)
 
 \paragraph{Back-propagation.}
 A warm start by imitating the original policy failed, because a deterministic network averages the diffusion policy's
 distinct modes. The reward combined goal coverage, pose error and a success bonus from privileged geometry. One variant
-added a dense goal-distance term, with the same result. The teacher ran 250 to 2000 training iterations.
+added a dense goal-distance term, with the same result. The network trained for 250 to 2000 iterations.
 % teacher_bptt.py, teacher2.py, LEARNING_FINDINGS section 5
 
 \paragraph{Image world models.}
 We adapted the GPC model with official T play that covers more push angles, with play balanced between contact and
 no contact, and with L interaction data. An earlier checkpoint failed a test of whether different pushes give
-different predictions. The drift and contact errors (0.546 and 3.08 pixels) are centroid errors of the predicted block
+different predictions, and we did not repeat this test on the best checkpoint. The drift and contact errors (0.546 and 3.08 camera pixels) are centroid errors of the predicted block
 on the 96~px camera image after one predicted step (0.1~s). In one adaptation run the validation image error was
-0.000457 against 0.000536 for repeating the last frame (PR~6). An earlier 1.3M-parameter image model trained from
-scratch on L data predicted almost the same reward for every candidate action (D018). The mixed training of the 48.86M
+0.000457 against 0.000536 for repeating the last frame (PR~6). An earlier 1.3M-parameter image world model trained
+from scratch on L data predicted almost the same reward for every action it was given (D018). The mixed training of the 48.86M
 model put half of the loss weight on one step from real frames and half on steps 2 to 4 from generated frames. It
 continued the parent model (36,496 updates) for 1000 updates and raised the mean overlap 16 steps ahead on the 48
-development cases from 0.21 to 0.33. Another 1000 one-step updates of the parent lowered that overlap to 0.11. The
+fixed cases from 0.21 to 0.33. Another 1000 one-step updates of the parent lowered that overlap to 0.11. The
 fully trained one-step model (49,991 updates) reached 0.23 on the same cases. Mixed training beat it in 27 of the 48
-cases but was worse on the mean L overlap at 4, 8 and 16 steps. The released GPC sampler runs without gradients (D021),
-so it could not serve gradient-based training either. % PRs 6, 7, 9, 11, slides/image_world_model_48m.tex
+cases but was worse on the mean L overlap at 4, 8 and 16 steps. The released GPC sampler runs without gradients (D021)
+and could not serve gradient-based training either. % PRs 6, 7, 9, 11, slides/image_world_model_48m.tex
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
-  \caption{Early attempts in time order (dates in 2026). DPPO and the image world models ran in parallel with the main
-  line.}
+  \caption{Early attempts in time order (dates in 2026). DPPO and the image world models ran in parallel with the
+  other attempts.}
   \label{tab:attempts}
   \begin{tabular}{>{\raggedright\arraybackslash}p{4.6cm}l>{\raggedright\arraybackslash}p{7.4cm}%
     >{\raggedright\arraybackslash}p{1.9cm}}
@@ -950,11 +998,12 @@ so it could not serve gradient-based training either. % PRs 6, 7, 9, 11, slides/
     First planner distillation & Oct 26 & T 15 to 25 of 100 against 35 for the original, worse everywhere & failed \\
     Encoder training, longer runs, DAgger & Oct 26 to 27 & first D and L successes (up to 5 and 6 of 100), T 10 to
       15 points lower & partly \\
-    Weight blends, six tests fixed in advance & Oct 27 to 28 & three lost T, three passed, best Y 8.6 to 14.8\% &
+    Weight blends, six tests on new scenes & Oct 27 to 28 & three lost T, three passed, best Y 8.6 to 14.8\% &
       too weak \\
     Plain copying of the teacher & Oct 30 & a copy that reads the exact state keeps 30 to 41\% of the teacher's
       successes & not enough \\
-    DPPO in the simulator & in parallel & mean score 0.842, published average 0.84 & led to a learned simulator \\
+    DPPO in the simulator & in parallel & mean score 0.842 (published 0.91 best checkpoint, 0.84 average of the last
+      10) & led to the image world models \\
     Image world model (8.73M GPC, adapted) & in parallel & 0.546 camera pixels drift per step without contact, 3.08
       camera pixels on contact & not used \\
     Image world model (48.86M) & in parallel & mean overlap 16 steps ahead 0.21 to 0.33 on 48 cases, contact
@@ -967,7 +1016,7 @@ so it could not serve gradient-based training either. % PRs 6, 7, 9, 11, slides/
 \section{State world model details}
 \label{sec:app-wm}
 
-The first version learned from 1500 rollouts (431k steps) of the frozen original policy on the first five shapes, with
+The first version learned from 1500 rollouts (431k steps) of the original policy on the first five shapes, with
 Gaussian noise of 0, 10 and 25~px on its targets. Later versions added the shapes of each new stage. Near the goal its
 one-step error is 0.08~px with no direction bias. For the planner's own best push from 5~px off the goal, the imagined
 final pose matched the simulator within 1~px in 13 of 15 trials. Over 500 windows of 16 steps with real motion the
@@ -975,22 +1024,22 @@ median error is 0.26~px, but 1 window in 20 is off by 14~px or more. Most of the
 arena wall, which the model has no input for. Fig.~\ref{fig:wmerr} compares the error 8 steps ahead with a plain network.
 % LEARNING_FINDINGS section 4 and "Open problems", world_model_accuracy.csv
 
-The examples in the talk start a few steps before contact and run the model for 32 steps without correction from the
-true state. Five letters were rendered this way. After 32 steps the error was 1.1 and 1.5~px for two D windows, 5.3~px
-for T, 10.9~px for R, 23.9~px for A and 1.0, 1.2 and 42.5~px for three E windows. The talk showed two of the closer
-cases. % data/world_model_examples.csv
+The eight example windows of Section~\ref{sec:wm} cover five letters. Each starts a few steps before contact and runs
+the model for 32 steps without correction from the true state. After 32 steps the error was 1.1 and 1.5~px for two D
+windows, 5.3~px for T, 10.9~px for R, 23.9~px for A and 1.0, 1.2 and 42.5~px for three E windows.
+% data/world_model_examples.csv
 
 The timing of Section~\ref{sec:wm} used one H100 GPU for the state world model and one core of an AMD EPYC 9334 CPU for
 the simulator, on the same node. With 32 simulator processes one decision takes 0.6~s. Over the 300 decisions of an
 episode, the state world model needs about 20~s, 32 simulator processes about 3 minutes and one core about 71
 minutes. % timed 2026-11-12
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics{../figures/deck/wm_error_bar.pdf}
   \caption{Median error of the state world model 8 steps ahead on the first five shapes. The plain network learns
-  everything from the state, and ours copies the pusher and the contact rules. The dashed line marks the about 1.5~px
-  that a finished push needs (Section~\ref{sec:lastmm}).}
+  everything from the state, and the state world model reuses the simulator's exact pusher and contact rules. The
+  dashed line marks the about 1.5 simulator pixels that a finished push needs (Section~\ref{sec:lastmm}).}
   \label{fig:wmerr}
 \end{figure}
 
@@ -998,13 +1047,13 @@ minutes. % timed 2026-11-12
 \section{How the teacher was designed}
 \label{sec:app-teacher}
 
-The first version of the planner, which sampled smooth random paths, moved letters near the goal but stalled 2 to
+The first version of the planner, which sampled smooth random plans, moved letters near the goal but stalled 2 to
 4~px short. We changed one part at a time, each time against a stall we had observed (Table~\ref{tab:teacher}). Reading
 the state with 1~px and 1$^\circ$ of Gaussian noise then made the planner a better teacher, with T rising from 5 to 34
 successes of 50. The exact-state planner tended to repeat the same nearly right push near the goal, and the noise
-varies it. % LEARNING_FINDINGS sections 5-6, mpc_teacher.py
+varied it. % LEARNING_FINDINGS sections 5-6, mpc_teacher.py
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{Changes to the planner, each against an observed stall near the goal.}
   \label{tab:teacher}
@@ -1012,7 +1061,7 @@ varies it. % LEARNING_FINDINGS sections 5-6, mpc_teacher.py
     \toprule
     Cause of the stall & Change \\
     \midrule
-    Random paths almost never went around the letter & structured pushes that leave on a safe circle, go around and
+    Random plans almost never went around the letter & structured pushes that leave on a safe circle, go around and
       push one point of the boundary \\
     The average of the best plans blurred distinct pushes & execute the single best plan, with a horizon of 48 steps \\
     A contact margin produced phantom pushes while hovering & contact gate margin of zero while planning \\
@@ -1030,12 +1079,12 @@ varies it. % LEARNING_FINDINGS sections 5-6, mpc_teacher.py
 
 Our first distillation of the planner into the policy kept a pull towards the original weights and made every shape
 worse. Training the image encoder too, training longer and adding policy-driven data gave the first D and L successes
-but cost 10 to 15 T points. Blending the new and the original weights,
+but cost 10 to 15 points of T success. Blending the new and the original weights,
 $\theta_s = (1-s)\,\theta_{\text{orig}} + s\,\theta_{\text{new}}$, as in WiSE-FT~\citep{wortsman2022wiseft},
-recovered T. Of six blend tests on new scenes, each fixed before it ran, three lost T and three passed. The best blend
+recovered T. Of six blend tests on new scenes, three lost T and three passed. The best blend
 kept the original action network and half of the new encoder, and it raised Y from 8.6\% to 14.8\% and D from 0.3\% to
 1.1\% on 2000 scenes per letter. A blend that keeps the original action network cannot carry most of the teacher's
-skill, so we moved to training a full new policy (Section~\ref{sec:copy}). % D040-D044
+skill. We moved to training a full new policy (Section~\ref{sec:copy}). % D040-D044
 
 % ---------------------------------------------------------------------------------------------------------------------
 \section{Intended plans as labels and other design tests}
@@ -1043,14 +1092,14 @@ skill, so we moved to training a full new policy (Section~\ref{sec:copy}). % D04
 
 The camera policy executes 8 of its 16 targets without re-planning, while the teacher re-plans after every step.
 Labelling a state with the 16 targets the teacher actually executed stitches together pieces of different plans
-(Fig.~\ref{fig:labels}). We label each state with the teacher's intended plan instead, which is the first 16 targets of
-the best plan it found at that state. These design tests used 100 scenes per shape from the selection pool (base
-400{,}000), twice the 50 used elsewhere, over the ten shapes of the second stage. In a matched test the intended-plan
+(Fig.~\ref{fig:labels}). We label each state with the teacher's intended plan instead (Section~\ref{sec:dagger}). These
+design tests used 100 scenes per shape from the pool of the selection scenes (base 400{,}000), twice the 50 used
+elsewhere, over the ten shapes of the second stage. In a matched test the intended-plan
 label raised successes from 77 to 129 of 1000 (Table~\ref{tab:labels}). Test noise is about $\pm30$ of 1000, and only
 the label change is clearly larger. A sharper camera (111 to 129), twice the teacher data (104 to 111) and a four times
 larger U-Net trained from scratch (138 to 146) gave smaller gains within noise. % D048
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.25\textwidth]{../images/slide/labels_T.png}\hspace{4mm}
   \includegraphics[width=0.25\textwidth]{../images/slide/labels_Y.png}\hspace{4mm}
@@ -1061,7 +1110,7 @@ larger U-Net trained from scratch (138 to 146) gave smaller gains within noise. 
   \label{fig:labels}
 \end{figure}
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{Matched tests in the ten-shape stage. Successes in 1000 episodes (100 selection-pool scenes for each of 10
   shapes), official training settings, 30k training steps (network-size row, both from scratch, 50k training steps).}
@@ -1084,7 +1133,7 @@ larger U-Net trained from scratch (138 to 146) gave smaller gains within noise. 
 
 \paragraph{Training per shape.}
 With the ten-shape budget of 20k training steps per round, 27 training shapes get 190k samples per shape per round
-instead of 512k, and the 17 new letters had 5 to 8 times fewer correction examples. Selection-scene success levelled
+instead of 512k. The 17 new letters also had 5 to 8 times fewer correction examples. Selection-scene success levelled
 off near 24\%. From round 14 each round trained for 54k training steps and collected 60 practice scenes per new letter,
 and success on the selection scenes rose to about 35\% (Fig.~\ref{fig:curves}). In each round the new examples join
 all earlier ones and the policy is fine-tuned from its previous weights with AdamW, a learning rate of $10^{-4}$ and
@@ -1092,14 +1141,15 @@ batches of 256. % D053
 
 \paragraph{Noise of the selection scenes.}
 In the ten-shape stage, 21 later tests on the selection scenes averaged 179 of 500 with a spread of 9.6, close to the
-10.7 that chance alone gives. The same policy tested twice on the same scenes changed 211 of 500 outcomes. Late
-rounds change the true success rate slowly, so round-to-round changes on these scenes are mostly noise.
+10.7 that chance alone gives. The same policy tested twice on the same scenes changed 211 of 500 outcomes. Because
+late rounds change the true success rate slowly, round-to-round changes on these scenes are mostly noise.
 % D049 amendment, D053
 
 \paragraph{How strict the success test is.}
 Success needs more than 95\% of the goal covered (Eq.~\ref{eq:success}), which leaves 1.3 to 2.7 simulator pixels of
 pure shift. Even the original policy on its own T solves \numTOrig\% of the new scenes. The teacher solves 90\% of the
-selection scenes over the 26 letters, and our camera policy solves 32 to 36\% of the same scenes in rounds 44 to 49.
+selection scenes over the 26 letters in its latest check per letter, and the main model's line solves 32 to 36\% of the
+same scenes in rounds 44 to 49.
 % validation_rounds.csv, 26 letters: 422-462 of 1300
 
 % ---------------------------------------------------------------------------------------------------------------------
@@ -1113,14 +1163,14 @@ inertia. It is left out of every average. In the final test it scores \numNarrow
 
 \paragraph{Digits 2, 5 and 8.}
 These three never-seen shapes were added last and differ from their nearest letters (S or Z, G and B) in six to seven
-of the 35 blocks. A matched scene must be valid for every shape in a run, so they ran as their own group with the T on
+of the 35 blocks. Because a matched scene must be valid for every shape in a run, they ran as their own group with the T on
 the same seeds as the other shapes (D063).
 
 \paragraph{The 192 px model.}
-The 192~px model reaches \numHeadHiRes\% on the 26 letters, a change of \numVsMainHeadHiRes{} points against the main
-model (interval \numVsMainHeadHiResLo{} to \numVsMainHeadHiResHi, which \numVsMainHeadHiResSig{} zero). It is the
-checkpoint picked after 2 correction rounds of its own 26-letter line, so it differs from the main model in the camera
-and in the training rounds.
+The 192~px model reaches \numHeadHiRes\% on the 26 letters, \numVsMainHeadHiRes{} points over the main model (interval
+\numVsMainHeadHiResLo{} to \numVsMainHeadHiResHi, which \numVsMainHeadHiResSig{} zero). It is the checkpoint picked
+after 2 correction rounds of its own 26-letter line and differs from the main model in the camera and in the training
+rounds.
 
 \paragraph{The earlier letters after adding 17 new ones.}
 Adding the 17 new letters changed success on the 9 earlier letters by \numMainOverTenEarly{} points (interval
@@ -1128,32 +1178,33 @@ Adding the 17 new letters changed success on the 9 earlier letters by \numMainOv
 gained \numMainOverTenNew{} points.
 
 \paragraph{Earlier tests.}
-Each stage had its own test on new scenes, fixed before it ran (Table~\ref{tab:history}). An earlier final test, fixed
-before the 26-letter run, put round 44 at \numHistFinalMain\% on the 26 letters against \numHistFinalOrig\% for
-the original, on 300 scenes per shape. Six more rounds raised this to \numHistRoundFifty\% against
-\numHistRoundFortyFour\% on another pool, which is why round 50 became the main model. These pools differ from the
-final test, so their numbers are not compared with Table~\ref{tab:main}. % D051, D054
+Each stage had its own test on new scenes (Table~\ref{tab:history}). An earlier final test (D051, seed base
+10{,}000{,}000, 300 scenes per shape) put round 44 at \numHistFinalMain\% on the 26 letters against
+\numHistFinalOrig\% for the original policy. A later check on another pool (D054, seed base 12{,}000{,}000, 200 scenes
+per shape) compared round 50 with round 44 and found \numHistRoundFifty\% against \numHistRoundFortyFour\%. The paired
+change is \numHistRoundFiftyDiff{} points (interval \numHistRoundFiftyDiffLo{} to \numHistRoundFiftyDiffHi, which
+\numHistRoundFiftyDiffSig{} zero), and round 50 became the main model. These pools differ from the final test, and we
+do not compare their numbers with Table~\ref{tab:main}. % D051, D054
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \deckgraph{final_bars_2}
-  \caption{Final test by shape group with 95\% Wilson intervals. Blue is the main model, green the 192~px model,
-  orange the ten-shape model and grey the original policy.}
+  \caption{Final test by shape group with 95\% Wilson intervals, for the original policy (grey), the ten-shape model
+  (orange), the main model (blue) and the 192~px model (green).}
   \label{fig:bars}
 \end{figure}
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{Every shape in the final test. Success (\%) on \numTestScenes{} new scenes per shape, all policies on the
-  same scenes. Orig.\ is the original policy, 10 sh.\ the ten-shape model and Main the main model.}
+  same scenes.}
   \label{tab:pershape}
   \input{tables/per_shape.tex}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
-  \caption{Earlier tests on new scenes, each fixed before it ran. Success (\%) pooled over the letters named, without
-  the narrow T. Result is the success of the policy named in the first column, and the reference is the original
+  \caption{Earlier tests on new scenes. Success (\%) pooled over the letters named, without the narrow T. Result is the success of the policy named in the first column, and the reference is the original
   policy unless the cell says otherwise.}
   \label{tab:history}
   \input{tables/history.tex}
@@ -1164,23 +1215,25 @@ final test, so their numbers are not compared with Table~\ref{tab:main}. % D051,
 \label{sec:app-lastmm}
 
 \paragraph{Steering the sampling noise.}
-We trained a small network with RL to choose the frozen main model's sampling noise and ran it from 1080 near-goal
-states (at least 80\% covered) of training scenes held out from that RL run, with up to 96 steps each (D058). With
-camera features alone, the finishing rate went from 28.9\% to 30.3\% (change $+1.4$ points, interval $-2.1$ to $+4.9$).
-With the exact block pose given to the steering network, which is privileged information at test time, it reached
+We trained a small network with RL to choose the frozen main model's sampling noise (D058). We then ran it from 1080
+near-goal states, with at least 80\% of the goal covered, for up to 96 steps each. These states come from training
+scenes that the RL run never used. With camera features alone, the finishing rate went from 28.9\% to 30.3\% (change
+$+1.4$ points, interval $-2.1$ to $+4.9$).
+With the exact block pose given to the steering network (privileged information at test time), it reached
 35.4\% ($+6.5$, interval $+2.9$ to $+10.0$). The frozen policy's samples contain finishing pushes, and its camera
 features are not precise enough to choose them. % D058, lastmile_rl.csv
 
 \paragraph{Executing more of each plan.}
-Executing more of each 16-target plan makes the policy much worse. On a separate pool of 200 new scenes per shape, the
-main model solves \numStepsEight\% of the 26 letters when it executes 8 targets, \numStepsTwelve\% with 12 and
-\numStepsFifteen\% with 15 (Table~\ref{tab:steps}, D056). The teacher, which reads the state, keeps 303 of its 390
-selection-scene successes (78\%) when it must commit to 8 pushes, and 317 (81\%) when it commits to 4 (D048).
+Executing more of each 16-target plan lowers success. On a separate pool of 200 new scenes per shape, the main model
+solves \numStepsEight\% of the 26 letters when it executes 8 targets, \numStepsTwelve\% with 12
+(\numStepsTwelveDiff{} points) and \numStepsFifteen\% with 15 (\numStepsFifteenDiff{} points, Table~\ref{tab:steps},
+D056). The teacher, which reads the state, keeps 303 of its 390 selection-scene successes (78\%) when it must execute 8
+targets without re-planning, and 317 (81\%) when it executes 4 (D048).
 % D048 teacher outcome, D056
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
-  \caption{Steps executed of each 16-target plan before planning again. Main model on a separate pool of 200 new
+  \caption{Targets executed of each 16-target plan before planning again. Main model on a separate pool of 200 new
   scenes per shape (base 12,000,000), paired by scene. The never-seen group has the six shapes of that test.}
   \label{tab:steps}
   \input{tables/steps.tex}
@@ -1193,11 +1246,11 @@ selection-scene successes (78\%) when it must commit to 8 pushes, and 317 (81\%)
 Flow-DiT, the network of Section~\ref{sec:arch}, uses the DINOv2 ViT-B/14 encoder with all $16\times16$ patch tokens of
 each frame and a DiT head that reads them by cross-attention. Table~\ref{tab:flowdit} compares it with the main model
 by shape group. We trained four variants with the same data, the same 96~px input and the same plans of 16 targets with
-8 executed, each once (Table~\ref{tab:flowvariants}). None did better than the network it was compared with. The first
-three ran on the final test with \numTestScenes{} new scenes per shape. The fourth is a pilot early in training on the
-selection scenes.
+8 executed (Table~\ref{tab:flowvariants}). None did better than the network it was compared with, and the larger
+encoder was worse. The first three ran on the final test with \numTestScenes{} new scenes per shape. The fourth is a
+pilot early in training on the selection scenes.
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{Flow-DiT against the main model on the final test. Success (\%) and the change in points with its 95\%
   interval, paired by scene.}
@@ -1205,7 +1258,7 @@ selection scenes.
   \input{tables/flowdit.tex}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{Flow-DiT variants. Success (\%) on the 26 letters and the change in points against the network named in
   the second column, paired by scene, with its 95\% interval. The pilot uses the 50 selection scenes per letter, with
@@ -1221,75 +1274,77 @@ selection scenes.
       [\numFlowLargeVsFlowLo, \numFlowLargeVsFlowHi] \\
     Training-only pose head & default & final test & \numFlowPoseHead & \numFlowPoseVsFlow{} [\numFlowPoseVsFlowLo,
       \numFlowPoseVsFlowHi] \\
-    Joint-attention head, $8\times8$, 60k steps & Flow-DiT $8\times8$, 60k steps (\numFlowEightSixty) & selection &
+    Joint-attention head, $8\times8$, 60k training steps & Flow-DiT $8\times8$, 60k training steps
+      (\numFlowEightSixty) & selection &
       \numPrefixSixty & \numPrefixVsFlowSixty{} [\numPrefixVsFlowSixtyLo, \numPrefixVsFlowSixtyHi] \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 \paragraph{$8\times8$ pooled tokens.}
-The first version of the policy averaged each frame's $16\times16$ patch grid to $8\times8$ tokens, which gives 131
-condition tokens (D059). Rebuilt with the same command (D061), it reaches \numFlowEightHead\% on the 26 letters of the
-final test, against \numHeadFlow\% for the default with all $16\times16$ tokens. On the selection scenes the
-$16\times16$ model solved 627 of 1350 episodes and the $8\times8$ rebuild 605, which made $16\times16$ the default
-(D061, D064). Two earlier tests of the $8\times8$ policy, on two other pools of new scenes, gave
-\numFlowEarlyVsMainA{} points (interval \numFlowEarlyVsMainALo{} to \numFlowEarlyVsMainAHi) and \numFlowEarlyVsMainB{}
-points (\numFlowEarlyVsMainBLo{} to \numFlowEarlyVsMainBHi) against the main model (D059, D060). Those tests averaged
-over the 27 trained shapes, which are the 26 letters and the narrow T. The gain of the new network therefore repeats
-across pools. Five correction rounds driven by the $8\times8$ policy itself changed its success by
-\numFlowRoundsVsNone{} points (interval \numFlowRoundsVsNoneLo{} to \numFlowRoundsVsNoneHi, D060), which is why Flow-DiT
-has no correction rounds of its own. % 44.2%: runs/fairtest-d064/b8-part*.json in the store; 605 and 627 of 1350: D064
+The first version of the policy averaged each frame's $16\times16$ patch grid to $8\times8$ tokens, 131 condition
+tokens in all (D059). Its checkpoints were lost when its compute node was wiped. We rebuilt it with the same command
+(D061), and the rebuild is not bit-identical. The rebuild reaches \numFlowEightHead\% on the 26 letters of the final
+test, against \numHeadFlow\% for the default with all $16\times16$ tokens. On the selection scenes the $16\times16$
+model solved 627 of 1350 episodes and the $8\times8$ rebuild 605, and $16\times16$ became the default (D061, D064).
+Before it was lost, the original $8\times8$ run was tested twice against the main model, on two other pools of new
+scenes and averaged over the 27 trained shapes (the 26 letters and the narrow T). It gave \numFlowEarlyVsMainA{} points
+(interval \numFlowEarlyVsMainALo{} to \numFlowEarlyVsMainAHi) and \numFlowEarlyVsMainB{} points
+(\numFlowEarlyVsMainBLo{} to \numFlowEarlyVsMainBHi, D059, D060). Five correction rounds driven by that policy itself
+changed its success by \numFlowRoundsVsNone{} points (interval \numFlowRoundsVsNoneLo{} to \numFlowRoundsVsNoneHi, D060).
+For this reason Flow-DiT has no correction rounds of its own. % 44.2%: runs/fairtest-d064/b8-part*.json in the store; 605 and 627 of 1350: D064
 
 \paragraph{Larger encoder.}
 In a later run (D062) we replaced the encoder with DINOv2 ViT-L/14 (\numFlowLargeEncoder{} parameters, fine-tuned) and
 kept all $16\times16$ tokens, which gives \numFlowLargeParams{} parameters in all. Data, batch, training steps and
-schedule stayed the same. On the final test it reaches \numFlowLargeHead\% on the 26 letters, \numFlowLargeVsFlow{}
-points against the default (interval \numFlowLargeVsFlowLo{} to \numFlowLargeVsFlowHi) and \numFlowLargeVsMain{} points
-against the main model (\numFlowLargeVsMainLo{} to \numFlowLargeVsMainHi). On the nine never-seen shapes it matches the
-default (\numFlowLargeUnseen\% against \numUnseenFlow\%, change \numFlowLargeUnseenVsFlow, interval
-\numFlowLargeUnseenVsFlowLo{} to \numFlowLargeUnseenVsFlowHi). The larger encoder did not help.
+schedule stayed the same. On the final test it reaches \numFlowLargeHead\% on the 26 letters and is worse than the
+default (change \numFlowLargeVsFlow{} points, interval \numFlowLargeVsFlowLo{} to \numFlowLargeVsFlowHi). Against the
+main model the change is \numFlowLargeVsMain{} points (\numFlowLargeVsMainLo{} to \numFlowLargeVsMainHi). On the nine
+never-seen shapes it matches the default (\numFlowLargeUnseen\% against \numUnseenFlow\%, change
+\numFlowLargeUnseenVsFlow, interval \numFlowLargeUnseenVsFlowLo{} to \numFlowLargeUnseenVsFlowHi).
 
 \paragraph{Training-only pose head.}
 In another run (D064) we added a small head with \numFlowPoseHeadParams{} parameters that reads the latest frame's
 $16\times16$ patch grid and predicts the block's position and angle. Its labels are exact simulator poses, which exist
 for the teacher and human T examples (\numFlowPoseLabelShare\% of the sampling weight), and its loss enters with weight
-0.25. The head is unused at test time, so the policy stays camera-only, but its labels are privileged training data. On
-the final test the policy reaches \numFlowPoseHead\% on the 26 letters, \numFlowPoseVsFlow{} points against the default
-(interval \numFlowPoseVsFlowLo{} to \numFlowPoseVsFlowHi). The head located the block within about 0.5~px near the goal
-on its training batches, yet the policy did not finish more often. Knowing the block pose inside the encoder is
-therefore not what limits the last millimetres here. % D064 outcome
+0.25. The head is unused at test time and the policy stays camera-only, but its labels are privileged training data.
+On the final test the policy reaches \numFlowPoseHead\% on the 26 letters, \numFlowPoseVsFlow{} points against the
+default (interval \numFlowPoseVsFlowLo{} to \numFlowPoseVsFlowHi). The head located the block within about 0.5~px near
+the goal on its training batches, yet the policy did not finish more often. % D064 outcome
 
 \paragraph{Joint-attention head.}
 The last variant (D065) replaced the cross-attention in each of the 24 head blocks with one block-causal attention over
 the camera and pusher tokens followed by the 16 plan tokens, as $\pi_0$~\citep{black2025pi0} does. The condition
 tokens attend only to each other and are refined layer by layer by their own layers, while the plan tokens attend to
-all tokens. The head has \numPrefixHeadParams{} parameters. A full run at $16\times16$ tokens needs about 25 hours on
-an H100, so we first ran a short pilot at $8\times8$ tokens. It used the same data, order, seed and learning-rate
+all tokens. The head has \numPrefixHeadParams{} parameters. Because a full run at $16\times16$ tokens needs about 25
+hours on an H100, we first ran a short pilot at $8\times8$ tokens. It used the same data, order, seed and learning-rate
 schedule as the $8\times8$ Flow-DiT. We compared the two at equal training steps on the 50 selection scenes of each of
-the 26 letters (1300 paired episodes). We fixed the comparison at 60k training steps before the pilot ran. There the
-new head solved \numPrefixSixty\% against \numFlowEightSixty\% for Flow-DiT $8\times8$, a change of
-\numPrefixVsFlowSixty{} points (interval \numPrefixVsFlowSixtyLo{} to \numPrefixVsFlowSixtyHi). We compared earlier
-checkpoints afterwards, so they are exploratory. They point the same way, with \numPrefixVsFlowTwenty{} points at 20k
+the 26 letters (1300 paired episodes). The planned comparison was at 60k training steps. There the new head solved
+\numPrefixSixty\% against \numFlowEightSixty\% for Flow-DiT $8\times8$, a change of \numPrefixVsFlowSixty{} points
+(interval \numPrefixVsFlowSixtyLo{} to \numPrefixVsFlowSixtyHi). We compared earlier checkpoints afterwards, and those
+comparisons are exploratory. They point the same way, with \numPrefixVsFlowTwenty{} points at 20k
 training steps (\numPrefixVsFlowTwentyLo{} to \numPrefixVsFlowTwentyHi) and \numPrefixVsFlowForty{} at 40k
-(\numPrefixVsFlowFortyLo{} to \numPrefixVsFlowFortyHi). The new head was behind at every checkpoint, so we did not run
-the full training. These are selection-scene numbers early in training and not a test on new scenes.
+(\numPrefixVsFlowFortyLo{} to \numPrefixVsFlowFortyHi). Because the new head was behind at every checkpoint, we did
+not run the full training.
 % D065 and its pilot amendment, pilot and trend reports
 
 % ---------------------------------------------------------------------------------------------------------------------
+\FloatBarrier
 \section{Making the misalignment visible}
 \label{sec:app-overlay}
 
 \paragraph{Design.}
-At the final talk the professor suggested highlighting the small final misalignment so that the policy can tell a
-near miss from a success (D066). Our version paints the uncovered goal red in the camera image (Fig.~\ref{fig:overlay}).
-The simulator computes the part of the goal that the block leaves uncovered from the same polygons as the coverage
-score. It paints this part red on the 512~px canvas after the goal and before the block and the pusher. The official resize
-to 96~px follows unchanged. A sliver narrower than one camera pixel would vanish in that resize, so thin uncovered parts
-are grown by 9 simulator pixels. Even a sliver of zero width then shows about 6.5~px of red past the block's drawn
-edge. The overlay comes from the exact block and goal poses in training and in testing. It is therefore privileged
-rendering, and we report its results apart from the camera-only results. % D066, docs/GOAL_OVERLAY.md
+At our final presentation the professor suggested highlighting the small final misalignment so that the policy can
+tell a near miss from a success (D066). Our version paints the uncovered goal red in the camera image
+(Fig.~\ref{fig:overlay}). The simulator computes the part of the goal that the block leaves uncovered from the same
+polygons as the coverage score. It paints this part red on the 512~px canvas after the goal and before the block and
+the pusher. The official resize to 96~px follows unchanged. Because a sliver narrower than one camera pixel would
+vanish in that resize, thin uncovered parts are grown by 9 simulator pixels. Even a sliver of zero width then shows
+about 6.5 simulator pixels of red, about 1.2 camera pixels, past the block's drawn edge. The overlay comes from the
+exact block and goal poses in training and in testing. It is privileged rendering, and we report its results apart
+from the camera-only results. % D066, docs/GOAL_OVERLAY.md (at least R - 2.5 = 6.5 px for R = 9)
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\textwidth]{../images/last_mile/overlay_96px.png}
   \caption{What the policy sees at 96~px, for three D teacher episodes (groups of three columns) at the start, in the
@@ -1299,48 +1354,52 @@ rendering, and we report its results apart from the camera-only results. % D066,
   \label{fig:overlay}
 \end{figure}
 
+\paragraph{Training.}
+The experiment has two arms, branches that continue from the main model with the same practice scenes, seeds,
+training steps and data rules. The overlay arm renders every new image with the overlay, in practice and in testing.
+The control arm renders official images and rules out a gain from the extra rounds alone. The teacher demonstrations
+and the human T demonstrations, which carry 50.6\% of the sampling weight, are re-rendered with the overlay from their
+recorded states. The earlier correction examples keep their official frames in both arms. Round 0, the adaptation
+round, trains each arm on its data for 54k training steps without new practice scenes. Each later round uses the
+settings of the 26-letter stage. The teacher drives 30\% of the 8-step decisions, and the labels are intended plans.
+Each round plays 30 practice scenes per earlier shape and 60 per new letter, and the policy trains for 54k training
+steps from its previous weights. % D066 and amendment 1
+
 \paragraph{The first version collapsed.}
-The first version painted the whole uncovered goal red, so the goal outline far from the block was red instead of
+The first version painted the whole uncovered goal red, and the goal outline far from the block turned red instead of
 green. About half of the training weight comes from the 116 folders of earlier correction examples. They exist only as
-stored camera frames with green goals and cannot be re-rendered. For red-goal images the policy therefore learned from
-the teacher demonstrations alone, which is the plain copying setting of Section~\ref{sec:copygap}. After its adaptation
-round it solved \numOverlayFirstRoundZero\% of the selection scenes against \numControlRoundZero\% for the control, and
-four correction rounds brought it to \numOverlayFirstRoundFour\%. The same round-0 checkpoint with official images
-solved \numOverlayFirstOfficial\%, so the skill was intact and the drop came from the changed look. We stopped this
-arm. The amended version paints the thin uncovered parts alone, those thinner than 9 simulator pixels and at least as
-long, and grows them by 9 pixels. Wide uncovered parts keep the official green. An image then differs from the
-official one only where a thin sliver of goal is left uncovered, which is the misalignment the professor pointed at.
+stored camera frames with green goals and cannot be re-rendered. For red-goal images the policy learned from the
+teacher demonstrations alone, the plain copying setting of Section~\ref{sec:copygap}. After its adaptation round it
+solved \numOverlayFirstRoundZero\% of the selection scenes (all 50 per letter) against \numControlRoundZero\% for the
+control, and four correction rounds brought it to \numOverlayFirstRoundFour\%. The same round-0 checkpoint with
+official images solved \numOverlayFirstOfficial\% (81 of 260 episodes, the first 10 selection scenes per letter). The
+skill was intact, and the drop came from the changed look. We stopped this arm. The amended version paints only the
+thin uncovered parts, those thinner than 9 simulator pixels and at least as long, and grows them by 9 pixels. Wide
+uncovered parts keep the official green. An image then differs from the official one only where a thin sliver of goal
+is left uncovered, the misalignment the professor pointed at. The amended overlay arm started about 12 hours after the
+control. The test compares round \numOverlayRounds{} of both arms, the last round the overlay arm completed.
 % D066 amendment 1
 
-\paragraph{Training.}
-Two arms continue from the main model with the same practice scenes, seeds, training steps and data rules. The overlay
-arm renders every new image with the overlay, in practice and in testing, and the control arm renders official images,
-so a gain cannot come from the extra rounds. The teacher demonstrations and the human T demonstrations, which carry
-50.6\% of the sampling weight, are re-rendered with the overlay from their recorded states. The earlier correction
-examples keep their official frames in both arms. Round 0 adapts each arm to its data for 54k training steps without
-new practice scenes. Each later round uses the settings of the 26-letter stage. The teacher drives 30\% of the 8-step decisions, the
-labels are intended plans, each round plays 30 practice scenes per earlier shape and 60 per new letter, and the policy
-trains for 54k training steps from its previous weights. The amended overlay arm started about 12 hours after the control. The test compares round
-\numOverlayRounds{} of both arms, the last round the overlay arm completed. % D066 and amendment 1
-
 \paragraph{Result.}
-The test, fixed before any result, uses the \numTestScenes{} new scenes per shape of the final test, paired by scene
-with the stored episodes of the main model (Table~\ref{tab:overlay}). On the 26 letters the overlay arm solves
-\numOverlayHead\%, the control \numControlHead\% and the main model \numHeadMain\%. Overlay minus control is
-\numOverlayVsControl{} points (interval \numOverlayVsControlLo{} to \numOverlayVsControlHi), so the overlay had no
-measurable effect. The near misses did not change either. Among failures, \numOverlayNearMiss\% of the overlay arm's
-and \numControlNearMiss\% of the control's reached 90\% coverage. Among episodes that reached 90\% coverage,
-\numOverlaySolvedNinety\% and \numControlSolvedNinety\% were solved. On the nine never-seen shapes the arms solve
-\numOverlayUnseen\% and \numControlUnseen\% (change \numOverlayVsControlUnseen, interval \numOverlayVsControlUnseenLo{}
-to \numOverlayVsControlUnseenHi). The control against the main model is \numControlVsMain{} points (interval
-\numControlVsMainLo{} to \numControlVsMainHi). The T rose in both arms, but its overlay minus control change of
-\numOverlayVsControlT{} points rests on 200 scenes, and its interval (\numOverlayVsControlTLo{} to
-\numOverlayVsControlTHi) includes zero. On the selection scenes, which we used to monitor the run, overlay minus
-control was \numOverlayVsControlRoundZero{} points after round 0 (interval \numOverlayVsControlRoundZeroLo{} to
-\numOverlayVsControlRoundZeroHi). In every round from 1 to 11 the two arms were within chance of each other.
+The test uses the \numTestScenes{} new scenes per shape of the final test, paired by scene with the stored episodes of
+the main model (Table~\ref{tab:overlay}). On the 26 letters the overlay arm solves \numOverlayHead\%, the control
+\numControlHead\% and the main model \numHeadMain\%. Overlay minus control is \numOverlayVsControl{} points (interval
+\numOverlayVsControlLo{} to \numOverlayVsControlHi). The near misses did not change either. Among failures,
+\numOverlayNearMiss\% of the overlay arm's and \numControlNearMiss\% of the control's reached a peak coverage of 90\%.
+Among episodes that reached 90\% coverage, \numOverlaySolvedNinety\% and \numControlSolvedNinety\% were solved. On the
+nine never-seen shapes the arms solve \numOverlayUnseen\% and \numControlUnseen\% (change \numOverlayVsControlUnseen,
+interval \numOverlayVsControlUnseenLo{} to \numOverlayVsControlUnseenHi). The control against the main model is
+\numControlVsMain{} points (interval \numControlVsMainLo{} to \numControlVsMainHi), and the \numOverlayRounds{} extra
+rounds without the overlay did not raise success either. On the T the overlay arm solves \numOverlayT\%, the control
+\numControlT\% and the main model \numTMain\%. Overlay minus control is \numOverlayVsControlT{} points (interval
+\numOverlayVsControlTLo{} to \numOverlayVsControlTHi) and control minus main model \numControlVsMainT{} points (interval
+\numControlVsMainTLo{} to \numControlVsMainTHi). Both rest on 200 scenes, and both intervals include zero. On the
+selection scenes, which we used to monitor the run, overlay minus control was \numOverlayVsControlRoundZero{} points
+after round 0 (interval \numOverlayVsControlRoundZeroLo{} to \numOverlayVsControlRoundZeroHi). In every round from 1 to
+11 the two arms were within chance of each other. %OVERLAYOFFAPP%
 % runs/fairtest-d066/report.txt, runs/d066/validation_curve.txt
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering\small
   \caption{The goal overlay on the final test, \numTestScenes{} new scenes per shape, paired by scene. Both arms ran
   \numOverlayRounds{} correction rounds from the main model. The change is overlay minus control in points with its 95\%
@@ -1364,11 +1423,6 @@ control was \numOverlayVsControlRoundZero{} points after round 0 (interval \numO
   \end{tabular}
 \end{table}
 
-\paragraph{What it means.}
-This version of the overlay, after \numOverlayRounds{} rounds and with about half of the training weight (the earlier
-correction examples) shown without it, did not help the policy finish. The \numOverlayRounds{} extra correction rounds
-without the overlay did not help either.
-
 \paragraph{The last-millimetre tests together.}
 Exact block pose helped a separate network choose among the frozen policy's samples (Appendix~\ref{sec:app-lastmm}),
 so those samples contain finishing pushes. Teaching the encoder the pose (Appendix~\ref{sec:app-flow}) and painting the
@@ -1381,14 +1435,15 @@ re-planned every 4 steps (100 selection scenes per shape). A test of this readin
 shorter commitments. % last-mile report of 2026-10-31 (store runs/lastmile/execute4, -13.4 [-19.0, -7.8], plain round 7, variant round 3)
 
 % ---------------------------------------------------------------------------------------------------------------------
-\section{Disclosures and compute}
+\section{Compute and a data incident}
 \label{sec:app-disclosure}
 
 During early distillation attempts, an overnight collector reached the seeds of a then-reserved test pool for seven
 rounds. That data was set aside before any training, and the collector now refuses reserved seeds. The DPPO numbers
-come from our run summary, because the run logs were not kept. Policy training took about 122 GPU hours over 128
-training rounds of the convolutional policies on single H100 and A100 GPUs, plus about 36 logged hours of practice
-scenes and selection tests in the 26-letter rounds. This count leaves out the Flow-DiT runs and the experiments of
+come from our run summary. Its run logs were not kept. Training the convolutional policies took about 122 GPU hours
+over 128 training rounds on single H100 and A100 GPUs. Practice scenes and selection tests in the 26-letter rounds took
+about 36 more logged hours. This count leaves out the Flow-DiT runs and the experiments of
 Appendices~\ref{sec:app-flow} and~\ref{sec:app-overlay}. % compute_rounds.csv (correction-round training only)
 
+\FloatBarrier
 \end{document}

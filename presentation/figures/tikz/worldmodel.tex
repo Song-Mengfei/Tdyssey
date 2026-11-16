@@ -1,6 +1,6 @@
 % How the state world model predicts one step (deck slide "How the state world model works"; also in the paper).
 % Facts: docs/LEARNING_FINDINGS.md section 4 (wm2): the pusher's controller and the exact pusher-to-letter distance are
-% copied from the simulator (tagged "copied"), a contact gate keeps an untouched letter still, and a small network in the
+% taken unchanged from the simulator (tagged "exact rule"), a contact gate keeps an untouched letter still, and a small network in the
 % letter's own frame learns the letter's motion in contact ("learned"); trained on the original policy's rollouts with
 % noise on its targets. Overlay steps (\wmstep{n}{...} = \onslide<n->{...} in beamer): 1 inputs and output, 2 the copied
 % parts and the legend, 3 the learned part and its data, 4 the repeat loop. Size 144 x 67 mm; fixed font sizes.
@@ -47,14 +47,14 @@
   \wmstep{2}{
     \draw[wm copied] (42,34) rectangle (108,47.6);
     \node[wm title] at (44.2,46.1) {1\enspace Move the pusher};
-    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,46.3) {copied};
+    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,46.3) {exact rule};
     \node[wm text, text=tdgrey, text width=62mm] at (44.2,42.1) {follows its target, the same formula as the simulator};
     \draw[wm copied] (42,17.2) rectangle (108,30.8);
     \node[wm title] at (44.2,29.3) {2\enspace Is the pusher touching?};
-    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,29.5) {copied};
+    \node[anchor=north east, inner sep=1.1pt, rounded corners=0.8mm, fill=tdorig!25, text=tdgrey, font=\sffamily\fontsize{7}{8}\selectfont\bfseries] at (106.6,29.5) {exact rule};
     \node[wm text, text=tdgrey, text width=62mm] at (44.2,25.3) {exact distance to the letter's true shape\\if not touching, the letter stays still};
     \fill[tdpanel, draw=tdorig, line width=0.6pt, rounded corners=0.5mm] (39,-6.6) rectangle ++(3.4,2.6);
-    \node[wm text, text=tdgrey, anchor=west] at (43.6,-5.3) {copied = exact rule from the simulator};
+    \node[wm text, text=tdgrey, anchor=west] at (43.6,-5.3) {grey boxes reuse the simulator's exact rules};
     \draw[wm arrow=tdgrey] (75,34) -- (75,30.8);
   }
   \wmstep{3}{

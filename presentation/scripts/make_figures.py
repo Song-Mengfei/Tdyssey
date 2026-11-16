@@ -449,7 +449,7 @@ DECK_WORDS = [
     ("D040 whole 70%", "test 1: whole net 70%"), ("D040 enc. 70%", "test 2: encoder 70%"),
     ("D041 enc. 70%", "test 3: encoder 70%"), ("D042 enc. 30%", "test 4: encoder 30%"),
     ("D042 enc. 50%", "test 5: encoder 50%"), ("D043 enc. 50%", "test 6: encoder 50%"),
-    ("AdvantageFlow", "RL variant A"), ("NFT", "RL variant B"), ("dense, lr ", "learning rate "),
+    ("dense, lr ", "learning rate "),
     ("LoRA, lr ", "low-rank, rate "), ("before: 55%", "before RL 55%"), ("updates", "RL updates"),
     ("All teacher demos", "All teacher data (vs half)"),
     ("Plan labels", "Intended-plan labels"), ("990M network", "990M-parameter network"),
@@ -2491,7 +2491,7 @@ def fig_rl_t_collapse():
     ax.set_xlabel(SL("T success at the last evaluation", "T success after RL"))
     legend_top(ax, handles=[Line2D([], [], marker="o", color=RL, ls="none", ms=9,
                                    label=SL("AdvantageFlow, after RL", "AdvantageFlow")),
-                            Line2D([], [], marker="s", color=RL, ls="none", ms=9, label=SL("NFT, after RL", "NFT"))],
+                            Line2D([], [], marker="s", color=RL, ls="none", ms=9, label=SL("DiffusionNFT, after RL", "DiffusionNFT"))],
                ncol=2, fontsize=12, y=1.06)
     note(fig, "Forward-process RL on the physical simulator, up to ~1M controls per run; small development "
               "evaluation. Typed in from LEARNING_EXPERIMENT_LOG.md section 2.")
@@ -4258,8 +4258,9 @@ def save_deck(fig, name, shows):
 def fig_deck_stages(upto):
     """Whole training story (5 -> 10 -> 26 letters) at 144 x 52 mm, revealed one stage at a time (upto = 1, 2, 3).
     Same axes, bands, stage names and ticks on every step; only the data of the later stages is left out. The last
-    stage is averaged over the 26 letters (narrow T left out), as are its original level (D051 fresh test) and the
-    star (round 50, D054 fresh test, explained on the slide). No picks circled, no in-plot dividers."""
+    stage is averaged over the 26 letters (narrow T left out), as are its original level and the star (round 50), both
+    from the final test on the D064 pool when d064_test_groups.csv exists (2.0% and 32.8%), else the D051 original and
+    the D054 round 50. No picks circled, no in-plot dividers."""
     lines = story_lines(letters26=True)
     fig, ax = deck_fig(144, 52, l=12.5, r=1.5, b=9.5, t=5.5)
     top = 52
@@ -4391,8 +4392,8 @@ def fig_deck_final_bars(step):
     ax.yaxis.set_major_formatter(PCT)
     ax.grid(False, axis="x")
     ax.set_ylabel("Success")
-    words = {"original": "Original", "ten96": "Ours, trained on 10 shapes", "m96": "Ours, 26 letters, 96 px camera",
-             "m192": "Ours, 26 letters, 192 px camera"}
+    words = {"original": "Original policy", "ten96": "Ten-shape model", "m96": "Main model (26 letters, 96 px camera)",
+             "m192": "192 px model (26 letters)"}       # the report's names for the four policies
     handles = [Patch(facecolor=col(k), edgecolor="white", label=words[k]) for k in keys]
     leg = ax.legend(handles=handles, loc="upper right", ncol=2, frameon=False, borderaxespad=0.1, labelspacing=0.3,
                     columnspacing=1.6)
@@ -4440,8 +4441,8 @@ def fig_deck_dumbbell():
     ax.yaxis.set_major_formatter(PCT)
     ax.set_ylabel("Success")
     ax.grid(False, axis="x")
-    handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=5, label="Original"),
-               Line2D([], [], marker="o", color=col(key), ls="none", ms=5.5, label="Ours")]
+    handles = [Line2D([], [], marker="o", color=ORIG_LINE, ls="none", ms=5, label="Original policy"),
+               Line2D([], [], marker="o", color=col(key), ls="none", ms=5.5, label="Main model")]
     fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(12.5 / 144, 1.0), ncol=2, frameon=False,
                borderaxespad=0.2)
     return fig
@@ -4724,14 +4725,14 @@ def fig_deck_wm_error_bar():
     g = wm1("contact_error", model="generic MLP", horizon=8, statistic="median", unit="px")
     ours = float(np.mean([wm1("contact_error", model="structured (wm2 v1)", shape=s_, horizon=8, statistic="median",
                               unit="px") for s_ in FIVE_SHAPES]))
-    fig, ax = deck_fig(72, 17, l=24.5, r=1, b=0.8, t=4.2)
+    fig, ax = deck_fig(72, 17, l=27.5, r=1, b=0.8, t=4.2)
     for i, (v, c) in enumerate(((g, ORIG), (ours, TEACHER))):
         ax.barh(i, v, 0.62, color=c, edgecolor="white", lw=0.8, zorder=3)
         ax.text(v + 0.05, i, f"{v:.1f} px" if v >= 1 else f"{v:.2f} px", va="center", ha="left", fontsize=9,
                 color=INK)
     ax.axvline(need, color=INK, lw=0.8, ls=(0, (3, 2)), zorder=4)
     ax.text(need, -0.42, f"{need:g} px needed", ha="center", va="bottom", fontsize=9, color=INK2, clip_on=False)
-    ax.set_yticks([0, 1], ["plain network", "our world model"])
+    ax.set_yticks([0, 1], ["plain network", "state world model"])
     ax.set_ylim(1.45, -0.45)
     ax.set_xlim(0, 3.0)
     ax.set_xticks([])
@@ -4846,14 +4847,15 @@ DECK_CUSTOM = [
     ("curves_stages_2", lambda: fig_deck_stages(2), "Build step 2: 5- and 10-shape stages (96 px and 192 px lines; "
      "no label-switch divider or labels)."),
     ("curves_stages_3", lambda: fig_deck_stages(3), "Build step 3: all three stages; the last stage ('26 letters') is "
-     "averaged over the 26 letters (narrow T left out), as are its original level (D051 fresh test, 2.4%) and the "
-     "round-50 star (D054 fresh test, 34.7%); no picks circled, no budget divider; markers explained on the slide."),
+     "averaged over the 26 letters (narrow T left out), as are its original level and the round-50 star, both "
+     "from the final test on the D064 pool (2.0% and 32.8%, d064_test_groups.csv); no picks circled, no budget divider; markers explained on the slide."),
     ("final_bars_1", lambda: fig_deck_final_bars(1), "Build step 1 of the headline test on the D064 pool (200 new "
      "scenes per shape, all policies on the same scenes; d064_test_by_shape.csv) by group (9 earlier letters, 17 new "
      "letters, all 26 letters, 9 never-seen shapes; narrow T in no group): the original only (other bars transparent, "
      "legend entries hidden)."),
-    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original, ours 10 shapes (round 13), ours 26 "
-     "letters 96 px (round 50, the main model), ours 26 letters 192 px (round 2); one-decimal labels on the original "
+    ("final_bars_2", lambda: fig_deck_final_bars(2), "Build step 2: original policy, ten-shape model (round 13), "
+     "main model (26 letters, 96 px, round 50), 192 px model (26 letters, round 2), with the report's names in the "
+     "legend; one-decimal labels on the original "
      "and 96 px bars; 95% Wilson intervals."),
     ("heldout_success", fig_deck_heldout, "The 9 never-seen shapes on the D064 pool: success of the original (T only), "
      "the ten-shape model and the main model (26 letters, round 50), plus the 192 px camera model; 95% intervals, "
@@ -4881,7 +4883,7 @@ DECK_CUSTOM = [
      "pooled success of the teacher, two copies reading the exact state, the camera copy and the original policy "
      "(early_attempts.csv)."),
     ("wm_error_bar", fig_deck_wm_error_bar, "World-model error 8 controls ahead (left panel of wm_accuracy as two "
-     "bars): plain network 2.3 px vs our world model 0.25 px (mean of the per-shape medians), 1.5 px needed dashed "
+     "bars): plain network 2.3 px vs the state world model 0.25 px (mean of the per-shape medians), 1.5 px needed dashed "
      "(world_model_accuracy.csv)."),
     ("teacher_letters_bar", fig_deck_teacher_letters, "Teacher (exact state) success per letter on the 50 selection "
      "scenes, 26 letters sorted as in method_teacher_success_26letters (no narrow T), pooled 90% dashed "

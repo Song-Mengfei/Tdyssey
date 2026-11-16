@@ -222,6 +222,9 @@
 \newcommand{\numNarrowTMain}{31.5}%  main model (round 50, 96 px), T_narrow, success % (data/d064_test_by_shape.csv)
 \newcommand{\numNarrowTHiRes}{33.0}%  192 px camera model (round 2), T_narrow, success % (data/d064_test_by_shape.csv)
 \newcommand{\numNarrowTFlow}{35.0}%  Flow-DiT 16x16 (160k steps), T_narrow, success % (data/d064_test_by_shape.csv)
+\newcommand{\numOtherOrig}{0.6}%  original policy, the 25 letters other than T, success % (30/5000; data/d064_test_by_shape.csv)
+\newcommand{\numOtherOrigMax}{9.5}%  original policy, best of the 25 letters other than T (Y)
+\newcommand{\numOtherOrigMaxName}{Y}%    its letter
 \newcommand{\numTDirMain}{below}%  main model on T compared with the original ('below', 'above' or 'equal to')
 \newcommand{\numUnseenTrend}{rises with the number of training shapes}%  never-seen shapes: original -> ten-shape model -> main model
 \newcommand{\numHistFinalOrig}{2.4}%  earlier final test D051 (seeds 10000000 + 20*i, 300 scenes), original, 26 letters (final_tests_by_shape.csv)
@@ -237,6 +240,10 @@
 \newcommand{\numStepsFifteenDiffLo}{$-$23.6}%    95% interval, low end
 \newcommand{\numStepsFifteenDiffHi}{$-$21.4}%    95% interval, high end
 \newcommand{\numStepsEight}{34.7}%  D056, round 50 executing 8 of 16 steps (trained), 26 letters
+\newcommand{\numHistRoundFiftyDiff}{+1.7}%  D054 (seeds 12000000 + 20*i), round 50 minus round 44, 26 letters, paired change in points over 5200 scenes (final_tests_episodes.csv)
+\newcommand{\numHistRoundFiftyDiffLo}{0.0}%    95% interval, low end (-0.027 before rounding)
+\newcommand{\numHistRoundFiftyDiffHi}{+3.5}%    95% interval, high end
+\newcommand{\numHistRoundFiftyDiffSig}{includes}%    'excludes' or 'includes' (does the interval include zero?)
 % Near misses of the main model on the final test. Source: the D066 test report (runs/fairtest-d066/report.txt), round-50 row; round 50's D064-pool episodes (runs/fairtest-d066/r50-part*.json, the same files as runs/fairtest-d064/r50); recomputed from the episode files on 2026-11-16
 \newcommand{\numNearMissMain}{63.6}%  main model, 26 letters, D064 pool: share of failures whose peak coverage reached 0.90, % (paper_late_numbers.json)
 \newcommand{\numSolvedNinetyMain}{43.4}%  main model, 26 letters, D064 pool: share of episodes reaching 0.90 coverage that succeed, % (paper_late_numbers.json)

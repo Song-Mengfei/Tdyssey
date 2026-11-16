@@ -7,15 +7,16 @@
 what worked, what failed and why: the 26 letters (the narrow T is an extra training shape left out of every average),
 the main model after 50 correction rounds, nine never-seen shapes, and Flow-DiT (the default 16x16 version) as the
 larger network. It answers the professor's questions (why RL fine-tuning, re-ranking and back-propagation failed, in
-Section 4, and the red-overlay suggestion, in Section 10 and Appendix K). Everything that is not in the talk lives in
+Section 4, and the red-overlay suggestion, at the end of Section 8.1 and in Appendix K). Everything that is not in the talk lives in
 the appendix, with a pointer from the main text where needed.
 
 Outline: 1 Introduction (with the approach figure and Algorithm 1), 2 Related work, 3 Setup (task, shapes, camera
 policy network with its diagram, test protocol), 4 Early attempts and why they failed (summary table, RL fine-tuning,
-re-ranking, back-propagation, DPPO and a learned simulator, image world models), 5 From images to states (state world
-model, its speed against the simulator, what it imagines), 6 The planner teacher, 7 From copying to correction rounds
-(copying alone is not enough, correction rounds, 5 to 10 to 26 shapes), 8 Results (final test, per shape, never-seen
-shapes, the last millimetres), 9 A larger network on the same data (Flow-DiT with its diagram), 10 Limitations,
+re-ranking, back-propagation, DPPO in the physical simulator, image world models), 5 The state world model (its
+parts, its speed against the simulator, what it imagines), 6 The planner teacher, 7 From copying to correction rounds
+(copying the teacher, correction rounds, 5 to 10 to 26 shapes), 8 Results (final test, per shape, never-seen shapes,
+the last millimetres with the goal-overlay result), 9 A larger network on the same data (Flow-DiT with its diagram),
+10 Limitations (every use of privileged information),
 11 Conclusion. Appendix: A shapes and settings, B early attempts in detail (RL score table, timeline), C state world
 model details (accuracy, examples, timing, error chart), D how the teacher was designed (table of stalls and changes),
 E distillation and weight blends, F intended plans as labels and other design tests (77 to 129), G training stages and
@@ -23,11 +24,19 @@ how strict the success test is, H more results of the final test (narrow T, digi
 table, earlier tests), I more tests of the last millimetres (noise steering D058, steps executed D056), J Flow-DiT
 variants (Flow-DiT against the main model by group, 8x8, ViT-L D062, pose head D064, joint-attention head pilot D065,
 earlier 8x8 tests D059/D060), K making the misalignment visible (goal overlay D066, with the 96 px images, the result
-and a reading of the last-millimetre tests together), L disclosures and compute.
+and a reading of the last-millimetre tests together), L compute and a data incident.
 
-Terms: a "step" is one control step of the simulator (0.1 s), optimizer steps are "training steps", "examples" are
-(observation, label) pairs, "teacher demonstrations" are teacher episodes, and the camera policy is never called a
-student. Decision numbers (D0xx) and PR numbers appear only in the appendix.
+Terms (defined in Section 3 and used everywhere): a "step" is one control step of the simulator (0.1 s), optimizer
+steps are "training steps", "px" are simulator pixels of the 512 px arena unless written as camera pixels (one 96 px
+camera pixel is about 5.3 simulator pixels), "points" are percentage points, "examples" are (observation, label) pairs,
+"teacher demonstrations" are teacher episodes on "teacher scenes", a "line" is a sequence of correction rounds from
+one start, an "arm" is a branch of the overlay experiment, and plans consist of "targets". One name per thing: the
+"original policy" (never the baseline or the released checkpoint in prose; pi_orig in Algorithm 1), the "main model"
+(round 50 of the 26-letter stage), the "ten-shape model", the "192 px model", the "state world model" (it "reuses the
+simulator's exact pusher rule and contact geometry"; "copy" means imitation only), the "image world model", the
+"selection scenes", "development scenes" and the "monitor test". The camera policy is never called a student. Decision
+numbers (D0xx) and PR numbers appear only in the appendix. The rendered text says "our final presentation", never
+"the talk".
 
 Style rules for edits: plain words and short sentences, no hedging words, and no semicolons, colons or em dashes in
 prose, captions and table text (colons only where LaTeX or math needs them, ranges as "4 to 11%"). The team's
@@ -53,7 +62,10 @@ python3 presentation/scripts/paper_numbers.py
 ```
 
 Then regenerate the deck graphs the report includes (`final_bars_2`, `final_dumbbell`, `heldout_success`,
-`arch_letters`) with `make_figures.py --variant deck` and recompile. While any shape has fewer than 200 paired scenes,
+`arch_letters`) with `make_figures.py --variant deck` and recompile. The legends of `final_bars_1/2`, `final_dumbbell`,
+`wm_error_bar` and `rl_t_collapse` use the report's names (original policy, ten-shape model, main model, 192 px model,
+state world model, AdvantageFlow, DiffusionNFT) since the second review round; regenerating them with
+`--variant deck --only <name>` reproduces the committed files pixel for pixel. While any shape has fewer than 200 paired scenes,
 `numbers.tex` defines `\paperdatanote` as a red line under the abstract; it disappears once the test is complete.
 `--data <folder>` reads the CSV files from another folder (to check a running test without writing to `../data/`).
 
@@ -69,7 +81,8 @@ Macro families (one per number, each with a source comment in `numbers.tex`):
 | `\numLettersUpMain`, `\numLettersUpFlow`, `\numMainLetterMin(Name)`, `\numMainLetterMax(Name)` | per-letter counts and extremes |
 | `\numDigitSeven<Model>`, `\numNarrowT<Model>`, `\numTDirMain`, `\numUnseenTrend` | digit 7, narrow T, wording that follows the data |
 | `\numTestScenes`, `\numTestLetterEpisodes`, `\numTestStatus`, `\paperdatanote` | test size and completeness |
-| `\numHist...`, `\numSteps...` | final data from `../data/final_tests_by_shape.csv` and `final_tests_episodes.csv` (earlier tests, D056 steps test over the 26 letters) |
+| `\numHist...`, `\numSteps...` | final data from `../data/final_tests_by_shape.csv` and `final_tests_episodes.csv` (earlier tests, the D054 paired change of round 50 against round 44, D056 steps test over the 26 letters) |
+| `\numOtherOrig`, `\numOtherOrigMax(Name)` | the original policy on the 25 letters other than the T, and its best letter among them |
 | `\numNearMissMain`, `\numFlow...`, `\numPrefix...`, `\numOverlay...`, `\numControl...` | later experiments, typed in with sources in `../data/paper_late_numbers.json` (Flow-DiT variants, goal overlay D066, near misses of round 50 on the final test) |
 
 Tables written by the script: `tables/main_test.tex`, `tables/flowdit.tex`, `tables/per_shape.tex` (round-50 test),
@@ -98,8 +111,13 @@ Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, boo
   Sections 3 and 9, accuracy details, the D058 steering test, the Flow-DiT group table and the disclosures of the seed
   incident and compute moved to the appendix. Appendix K has the overlay images and a reading of the last-millimetre
   tests together. Framed as a course project report (no contributions list, short related work).
-- Compiles with Tectonic 0.15.0 to 23 pages: main text on pages 1 to 12 (first column), references to page 13,
-  appendix A to L on pages 14 to 23. No undefined references or citations, no overfull boxes. Tectonic reports "TeX
+- Second review round (2026-11-17): figure captions match the plotted values (training history uses the final test),
+  the DPPO mean score is defined and set against both published numbers, every pool is named once in Section 3, the
+  re-ranking, RL and back-propagation causes are stated as far as the data go, the goal-overlay result moved from
+  Limitations to the end of Section 8.1, and the style pass cut most "X, so Y", "therefore" and "which is" sentences.
+  The appendix floats now float (`[!htbp]`) with a `\FloatBarrier` after Appendix A and before Appendix K.
+- Compiles with Tectonic 0.15.0 to 24 pages: main text on pages 1 to 12, references to page 14, appendix A to L on
+  pages 15 to 24. No undefined references or citations, no overfull boxes. Tectonic reports "TeX
   rerun seems needed, but stopping at 6 passes" because of its main.bbl consistency check (the previous version does
   the same when built into a fresh folder), and all labels and citations resolve.
 - References are from memory of the published record (Lipman et al. 2023, Peebles and Xie 2023, Oquab et al. 2024 as
