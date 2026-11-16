@@ -1405,8 +1405,8 @@ after round 0 (interval \numOverlayVsControlRoundZeroLo{} to \numOverlayVsContro
 % runs/fairtest-d066/report.txt, runs/d066/validation_curve.txt
 
 \paragraph{The overlay switched off.}
-After this result a reviewer asked whether the policy uses the overlay at all. We decided on an exploratory check
-that was not fixed in advance. It runs the overlay arm's round-11 policy with official images on the same
+After this result we checked whether the policy uses the overlay at all. This check was decided after the result
+and is exploratory. It runs the overlay arm's round-11 policy with official images on the same
 \numTestScenes{} scenes per shape, paired by scene with its own overlay episodes. Taking the overlay away did not lower
 success on the 26 letters. The policy solved \numOverlayOffHead\% without the overlay against \numOverlayHead\% with it,
 a change of \numOverlayOffVsOn{} points (interval \numOverlayOffVsOnLo{} to \numOverlayOffVsOnHi). Against the control
@@ -1418,7 +1418,7 @@ failures, \numOverlayOffNearMiss\% reached a peak coverage of 90\%, against \num
 (\numOverlayOffVsOnT{} points, interval \numOverlayOffVsOnTLo{} to \numOverlayOffVsOnTHi). The T may gain from the
 overlay, but that interval includes zero. On the letters as a whole, the overlay-trained policy does not use the red
 slivers to finish.
-% ~/cs5478/d066_ovoff/report.txt (d066_ovoff.sh, episodes d066_ovoff/*.json); paper_late_numbers.json
+% runs/fairtest-d066-ovoff/report.txt in the run store; paper_late_numbers.json
 
 \begin{table}[!htbp]
   \centering\small
