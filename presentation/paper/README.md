@@ -115,6 +115,9 @@ Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, boo
   the DPPO mean score is defined and set against both published numbers, every pool is named once in Section 3, the
   re-ranking, RL and back-propagation causes are stated as far as the data go, the goal-overlay result moved from
   Limitations to the end of Section 8.1, and the style pass cut most "X, so Y", "therefore" and "which is" sentences.
+  An exploratory overlay-off check (the overlay-trained round-11 policy with official images, decided after the D066
+  result, macros `\numOverlayOff...`) shows that the policy does not use the red slivers. Section 8.1 and Appendix K
+  report it, and Appendices I and K read the last-millimetre tests together in the same way.
   The appendix floats now float (`[!htbp]`) with a `\FloatBarrier` after Appendix A and before Appendix K.
 - Compiles with Tectonic 0.15.0 to 24 pages: main text on pages 1 to 12, references to page 14, appendix A to L on
   pages 15 to 24. No undefined references or citations, no overfull boxes. Tectonic reports "TeX

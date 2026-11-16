@@ -733,9 +733,13 @@ uncovered goal red in the camera image, grown so that even a sliver of zero widt
 and continued the main model for \numOverlayRounds{} correction rounds in two arms, with the overlay and without it
 (Appendix~\ref{sec:app-overlay}). The overlay did not raise success. Overlay minus control is \numOverlayVsControl{}
 points (interval \numOverlayVsControlLo{} to \numOverlayVsControlHi), and the share of failures that were near misses
-stayed at \numOverlayNearMiss\% against \numControlNearMiss\%. Three limits apply. About half of the training weight,
-the earlier correction examples, was shown without the overlay. The arms ran \numOverlayRounds{} rounds. We tested a
-deliberately minimal version that paints only thin slivers. %OVERLAYOFF%
+stayed at \numOverlayNearMiss\% against \numControlNearMiss\%. The test has three limits. About half of the training
+weight, the earlier correction examples, was shown without the overlay, the arms ran only \numOverlayRounds{} rounds,
+and we tested a deliberately minimal version that paints only thin slivers. An exploratory check, decided after this
+result, ran the overlay-trained policy with the overlay switched off. It solved \numOverlayOffHead\%, a change of
+\numOverlayOffVsOn{} points against the same policy with the overlay (interval \numOverlayOffVsOnLo{} to
+\numOverlayOffVsOnHi), and the near-miss share stayed at \numOverlayOffNearMiss\%. The policy does not use the red
+slivers to finish, and Appendix~\ref{sec:app-overlay} relates this to the other last-millimetre tests.
 
 \begin{figure}[tb]
   \centering
@@ -819,7 +823,7 @@ demonstrations, and on nine never-seen shapes from \numUnseenOrig\% to \numUnsee
 and Table~\ref{tab:why} report how each early approach failed. What worked was a sampling planner in a state world
 model as a privileged teacher, labels from the teacher's intended plans, correction rounds on the policy's own states
 and enough training per shape. Painting the remaining misalignment into the camera image, as the professor suggested,
-did not raise success after \numOverlayRounds{} rounds. Flow-DiT, a larger network with a pretrained DINOv2 encoder
+did not raise success after \numOverlayRounds{} rounds, and the trained policy does not use the painted slivers. Flow-DiT, a larger network with a pretrained DINOv2 encoder
 trained on the same data, raises success to \numHeadFlow\%. The code is at
 \href{https://github.com/Song-Mengfei/Tdyssey}{github.com/Song-Mengfei/Tdyssey} and the demo at
 \href{https://tinyurl.com/tdyssey}{tinyurl.com/tdyssey}.
@@ -1096,7 +1100,7 @@ Labelling a state with the 16 targets the teacher actually executed stitches tog
 design tests used 100 scenes per shape from the pool of the selection scenes (base 400{,}000), twice the 50 used
 elsewhere, over the ten shapes of the second stage. In a matched test the intended-plan
 label raised successes from 77 to 129 of 1000 (Table~\ref{tab:labels}). Test noise is about $\pm30$ of 1000, and only
-the label change is clearly larger. A sharper camera (111 to 129), twice the teacher data (104 to 111) and a four times
+the label change is clearly larger. A sharper camera (111 to 129), twice the teacher demonstrations (104 to 111) and a four times
 larger U-Net trained from scratch (138 to 146) gave smaller gains within noise. % D048
 
 \begin{figure}[!htbp]
@@ -1121,7 +1125,7 @@ larger U-Net trained from scratch (138 to 146) gave smaller gains within noise. 
     \midrule
     Intended plans instead of executed pushes & 77 & \textbf{129} \\
     192~px camera instead of 96~px & 111 & 129 \\
-    All teacher data instead of half & 104 & 111 \\
+    All teacher demonstrations instead of half & 104 & 111 \\
     990M U-Net instead of 251M (from scratch) & 138 & 146 \\
     \bottomrule
   \end{tabular}
@@ -1220,8 +1224,9 @@ near-goal states, with at least 80\% of the goal covered, for up to 96 steps eac
 scenes that the RL run never used. With camera features alone, the finishing rate went from 28.9\% to 30.3\% (change
 $+1.4$ points, interval $-2.1$ to $+4.9$).
 With the exact block pose given to the steering network (privileged information at test time), it reached
-35.4\% ($+6.5$, interval $+2.9$ to $+10.0$). The frozen policy's samples contain finishing pushes, and its camera
-features are not precise enough to choose them. % D058, lastmile_rl.csv
+35.4\% ($+6.5$, interval $+2.9$ to $+10.0$). The frozen policy's samples contain finishing pushes. A steering network
+that reads only the policy's camera features could not pick them out, and one that also reads the exact pose as numbers
+could. Appendix~\ref{sec:app-overlay} relates this to the other last-millimetre tests. % D058, lastmile_rl.csv
 
 \paragraph{Executing more of each plan.}
 Executing more of each 16-target plan lowers success. On a separate pool of 200 new scenes per shape, the main model
@@ -1396,8 +1401,24 @@ rounds without the overlay did not raise success either. On the T the overlay ar
 \numControlVsMainTLo{} to \numControlVsMainTHi). Both rest on 200 scenes, and both intervals include zero. On the
 selection scenes, which we used to monitor the run, overlay minus control was \numOverlayVsControlRoundZero{} points
 after round 0 (interval \numOverlayVsControlRoundZeroLo{} to \numOverlayVsControlRoundZeroHi). In every round from 1 to
-11 the two arms were within chance of each other. %OVERLAYOFFAPP%
+11 the two arms were within chance of each other.
 % runs/fairtest-d066/report.txt, runs/d066/validation_curve.txt
+
+\paragraph{The overlay switched off.}
+After this result a reviewer asked whether the policy uses the overlay at all. We decided on an exploratory check
+that was not fixed in advance. It runs the overlay arm's round-11 policy with official images on the same
+\numTestScenes{} scenes per shape, paired by scene with its own overlay episodes. Taking the overlay away did not lower
+success on the 26 letters. The policy solved \numOverlayOffHead\% without the overlay against \numOverlayHead\% with it,
+a change of \numOverlayOffVsOn{} points (interval \numOverlayOffVsOnLo{} to \numOverlayOffVsOnHi). Against the control
+the change is \numOverlayOffVsControl{} points (interval \numOverlayOffVsControlLo{} to \numOverlayOffVsControlHi). Among
+failures, \numOverlayOffNearMiss\% reached a peak coverage of 90\%, against \numOverlayNearMiss\% with the overlay,
+\numControlNearMiss\% for the control and \numNearMissMain\% for the main model. On the nine never-seen shapes it solved
+\numOverlayOffUnseen\%, against \numOverlayUnseen\% with the overlay, \numControlUnseen\% for the control and
+\numUnseenMain\% for the main model. On the T it solved \numOverlayOffT\% without the overlay against \numOverlayT\% with it
+(\numOverlayOffVsOnT{} points, interval \numOverlayOffVsOnTLo{} to \numOverlayOffVsOnTHi). The T may gain from the
+overlay, but that interval includes zero. On the letters as a whole, the overlay-trained policy does not use the red
+slivers to finish.
+% ~/cs5478/d066_ovoff/report.txt (d066_ovoff.sh, episodes d066_ovoff/*.json); paper_late_numbers.json
 
 \begin{table}[!htbp]
   \centering\small
@@ -1424,15 +1445,16 @@ after round 0 (interval \numOverlayVsControlRoundZeroLo{} to \numOverlayVsContro
 \end{table}
 
 \paragraph{The last-millimetre tests together.}
-Exact block pose helped a separate network choose among the frozen policy's samples (Appendix~\ref{sec:app-lastmm}),
-so those samples contain finishing pushes. Teaching the encoder the pose (Appendix~\ref{sec:app-flow}) and painting the
-misalignment into the image (this section) did not raise success. The teacher, which sees everything, keeps 78\% of its
-successes when it must execute 8 targets without re-planning and 81\% with 4 (Appendix~\ref{sec:app-lastmm}). Our
-reading of these results is that seeing the error is not the main limit for the camera policy. The harder part is
-choosing a fine correction and committing to it for several steps without re-planning. Re-planning more often does not
-fix this by itself. In an earlier test a five-shape policy trained on 8-target plans did 13.4 points worse when it
-re-planned every 4 steps (100 selection scenes per shape). A test of this reading therefore needs a policy trained for
-shorter commitments. % last-mile report of 2026-10-31 (store runs/lastmile/execute4, -13.4 [-19.0, -7.8], plain round 7, variant round 3)
+Exact block pose, given as numbers to a small steering network, helped it choose finishing pushes among the frozen
+main model's samples (Appendix~\ref{sec:app-lastmm}). The same kind of information did not help inside the camera
+policy. A training-only pose head taught the encoder the block pose to about 0.5~px (Appendix~\ref{sec:app-flow}), and
+the overlay painted the misalignment into the 96~px image. Neither raised success, and the overlay-trained policy does
+not act on the red slivers. The information about the error is present in both tests. What the camera policy cannot do
+is turn these sub-pixel image cues into a fine correction. Our earlier data also show a cost of committing to several
+targets. The teacher, which reads the state, keeps 78\% of its selection-scene successes when it must execute 8 targets
+without re-planning and 81\% with 4 (Appendix~\ref{sec:app-lastmm}). Re-planning more often did not help a camera
+policy trained on 8-target plans. In an earlier test a five-shape policy did 13.4 points worse when it re-planned every
+4 steps (100 selection scenes per shape). This reading rests on one training run per arm and one check. % last-mile report of 2026-10-31 (store runs/lastmile/execute4, -13.4 [-19.0, -7.8], plain round 7, variant round 3)
 
 % ---------------------------------------------------------------------------------------------------------------------
 \section{Compute and a data incident}

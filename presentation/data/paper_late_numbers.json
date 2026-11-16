@@ -1,5 +1,5 @@
 {
- "_about": "Numbers of the experiments that finished after the round-50 test tables (appendix of the report: Flow-DiT variants, the goal overlay D066, the near-miss share on the D064 pool). Typed in from the named reports; paper_numbers.py writes each entry as one macro of numbers.tex. 'signed' values are paired changes in points and are written as +x or $-$x. Seeds 15000000 + 20*i (200 per shape) are the D064 pool of the final test; seeds 400000 + 20*i (50 per shape) are the selection (validation) scenes.",
+ "_about": "Numbers of the experiments that finished after the round-50 test tables (appendix of the report: Flow-DiT variants, the goal overlay D066 and its overlay-off check, the near-miss share on the D064 pool). Typed in from the named reports; paper_numbers.py writes each entry as one macro of numbers.tex. 'signed' values are paired changes in points and are written as +x or $-$x. Seeds 15000000 + 20*i (200 per shape) are the D064 pool of the final test; seeds 400000 + 20*i (50 per shape) are the selection (validation) scenes.",
  "groups": [
   {
    "name": "Near misses of the main model on the final test",
@@ -129,6 +129,25 @@
     "numOverlayVsControlRoundZero": {"value": "-3.8", "signed": true, "what": "slivers-only overlay minus control, round 0, selection scenes, points"},
     "numOverlayVsControlRoundZeroLo": {"value": "-7.3", "signed": true, "what": "  95% interval, low end"},
     "numOverlayVsControlRoundZeroHi": {"value": "-0.4", "signed": true, "what": "  95% interval, high end"}
+   }
+  },
+  {
+   "name": "Goal overlay (D066), exploratory check with the overlay switched off",
+   "source": "~/cs5478/d066_ovoff/report.txt (script ~/cs5478/d066_ovoff/d066_ovoff.sh, episodes ~/cs5478/d066_ovoff/*.json; run store runs/fairtest-d066-ovoff): the overlay arm's round-11 checkpoint with goal_overlay set to 0 (official images), seeds 15000000 + 20*i, 200 scenes per shape, paired by shape and scene with the overlay-on and control episodes of the D066 test; exploratory, decided after the D066 result in response to a reviewer and not fixed in advance; recomputed from the episode files on 2026-11-17",
+   "macros": {
+    "numOverlayOffHead": {"value": "34.1", "what": "overlay-trained policy with the overlay switched off, 26 letters, success % (1775/5200)"},
+    "numOverlayOffVsOn": {"value": "1.7", "signed": true, "what": "overlay off minus overlay on (same checkpoint), 26 letters, 5200 pairs, points"},
+    "numOverlayOffVsOnLo": {"value": "-0.0", "signed": true, "what": "  95% interval, low end (-0.025 before rounding, so the interval includes zero)"},
+    "numOverlayOffVsOnHi": {"value": "3.5", "signed": true, "what": "  95% interval, high end"},
+    "numOverlayOffVsControl": {"value": "0.8", "signed": true, "what": "overlay off minus control, 26 letters, 5200 pairs, points"},
+    "numOverlayOffVsControlLo": {"value": "-1.0", "signed": true, "what": "  95% interval, low end"},
+    "numOverlayOffVsControlHi": {"value": "2.6", "signed": true, "what": "  95% interval, high end"},
+    "numOverlayOffNearMiss": {"value": "64.1", "what": "overlay off, 26 letters: share of failures whose peak coverage reached 0.90, %"},
+    "numOverlayOffUnseen": {"value": "9.1", "what": "overlay off, 9 never-seen shapes, success % (163/1800)"},
+    "numOverlayOffT": {"value": "39.0", "what": "overlay off, T (main shape group), success %"},
+    "numOverlayOffVsOnT": {"value": "-6.5", "signed": true, "what": "overlay off minus overlay on, T, 200 pairs, points"},
+    "numOverlayOffVsOnTLo": {"value": "-15.9", "signed": true, "what": "  95% interval, low end"},
+    "numOverlayOffVsOnTHi": {"value": "2.9", "signed": true, "what": "  95% interval, high end"}
    }
   }
  ]
