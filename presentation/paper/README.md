@@ -1,29 +1,38 @@
-# Paper
+# Report (`paper/` folder)
 
-`main.tex` is the final course report: two-column `article`, natbib with `plainnat`, figures from `../figures/` (mostly
-the deck graphs in `../figures/deck/` and the TikZ diagrams in `../figures/tikz/`), images from `../images/`. `refs.bib`
-holds the references. The main text matches the content and order of the final talk (the 37-slide deck sent to the
-professor on 2026-11-12): the 26 letters (the narrow T is an extra training shape left out of every aggregate), the
-main model after 50 correction rounds, nine never-seen shapes, and Flow-DiT (the default 16x16 version) as the
-architecture experiment. It answers the professor's questions (why RL fine-tuning, re-ranking and back-propagation
-failed, in Section 4, kept tight, and the red-overlay suggestion, in two sentences in Section 10). Everything that is not in the
-talk lives in the appendix, with a one-sentence pointer from the main text where needed.
+`main.tex` is the final CS5478 course project report: two-column `article`, natbib with `plainnat`, figures from
+`../figures/` (mostly the deck graphs in `../figures/deck/` and the TikZ diagrams in `../figures/tikz/`), images from
+`../images/`. `refs.bib` holds the references. The main text follows the content and order of the final talk (the
+37-slide deck sent to the professor on 2026-11-12) and is written for the professor as an account of what we did,
+what worked, what failed and why: the 26 letters (the narrow T is an extra training shape left out of every average),
+the main model after 50 correction rounds, nine never-seen shapes, and Flow-DiT (the default 16x16 version) as the
+larger network. It answers the professor's questions (why RL fine-tuning, re-ranking and back-propagation failed, in
+Section 4, and the red-overlay suggestion, in Section 10 and Appendix K). Everything that is not in the talk lives in
+the appendix, with a pointer from the main text where needed.
 
-Outline: 1 Introduction, 2 Related work, 3 Setup (task, shapes, camera policy network, test protocol), 4 Early
-attempts and why they failed (RL fine-tuning, re-ranking with the simulator, back-propagation through a learned model,
-the team's DPPO run and image world models, with a summary table), 5 From images to states (state world model, what it
-imagines, its speed against the simulator), 6 The planner teacher, 7 From copying to correction rounds (copying alone
-is not enough, correction rounds, 5 to 10 to 26 shapes), 8 Results (final test, per shape, never-seen shapes, the last
-millimetres), 9 Does the network matter (Flow-DiT), 10 Limitations and future work, 11 Conclusion. Appendix: A settings
-and networks, B details of the early attempts (RL score table, timeline), C how the teacher was designed, D
-distillation and weight blends, E intended plans as labels and other design tests (77 to 129), F stage details and why
-the selection scores look noisy, G more results of the final test (narrow T, digits, 192 px, per-shape table, earlier
-tests), H more tests of the last millimetres (noise steering D058, steps executed D056), I Flow-DiT variants (8x8,
-ViT-L D062, pose head D064, joint-attention head pilot D065, earlier 8x8 tests D059/D060), J making the misalignment
-visible (goal overlay D066, result).
+Outline: 1 Introduction (with the approach figure and Algorithm 1), 2 Related work, 3 Setup (task, shapes, camera
+policy network with its diagram, test protocol), 4 Early attempts and why they failed (summary table, RL fine-tuning,
+re-ranking, back-propagation, DPPO and a learned simulator, image world models), 5 From images to states (state world
+model, its speed against the simulator, what it imagines), 6 The planner teacher, 7 From copying to correction rounds
+(copying alone is not enough, correction rounds, 5 to 10 to 26 shapes), 8 Results (final test, per shape, never-seen
+shapes, the last millimetres), 9 A larger network on the same data (Flow-DiT with its diagram), 10 Limitations,
+11 Conclusion. Appendix: A shapes and settings, B early attempts in detail (RL score table, timeline), C state world
+model details (accuracy, examples, timing, error chart), D how the teacher was designed (table of stalls and changes),
+E distillation and weight blends, F intended plans as labels and other design tests (77 to 129), G training stages and
+how strict the success test is, H more results of the final test (narrow T, digits, 192 px, group bars, per-shape
+table, earlier tests), I more tests of the last millimetres (noise steering D058, steps executed D056), J Flow-DiT
+variants (Flow-DiT against the main model by group, 8x8, ViT-L D062, pose head D064, joint-attention head pilot D065,
+earlier 8x8 tests D059/D060), K making the misalignment visible (goal overlay D066, with the 96 px images, the result
+and a reading of the last-millimetre tests together), L disclosures and compute.
+
+Terms: a "step" is one control step of the simulator (0.1 s), optimizer steps are "training steps", "examples" are
+(observation, label) pairs, "teacher demonstrations" are teacher episodes, and the camera policy is never called a
+student. Decision numbers (D0xx) and PR numbers appear only in the appendix.
 
 Style rules for edits: plain words and short sentences, no hedging words, and no semicolons, colons or em dashes in
-prose, captions and table text (colons only where LaTeX or math needs them, ranges as "4 to 11%").
+prose, captions and table text (colons only where LaTeX or math needs them, ranges as "4 to 11%"). The team's
+writing checklist (`report_assets/writing_checklist.md`, outside Git) adds the rest: no copula avoidance, no trailing
+"-ing" clauses, no "X, not Y" endings or slogans, one term per thing, old information before new in each sentence.
 
 ## Numbers
 
@@ -43,7 +52,7 @@ python3 presentation/scripts/build_round50_data.py && python3 presentation/scrip
 python3 presentation/scripts/paper_numbers.py
 ```
 
-Then regenerate the deck graphs the paper includes (`final_bars_2`, `final_dumbbell`, `heldout_success`,
+Then regenerate the deck graphs the report includes (`final_bars_2`, `final_dumbbell`, `heldout_success`,
 `arch_letters`) with `make_figures.py --variant deck` and recompile. While any shape has fewer than 200 paired scenes,
 `numbers.tex` defines `\paperdatanote` as a red line under the abstract; it disappears once the test is complete.
 `--data <folder>` reads the CSV files from another folder (to check a running test without writing to `../data/`).
@@ -79,20 +88,19 @@ Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, boo
 `videos/` and set `paper/main.tex` as the main document (or import it from a root file with
 `\import{paper/}{main.tex}`).
 
-## State (2026-11-16)
+## State (2026-11-17)
 
-- Main text matched to the final talk: everything not in the deck moved to clearly titled appendix sections (distillation
-  and weight blends, the intended-plan design test, teacher design steps, stage budget and selection-scene noise, the
-  192 px and narrow-T details, earlier tests, the last-mile steering and steps-executed tests, the RL score table and
-  the timeline of early attempts). Flow-DiT in the main text is the default model only (ViT-B/14, all 16x16 tokens).
-- New appendix sections: I Flow-DiT variants (8x8 tokens 44.2% on the final test, ViT-L/14 D062 42.9% and -2.7
-  [-4.5, -0.8], pose head D064 +0.2, joint-attention head pilot D065 -7.3 [-10.9, -3.7] on the selection scenes at
-  60k steps, earlier 8x8 tests D059/D060), J the goal overlay D066 (whole-goal version collapsed, slivers-only version
-  -1.0 [-2.7, +0.8] against its control after 11 rounds, control +0.6 against round 50). Section 10 states the result in
-  two sentences. The near-miss share now comes from the final test (63.6% of round-50 failures reach 90% coverage).
-- Compiles with Tectonic 0.15.0 to 23 pages: main text on pages 1 to 13, references to page 15, appendix A to J on
-  pages 16 to 23. No undefined references or citations, no overfull boxes. Tectonic reports "TeX rerun seems needed,
-  but stopping at 6 passes" because of its main.bbl consistency check (the previous version does the same when built
-  into a fresh folder), and all labels and citations resolve.
+- Revised after three blind reviews and the lead's writing checklist: consistency fixes (selection pools, best-of-16
+  wording, the 192 px model's two differences, image-model errors in 96 px camera pixels, one set of overlap numbers
+  per named model and case set, the copying figure, "parent" model as in the talk, one finishing tolerance, "main
+  model" naming, the DPPO score against the published average 0.84 and best 0.91 of Chi et al. 2023, Table 2).
+- Restructured to the talk: Section 5 opens with images to states, the network diagrams of slides 4 and 33 are in
+  Sections 3 and 9, accuracy details, the D058 steering test, the Flow-DiT group table and the disclosures of the seed
+  incident and compute moved to the appendix. Appendix K has the overlay images and a reading of the last-millimetre
+  tests together. Framed as a course project report (no contributions list, short related work).
+- Compiles with Tectonic 0.15.0 to 23 pages: main text on pages 1 to 12 (first column), references to page 13,
+  appendix A to L on pages 14 to 23. No undefined references or citations, no overfull boxes. Tectonic reports "TeX
+  rerun seems needed, but stopping at 6 passes" because of its main.bbl consistency check (the previous version does
+  the same when built into a fresh folder), and all labels and citations resolve.
 - References are from memory of the published record (Lipman et al. 2023, Peebles and Xie 2023, Oquab et al. 2024 as
-  before).
+  before). The published PushT numbers (0.91/0.84) were checked against arXiv 2303.04137.
