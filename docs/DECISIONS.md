@@ -1352,3 +1352,71 @@ inside the encoder, no gain) and D058 (exact pose given to a small noise-steerin
 near the goal), the reading is that the camera policy cannot turn sub-pixel image cues into a fine correction, not
 that the information is missing. The overlay is not used further; Flow-DiT 16 x 16 stays the architecture result. The
 course report (branch docs/report, Appendix K) reports the test and the check.
+
+The next four entries were written on 2026-10-24 as D028 to D031 in PR #7 (contact-balanced image world model) and
+were renumbered D067 to D070 when it was merged, because main already used D028 to D031.
+
+## D067 — Contact-balanced official T sampling and moved-T replay (2026-10-24)
+
+Collect many official T scenes first, then continue one GPC image denoiser. Do
+not train a second independent model. The current best weights
+(`artifacts/official-wm-T-angles-2026-10-23/model/denoiser.pt`) are copied once
+to `artifacts/official-wm-T-init/` and used as the start of later updates.
+
+`contact-balanced` play is a disclosed privileged prior: it reads official T
+rectangles, mass center and orientation, chooses headings whose pusher disk would
+hit the T, falls back to a truncated normal around the pusher-to-CoG axis inside
+±150°, and keeps an adaptive miss fraction so empty pushes remain in the data.
+It does not optimize reward or use a policy. Per-dataset 1000-control / 64 MiB
+caps stay (D017). Scale-out is many finished batch directories.
+
+Training treats saved windows as a replay store. Batches oversample windows
+where the object translated or rotated on the predicted step. `model_test`
+stays unread. Image MSE versus a still frame is logged; it is not contact,
+rotation, or policy evidence.
+
+Large contact samples are trained with `scripts/train_official_contact.py`, not
+by loading every `batch-*` directory into `--train-datasets`. Each chunk draws
+train windows from the full train-split index across all batches, then
+oversamples windows where the object moved. Validation is a seeded 64-window
+subset whose keys are stored in the run report so resume scores the same
+windows. Weights are written after each chunk; Ctrl+C leaves `interrupted` and
+`--resume` continues, including after a time or update stop. This is still one
+denoiser continued from the angles init, not a second model.
+
+## D068 — Privileged motion-region denoiser weights (2026-10-24)
+
+Full-image MSE and the unmodified GPC EDM loss average over a mostly static
+table. Contact training now builds a privileged 96×96 weight from official T
+occupancy, the pusher disk, and optional RGB change, with background weight 1
+and region weight 8. The maps are labels only; they are not model inputs and
+do not change official RGB or action scaling. The weighted EDM step lives in
+`tdyssey` and does not patch pinned GPC source. Validation still logs full-image
+MSE versus a still frame, and also logs region/motion MSE plus snapshot
+translation/rotation and an appearance centroid proxy. Masked image error is
+not contact, rotation, or policy evidence.
+
+## D069 — Angle-probe contact and side slices (2026-10-24)
+
+`scripts/probe_push_angles.py` still uses one official T scene, 16 object-relative
+headings from the current pusher, and three distances. The standing read of that
+probe now records privileged simulator `n_contacts`, world left/right of the
+object CoG, still-frame object-mask overlap, and object translation. Those
+labels are evaluation only. Object-mask overlap on a miss is not contact or
+rotation evidence, and it does not authorize a policy update.
+
+## D070 — Case-split foreground denoiser loss (2026-10-24)
+
+Full-image MSE and D068's k=8 occupancy weights still train the table and the
+unmoved T blob. Contact training now uses a privileged case split: windows that
+moved the object or reported contact weight motion pixels, the true next T, and
+the pusher; miss windows weight the still T and the pusher. Background weight is
+0. An empty mask falls back to ones so the EDM step stays defined. The denoiser
+still sees only RGB and actions. Geometry, contact counts, and the true next
+frame used to build the mask are labels.
+
+Validation is a frozen 32 useful / 32 miss subset when episode JSON can label
+windows. Success is read on those slices (motion vs still-frame, centroid
+shift), not on full-image MSE. Replay still mixes about 60% moved windows.
+This does not add a second network or a pose-number loss, and it does not
+authorize a policy update.
