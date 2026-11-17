@@ -12,9 +12,7 @@ VIDEOS=drive bash presentation/pptx/build.sh         # posters link to the publi
 Needs Node 20+ (`npm ci` installs the pinned `pptxgenjs` 4.0.1 from `package-lock.json`), Python 3.12 with
 `requirements.txt` (the script uses `uv run` when `uv` is on the PATH), `ffmpeg`, and Tectonic or a TeX Live with
 `latexmk`.
-A full build takes about 35 seconds. GitHub builds the deck on every push that changes `presentation/` (workflow
-"Presentation PDFs", artifact `presentation-pptx`, with LibreOffice comparison sheets). Generated files stay in
-`out/`, which Git ignores.
+A full build takes about 35 seconds. Generated files stay in `out/`, which Git ignores.
 
 ## How it works
 
