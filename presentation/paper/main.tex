@@ -424,7 +424,7 @@ still failed (Fig.~\ref{fig:iwm}, right).
 % final deck slides 10-18 and notes, slides/image_world_model_48m.tex, PRs 6, 7, 9, 11
 
 Adaptation removed the T-like crossbar from the GPC model's L predictions, and mixed training raised the overlap 16
-steps (1.6~s) ahead from 0.21 to 0.33, above the 0.23 of a fully trained one-step model.
+steps ahead from 0.21 to 0.33, above a fully trained one-step model.
 % story slide "After adaptation, the model preserves L here" (data/image_wm_story_sources.json); 0.21 parent (36,496
 % updates) -> 0.33 mixed (parent + 1000 mixed updates); 0.23 = the completed one-step model (49,991 updates), a
 % saved-model comparison with a different budget (data/image_wm_48m_sources.json, final_aggregate and mixed_aggregate)
@@ -453,9 +453,18 @@ findings are why we did not return to image world models.
 
 The state world model, which Sections~\ref{sec:rerank} and~\ref{sec:bptt} already used, is the learned model of the
 simulator that the second thread needed. Planning needs only the state of the letter and the pusher, 10 numbers,
-while a $96\times96$ camera image holds 27,648 numbers (Appendix Fig.~\ref{fig:img2state}). During training the simulator gives
+while a $96\times96$ camera image holds 27,648 numbers (Fig.~\ref{fig:img2state}). During training the simulator gives
 the state exactly. The pusher's controller and the letter's shape are also known exactly, so a model can reuse them and
 learn only the rest.
+
+\begin{figure*}[t]
+  \centering
+  {\def\presroot{../}\input{../figures/tikz/img2state.tex}}
+  \caption{From images to states. Planning needs only the 10-number state, which the simulator gives exactly in
+  training. The image world model must learn the shape, the pusher and the physics from pixels, and the state world
+  model learns only the letter's motion.}
+  \label{fig:img2state}
+\end{figure*}
 
 The state holds the letter's position, angle, velocity and turning rate and the pusher's position and velocity. The
 state world model predicts the next state from the current state and the next pusher target (Fig.~\ref{fig:wm}). The
@@ -648,9 +657,8 @@ and never trained on the 17 letters added last. The 192~px model sees a sharper 
 from a run with this camera that went alongside the main run, and it is that run's round 2 of the 26-letter stage,
 picked on the selection scenes. Flow-DiT is the larger network of Section~\ref{sec:arch}.
 
-The main model raises success over the 26 letters from \numHeadOrig\% to \numHeadMain\%, a paired change of
-\numDiffHeadMain{} points (95\% interval \numDiffHeadMainLo{} to \numDiffHeadMainHi), and the final coverage from
-\numCovOrig{} to \numCovMain. The ten-shape model, which never trained on the 17 letters added last, solves
+The main model raises success over the 26 letters from \numHeadOrig\% to \numHeadMain\% and the final coverage from
+\numCovOrig{} to \numCovMain{} (Table~\ref{tab:main} gives the paired changes with their intervals). The ten-shape model, which never trained on the 17 letters added last, solves
 \numNewTen\% of them, and the main model \numNewMain\%.
 
 The main model improves \numLettersUpMain{} of the 26 letters (Fig.~\ref{fig:final}, Appendix
@@ -709,8 +717,7 @@ data, reads them and draws a plan, and the whole policy has 505M parameters. % D
 % width 1024, adaLN, pi0 time sampling, 160k training steps with batches of 128, no correction rounds of its own)
 
 On the same new scenes Flow-DiT reaches \numHeadFlow\% on the 26 letters, compared with \numHeadMain\% for the main
-model, a paired change of \numVsMainHeadFlow{} points (interval \numVsMainHeadFlowLo{} to \numVsMainHeadFlowHi,
-Table~\ref{tab:main}). Flow-DiT sees the same 96~px image, so the image is not what limits the main model. It does
+model (Table~\ref{tab:main}). Flow-DiT sees the same 96~px image, so the image is not what limits the main model. It does
 better on \numLettersUpFlow{} of the 26 letters (Fig.~\ref{fig:arch}). We keep the official network as the main model
 so that it matches the original policy. A larger ViT-L/14 encoder and, in a short pilot, a joint-attention head did
 worse, and $8\times8$ pooled tokens and a training-only pose head gave no gain (Appendix~\ref{sec:app-flow}).
@@ -960,21 +967,12 @@ Fig.~\ref{fig:wmerr} compares the error 8 steps ahead with a plain network.
 
 The eight example windows of Section~\ref{sec:wm} cover five letters. Each starts a few steps before contact and runs
 the model for 32 steps without correction from the exact state. After 32 steps the median error is about 3.4~px and
-the worst 42.5~px (an E touching the wall).
+the worst 42.5~px.
 % data/world_model_examples.csv (32 steps ahead, D 1.06 and 1.5, T 5.3, R 10.94, A 23.9, E 1.0, 1.2 and 42.54 px)
 
 The timing of Section~\ref{sec:wm} used one H100 GPU for the state world model and one CPU core for the simulator.
 Over the 300 decisions of an episode, the state world model needs about 20~s and the simulator about 71 minutes.
 % timed 2026-11-12 (AMD EPYC 9334 core, same node)
-
-\begin{figure}[!htbp]
-  \centering
-  {\def\presroot{../}\input{../figures/tikz/img2state.tex}}
-  \caption{From images to states. Planning needs only the 10-number state, which the simulator gives exactly in
-  training. The image world model must learn the shape, the pusher and the physics from pixels, and the state world
-  model learns only the letter's motion.}
-  \label{fig:img2state}
-\end{figure}
 
 \begin{figure}[!htbp]
   \centering
