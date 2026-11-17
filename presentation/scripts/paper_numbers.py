@@ -12,7 +12,7 @@ Writes, into --paper (default presentation/paper):
   numbers.tex          one \\newcommand per number the report's text uses, each with a comment naming its source
   tables/main_test.tex     success by shape group for the five policies, change of the main model vs the original
   tables/flowdit.tex       Flow-DiT against the main model (paired)
-  tables/per_shape.tex     every shape, every policy (appendix)
+  tables/per_shape.tex     every letter and never-seen shape, every policy (appendix; the narrow T is not shown)
   tables/steps.tex         steps executed per plan, D056 (26 letters, narrow T left out)
   tables/history.tex       the earlier fixed tests, averaged over letters only
 
@@ -20,7 +20,8 @@ Numbers of experiments that finished later (Flow-DiT variants D062/D064/D065, th
 on the D064 pool) are typed in, with their sources, in --history/paper_late_numbers.json; each entry becomes one macro.
 
 Groups follow the talk: all 26 letters, 9 earlier letters (T Y D L E F J P U), 17 new letters, 9 never-seen shapes
-(digits 2, 3, 4, 5, 7, 8, plus, hash, arrow) and T; the narrow T (an extra training shape) is in no group. Rates are
+(digits 2, 3, 4, 5, 7, 8, plus, hash, arrow) and T; the narrow T (an extra training shape) is in no group, no table
+row and no macro, because the report leaves it out. Rates are
 pooled successes / episodes; paired changes and their 95% intervals come from d064_test_paired.csv (normal
 approximation on per-scene differences, as in build_round50_data.py). If the test is not finished (fewer than 200
 paired scenes for some shape or policy), numbers.tex defines \\paperdatanote as a red line under the abstract.
@@ -212,7 +213,7 @@ def main():
         M.add("numMainLetterMinName", main_rates[0][1], "  its letter")
         M.add("numMainLetterMax", str(main_rates[-1][0]), f"highest letter rate of the main model ({main_rates[-1][1]})")
         M.add("numMainLetterMaxName", main_rates[-1][1], "  its letter")
-    for s, sname in (("digit7", "DigitSeven"), (NARROW_T, "NarrowT")):
+    for s, sname in (("digit7", "DigitSeven"),):
         for k, kname, _ in MODELS:
             v = srate(k, s)
             M.add(f"num{sname}{kname}", str(v) if v is not None else "--", f"{MODEL_DESC[k]}, {s}, success % "
@@ -383,8 +384,7 @@ def main():
         f.write("\\bottomrule\n\\end{tabular}\n")
     # per shape: two blocks side by side
     left = [("9 earlier letters", EARLY9), ("17 new letters", NEW17[:9])]
-    right = [("17 new letters (continued)", NEW17[9:]), ("Extra training shape", [NARROW_T]),
-             ("9 never-seen shapes", UNSEEN9)]
+    right = [("17 new letters (continued)", NEW17[9:]), ("9 never-seen shapes", UNSEEN9)]   # the narrow T is not shown
 
     def block(parts):
         out = ["\\begin{tabular}{lrrrrr}", "\\toprule",
