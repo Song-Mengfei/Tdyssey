@@ -8,6 +8,11 @@ schedule (power 0.75, max 0.9999). Starts from the official checkpoint and keeps
   --demos DIR...   teacher trajectories (mpc_teacher.py --save-traj *.npz) with replayed frames in DIR/frames/
   --human-t ZARR   the official human T demonstrations (pusht_cchi_v7_replay.zarr), so T is learned from the
                    data the original policy was trained on (not new demonstrations)
+  --goal-overlay R the D066 rendering aid (uncovered goal in red, thin parts grown by R simulator px): teacher frames
+                   from DIR/frames-ovR/ (frames<size>-ovR/ when not 96 px), human T frames re-rendered from their
+                   states (ZARR's folder/frames-ovR/<zarr stem>_frames.npz), records collected by an overlay student;
+                   made by scripts/learning/overlay_frames.py and mpc_dagger.py. Saved in the checkpoint's arch, so
+                   evaluation and collection render the same way.
 Letters are sampled in equal shares (T split evenly between human and teacher episodes).
 Saves EMA checkpoints readable by base_rollouts.py eval --student.
 
@@ -33,13 +38,62 @@ from tdyssey.official import OfficialDiffusionPolicy  # noqa: E402
 LETTERS = ("T", "T_narrow", "Y", "D", "L")
 
 
-def load_episodes(args):
-    return list(iter_episodes(args))
+def frames_subdir(args):
+    """Folder of a demo file's replayed camera frames: frames/ (96 px), frames<size>/, plus -ov<R> with the overlay."""
+    size, overlay = args.image_size, getattr(args, "goal_overlay", 0)
+    return ("frames" if size == 96 else f"frames{size}") + (f"-ov{overlay}" if overlay else "")
 
 
-def iter_episodes(args):
-    """Yield (frames uint8 (m,S,S,3), agent_pos (m,2), actions (m,2), group, coverage, plan) one episode at a time."""
-    sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
+def human_t_images(args, g):
+    """Human T camera frames: the dataset's own images, or (with --goal-overlay) the frames re-rendered from the
+    recorded states with the overlay by overlay_frames.py human (uint8, same order and count as the dataset)."""
+    if not getattr(args, "goal_overlay", 0):
+        return g["data"]["img"][:]
+    zarr_path = Path(args.human_t)
+    f = zarr_path.parent/frames_subdir(args)/f"{zarr_path.stem}_frames.npz"
+    with np.load(f) as z:
+        frames = z["frames"]
+    n = len(g["data"]["state"])
+    if frames.shape != (n, args.image_size, args.image_size, 3) or frames.dtype != np.uint8:
+        raise SystemExit(f"{f}: expected ({n}, {args.image_size}, {args.image_size}, 3) uint8 frames, got {frames.shape} {frames.dtype}")
+    return frames
+
+
+def record_overlay(f):
+    """Goal-overlay radius a record file's frames were rendered with (0: official rendering; tag absent)."""
+    with np.load(f) as z:
+        return int(z["goal_overlay"]) if "goal_overlay" in z.files else 0
+
+
+def check_record_overlay(dirs, overlay, mixed):
+    """Record frames are stored as rendered, so their rendering must match --goal-overlay. Checks the first and last
+    file of every folder (one folder = one collection round with one student). Folders rendered otherwise stop the run
+    unless mixed is set (then their frames are used unchanged). Returns {radius: number of folders}."""
+    seen = {}
+    for d in dirs:
+        files = sorted(Path(d).glob("*.npz"))
+        if not files:
+            continue
+        tags = {record_overlay(files[0]), record_overlay(files[-1])}
+        if len(tags) > 1:
+            raise SystemExit(f"{d}: record files rendered with different overlays {sorted(tags)}")
+        tag = tags.pop()
+        seen[tag] = seen.get(tag, 0) + 1
+    other = {k: v for k, v in seen.items() if k != overlay}
+    if other and not mixed:
+        raise SystemExit(f"record folders rendered with goal overlay {other} (radius: folders) but --goal-overlay is "
+                         f"{overlay}; pass --mixed-records to train on them unchanged")
+    return seen
+
+
+def load_episodes(args, poses=False):
+    return list(iter_episodes(args, poses))
+
+
+def iter_episodes(args, poses=False):
+    """Yield (frames uint8 (m,S,S,3), agent_pos (m,2), actions (m,2), group, coverage, plan) one episode at a time.
+    poses=True appends the block pose of every frame, (m, 3) x, y, angle (privileged labels for flow_train's pose head)."""
+    sub = frames_subdir(args)
     rng = np.random.default_rng(1234)
     for f in sorted(f for d in args.demos for f in Path(d).glob("*.npz")):
         ff = f.parent/sub/f"{f.stem}_frames.npz"
@@ -52,16 +106,18 @@ def iter_episodes(args):
             if m < 2 or rng.random() >= args.data_fraction:               # --data-fraction: fixed random subset
                 continue
             plan = z["plan"][i, :m] if (args.label == "plan" and "plan" in z) else None
-            yield (fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+            item = (fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+            yield item + (z["state"][i, :m, 0:3],) if poses else item
         del fr
     if args.human_t:
         import zarr
         g = zarr.open(str(args.human_t), "r")
-        img, st, act = g["data"]["img"][:], g["data"]["state"][:], g["data"]["action"][:]
+        img, st, act = human_t_images(args, g), g["data"]["state"][:], g["data"]["action"][:]
         ends = g["meta"]["episode_ends"][:]
         for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
-            yield (resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
-                   "T-human", None, None)                                   # 96 px; enlarged for 192 px students
+            item = (resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
+                    "T-human", None, None)                                  # 96 px; enlarged for 192 px students
+            yield item + (st[s:e, 2:5],) if poses else item                 # zarr state: agent x, y, block x, y, angle
 
 
 def resize_frames(img, size):
@@ -94,9 +150,195 @@ def iter_records(dirs, unnormalize, size=96):
                     yield (img[r], z["agent_pos"][r].astype(np.float32), acts[r], f"{z['shape']}-dagger")
 
 
+# ------------------------------------------------------------------------------------- parallel file loading
+# The serial generators above decompress every file on one core (~35 min for the 26-letter set). With
+# TDYSSEY_LOAD_WORKERS=N the same files are read by N worker processes; the main process consumes them in the original
+# order and does everything else exactly as the serial code (episode selection with the same random stream, the same
+# unnormalize call per file), so the yielded items, and the built arrays, are identical.
+
+def _load_demo_file(f, sub):
+    ff = f.parent/sub/f"{f.stem}_frames.npz"
+    if not ff.exists():
+        return None
+    z = {k: v for k, v in np.load(f).items()}
+    z["__frames"] = np.load(ff)["frames"]
+    return z
+
+
+def _load_record_file(f, size):
+    with np.load(f) as z:
+        if "candidate_x" not in z.files or len(z["choice"]) == 0:
+            return None
+        n = len(z["choice"])
+        lab = z["candidate_x"][np.arange(n), z["choice"]].astype(np.float32)
+        img = resize_frames(np.moveaxis(z["image"], 2, -1), size)
+        return lab, img, z["agent_pos"].astype(np.float32), str(z["shape"])
+
+
+def _ordered(fn, items, workers, *extra):
+    """Results of fn(item, *extra) in item order, at most 2*workers in flight (bounded host memory)."""
+    import collections, concurrent.futures, multiprocessing
+    ctx = multiprocessing.get_context("spawn")
+    with concurrent.futures.ProcessPoolExecutor(workers, mp_context=ctx) as ex:
+        q, it = collections.deque(), iter(items)
+        for item in it:
+            q.append((item, ex.submit(fn, item, *extra)))
+            if len(q) >= 2 * workers:
+                break
+        while q:
+            item, fut = q.popleft()
+            nxt = next(it, None)
+            if nxt is not None:
+                q.append((nxt, ex.submit(fn, nxt, *extra)))
+            yield item, fut.result()
+
+
+def iter_episodes_parallel(args, workers, poses=False):
+    """iter_episodes with the demo files read by worker processes (same items, same order)."""
+    sub = frames_subdir(args)
+    rng = np.random.default_rng(1234)
+    files = sorted(f for d in args.demos for f in Path(d).glob("*.npz"))
+    for f, z in _ordered(_load_demo_file, files, workers, sub):
+        if z is None:
+            print(f"skipped {f.name}: no {sub}/ file", flush=True); continue
+        fr = z.pop("__frames")
+        for i in range(len(z["seed"])):
+            n = int(z["mask"][i].sum()); m = n - 1
+            if m < 2 or rng.random() >= args.data_fraction:
+                continue
+            plan = z["plan"][i, :m] if (args.label == "plan" and "plan" in z) else None
+            item = (fr[i, :m], z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+            yield item + (z["state"][i, :m, 0:3],) if poses else item
+        del fr
+    if args.human_t:
+        import zarr
+        g = zarr.open(str(args.human_t), "r")
+        img, st, act = human_t_images(args, g), g["data"]["state"][:], g["data"]["action"][:]
+        ends = g["meta"]["episode_ends"][:]
+        for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
+            item = (resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size), st[s:e, :2], act[s:e],
+                    "T-human", None, None)
+            yield item + (st[s:e, 2:5],) if poses else item
+
+
+def iter_records_parallel(dirs, unnormalize, size, workers):
+    """iter_records with the record files read by worker processes (same items, same order)."""
+    files = [f for d in dirs for f in sorted(Path(d).glob("*.npz"))]
+    for f, r in _ordered(_load_record_file, files, workers, size):
+        if r is None:
+            continue
+        lab, img, apos, shape = r
+        acts = unnormalize(lab)
+        for k in range(len(lab)):
+            yield (img[k], apos[k], acts[k], f"{shape}-dagger")
+
+
+class _NoFrames:
+    """Stands in for frames during build_index's bookkeeping pass: has a length, ignores writes."""
+    def __init__(self, n):
+        self.n = n
+
+    def __len__(self):
+        return self.n
+
+    def __setitem__(self, key, value):
+        pass
+
+
+def _demo_meta(f, sub, plan_label):
+    if not (f.parent/sub/f"{f.stem}_frames.npz").exists():
+        return None
+    with np.load(f) as z:
+        keep = ["seed", "mask", "state", "action", "coverage", "shape"] + (["plan"] if plan_label and "plan" in z.files else [])
+        return {k: z[k] for k in keep}
+
+
+def _record_meta(f):
+    with np.load(f) as z:
+        if "candidate_x" not in z.files or len(z["choice"]) == 0:
+            return None
+        n = len(z["choice"])
+        return z["candidate_x"][np.arange(n), z["choice"]].astype(np.float32), z["agent_pos"].astype(np.float32), str(z["shape"])
+
+
+def _demo_write(job, sub, path):
+    f, spans = job                                                       # spans: (episode, length, offset)
+    fr = np.load(f.parent/sub/f"{f.stem}_frames.npz")["frames"]
+    mm = np.load(path, mmap_mode="r+")
+    for i, m, off in spans:
+        mm[off:off+m] = fr[i, :m]
+    mm.flush()
+    return len(spans)
+
+
+def _record_write(job, size, path):
+    f, off = job
+    with np.load(f) as z:
+        img = resize_frames(np.moveaxis(z["image"], 2, -1), size)
+    mm = np.load(path, mmap_mode="r+")
+    mm[off:off + 2*len(img)] = img.reshape(-1, *img.shape[2:])
+    mm.flush()
+    return len(img)
+
+
+def build_streamed_parallel(args, unnormalize, out, workers, poses=None):
+    """build_index(iter_episodes(args), iter_records(...), out=out) for a file-backed out, with the files read and the
+    frames written by worker processes. The bookkeeping is build_index itself (run on frame stand-ins), with the same
+    episode selection and the same unnormalize call per record file, so every returned array is identical.
+    poses: a list, filled as build_index(..., poses=poses) fills it (block pose labels; NaN for records)."""
+    sub = frames_subdir(args)
+    rng = np.random.default_rng(1234)
+    files = sorted(f for d in args.demos for f in Path(d).glob("*.npz"))
+    eps, demo_jobs, off = [], [], 0
+    for f, z in _ordered(_demo_meta, files, workers, sub, args.label == "plan"):
+        if z is None:
+            print(f"skipped {f.name}: no {sub}/ file", flush=True); continue
+        spans = []
+        for i in range(len(z["seed"])):
+            n = int(z["mask"][i].sum()); m = n - 1
+            if m < 2 or rng.random() >= args.data_fraction:
+                continue
+            plan = z["plan"][i, :m] if "plan" in z else None
+            eps.append((_NoFrames(m), z["state"][i, :m, 6:8], z["action"][i, :m], f"{z['shape'][i]}-teacher", z["coverage"][i, :m], plan)
+                       + ((z["state"][i, :m, 0:3],) if poses is not None else ()))
+            spans.append((i, m, off)); off += m
+        demo_jobs.append((f, spans))
+    human = []
+    if args.human_t:
+        import zarr
+        g = zarr.open(str(args.human_t), "r")
+        img, st, act = human_t_images(args, g), g["data"]["state"][:], g["data"]["action"][:]
+        ends = g["meta"]["episode_ends"][:]
+        for s, e in zip(np.concatenate([[0], ends[:-1]]), ends):
+            fr = resize_frames(img[s:e].round().clip(0, 255).astype(np.uint8), args.image_size)
+            human.append((off, fr)); off += len(fr)
+            eps.append((_NoFrames(len(fr)), st[s:e, :2], act[s:e], "T-human", None, None) + ((st[s:e, 2:5],) if poses is not None else ()))
+    rfiles = [f for d in args.records for f in sorted(Path(d).glob("*.npz"))]
+    recs, rec_jobs = [], []
+    for f, r in _ordered(_record_meta, rfiles, workers):
+        if r is None:
+            continue
+        lab, apos, shape = r
+        acts = unnormalize(lab)
+        rec_jobs.append((f, off))
+        for k in range(len(lab)):
+            recs.append((_NoFrames(2), apos[k], acts[k], f"{shape}-dagger")); off += 2
+    _, pos, acts_all, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage, out=_NoFrames(off), poses=poses)
+    assert off <= len(out), f"{off} frames for an array of {len(out)}"
+    path = out.filename
+    for o, fr in human:
+        out[o:o+len(fr)] = fr
+    out.flush()
+    for _ in _ordered(_demo_write, demo_jobs, workers, sub, path):
+        pass
+    for _ in _ordered(_record_write, rec_jobs, workers, args.image_size, path):
+        pass
+    return out, pos, acts_all, obs_idx, act_idx, group, near
+
+
 def count_frames(args):
     """Frames the streaming build will write, without loading any frames (same choices as iter_episodes)."""
-    sub = "frames" if args.image_size == 96 else f"frames{args.image_size}"
+    sub = frames_subdir(args)
     rng = np.random.default_rng(1234); total = 0
     for f in sorted(f for d in args.demos for f in Path(d).glob("*.npz")):
         if not (f.parent/sub/f"{f.stem}_frames.npz").exists():
@@ -119,7 +361,13 @@ def count_frames(args):
     return total
 
 
-def build_index(eps, recs=(), near_cov=0.8, out=None):
+_NO_POSE = np.full((1, 3), np.nan, np.float32)                            # a record sample: no block pose
+
+
+def build_index(eps, recs=(), near_cov=0.8, out=None, poses=None):
+    """poses: optional list; receives per-sample block poses (x, y, angle) of each sample's latest frame, from episode
+    tuples that carry them (iter_episodes(..., poses=True)), NaN otherwise; np.concatenate(poses) aligns with the
+    samples. Without it nothing changes."""
     pos, acts, obs_idx, act_idx, group, near = [], [], [], [], [], []
     if out is None:                                                       # in-memory lists: one host copy of every frame
         total = sum(len(e[0]) for e in eps) + 2*len(recs)
@@ -137,7 +385,7 @@ def build_index(eps, recs=(), near_cov=0.8, out=None):
             fd = os.open(frames.filename, os.O_RDONLY); os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED); os.close(fd)
             released[0] = off
     for n_ep, item in enumerate(eps):
-        fr, ap, ac, g, cov, plan = item
+        fr, ap, ac, g, cov, plan = item[:6]
         if isinstance(eps, list):
             eps[n_ep] = None                                                # release the source as we go
         m = len(fr)
@@ -152,6 +400,9 @@ def build_index(eps, recs=(), near_cov=0.8, out=None):
                 acts.append(np.concatenate([ac[max(t-1, 0)][None], plan[t][:15]]))
                 act_idx.append(list(range(aoff, aoff+16))); aoff += 16
             group.append(g); near.append(bool(cov is not None and cov[t] >= near_cov))
+        if poses is not None:                                               # sample t's latest frame is frame t
+            k = max(1, m-7)
+            poses.append(np.array(item[6][:k], np.float32) if len(item) > 6 else np.full((k, 3), np.nan, np.float32))
         off += m
         if plan is None:
             aoff += m
@@ -162,6 +413,8 @@ def build_index(eps, recs=(), near_cov=0.8, out=None):
             recs[n_rec] = None
         frames[off:off+2] = fr2; pos.append(ap2); acts.append(ac16)
         obs_idx.append([off, off+1]); act_idx.append(list(range(aoff, aoff+16))); group.append(g); near.append(False)
+        if poses is not None:
+            poses.append(_NO_POSE)
         off += 2; aoff += 16
         release()
     return (frames, np.concatenate(pos).astype(np.float32), np.concatenate(acts).astype(np.float32),
@@ -179,6 +432,10 @@ def main():
     p.add_argument("--label", choices=("executed", "plan"), default="executed",
                    help="Teacher episodes: copy the pushes actually executed, or the teacher's intended 16-step plan")
     p.add_argument("--image-size", type=int, default=96, help="Camera resolution (frames from frames<size>/ when not 96)")
+    p.add_argument("--goal-overlay", type=int, default=0, help="D066 goal overlay radius in simulator px (0 = off; frames "
+                   "from frames-ov<R>/, human T re-rendered, records must be collected with it)")
+    p.add_argument("--mixed-records", action="store_true", help="Also train on record folders whose frames were rendered "
+                   "with a different goal overlay (used unchanged)")
     p.add_argument("--down-dims", type=int, nargs=3, default=None, help="Action U-Net widths (official 512 1024 2048)")
     p.add_argument("--scratch-model", action="store_true", help="Start the action U-Net from scratch")
     p.add_argument("--data-fraction", type=float, default=1.0, help="Use a fixed random fraction of teacher episodes")
@@ -194,6 +451,11 @@ def main():
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import policy_builder
     arch = policy_builder.arch_of(args.image_size, args.down_dims, args.scratch_model)
+    if args.goal_overlay:
+        arch["goal_overlay"] = args.goal_overlay                          # evaluation/collection render the same way
+    overlay_folders = check_record_overlay(args.records, args.goal_overlay, args.mixed_records)
+    if args.goal_overlay or len(overlay_folders) > 1:
+        print(f"goal overlay {args.goal_overlay}; record folders by overlay radius: {overlay_folders}", flush=True)
     policy = policy_builder.build(args.image_size, args.down_dims, args.scratch_model)
     net = policy.network
     if args.init:
@@ -210,8 +472,13 @@ def main():
         out = np.lib.format.open_memmap(path, mode="w+", dtype=np.uint8, shape=(count_frames(args), args.image_size, args.image_size, 3))
         import atexit; atexit.register(lambda: path.unlink(missing_ok=True))
         print(f"frames streamed to {path} ({out.nbytes/2**30:.0f} GB)", flush=True)
-        eps = iter_episodes(args); recs = iter_records(args.records, unnorm, args.image_size)
-        frames, pos, acts, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage, out=out)
+        nw = int(os.environ.get("TDYSSEY_LOAD_WORKERS", "0"))                # parallel reading/writing, same arrays
+        if nw > 0:                                                            # (as flow_train: 26-letter data ~35 -> ~6 min)
+            frames, pos, acts, obs_idx, act_idx, group, near = build_streamed_parallel(args, unnorm, out, nw)
+            eps = recs = None
+        else:
+            eps = iter_episodes(args); recs = iter_records(args.records, unnorm, args.image_size)
+            frames, pos, acts, obs_idx, act_idx, group, near = build_index(eps, recs, args.near_coverage, out=out)
         assert len(pos) == len(frames), f"streamed {len(pos)} frames into an array of {len(frames)}"
     else:
         eps = load_episodes(args)

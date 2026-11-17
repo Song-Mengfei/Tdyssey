@@ -1,15 +1,20 @@
 # Shared project status
 
-Updated: 2026-11-06. Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
-exact simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
-copies the teacher's intended plans and learns from correction rounds (DAgger). On 300 fresh scenes per shape (D051),
-success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
-(192 px, a disclosed sensor change); the ten earlier shapes stay at 33-34% and the 17 new letters reach 33%. On six
-never-seen shapes success rises with the number of training shapes: 1.2% -> 2.8% (ten letters) -> 4.7-5.9% (26
-letters). Six more 96 px rounds added +1.9 points [+0.1, +3.6] on fresh scenes (round 50 vs 44: 32.9% -> 34.8%;
-D054), so round 50 is the 96 px model. Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049).
-Next: the 192 px line continues on the next H100 job (D055). Work continues on
-`feat/wm-planning-teacher`.
+Updated: 2026-11-17 (final state after the talk and the course report). Stage: done. One camera policy for all 26
+capital letters, trained without new human demonstrations. A planner teacher that reads the exact simulator state
+(privileged, training only) plans with the state world model; the official camera Diffusion Policy copies the
+teacher's intended plans and learns from 50 correction rounds (DAgger). Final test, 200 new scenes per shape (seeds
+15000000 + 20*i, D064): success over the 26 letters rises from 2.0% (original) to 32.8% (main model, round 50, 96 px,
+the original network and inputs) and 34.0% for the 192 px model (sensor change, +1.2, interval includes zero); final
+coverage 0.33 -> 0.82. Nine never-seen shapes: 1.0% -> 4.3% (ten-shape model) -> 8.0% (digit 7: 3.0% -> 18.5%).
+About two in three failures (63.6%) are near misses that reach 90% peak coverage. Flow-DiT 16 x 16 (pretrained
+DINOv2 ViT-B encoder, 418.2M flow-matching DiT head, 505M in total), trained on the same data, reaches 45.5%
+(+12.7 points [+10.9, +14.5] against the main model; D059-D061). Variants that did not beat it: the large encoder
+(D062, -2.7), a pose head (D064, +0.2), a pi0-style prefix head (D065 pilot, -7.3) and the goal overlay suggested at
+the talk (D066, -1.0 against its control). Report, final deck, data and the scripts behind them: `presentation/`. Course report:
+`presentation/paper/`; final 37-slide deck: `presentation/talk/tdyssey-talk.pptx`. Branches feat/last-mile-rl, feat/goal-overlay, feat/joint-head, docs/presentation and
+docs/report are merged here as one final change. Open: final alignment (the last 1 to 2 px) remains the main
+limitation; see the report's Limitations section.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
@@ -34,6 +39,20 @@ DPPO-style variant, not an upstream reproduction. PR #4 remains the separate
 inspection/plan review milestone.
 
 ## Completed
+
+- PPTX-to-LaTeX synchronization, 2026-11-11: the editable Beamer source follows the reviewed 62-slide offline deck, including the image-model section at 4-14 and its summary at 41. Default compilation produces 62 final-build pages with updated counters; the optional overlay builds remain available. The media manifest records 17 unchanged MP4 streams and original posters, including eight synchronized comparisons. PDF posters open the public Drive videos by default; a documented build option uses the included relative MP4 files in an external player. The portable source zip includes those media files. This presentation-only update adds no training, inference or simulation; PDF local launches depend on the viewer.
+
+- Native early-attempt presentation delivery, 2026-11-11: the same62-slide Google Slides file now places the image-model study at4-15, with corrected page counters and progress bars. Three new Drive videos on4/9/14 were actually played and decoded; all38 original video objects retain their original bindings, geometry and properties. The two48M clips are explicitly discrete saved snapshots. Local PPTX/PDF/LaTeX include clickable posters; no new model calls, simulation or training.
+
+- Early image-model video posters, 2026-11-11: linked approved saved-output clips from slides4/9/14 in the local portable source/PDF. The historical clip has four saved prediction steps and a fixed real H4 reference; both48M clips are explicitly discrete H4/H8/H16 snapshots. Source comments, hashes, unequal-budget and L021 moving-prefix qualifications are retained; no new inference, simulation or training.
+
+- Presentation order, 2026-11-11: moved the existing twelve image-world-model frames immediately after the opening three frames, labelled as early attempts. Figures, scientific sources, the moving-L consecutive-frame example and the 41-main/21-backup split are unchanged. Two existing user title/label edits and omitted printed notes are mirrored from native Slides; qualifications remain in speaker comments and provenance. Local PDF page labels and portable LaTeX are regenerated from this order; no training or inference.
+
+- P28 visual revision, 2026-11-11: replaced the nearly static O input illustration with saved moving-L frames4..8 from AC-L-05-08. The four observed frames and the true one-step next frame use a common fixed ROI at equal scale; original96 RGB and hashes are retained in the portable source. The same native Slides file was patched in place; all38 video objects and all other slide elements were preserved. No new training, inference or simulation.
+
+- SciGuard presentation update, 2026-11-11: twelve image-model frames and [asset provenance](../presentation/data/image_wm_48m_sources.json) replace the earlier image-model section, keeping all 47 other author frames unchanged. The 48,864,707-parameter architecture uses three past control targets plus the current target and predicts RGB only. The matched intermediate-parent continuation study is separate from the completed original baseline (49,991 effective updates); the L counterexamples and fixed-development-set limits are retained. The 62-slide [native Google Slides](https://docs.google.com/presentation/d/1GBYTmR0nSW-OEXcfk7nQGnv2nTdlghSZDKnDsk6AmUw/edit?usp=drivesdk) has 38 real video placements, each actually played and decoded in the final Slides file. The earlier delivery and PR remain unchanged; this presentation work ran no training or inference.
+
+- Presentation integration, 2026-11-10 (local PR #12 checkout): replaced the two image-world-model placeholders with ten visual frames, including the approved GPC U-Net diagram. Sources: image-model section, [asset provenance](../presentation/data/image_wm_story_sources.json). This reuses saved experiment evidence; no new training or generalization result is claimed.
 
 - 26-letter policy, 2026-11-02 to 2026-11-06 (H100 + A100; [learning findings](LEARNING_FINDINGS.md) section 8,
   D051-D053): world model v3 for 27 shapes; a larger per-round budget; final test on 300 fresh scenes per shape as above.

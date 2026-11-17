@@ -84,7 +84,9 @@ def evaluate_batched(agent, cls, config, counters, deadline, on_plan=None):
     saved_rng = agent.generator.get_state()
     shapes = getattr(config, "eval_shapes", ("T", "L"))
     size = getattr(config, "render_size", 96)                       # camera resolution (official: 96)
-    envs = {seed: {shape: cls(shape=shape, legacy=True, render_size=size) for shape in shapes} for seed in config.eval_seeds}
+    overlay = {"goal_overlay": config.goal_overlay} if getattr(config, "goal_overlay", 0) else {}   # D066 rendering aid
+    envs = {seed: {shape: cls(shape=shape, legacy=True, render_size=size, **overlay) for shape in shapes}
+            for seed in config.eval_seeds}
     lanes = []
     try:
         for seed in config.eval_seeds:
