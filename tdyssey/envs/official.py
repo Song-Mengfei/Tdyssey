@@ -7,7 +7,7 @@ import json
 from ..collection import integer, reset_issues
 from ..geometry import Pose, Rectangle, Shape, point
 from ..state import BodyState, Snapshot
-from ..letters import PATTERNS, block_letter
+from ..letters import NOVEL_PATTERNS, PATTERNS, block_letter
 
 PROTOCOL = "official-t-l-com-v1"
 T_REFERENCE_COG = (0.0, 45.0)
@@ -29,7 +29,7 @@ def official_shape(name):
         # Same physical center and legacy inertia as T; only cap width changes.
         return Shape(name, (Rectangle(-54, -45, 54, -15), Rectangle(-15, -15, 15, 75)),
                      1, "official_t_reference_center")
-    if name in PATTERNS:
+    if name in PATTERNS or name in NOVEL_PATTERNS:                    # NOVEL_PATTERNS: held-out test shapes only
         return block_letter(name)
     raise ValueError(f"Unsupported official shape: {name}")
 
