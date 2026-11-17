@@ -97,8 +97,8 @@ tectonic -X compile main.tex --outdir <dir>   # or Tectonic
 ```
 
 Packages: fontenc, lmodern, microtype, geometry, amsmath, amssymb, graphicx, booktabs, float, array, adjustbox, xcolor, tikz
-(arrows.meta, positioning, calc), algorithm, algpseudocode, natbib, hyperref. Overleaf: upload `presentation/` without
-`videos/` and set `paper/main.tex` as the main document (or import it from a root file with
+(arrows.meta, positioning, calc), algorithm, algpseudocode, natbib, hyperref. Overleaf: upload `presentation/` and set
+`paper/main.tex` as the main document (or import it from a root file with
 `\import{paper/}{main.tex}`).
 
 ## State (2026-11-17)
