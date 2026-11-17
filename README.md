@@ -73,6 +73,7 @@ of every run, are in [scripts/learning](scripts/learning/README.md) and
 - [Every learning run, including failed ones](docs/LEARNING_EXPERIMENT_LOG.md) and [the run scripts with their seeds](scripts/learning/experiments/README.md)
 - [Decisions, each recorded before its result](docs/DECISIONS.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
+- [Train and watch the official T world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md) and [browse published figures](docs/RESULTS.md)

@@ -16,7 +16,8 @@
    succeeded; read `docs/OFFICIAL_SHAPES.md`. A separate frozen-policy alphabet/near-T
    sweep explores failures without changing the T-to-L learning milestone.
    Earlier GPC collection/data remains separate reference work. Official L collection and split-safe batches now work;
-   see `docs/OFFICIAL_COLLECTION.md`. A first GPU world-model pilot and its
+   see `docs/OFFICIAL_COLLECTION.md`. Official T denoiser collect/train/view
+   commands are in `docs/OFFICIAL_WORLD_MODEL.md`. A first GPU world-model pilot and its
    failures are in `docs/WORLD_MODEL.md`. Direct tail-PPO now runs, with no L
    improvement in the first short pilot; see `docs/POLICY_LEARNING.md`.
    A negative outcome is acceptable for the course if the work and analysis are substantial.

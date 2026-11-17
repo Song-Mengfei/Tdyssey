@@ -39,7 +39,7 @@ def _collect_one(payload):
 
 
 class OfficialShapeCollector:
-    """Collect one official shape with object-directed play.
+    """Collect one official shape with object-directed, angle, or contact play.
 
     T is the first world-model run. A later letter uses the same class with
     another official shape name; it does not need a second collector.
@@ -48,8 +48,8 @@ class OfficialShapeCollector:
     def __init__(self, config, source_root, workers=1):
         if not isinstance(config, OfficialCollectionConfig):
             raise ValueError("Expected an official collection config")
-        if config.mode not in ("object-directed", "angle-coverage"):
-            raise ValueError("Official world-model collection uses object-directed or angle-coverage play")
+        if config.mode not in ("object-directed", "angle-coverage", "contact-balanced"):
+            raise ValueError("Official world-model collection uses object-directed, angle-coverage, or contact-balanced play")
         if config.episodes < 7:
             raise ValueError("Use at least seven episodes for nonempty whole-episode splits")
         self.config = config
