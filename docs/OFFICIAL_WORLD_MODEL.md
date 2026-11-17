@@ -27,7 +27,7 @@ actions only. Official T occupancy, pusher disks, contact counts and the true
 next frame are **privileged labels** used to weight the loss and score
 validation. Do not mix this path with GPC fixtures or the custom CNN catalog.
 
-Current default loss is a case split (D070):
+Current default loss is a case split:
 
 - **Hit / useful** window (`moved` or `n_contacts > 0`): weight motion pixels,
   the true next T, and the pusher. Table weight is 0.
@@ -41,7 +41,7 @@ evidence.
 
 ## Collect official T play
 
-Each `batch-*` directory stays inside the 1000-control / 64 MiB cap (D017).
+Each `batch-*` directory stays inside the 1000-control / 64 MiB cap.
 `contact-balanced` play is a disclosed geometry prior, not reward search.
 `--resume` skips finished batches. `--preserve-init` copies the current angles
 denoiser to `artifacts/official-wm-T-init/` once.
@@ -150,7 +150,6 @@ This is a qualitative viewer. It is not contact, rotation, or policy evidence.
 
 `--output` must not already exist. Default `seed=100003` is an all-miss scene:
 object overlap there means “the unmoved T still looks like a T”, not contact.
-See D069.
 
 ## Limits
 
@@ -158,4 +157,4 @@ See D069.
 - `model_test` is never opened.
 - Privileged geometry and contact counts must stay disclosed.
 - A later author cannot replay a local `artifacts/` run from Git alone.
-- Action-sensitive imagined rewards are still unproven; see `docs/STATUS.md`.
+- Action-sensitive imagined rewards are still unproven.

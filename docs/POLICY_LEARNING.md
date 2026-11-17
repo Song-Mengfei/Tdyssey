@@ -1,11 +1,9 @@
 # Direct policy learning: method survey, derivations and runnable pilot
 
 Updated: 2026-10-23. This page specifies the first implemented policy-update
-method. The [whole-project plan](LEARNING_PLAN.md) still governs data exposure,
-world-model work and evaluation. Runtime evidence is recorded in [status](STATUS.md)
-and [validation](VALIDATION.md); an implementation is not an improvement result.
+method. Runtime evidence is recorded in [validation](VALIDATION.md); an implementation is not an improvement result.
 
-The [extended image/flow RL survey](DIFFUSION_RL_RESEARCH.md) adds DiffusionNFT,
+An extended image/flow RL survey added DiffusionNFT,
 AdvantageFlow, RAM, FPO/V-GRPO, QAM and related world-model policy work. It recommends
 a separate DDPM-compatible forward-process comparison, with concrete losses
 and checks. The [NFT/AdvantageFlow trainer](FORWARD_POLICY_LEARNING.md) now exists;

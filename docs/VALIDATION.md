@@ -1377,8 +1377,7 @@ resume, data and preview outputs plus prototype reports/lifecycle metadata total
 
 ## Portable training and live monitoring (2026-10-23)
 
-Implementation and reproducible machine commands are in
-[TRAINING_MACHINE.md](TRAINING_MACHINE.md). No package/environment installation or
+No package/environment installation or
 model/data download was performed for this milestone. Metadata-only uv resolution
 added cu128 and the independent tracking extra to the shared manifest/lock:
 

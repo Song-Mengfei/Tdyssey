@@ -16,7 +16,7 @@ All success rates in the report come from tests on new scenes. The final test us
 15000000 + 20*i). Selection scenes picked the models and are not reported as results.
 
 The demo videos, their stills, the Beamer version of the slides and the PowerPoint generator were used to make the talk
-and are not kept on main (decision D057 amendment). They remain in the history of PR #12. The live demo is the
+and are not kept on main. They remain in the history of PR #12. The live demo is the
 [Hugging Face Space](https://tinyurl.com/tdyssey).
 
 ## Rebuilding
