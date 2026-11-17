@@ -4653,7 +4653,7 @@ def fig_deck_oracle():
     ax.grid(True, axis="x")
     ax.grid(False, axis="y")
     ax.tick_params(axis="y", length=0)
-    ax.set_xlabel("Success (selection scenes)")
+    ax.set_xlabel("Success (5 to 20 fixed scenes)")   # re-ranking ran on small fixed pools, not the selection scenes
     _deck_row_legend(fig, [Line2D([], [], marker="o", color=ORIG, ls="none", ms=5, label="original"),
                            Line2D([], [], marker="D", color=TEACHER, ls="none", ms=4.5,
                                   label="best of 16 (simulator)")], 3, 70)
