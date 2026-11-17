@@ -53,8 +53,8 @@ class VisualDynamicsDataset(WindowDataset):
         super().__init__(*args, **kwargs)
         if self.catalog.get("environment_family") != ENVIRONMENT_FAMILY:
             raise ValueError("The visual world-model pilot requires official data")
-        if any(m["config"]["shape"] != "L" for m in self.manifests):
-            raise ValueError("The first visual world-model pilot is L-only")
+        for manifest in self.manifests:
+            official_shape(manifest["config"]["shape"])
         self._physical_key, self._physical = None, None
 
     def __getitem__(self, index):
@@ -68,7 +68,7 @@ class VisualDynamicsDataset(WindowDataset):
             motion = np.diff(poses, axis=0)
             motion[:, 2] = np.arctan2(np.sin(motion[:, 2]), np.cos(motion[:, 2]))
             agent_motion = np.diff(arrays["agent_pos"], axis=0)
-            masks = object_masks(official_shape("L"), poses)
+            masks = object_masks(official_shape(trajectory.transitions[0].before.shape), poses)
             self._physical = poses, motion, agent_motion, masks
             self._physical_key = self._cache_key
         poses, motion, agent_motion, masks = self._physical
@@ -77,7 +77,7 @@ class VisualDynamicsDataset(WindowDataset):
         displacement = poses[anchor+1:anchor+future+1]-poses[anchor]
         displacement[:, 2] = np.arctan2(np.sin(displacement[:, 2]), np.cos(displacement[:, 2]))
         initial = trajectory.transitions[anchor].before
-        prior = goal_metrics(official_shape("L"), initial.object_body.pose, initial.goal)
+        prior = goal_metrics(official_shape(initial.shape), initial.object_body.pose, initial.goal)
         sample["labels"].update({
             "motion": np.concatenate((agent_motion[selection], motion[selection]), axis=1).astype(np.float32),
             "object_displacement": displacement.astype(np.float32),
