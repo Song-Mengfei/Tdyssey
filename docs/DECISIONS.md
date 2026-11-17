@@ -1023,6 +1023,14 @@ model weights or experiments are added. The under 200 MB presentation limit rema
 PDF posters open the existing Drive video by default, or the included relative
 MP4 with the documented local-launch build option; PDF viewer support varies.
 
+D057 amendment (2026-11-17, at the final merge). The talk is over and its deck is final, so main keeps only what the
+course report needs: `presentation/paper/`, the 44 figures, diagrams and images the report includes, the CSV data and
+the scripts that rebuild the report's numbers and figures, plus the final 37-slide deck as given
+(`presentation/talk/tdyssey-talk.pptx`, 13 MB, videos embedded). The demo videos and their stills, the Beamer slides,
+the PowerPoint generator, the slide-only images and the talk plan were removed before the squash merge, so they never
+enter main's history (they remain in the history of PR #12 and branch docs/presentation). The presentation build
+workflow was removed too.
+
 ## D058 — 192 px line stopped; last-mile RL on the frozen policy (2026-11-08, before any result)
 
 Lead's decision: the 192 px line stops at round 12 (validation 476/1350, flat since round 2's 511; round 2 stays its
