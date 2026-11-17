@@ -103,7 +103,7 @@ also need a system `ffmpeg`; SDL/display requirements depend on the host.
 
 Check NVIDIA driver compatibility before CUDA setup. cu124 is the locally checked
 profile for Ada-generation GPUs; Blackwell has a separate **cu128 candidate
-profile**, not yet runtime-validated on Blackwell (D032). Use doctor
+profile**, not yet runtime-validated on Blackwell. Use doctor
 `--runtime --require-cuda --backend cu128 --dp` and an actual policy smoke run
 on that machine before longer jobs. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.

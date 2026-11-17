@@ -89,7 +89,7 @@ only actor inputs; physical state and geometric rewards are privileged feedback.
 
 Each plan is 100 sequential denoiser calls; at batch 1 they dominate wall time
 while most GPU memory sits idle. Set `"batched_rollouts": true` (see
-`configs/nft_pilot_batched.json` and D033) to sample a whole candidate group, and
+`configs/nft_pilot_batched.json`) to sample a whole candidate group, and
 every evaluation sweep, with one denoiser call per step. Each candidate gets its
 own fully replayed environment and RNG stream; physics stays sequential on CPU.
 The protocol is otherwise unchanged, but random streams differ from sequential

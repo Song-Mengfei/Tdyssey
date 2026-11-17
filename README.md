@@ -67,7 +67,7 @@ Set up the CUDA environment and the official Diffusion Policy as described below
     --shapes T A K M R Z --student /path/to/96px/model.pt --out my_test.json
 ```
 
-Shape names: any capital letter, `T_narrow`, and the never-seen `digit2 digit3 digit4 digit5 digit7 digit8 plus hash
+Shape names: any capital letter and the never-seen `digit2 digit3 digit4 digit5 digit7 digit8 plus hash
 arrow`. The tools build the network and the camera size from the checkpoint. The training and correction-round
 scripts, with the seeds of every run, are in [scripts/learning](scripts/learning/README.md) and
 [scripts/learning/experiments](scripts/learning/experiments/README.md).
@@ -80,7 +80,7 @@ scripts, with the seeds of every run, are in [scripts/learning](scripts/learning
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Goal overlay: a rendering aid that shows the camera the uncovered goal](docs/GOAL_OVERLAY.md)
 - [Train and watch the official T image world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
-- [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
+- [Capital-letter geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md) and [browse published figures](docs/RESULTS.md)
 - [Image world-model experiments](docs/WORLD_MODEL.md)
