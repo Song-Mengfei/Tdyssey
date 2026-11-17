@@ -1292,3 +1292,28 @@ control arm keeps running. The restarted arm starts about 12 h after the control
 test still compares round K* of both arms, now the last round the overlay arm completes, and the control's round-K*
 checkpoint already exists.
 
+
+### D066 outcome (2026-11-17, complete)
+
+Test as fixed above: round 11 of both arms (the last round the slivers-only overlay arm completed; the control ran 14
+rounds), D064 pool, paired by shape and scene with round 50 (`runs/fairtest-d066/{overlay,control,r50}*-part*.json`
+and `report.txt` in the run store). 26 letters: overlay 32.4%, control 33.4%, round 50 32.8%; overlay - control -1.0
+points [-2.7, +0.8], no measurable effect. Near misses among failures 63.4% vs 63.7% (round 50 63.6%); solved once
+0.90 coverage was reached 43.0% vs 44.0%; final coverage 0.827 vs 0.826. Nine never-seen shapes 8.7% vs 8.2% (+0.4
+[-1.2, +2.1]). T 45.5% vs 40.0% (+5.5 [-4.2, +15.2]); against round 50 the T rose in the overlay arm (+12.5 [+3.4,
++21.6]) and, within noise, in the control (+7.0 [-2.1, +16.1]). Each arm against round 50 on the 26 letters: overlay
+-0.4 [-2.1, +1.3], control +0.6 [-1.2, +2.3], so 11 more correction rounds without the overlay did not help either.
+Validation (monitoring only, selection scenes): the arms were within chance of each other in rounds 1 to 11.
+
+Exploratory check, decided after this result and not fixed in advance: the overlay arm's round-11 checkpoint with
+official images (`goal_overlay` set to 0) on the same pool (`runs/fairtest-d066-ovoff/` with its script and
+`report.txt`). 26 letters 34.1% against 32.4% with the overlay, +1.7 [-0.0, +3.5] (against the control +0.8 [-1.0,
++2.6]); near misses among failures 64.1%; never-seen shapes 9.1%; T 39.0% against 45.5%, -6.5 [-15.9, +2.9]. On the
+letters the policy does not use the red slivers to finish; the T may, within noise.
+
+Conclusion: showing the uncovered slivers did not help the camera policy finish in this design (about half of the
+training weight without the overlay, 11 rounds, the minimal slivers-only rendering). Together with D064 (pose head
+inside the encoder, no gain) and D058 (exact pose given to a small noise-steering network, +6.5 points [+2.9, +10.0]
+near the goal), the reading is that the camera policy cannot turn sub-pixel image cues into a fine correction, not
+that the information is missing. The overlay is not used further; Flow-DiT 16 x 16 stays the architecture result. The
+course report (branch docs/report, Appendix K) reports the test and the check.
