@@ -13,6 +13,9 @@ Optimisation: AdamW (betas 0.9/0.95), head lr --lr (1e-4), encoder lr --lr x --e
 with the official schedule (power 0.75, max 0.9999), saved for evaluation. The loss is compiled (torch.compile) unless
 --no-compile; --grad-checkpoint recomputes encoder activations (batch 128: ~18 GB GPU instead of ~40 GB, ~25% slower).
 Batches are assembled on a background thread.
+--head prefix trains the pi0-style prefix head instead of the cross-attention head (flow_policy.py: condition tokens refined
+by their own stream at --cond-width with --cond-mlp-ratio, joined with the action tokens in one block-causal attention);
+--head-checkpoint also recomputes the prefix head's blocks in the backward pass (less GPU memory, slower).
 --pose-weight W > 0 adds the training-only block-pose head (flow_policy.py): every teacher-episode and human-T sample is
 labelled with the block pose (x, y, angle) of its latest frame (privileged simulator state; correction records have none),
 and W x the pose loss is added to the flow loss. The head is not used at inference. train.log then also shows the pose
@@ -201,6 +204,11 @@ def main():
                    help="DINOv2 encoder: base (facebook/dinov2-base, 86.6M) or large (facebook/dinov2-large, 304M)")
     p.add_argument("--no-cls", action="store_true", help="Drop the CLS token of each frame")
     p.add_argument("--no-qk-norm", action="store_true")
+    p.add_argument("--head", choices=("cross", "prefix"), default=None,
+                   help="Action head: cross-attention to the condition (D059, default) or pi0-style block-causal joint "
+                        "attention; with --init: the checkpoint's head")
+    p.add_argument("--cond-width", type=int, default=512, help="--head prefix: width of the condition stream")
+    p.add_argument("--cond-mlp-ratio", type=float, default=4.0, help="--head prefix: MLP ratio of the condition stream")
     p.add_argument("--inference-steps", type=int, default=10)
     p.add_argument("--pose-weight", type=float, default=0.0,
                    help="> 0: training-only block-pose head on the latest frame's patch tokens, loss weight (0 = off)")
@@ -216,6 +224,7 @@ def main():
     p.add_argument("--warmup", type=int, default=1000)
     p.add_argument("--clip", type=float, default=1.0)
     p.add_argument("--grad-checkpoint", action="store_true", help="Recompute encoder activations in backward (less GPU memory)")
+    p.add_argument("--head-checkpoint", action="store_true", help="--head prefix: also recompute the head's blocks in backward")
     p.add_argument("--no-compile", action="store_true", help="Skip torch.compile of the loss (compiled: ~2x faster, ~2 min start-up)")
     p.add_argument("--log-every", type=int, default=100)
     p.add_argument("--save-every", type=int, default=10000)
@@ -241,16 +250,23 @@ def main():
             p.error("--pose-weight with --init needs a checkpoint that has the pose head")
         if pose_on:
             arch.update(pose_weight=args.pose_weight, pose_beta=args.pose_beta)
+        if args.head not in (None, arch.get("head", "cross")):
+            p.error(f"--head {args.head} with --init needs a checkpoint with that head")
     else:
         vit = {"base": {}, "large": {"encoder": "facebook/dinov2-large", "vit_dim": 1024, "vit_depth": 24, "vit_heads": 16}}[args.vit]
         pose_keys = fp.pose_arch(args.pose_weight, args.pose_beta) if pose_on else {}
+        head_keys = fp.prefix_arch(args.cond_width, args.cond_mlp_ratio) if args.head == "prefix" else {}
         arch = fp.default_arch(**vit, width=args.width, depth=args.depth, heads=args.heads, mlp_ratio=args.mlp_ratio, adaln=args.adaln,
                                pool=args.pool, use_cls=not args.no_cls, qk_norm=not args.no_qk_norm,
-                               inference_steps=args.inference_steps, **pose_keys)
+                               inference_steps=args.inference_steps, **pose_keys, **head_keys)
         net = fp.FlowPolicy(arch, normalizer, pretrained=True)
     net.vit.grad_checkpoint = args.grad_checkpoint
+    if args.head_checkpoint and not net.prefix:
+        p.error("--head-checkpoint applies to the prefix head only")
+    net.head_checkpoint = args.head_checkpoint
     counts = net.parameter_counts()
     print(f"flow policy parameters: encoder {counts['encoder']:,}  head {counts['head']:,}  "
+          + (f"(condition stream {counts['head_condition_stream']:,})  " if "head_condition_stream" in counts else "")
           + (f"pose head (training only) {counts['pose_head']:,}  " if "pose_head" in counts else "") + f"total {counts['total']:,}", flush=True)
     net = net.to(dev).train()
 
