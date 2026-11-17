@@ -3,8 +3,7 @@
 The code implements **DDPM epsilon-prediction adaptations** of DiffusionNFT and
 AdvantageFlow, not image-benchmark reproductions or new algorithms. It preserves
 the official CNN, RGB/pusher history, normalizers, 100-step DDPM and execution
-of targets 1:9. See the [research/loss explanation](DIFFUSION_RL_RESEARCH.md) and
-[whole-project plan](LEARNING_PLAN.md). The shared multi-shape scope is unchanged.
+of targets 1:9. The shared multi-shape scope is unchanged.
 
 The [tail-PPO trainer](POLICY_LEARNING.md) remains available. Forward training
 updates the denoiser used at **all** steps, including deterministic t=0; tail-PPO
@@ -32,8 +31,7 @@ U-Net. Dense training requires a separate memory/runtime check. The required
 
 Use an existing authorized environment. These commands do not install packages.
 Training requires CUDA and runs headless; previews are separate evaluation jobs.
-For new machines, longer comparisons and live charts, use the
-[training-machine handoff](TRAINING_MACHINE.md). Tracking defaults to local
+Tracking defaults to local
 `metrics.jsonl`; optional `--tracking offline` or `online` mirrors scalars to W&B.
 
 ```bash
@@ -91,7 +89,7 @@ only actor inputs; physical state and geometric rewards are privileged feedback.
 
 Each plan is 100 sequential denoiser calls; at batch 1 they dominate wall time
 while most GPU memory sits idle. Set `"batched_rollouts": true` (see
-`configs/nft_pilot_batched.json` and D033) to sample a whole candidate group, and
+`configs/nft_pilot_batched.json`) to sample a whole candidate group, and
 every evaluation sweep, with one denoiser call per step. Each candidate gets its
 own fully replayed environment and RNG stream; physics stays sequential on CPU.
 The protocol is otherwise unchanged, but random streams differ from sequential
@@ -163,4 +161,4 @@ exists in the NFT loss for later integration, but imagined learning still needs
 a validated predicted observation/reward/termination interface and physical policy
 checks. True simulator futures cannot be passed off as model predictions. RAM/QAM
 and a new flow architecture remain later comparisons. See [validation](VALIDATION.md)
-and [status](STATUS.md) for actual evidence; a GPU update is not shape adaptation.
+for actual evidence; a GPU update is not shape adaptation.

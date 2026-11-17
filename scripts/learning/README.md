@@ -18,19 +18,19 @@ The shell scripts that ran each experiment, with their seeds and settings, are i
 | Training data | `mpc_dagger.py` | Teacher demonstrations and correction rounds: the policy drives, the teacher labels every visited state |
 | Camera frames | `image_wm_data/replay_frames.py` | Exact camera images for recorded episodes, made by replaying their physics |
 | Camera policy | `bc_train.py`, `policy_builder.py` | Official training recipe on intended-plan labels with an equal share per shape; `policy_builder.py` builds the 192 px variant |
-| Goal overlay | `overlay_frames.py`, `overlay_check.py` | D066 rendering aid (uncovered goal in red; `docs/GOAL_OVERLAY.md`): overlay frames for the teacher demos and human T, and its CPU checks |
+| Goal overlay | `overlay_frames.py`, `overlay_check.py` | Rendering aid that paints the uncovered goal red (`docs/GOAL_OVERLAY.md`): overlay frames for the teacher demos and human T, and its CPU checks |
 
 ## Testing and reporting
 
 | Script | What it does | Used for |
 | --- | --- | --- |
 | `base_rollouts.py` | Fresh-scene evaluation of the original policy or a trained one (`--student`); also rollouts for world-model data | every claim |
-| `report_pair.py` | Paired comparison on the same scenes by shape group, with 95% intervals | final tests D051, D054, D056 |
-| `d066_report.py` | Goal overlay vs control vs round 50 on the D064 pool, with the near-miss shares | D066 (not run yet) |
-| `select_candidates.py` | The fixed rule that picked the final-test candidates | D051 |
-| `final_test_report.py` | Paired analysis of the earlier pre-registered tests | D040-D049 |
+| `report_pair.py` | Paired comparison on the same scenes by shape group, with 95% intervals | the final tests |
+| `d066_report.py` | Goal overlay vs control vs round 50 on the final-test scenes, with the near-miss shares | the goal-overlay test |
+| `select_candidates.py` | The fixed rule that picked the final-test candidates | the first 26-letter final test |
+| `final_test_report.py` | Paired analysis of the earlier tests fixed in advance | weight blends and the ten-shape test |
 | `record_letters.py` | One video per letter, all on the same starting scene | figures |
-| `diagnose_plateau.py` | Reads stored results to explain why the 26-letter run levelled off | D053 |
+| `diagnose_plateau.py` | Reads stored results to explain why the 26-letter run levelled off | the per-round budget |
 | `fast_replay.py` | Exact prefix replay that renders only the last two frames (7.6-11x faster, verified identical) | the simulator oracle |
 | `ddim_eval.py` | The original policy with deterministic DDIM sampling | DDIM-10 keeps performance |
 

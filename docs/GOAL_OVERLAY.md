@@ -1,10 +1,10 @@
-# Goal overlay (D066)
+# Goal overlay
 
 An optional rendering aid for the camera policy, off by default. It paints the part of the goal that the block does
 not yet cover in red, and thickens thin slivers so that they still show in the 96 px camera image. It follows the
 professor's suggestion at the final talk: most failures are near misses (two in three reach 90% coverage), and one
 96 px camera pixel spans about 5.3 simulator pixels, so a 94.6% and a 95.1% end state look almost the same to the
-official camera. The experiment that uses it is D066 in [decisions](DECISIONS.md).
+official camera. The experiment that used it and its result are below.
 
 ## What is drawn
 
@@ -19,7 +19,7 @@ official camera. The experiment that uses it is D066 in [decisions](DECISIONS.md
    to 96 px (or 192 px) follows unchanged. Round joins use 4 segments per quarter circle (within 0.17 px of the arc);
    the region is filled at 1/8 px precision.
 
-D066 uses R = 9 simulator px. Code: `goal_overlay_region` and the `goal_overlay` option of
+The experiment uses R = 9 simulator px. Code: `goal_overlay_region` and the `goal_overlay` option of
 `make_official_shape_env_class` in `tdyssey/envs/official.py`. Changing the definition changes what a checkpoint was
 trained on, so a changed definition needs a new name.
 
@@ -67,7 +67,7 @@ letters: median rank correlation 0.99, no drop above 15% in 576 steps). Pooled o
 | Training | `bc_train.py --goal-overlay 9 [--mixed-records]`; record folders rendered differently stop the run unless `--mixed-records` |
 | Checks | `CUDA_VISIBLE_DEVICES= .venv/bin/python -B scripts/learning/overlay_check.py --out DIR` |
 
-## The D066 experiment (settings fixed before any run)
+## The experiment (settings fixed before any run)
 
 Two arms continue from round 50 on one H100 job, concurrently and with the same practice scenes, steps and data rules:
 the overlay arm (R = 9) and a control arm without the overlay, so a gain cannot come from extra rounds. Round 0 adapts
@@ -76,8 +76,8 @@ round starts later than 13.5 h before the job ends, which keeps at least 10 h fo
 report and slack. Every round's student of both arms, and round 50 once, is validated in the background on the
 selection scenes (seeds 400000 + 20*i, 50 per shape), paired by scene: a progress curve for the report
 (`d066_report.py validation`), never used to pick a checkpoint. The test compares the last round both arms finished,
-overlay against control (primary), on the D064 pool with round 50's stored episodes (`d066_report.py`). Details, the
-primary metric and the secondary near-miss measures: D066 in [decisions](DECISIONS.md).
+overlay against control (primary), on the final-test scenes (200 per shape, seeds 15000000 + 20*i) with round 50's
+stored episodes (`d066_report.py`).
 
 ## Data that cannot carry it
 
@@ -85,7 +85,7 @@ The training set of round 50 has 3,205,500 samples. The teacher demonstrations a
 (694,012 samples, 50.6% of the sampling weight) store simulator states and are re-rendered with the overlay. The 116
 earlier correction folders (2,511,488 samples, 49.4% of the weight) store only their two camera frames, the pusher
 position and the labels: no block pose and no executed actions, so they cannot be re-rendered. Re-running their
-collection would not reproduce them (GPU sampling, earlier students). D066 therefore keeps them with their official
+collection would not reproduce them (GPU sampling, earlier students). The experiment therefore keeps them with their official
 frames in both arms (`--mixed-records` for the overlay arm), and new records store block poses so later runs can
 re-render them. The human T dataset images come from an older renderer: re-rendering with the overlay off differs from
 them on about 0.5% of the pixels (block fill and edges), so overlay runs use project-rendered human T frames while
@@ -99,7 +99,7 @@ with 24 worker processes).
 ## Checks (2026-11-13, CPU only)
 
 `scripts/learning/overlay_check.py` passed every check: with the overlay off, replayed teacher frames equal the stored
-`frames/` files and stepped episodes of six letters equal the code before D066 (origin/feat/last-mile-rl, 366 frames,
+`frames/` files and stepped episodes of six letters equal the code before the overlay was added (366 frames,
 bit-identical); with the block exactly on the goal the overlay image equals the official one; the fast region equals
 the coverage metric's to 5e-12 px^2; all 652 shifted near-goal states below 95% show red; the loader builds the same
 samples and labels with overlay frames, its parallel and serial builds agree, and record tags are enforced. Evaluation

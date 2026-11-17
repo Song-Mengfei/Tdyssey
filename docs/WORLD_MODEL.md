@@ -6,7 +6,7 @@ Full raw reports, frames and weights remain local/ignored; the index states acce
 This page records the custom L CNN and pretrained-GPC compatibility experiments
 already run. To collect official T play, continue the GPC image denoiser, and
 open the click viewer, use [official T world-model training](OFFICIAL_WORLD_MODEL.md).
-The [shared learning plan](LEARNING_PLAN.md) explains the next model comparisons,
+The shared learning plan explained the next model comparisons,
 automated data, prediction gate, policy rewards and how validated dynamics will
 support DPPO. Direct simulator learning can be implemented alongside model
 assessment; it does not wait for alphabet dynamics.
@@ -78,8 +78,7 @@ intervals and validation boundaries. Resume into a new directory with matching
 sources/catalog and the matching parent `best.pt`; partial epochs continue from
 the cursor. Larger caps are configuration bounds, not measured resource needs.
 The earlier published pilot used the original shorter caps and did not save
-optimizer recovery. See [machine and logging guide](TRAINING_MACHINE.md) for
-commands and shared W&B/local tracking. The report records completed validation passes.
+optimizer recovery. The report records completed validation passes.
 
 ## Model and training protocol
 
@@ -190,7 +189,7 @@ The first pretrained GPC assessment is now completed below. It loads unchanged
 released weights and exposes an appearance mismatch and mixed native contact
 prediction. It does not yet provide a reliable official-environment world model.
 DINO-WM remains an alternative, with an additional image-decoding question for our
-existing visual policy. See [current next task](STATUS.md#next-task).
+existing visual policy.
 
 Keep this CNN as the L-only pipeline baseline. Any future variants need more
 diverse contact data, reduced false noncontact motion and consistent image/motion

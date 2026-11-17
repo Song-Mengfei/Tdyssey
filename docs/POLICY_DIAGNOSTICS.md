@@ -83,7 +83,7 @@ using a world model, establish a deployable detector, or change official success
 Its interaction cost is recorded separately. Results belong to development-case
 analysis, not a generalization rate or a policy-improvement claim.
 
-See [validation evidence](VALIDATION.md) and [current project status](STATUS.md).
+See [validation evidence](VALIDATION.md).
 
 ## Continue original T pushing after success
 

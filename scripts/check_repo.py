@@ -20,10 +20,7 @@ def main() -> int:
     try:
         project = tomllib.loads((ROOT / "pyproject.toml").read_text())
         lock = tomllib.loads((ROOT / "uv.lock").read_text())
-        pilot = tomllib.loads((ROOT / "configs/pilot.toml").read_text())
-        tomllib.loads((ROOT / ".codex/config.toml").read_text())
         upstream = json.loads((ROOT / "manifests/upstream.json").read_text())
-        example = json.loads((ROOT / "manifests/experiment.example.json").read_text())
         gym_metadata = json.loads((ROOT / "manifests/gym-metadata.json").read_text())
         policy = json.loads((ROOT / "manifests/gpc_policy.json").read_text())
         official = json.loads((ROOT / "manifests/official_dp.json").read_text())
@@ -90,10 +87,6 @@ def main() -> int:
         errors.append("Gym resolution metadata differs from recorded source provenance")
     if not re.fullmatch(r"[0-9a-f]{64}", gym_metadata["source_sha256"]):
         errors.append("Gym metadata archive needs a SHA-256 provenance record")
-    if example["status"] != "template_not_executed":
-        errors.append("Example experiment must remain labelled as a template")
-    if pilot["budgets"]["long_jobs_authorized"]:
-        errors.append("Shared pilot must not grant machine-specific training authorization")
 
     python_paths = [path for folder in ("scripts", "tdyssey", "examples", "tests")
                     for path in (ROOT / folder).rglob("*.py")]
@@ -104,7 +97,7 @@ def main() -> int:
             errors.append(str(exc))
 
     # Catch stale local documentation links without requesting remote pages.
-    markdown = [ROOT / "README.md", ROOT / "AGENTS.md", *(ROOT / "docs").glob("*.md")]
+    markdown = [ROOT / "README.md", *(ROOT / "docs").glob("*.md")]
     for path in markdown:
         for target in re.findall(r"\[[^\]]+\]\(([^\s)]+)\)", path.read_text()):
             parsed = urlsplit(target)
