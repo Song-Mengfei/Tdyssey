@@ -2,7 +2,9 @@
 
 The selected results below are committed with the source and can be viewed
 without installing the project. They include unsuccessful predictions and
-limitations. No policy learning or successful T-to-L adaptation is established.
+limitations. No image-policy learning or successful adaptation is established yet;
+a privileged world-model planning teacher now solves most D/Y/L scenes in the
+simulator, see [learning findings](LEARNING_FINDINGS.md).
 See [current status](STATUS.md), [full evidence and commands](VALIDATION.md) and
 [world-model protocols](WORLD_MODEL.md).
 
