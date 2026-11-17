@@ -71,13 +71,13 @@ letters: median rank correlation 0.99, no drop above 15% in 576 steps). Pooled o
 
 Two arms continue from round 50 on one H100 job, concurrently and with the same practice scenes, steps and data rules:
 the overlay arm (R = 9) and a control arm without the overlay, so a gain cannot come from extra rounds. Round 0 adapts
-each arm to its data (54k steps); then 14 correction rounds per arm (`scripts/learning/experiments/chain_d066.sh`). No
+each arm to its data (54k steps); then 14 correction rounds per arm (`scripts/learning/experiments/chain_goal_overlay.sh`). No
 round starts later than 13.5 h before the job ends, which keeps at least 10 h for the last validation, the test, the
 report and slack. Every round's student of both arms, and round 50 once, is validated in the background on the
 selection scenes (seeds 400000 + 20*i, 50 per shape), paired by scene: a progress curve for the report
-(`d066_report.py validation`), never used to pick a checkpoint. The test compares the last round both arms finished,
+(`goal_overlay_report.py validation`), never used to pick a checkpoint. The test compares the last round both arms finished,
 overlay against control (primary), on the final-test scenes (200 per shape, seeds 15000000 + 20*i) with round 50's
-stored episodes (`d066_report.py`).
+stored episodes (`goal_overlay_report.py`).
 
 ## Data that cannot carry it
 

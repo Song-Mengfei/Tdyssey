@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# D060: correction rounds driven by the flow-matching policy (D059), same recipe as the 26-letter rounds (D053): the
+# Flow-DiT correction rounds: rounds driven by the flow-matching policy, same recipe as the larger 26-letter rounds: the
 # teacher (wm2 v3) takes 30% of 8-control decisions on practice scenes (30 per round for the ten earlier shapes, 60 for
 # the 17 new letters), then the policy is fine-tuned from its latest checkpoint on all data (the round-50 data set plus
 # every flow round's records). Each round also checks the previous checkpoint on the 50 validation scenes per shape
 # (monitoring only). New rounds start only while DEADLINE minus ROUND_HOURS + RESERVE_HOURS is still ahead; then the
-# deciding test runs on the last completed round (chain_d060.sh).
+# deciding test runs on the last completed round (chain_flow_dit_rounds.sh).
 # Usage: DEADLINE="2026-11-09 20:15" [FLOW_RUN=flow26] chain_flow_dagger.sh [first round] [last round]
 #   FLOW_RUN names the run folder (runs/$FLOW_RUN, base checkpoint runs/$FLOW_RUN/v1/ema-step160000.pt) and the data
-#   folders (runs/mpc-data/$FLOW_RUN-r<k>); D061 uses flow26b.
+#   folders (runs/mpc-data/$FLOW_RUN-r<k>); the rebuild uses flow26b.
 #   training seeds 800000 + 20*i, i = 30000 + 70*k (unused range 30000-43999)
 source "$(dirname "$0")/common.sh"
 export TDYSSEY_SHAPES=T,T_narrow,Y,D,L,E,F,J,P,U,A,B,C,G,H,I,K,M,N,O,Q,R,S,V,W,X,Z

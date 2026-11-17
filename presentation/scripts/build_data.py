@@ -39,19 +39,19 @@ LINES = [
 
 # Final tests: (test, description, folder, {file prefix: model label}, base prefix or None)
 TESTS = [
-    ("D040", "encoder blends, 1000 fresh scenes per letter", "final-test",
+    ("blend_test_1", "encoder blends, 1000 fresh scenes per letter", "final-test",
      {"base": "original", "blend-r4e60-s0.7": "blend r4e60 s0.7", "blend-big4-unet0-enc0.7": "blend encoder 0.7"}, "base"),
-    ("D046", "5 shapes, correction round 4", "fairtest-d046", {"base": "original", "round4": "5-shape round 4"}, "base"),
-    ("D047", "5 shapes, correction round 7", "fairtest-d047", {"base": "original", "round7": "5-shape round 7"}, "base"),
-    ("D049/D050", "10 shapes, 1000 fresh scenes per shape", "fairtest-d049",
+    ("test_5shapes_round4", "5 shapes, correction round 4", "fairtest-d046", {"base": "original", "round4": "5-shape round 4"}, "base"),
+    ("test_5shapes_round7", "5 shapes, correction round 7", "fairtest-d047", {"base": "original", "round7": "5-shape round 7"}, "base"),
+    ("test_10shapes/test_10shapes_192px", "10 shapes, 1000 fresh scenes per shape", "fairtest-d049",
      {"base": "original", "main13": "10-shape 96 px", "side192": "10-shape 192 px"}, "base"),
-    ("D052", "17 untrained capitals, 200 fresh scenes each", "unseen17-d052",
+    ("test_unseen_letters", "17 untrained capitals, 200 fresh scenes each", "unseen17-d052",
      {"base": "original", "main96": "10-shape 96 px", "side192": "10-shape 192 px"}, "base"),
-    ("D051", "26 letters, 300 fresh scenes per shape (headline)", "fairtest-d051",
+    ("final_test", "26 letters, 300 fresh scenes per shape (headline)", "fairtest-d051",
      {"base": "original", "ten96": "10-shape 96 px", "m26": "26-letter 96 px (round 44)", "h26": "26-letter 192 px (round 2)"}, "base"),
-    ("D054", "round 50 vs round 44, 200 fresh scenes per shape", "fairtest-d054",
+    ("test_round50", "round 50 vs round 44, 200 fresh scenes per shape", "fairtest-d054",
      {"r44": "26-letter 96 px round 44", "r50": "26-letter 96 px round 50"}, "r44"),
-    ("D056", "steps executed per plan, same scenes as D054", "fairtest-d054",
+    ("test_steps_per_plan", "steps executed per plan, same scenes as test_round50", "fairtest-d054",
      {"r50": "execute 8 (trained)", "e12": "execute 12", "e15": "execute 15"}, "r50"),
 ]
 
@@ -131,7 +131,7 @@ def build_tests(raw, w_shape, w_pair, w_eps):
                 n, k, fc, pc = summarize(eps, shape)
                 w_shape.writerow([test, desc, label, rel_policy(policy) if prefix != "base" else "original", shape, n, k,
                                   round(k / n, 4), round(fc, 4), round(pc, 4)])
-            if test in ("D051", "D054", "D056", "D049/D050"):
+            if test in ("final_test", "test_round50", "test_steps_per_plan", "test_10shapes/test_10shapes_192px"):
                 for (shape, seed), e in sorted(eps.items()):
                     w_eps.writerow([test, label, shape, seed, int(bool(e["success"])), e["controls"],
                                     round(e["final_coverage"], 4), round(e["peak_coverage"], 4)])

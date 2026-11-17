@@ -83,8 +83,6 @@ using a world model, establish a deployable detector, or change official success
 Its interaction cost is recorded separately. Results belong to development-case
 analysis, not a generalization rate or a policy-improvement claim.
 
-See [validation evidence](VALIDATION.md).
-
 ## Continue original T pushing after success
 
 The standard official runner stops as soon as **coverage > 0.95**, which is not

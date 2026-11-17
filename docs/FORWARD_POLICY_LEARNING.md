@@ -160,5 +160,5 @@ The forward CLI accepts **physical simulator scores only**. Reliability weightin
 exists in the NFT loss for later integration, but imagined learning still needs
 a validated predicted observation/reward/termination interface and physical policy
 checks. True simulator futures cannot be passed off as model predictions. RAM/QAM
-and a new flow architecture remain later comparisons. See [validation](VALIDATION.md)
-for actual evidence; a GPU update is not shape adaptation.
+and a new flow architecture remain later comparisons. A GPU update is not shape
+adaptation.

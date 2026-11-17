@@ -1,26 +1,26 @@
 {
- "_about": "Numbers of the experiments that finished after the round-50 test tables (appendix of the report: Flow-DiT variants, the goal overlay D066 and its overlay-off check, the near-miss share on the D064 pool). Typed in from the named reports; paper_numbers.py writes each entry as one macro of numbers.tex. 'signed' values are paired changes in points and are written as +x or $-$x. Seeds 15000000 + 20*i (200 per shape) are the D064 pool of the final test; seeds 400000 + 20*i (50 per shape) are the selection (validation) scenes.",
+ "_about": "Numbers of the experiments that finished after the round-50 test tables (appendix of the report: Flow-DiT variants, the goal overlay and its overlay-off check, the near-miss share on the final-test pool). Typed in from the named reports; paper_numbers.py writes each entry as one macro of numbers.tex. 'signed' values are paired changes in points and are written as +x or $-$x. Seeds 15000000 + 20*i (200 per shape) are the pool of the final test; seeds 400000 + 20*i (50 per shape) are the selection (validation) scenes.",
  "groups": [
   {
    "name": "Near misses of the main model on the final test",
-   "source": "the D066 test report (runs/fairtest-d066/report.txt), round-50 row; round 50's D064-pool episodes (runs/fairtest-d066/r50-part*.json, the same files as runs/fairtest-d064/r50); recomputed from the episode files on 2026-11-16",
+   "source": "the goal-overlay test report (runs/fairtest-d066/report.txt), round-50 row; round 50's final-test episodes (runs/fairtest-d066/r50-part*.json, the same files as runs/fairtest-d064/r50); recomputed from the episode files on 2026-11-16",
    "macros": {
-    "numNearMissMain": {"value": "63.6", "what": "main model, 26 letters, D064 pool: share of failures whose peak coverage reached 0.90, %"},
-    "numSolvedNinetyMain": {"value": "43.4", "what": "main model, 26 letters, D064 pool: share of episodes reaching 0.90 coverage that succeed, %"}
+    "numNearMissMain": {"value": "63.6", "what": "main model, 26 letters: share of failures whose peak coverage reached 0.90, %"},
+    "numSolvedNinetyMain": {"value": "43.4", "what": "main model, 26 letters: share of episodes reaching 0.90 coverage that succeed, %"}
    }
   },
   {
-   "name": "Flow-DiT with 8x8 pooled tokens (D061 rebuild) on the final test",
-   "source": "runs/fairtest-d064/b8-part*.json in the store (log b8.log, 16 of 16 part files, 2026-11-12); 26-letter rate as posted on the team's session board on 2026-11-12; no paired interval was reported",
+   "name": "Flow-DiT with 8x8 pooled tokens on the final test",
+   "source": "runs/fairtest-d064/b8-part*.json in the store (log b8.log, 16 of 16 part files, 2026-11-12); no paired interval was reported",
    "macros": {
-    "numFlowEightHead": {"value": "44.2", "what": "Flow-DiT 8x8 (runs/flow26b/v1, 160k steps), 26 letters, D064 pool, success %"}
+    "numFlowEightHead": {"value": "44.2", "what": "Flow-DiT 8x8 (runs/flow26b/v1, 160k steps), 26 letters, success %"}
    }
   },
   {
-   "name": "Flow-DiT with the large encoder, ViT-L/14 and 16x16 tokens (D062) on the final test",
-   "source": "the D062 test report (runs/fairtest-d062): flowL = runs/flow26L/v1/ema-step160000.pt, paired by shape and scene with round 50 and Flow-DiT 16x16 (base); parameters from docs/DECISIONS.md D062",
+   "name": "Flow-DiT with the large encoder, ViT-L/14 and 16x16 tokens on the final test",
+   "source": "the ViT-L encoder test report (runs/fairtest-d062): flowL = runs/flow26L/v1/ema-step160000.pt, paired by shape and scene with round 50 and Flow-DiT 16x16 (base)",
    "macros": {
-    "numFlowLargeHead": {"value": "42.9", "what": "Flow-DiT ViT-L 16x16, 26 letters, D064 pool, success %"},
+    "numFlowLargeHead": {"value": "42.9", "what": "Flow-DiT ViT-L 16x16, 26 letters, success %"},
     "numFlowLargeVsFlow": {"value": "-2.7", "signed": true, "what": "ViT-L minus Flow-DiT (ViT-B 16x16), 26 letters, 5200 pairs, points"},
     "numFlowLargeVsFlowLo": {"value": "-4.5", "signed": true, "what": "  95% interval, low end"},
     "numFlowLargeVsFlowHi": {"value": "-0.8", "signed": true, "what": "  95% interval, high end"},
@@ -31,27 +31,27 @@
     "numFlowLargeUnseenVsFlow": {"value": "-0.2", "signed": true, "what": "ViT-L minus Flow-DiT, 9 never-seen shapes, 1800 pairs, points"},
     "numFlowLargeUnseenVsFlowLo": {"value": "-2.4", "signed": true, "what": "  95% interval, low end"},
     "numFlowLargeUnseenVsFlowHi": {"value": "2.1", "signed": true, "what": "  95% interval, high end"},
-    "numFlowLargeParams": {"value": "722.8M", "what": "total parameters (DINOv2 ViT-L/14 304.4M), docs/DECISIONS.md D062"},
-    "numFlowLargeEncoder": {"value": "304.4M", "what": "DINOv2 ViT-L/14 encoder parameters, docs/DECISIONS.md D062"}
+    "numFlowLargeParams": {"value": "722.8M", "what": "total parameters (DINOv2 ViT-L/14 304.4M)"},
+    "numFlowLargeEncoder": {"value": "304.4M", "what": "DINOv2 ViT-L/14 encoder parameters"}
    }
   },
   {
-   "name": "Training-only pose head on Flow-DiT 16x16 (D064) on the final test",
-   "source": "docs/DECISIONS.md D064 outcome (origin/feat/last-mile-rl): runs/flow26p/v1 against runs/flow26b16/v1, runs/fairtest-d064/{base,pose}-part*.json, 200 paired scenes per shape",
+   "name": "Training-only pose head on Flow-DiT 16x16 on the final test",
+   "source": "runs/flow26p/v1 against runs/flow26b16/v1, runs/fairtest-d064/{base,pose}-part*.json, 200 paired scenes per shape",
    "macros": {
-    "numFlowPoseHead": {"value": "45.7", "what": "Flow-DiT 16x16 with the pose head, 26 letters, D064 pool, success %"},
+    "numFlowPoseHead": {"value": "45.7", "what": "Flow-DiT 16x16 with the pose head, 26 letters, success %"},
     "numFlowPoseVsFlow": {"value": "0.2", "signed": true, "what": "pose head minus Flow-DiT, 26 letters, points"},
     "numFlowPoseVsFlowLo": {"value": "-1.6", "signed": true, "what": "  95% interval, low end"},
     "numFlowPoseVsFlowHi": {"value": "2.0", "signed": true, "what": "  95% interval, high end"},
-    "numFlowPoseHeadParams": {"value": "16.9M", "what": "pose head parameters, unused at test time (D064 implementation)"},
+    "numFlowPoseHeadParams": {"value": "16.9M", "what": "pose head parameters, unused at test time"},
     "numFlowPoseLabelShare": {"value": "50.6", "what": "share of the sampling weight with pose labels (teacher demonstrations and human T), %"}
    }
   },
   {
-   "name": "Block-causal joint-attention (prefix, pi0-style) head, short pilot at 8x8 tokens (D065)",
-   "source": "the D065 pilot report (pre-registered in the D065 amendment of 2026-11-13, origin/feat/last-mile-rl) and the D065 trend report (steps 20k and 40k, exploratory, not pre-registered); selection scenes of the 26 letters, seeds 400000 + 20*i, i < 50, 1300 paired episodes, mean over shapes; head size from D065 (origin/feat/joint-head)",
+   "name": "Block-causal joint-attention (prefix, pi0-style) head, short pilot at 8x8 tokens",
+   "source": "the joint-head pilot report (pre-registered on 2026-11-13) and the joint-head trend report (steps 20k and 40k, exploratory, not pre-registered); selection scenes of the 26 letters, seeds 400000 + 20*i, i < 50, 1300 paired episodes, mean over shapes; head size from origin/feat/joint-head",
    "macros": {
-    "numPrefixHeadParams": {"value": "410.6M", "what": "prefix head parameters (Flow-DiT head 418.2M), D065"},
+    "numPrefixHeadParams": {"value": "410.6M", "what": "prefix head parameters (Flow-DiT head 418.2M)"},
     "numPrefixSixty": {"value": "33.3", "what": "prefix head 8x8, step 60k, selection scenes, success %"},
     "numFlowEightSixty": {"value": "40.6", "what": "Flow-DiT 8x8, step 60k, selection scenes, success %"},
     "numPrefixVsFlowSixty": {"value": "-7.3", "signed": true, "what": "prefix minus Flow-DiT 8x8 at step 60k, points (pre-registered pilot)"},
@@ -66,23 +66,23 @@
    }
   },
   {
-   "name": "Earlier tests of the 8x8 flow policy on other pools (D059, D060)",
-   "source": "docs/DECISIONS.md D059 and D060 outcomes (origin/feat/last-mile-rl): 6600 paired episodes each, all 27 trained shapes (26 letters and the narrow T), seeds 13000000 + 20*i (D059) and 14000000 + 20*i (D060)",
+   "name": "Earlier tests of the 8x8 flow policy on other pools",
+   "source": "6600 paired episodes each, all 27 trained shapes (26 letters and the narrow T), seeds 13000000 + 20*i (first Flow-DiT test) and 14000000 + 20*i (Flow-DiT rounds test)",
    "macros": {
-    "numFlowEarlyVsMainA": {"value": "12.4", "signed": true, "what": "D059: 8x8 flow policy minus round 50, 27 trained shapes, points"},
+    "numFlowEarlyVsMainA": {"value": "12.4", "signed": true, "what": "8x8 flow policy minus round 50, 27 trained shapes, points"},
     "numFlowEarlyVsMainALo": {"value": "10.6", "signed": true, "what": "  95% interval, low end"},
     "numFlowEarlyVsMainAHi": {"value": "14.2", "signed": true, "what": "  95% interval, high end"},
-    "numFlowEarlyVsMainB": {"value": "12.7", "signed": true, "what": "D060: the same checkpoint minus round 50 on a second pool, 27 trained shapes, points"},
+    "numFlowEarlyVsMainB": {"value": "12.7", "signed": true, "what": "the same checkpoint minus round 50 on a second pool, 27 trained shapes, points"},
     "numFlowEarlyVsMainBLo": {"value": "10.9", "signed": true, "what": "  95% interval, low end"},
     "numFlowEarlyVsMainBHi": {"value": "14.5", "signed": true, "what": "  95% interval, high end"},
-    "numFlowRoundsVsNone": {"value": "-3.0", "signed": true, "what": "D060: after five flow-driven correction rounds minus without rounds, 27 trained shapes, points"},
+    "numFlowRoundsVsNone": {"value": "-3.0", "signed": true, "what": "after five flow-driven correction rounds minus without rounds, 27 trained shapes, points"},
     "numFlowRoundsVsNoneLo": {"value": "-4.8", "signed": true, "what": "  95% interval, low end"},
     "numFlowRoundsVsNoneHi": {"value": "-1.2", "signed": true, "what": "  95% interval, high end"}
    }
   },
   {
-   "name": "Goal overlay (D066), test on the final-test scenes",
-   "source": "the D066 test report (runs/fairtest-d066/report.txt; round 11 of each arm, runs/d066/{overlay,control}/round11, slivers-only overlay R = 9, code 0963fa9), recomputed from runs/fairtest-d066/*-part*.json on 2026-11-16 (7200 episodes per model, paired by shape and scene with round 50)",
+   "name": "Goal overlay, test on the final-test scenes",
+   "source": "the goal-overlay test report (runs/fairtest-d066/report.txt; round 11 of each arm, runs/d066/{overlay,control}/round11, slivers-only overlay R = 9, code 0963fa9), recomputed from runs/fairtest-d066/*-part*.json on 2026-11-16 (7200 episodes per model, paired by shape and scene with round 50)",
    "macros": {
     "numOverlayRounds": {"value": "11", "what": "correction rounds per arm compared in the test (round K*)"},
     "numOverlayHead": {"value": "32.4", "what": "overlay arm, 26 letters, success %"},
@@ -118,8 +118,8 @@
    }
   },
   {
-   "name": "Goal overlay (D066), first version and monitoring on the selection scenes",
-   "source": "D066 amendment 1 in docs/DECISIONS.md (commit 0963fa9 on feat/goal-overlay) for the whole-goal version; the D066 validation curve (runs/d066/validation_curve.txt, monitoring only) for the slivers-only arm; selection scenes seeds 400000 + 20*i, mean over the 26 letters",
+   "name": "Goal overlay, first version and monitoring on the selection scenes",
+   "source": "commit 0963fa9 on feat/goal-overlay for the whole-goal version; the goal-overlay validation curve (runs/d066/validation_curve.txt, monitoring only) for the slivers-only arm; selection scenes seeds 400000 + 20*i, mean over the 26 letters",
    "macros": {
     "numOverlayFirstRoundZero": {"value": "4.6", "what": "whole-goal overlay arm, round 0, selection scenes, success %"},
     "numControlRoundZero": {"value": "33.6", "what": "control arm, round 0, selection scenes, success %"},
@@ -132,8 +132,8 @@
    }
   },
   {
-   "name": "Goal overlay (D066), exploratory check with the overlay switched off",
-   "source": "runs/fairtest-d066-ovoff/report.txt in the run store (script d066_ovoff.sh and episodes ovoff*-part*.json in the same folder): the overlay arm's round-11 checkpoint with goal_overlay set to 0 (official images), seeds 15000000 + 20*i, 200 scenes per shape, paired by shape and scene with the overlay-on and control episodes of the D066 test; exploratory, decided after the D066 result in response to a reviewer and not fixed in advance; recomputed from the episode files on 2026-11-17",
+   "name": "Goal overlay, exploratory check with the overlay switched off",
+   "source": "runs/fairtest-d066-ovoff/report.txt in the run store (script d066_ovoff.sh and episodes ovoff*-part*.json in the same folder): the overlay arm's round-11 checkpoint with goal_overlay set to 0 (official images), seeds 15000000 + 20*i, 200 scenes per shape, paired by shape and scene with the overlay-on and control episodes of the goal-overlay test; exploratory, decided after the goal-overlay result in response to a reviewer and not fixed in advance; recomputed from the episode files on 2026-11-17",
    "macros": {
     "numOverlayOffHead": {"value": "34.1", "what": "overlay-trained policy with the overlay switched off, 26 letters, success % (1775/5200)"},
     "numOverlayOffVsOn": {"value": "1.7", "signed": true, "what": "overlay off minus overlay on (same checkpoint), 26 letters, 5200 pairs, points"},

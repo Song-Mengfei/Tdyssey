@@ -1,4 +1,4 @@
-"""Flow-matching DiT camera policy (D059): DINOv2 ViT-B/14 image encoder + transformer action head, about 500M parameters.
+"""Flow-matching DiT camera policy (Flow-DiT): DINOv2 ViT-B/14 image encoder + transformer action head, about 500M parameters.
 
 Observation: the last 2 camera frames (96 px RGB in [0, 1]) and the 2 pusher positions; output: 16 future xy targets
 (normalized with the official checkpoint's LinearNormalizer, so labels and outputs share the official scale), of which

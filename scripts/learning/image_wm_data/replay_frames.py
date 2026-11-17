@@ -10,7 +10,7 @@ deterministic: every step is checked against the recorded pose (tolerance 1e-3 p
 an error if any step differs.
 
 Output: frames (episodes, 301, size, size, 3) uint8 RGB; frames[i, t] is the camera image of state[i, t]. Steps
-after the end of an episode (mask False) are zeros. --goal-overlay R renders the D066 goal overlay (uncovered goal in
+after the end of an episode (mask False) are zeros. --goal-overlay R renders the goal overlay (uncovered goal in
 red, thin parts grown by R simulator px); the replay and its checks are the same.
 """
 import argparse
@@ -69,7 +69,7 @@ def main():
     ap.add_argument("out", type=Path)
     ap.add_argument("--size", type=int, default=96)
     ap.add_argument("--workers", type=int, default=16)
-    ap.add_argument("--goal-overlay", type=int, default=0, help="D066 goal overlay radius in simulator px (0 = off)")
+    ap.add_argument("--goal-overlay", type=int, default=0, help="Goal overlay radius in simulator px (0 = off)")
     a = ap.parse_args()
     z = np.load(a.data)
     planner = "source" in z.files and "planner" in str(z["source"])

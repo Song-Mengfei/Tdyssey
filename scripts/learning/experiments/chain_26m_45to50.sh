@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 96 px 26-letter line, rounds 45-50 on an A100 job (lead's decision 2026-11-06: continue to round 50, then
-# stop). Round 45's practice data was collected on the H100 (dagger26m-r45) before the D051 pick stopped it, so round 45
-# starts at its training; rounds 46-50 run the D053 recipe (54k steps, 60 scenes per new letter) on seeds
+# stop). Round 45's practice data was collected on the H100 (dagger26m-r45) before the final-test pick stopped it, so round 45
+# starts at its training; rounds 46-50 run the larger-rounds recipe (54k steps, 60 scenes per new letter) on seeds
 # i = 48440 + 70*k (51660-51999). Frames are streamed to local disk (TDYSSEY_FRAMES_MMAP): loading them in memory
 # (~145 GB for 2.96M samples) ran a 251 GB node out of memory on 2026-11-06 and the job was requeued.
 source "$(dirname "$0")/common.sh"

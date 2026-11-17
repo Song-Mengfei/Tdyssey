@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# D059 test: the flow-matching policy's final checkpoint vs the 96 px round-50 student on 200 new scenes per shape,
+# Flow-DiT test: the flow-matching policy's final checkpoint vs the 96 px round-50 student on 200 new scenes per shape,
 # 33 shapes, seeds 13000000 + 20*i (8 parts of 25 scenes per policy), paired. Round 50 runs first; the flow policy
-# runs once its training has written the final checkpoint. Usage: chain_d059.sh
+# runs once its training has written the final checkpoint. Usage: chain_flow_dit.sh
 source "$(dirname "$0")/common.sh"
 R=$WORK/runs; OUT=$R/fairtest-d059; L=$WORK/logs; mkdir -p $OUT $L/base-rollouts
 N=$R/dagger26m/round50/train/ema-step54000.pt; F=$R/flow26/v1/ema-step160000.pt
@@ -15,15 +15,15 @@ run() {   # name checkpoint
       [ -f $OUT/$name-part$k.json ] && continue
       while true; do n=0; for q in $pids; do kill -0 $q 2>/dev/null && n=$((n+1)); done; [ $n -lt 4 ] && [ "$(free_gb)" -ge 15 ] && break; sleep 20; done
       nohup $PY -B scripts/learning/base_rollouts.py eval --seed-base 13000000 --start $((25*k)) --scenes 25 --execute 8 \
-          --shapes $SH --student $cand --out $OUT/$name-part$k.json > $L/base-rollouts/d059-$name-part$k.log 2>&1 &
+          --shapes $SH --student $cand --out $OUT/$name-part$k.json > $L/base-rollouts/flow_dit-$name-part$k.log 2>&1 &
       pids="$pids $!"; sleep 20
     done
     for q in $pids; do while kill -0 $q 2>/dev/null; do sleep 20; done; done
     [ $(ls $OUT/$name-part*.json 2>/dev/null | wc -l) -eq 8 ] && break
   done
 }
-echo "[d059 $(date +%T)] round 50: $N"; run r50 $N
+echo "[flow_dit $(date +%T)] round 50: $N"; run r50 $N
 until [ -f $F ] && ! pgrep -f "flow_train.py.*flow26/v1" >/dev/null; do sleep 60; done
-echo "[d059 $(date +%T)] flow: $F"; run flow $F
+echo "[flow_dit $(date +%T)] flow: $F"; run flow $F
 $PY -I scripts/learning/report_pair.py $OUT r50 flow > $OUT/report.txt 2>&1
-echo "[d059 $(date +%T)] done"; cat $OUT/report.txt
+echo "[flow_dit $(date +%T)] done"; cat $OUT/report.txt

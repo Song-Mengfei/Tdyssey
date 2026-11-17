@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# D055: the 26-letter 192 px line continues on an H100 job from its newest student, D053 recipe, through four unused
+# The 26-letter 192 px line continues on an H100 job from its newest student, larger-rounds recipe, through four unused
 # training-seed ranges (60 scenes per round, all below i = 60000):
 #   round 12 i = 52100 + 70*k | rounds 13-19 i = 48590 + 70*k | rounds 20-29 i = 53900 + 70*k | rounds 30-39 i = 54200 + 70*k
 # Each segment resumes from the newest finished 192 px student. Frames are streamed to local disk (TDYSSEY_FRAMES_MMAP),

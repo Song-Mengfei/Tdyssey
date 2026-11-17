@@ -46,15 +46,14 @@ new scenes per shape that were never used for training or for picking models, an
 3. **Copying.** The official training recipe on the teacher's demonstrations, labelled with the teacher's *intended*
    16-step plans (much better than its executed pushes), plus the original human T demonstrations, with an equal
    share for every letter.
-4. **Correction rounds (DAgger).** The policy drives new scenes, the teacher labels every situation it reaches, and
-   the policy retrains on everything so far; 5 -> 10 -> 26 letters.
+4. **Correction rounds (DAgger).** The policy runs on new scenes, the teacher labels every situation it reaches, and
+   the policy retrains on everything so far. The stages train on 5 shapes, then 10 shapes, then 26 letters.
 
-**What did not work** (with numbers in the [learning findings](docs/LEARNING_FINDINGS.md) and the
-[experiment log](docs/LEARNING_EXPERIMENT_LOG.md)): reinforcement-learning fine-tuning of the diffusion policy in the
-simulator (the training signal was mostly noise, and larger steps destroyed the T skill), re-ranking the original
-policy's plans with the true simulator, back-propagating through a learned model, weight blends, and world models
-learned directly from images ([image world model notes](docs/WORLD_MODEL.md)). After the talk we also painted the
-uncovered goal red in the camera image to help the last nudge; it did not raise success ([goal overlay](docs/GOAL_OVERLAY.md)).
+**What did not work:** reinforcement-learning fine-tuning of the diffusion policy in the simulator (the training
+signal was mostly noise, and larger steps lowered T success from 55% to 5%), re-ranking the original policy's plans with the true
+simulator, back-propagating through a learned model, weight blends, and world models learned directly from images
+([image world model notes](docs/WORLD_MODEL.md)). After the talk we also painted the uncovered goal red in the camera
+image to help the last nudge, and it did not raise success ([goal overlay](docs/GOAL_OVERLAY.md)).
 
 ## Run the trained policy
 
@@ -74,9 +73,7 @@ scripts, with the seeds of every run, are in [scripts/learning](scripts/learning
 
 ## Documentation
 
-- [Main results: one camera policy for all 26 letters, and what did not work](docs/LEARNING_FINDINGS.md)
-- [Every learning run, including failed ones](docs/LEARNING_EXPERIMENT_LOG.md) and [the run scripts with their seeds](scripts/learning/experiments/README.md)
-- [Decision log, each entry recorded before its result](docs/DECISIONS.md)
+- [The run scripts with their seeds](scripts/learning/experiments/README.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
 - [Goal overlay: a rendering aid that shows the camera the uncovered goal](docs/GOAL_OVERLAY.md)
 - [Train and watch the official T image world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
@@ -87,7 +84,7 @@ scripts, with the seeds of every run, are in [scripts/learning](scripts/learning
 - [Policy training methods and derivations](docs/POLICY_LEARNING.md) and [forward-process RL](docs/FORWARD_POLICY_LEARNING.md)
 - [Implemented code and PushT integration](docs/IMPLEMENTATION.md)
 - [Collect official interaction data](docs/OFFICIAL_COLLECTION.md), [prepare training batches](docs/TRAINING_DATA.md) and [the separate GPC reference collector](docs/COLLECTION.md)
-- [Shared environment and storage](docs/ENVIRONMENT.md) and [validation evidence](docs/VALIDATION.md)
+- [Shared environment and storage](docs/ENVIRONMENT.md)
 
 ## Work without installing anything
 

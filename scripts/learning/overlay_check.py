@@ -1,6 +1,6 @@
-"""CPU checks of the D066 goal overlay (no GPU; run from the repository root with env.sh sourced).
+"""CPU checks of the goal overlay (no GPU; run from the repository root with env.sh sourced).
 
-  identity   overlay off renders exactly what the code before D066 rendered (frames replayed from teacher
+  identity   overlay off renders exactly what the code before the overlay rendered (frames replayed from teacher
              demonstrations against their stored frames/ files, and stepped episodes against a source tree of
              --baseline-rev); overlay on with nothing uncovered renders the official image.
   geometry   the overlay's fast goal-minus-block region equals the coverage metric's (pymunk_to_shapely) region.

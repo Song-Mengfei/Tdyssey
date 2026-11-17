@@ -1,7 +1,7 @@
 # Direct policy learning: method survey, derivations and runnable pilot
 
 Updated: 2026-10-23. This page specifies the first implemented policy-update
-method. Runtime evidence is recorded in [validation](VALIDATION.md); an implementation is not an improvement result.
+method. An implementation is not an improvement result.
 
 An extended image/flow RL survey added DiffusionNFT,
 AdvantageFlow, RAM, FPO/V-GRPO, QAM and related world-model policy work. It recommends
@@ -251,8 +251,7 @@ success or world-model benefit has been established by deriving an update rule.
 Current evidence: a 64-control GPU update check and a 1,008-control head-only
 pilot completed. The latter retained T success on one scene (270 to 297 controls)
 and did not improve L. Peak allocated CUDA memory was about 1.11 GiB; no full
-action-network update has been runtime-validated. See the complete counts,
-negative result and source/report hashes in [validation](VALIDATION.md).
+action-network update has been runtime-validated.
 
 The next experiment should first check full-network gradients/reload on the
 larger machine, then compare capacity and data budgets using fixed development

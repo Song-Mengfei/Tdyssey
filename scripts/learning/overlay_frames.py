@@ -1,4 +1,4 @@
-"""Camera frames with the D066 goal overlay for the training data that can be re-rendered (CPU only).
+"""Camera frames with the goal overlay for the training data that can be re-rendered (CPU only).
 
   demos  Replay every teacher demonstration file DIR/*.npz in the simulator exactly as replay_frames.py does (every
          step checked against the recorded pose, stops on any difference), rendering with --goal-overlay R, into
@@ -10,7 +10,7 @@
          come from an older renderer that is not reproduced exactly (block fill and edges differ on about 0.5% of the
          pixels; no contact markers), so these frames replace them only when training with the overlay.
 
-Correction records keep the frames they were collected with and, before D066, no block pose, so they cannot be
+Correction records keep the frames they were collected with and, before the overlay, no block pose, so they cannot be
 re-rendered; bc_train refuses to mix them with overlay frames unless --mixed-records is given (docs/GOAL_OVERLAY.md).
 
   python -B scripts/learning/overlay_frames.py demos --goal-overlay 9 --workers 32 $W/runs/teacher-plan-demos*
@@ -121,7 +121,7 @@ def main():
     d = sub.add_parser("demos"); d.add_argument("dirs", type=Path, nargs="+")
     h = sub.add_parser("human"); h.add_argument("zarr", type=Path)
     for q in (d, h):
-        q.add_argument("--goal-overlay", type=int, required=True, help="Overlay radius in simulator px (D066: 9)")
+        q.add_argument("--goal-overlay", type=int, required=True, help="Overlay radius in simulator px (goal-overlay runs: 9)")
         q.add_argument("--size", type=int, default=96)
         q.add_argument("--workers", type=int, default=16)
     a = p.parse_args()

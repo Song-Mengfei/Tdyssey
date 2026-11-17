@@ -1,4 +1,4 @@
-"""Pick each 26-letter line's final-test candidate (D051 rule): the best validation test (50 scenes x 27 shapes = 1350
+"""Pick each 26-letter line's final-test candidate (the fixed rule): the best validation test (50 scenes x 27 shapes = 1350
 episodes) finished by a cut time; ties go to the later round. Test round k evaluates the student trained in round k-1.
     python -I select_candidates.py "YYYY-MM-DD HH:MM" out.json [line ...]     (default lines: dagger26m dagger26h)
 Reads <TDYSSEY_RUNS>/<line>/round*/eval-in-x8-part*.json (default /tmp/Tdyssey/runs)."""

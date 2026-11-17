@@ -8,7 +8,7 @@ schedule (power 0.75, max 0.9999). Starts from the official checkpoint and keeps
   --demos DIR...   teacher trajectories (mpc_teacher.py --save-traj *.npz) with replayed frames in DIR/frames/
   --human-t ZARR   the official human T demonstrations (pusht_cchi_v7_replay.zarr), so T is learned from the
                    data the original policy was trained on (not new demonstrations)
-  --goal-overlay R the D066 rendering aid (uncovered goal in red, thin parts grown by R simulator px): teacher frames
+  --goal-overlay R the goal-overlay rendering aid (uncovered goal in red, thin parts grown by R simulator px): teacher frames
                    from DIR/frames-ovR/ (frames<size>-ovR/ when not 96 px), human T frames re-rendered from their
                    states (ZARR's folder/frames-ovR/<zarr stem>_frames.npz), records collected by an overlay student;
                    made by scripts/learning/overlay_frames.py and mpc_dagger.py. Saved in the checkpoint's arch, so
@@ -432,7 +432,7 @@ def main():
     p.add_argument("--label", choices=("executed", "plan"), default="executed",
                    help="Teacher episodes: copy the pushes actually executed, or the teacher's intended 16-step plan")
     p.add_argument("--image-size", type=int, default=96, help="Camera resolution (frames from frames<size>/ when not 96)")
-    p.add_argument("--goal-overlay", type=int, default=0, help="D066 goal overlay radius in simulator px (0 = off; frames "
+    p.add_argument("--goal-overlay", type=int, default=0, help="Goal overlay radius in simulator px (0 = off; frames "
                    "from frames-ov<R>/, human T re-rendered, records must be collected with it)")
     p.add_argument("--mixed-records", action="store_true", help="Also train on record folders whose frames were rendered "
                    "with a different goal overlay (used unchanged)")

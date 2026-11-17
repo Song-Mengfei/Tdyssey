@@ -46,8 +46,7 @@ Several attempts got close and then lost alignment. D reached about 90% target
 coverage, K 86%, and the narrower T 93%; all missed the unchanged success rule
 requiring coverage above 95%. Best IoU and final IoU retain that distinction.
 
-See [full validation and near-miss evidence](VALIDATION.md#completed-frozen-policy-alphabet-sweep-2026-10-19)
-and [geometry/reset protocol](OFFICIAL_SHAPES.md). The local HTML gallery also has
+See the [geometry/reset protocol](OFFICIAL_SHAPES.md). The local HTML gallery also has
 best-frame screenshots; it is generated from saved reports with
 `scripts/summarize_shapes.py`. The complete report and screenshots remain outside
 Git. [Video provenance](media/official-alphabet-2026-10-19/videos.json) records exact

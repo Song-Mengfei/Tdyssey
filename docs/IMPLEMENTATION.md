@@ -64,8 +64,8 @@ This change does not implement another physics engine or a replacement policy.
 
 The geometry/evaluation/data code runs with the standard library. Source-only
 adapter tests use explicit construction/API doubles. Separate opt-in runtime tests
-have passed with real Pymunk and GPC on the locked CPU profile; see
-`docs/VALIDATION.md`. CPU/CUDA checkpoint loading and bounded policy rollouts have
+have passed with real Pymunk and GPC on the locked CPU profile. CPU/CUDA
+checkpoint loading and bounded policy rollouts have
 also passed. Policy inference defaults to CUDA without automatic CPU fallback.
 A first visual world-model trainer is implemented with mixed validation results;
 pretrained GPC loading and prediction checks now expose an official-scene appearance

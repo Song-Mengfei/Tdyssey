@@ -1,6 +1,6 @@
 # Learning experiments
 
-Standalone research scripts behind [the learning findings](../../docs/LEARNING_FINDINGS.md).
+Standalone research scripts behind the reported results.
 Run them from the repository root with the CUDA profile (`.venv/bin/python -B
 scripts/learning/<script> --help`). They import each other as siblings and find the
 repository root themselves (`REPO` overrides it). Outputs go wherever `--out` points;
@@ -26,7 +26,7 @@ The shell scripts that ran each experiment, with their seeds and settings, are i
 | --- | --- | --- |
 | `base_rollouts.py` | Fresh-scene evaluation of the original policy or a trained one (`--student`); also rollouts for world-model data | every claim |
 | `report_pair.py` | Paired comparison on the same scenes by shape group, with 95% intervals | the final tests |
-| `d066_report.py` | Goal overlay vs control vs round 50 on the final-test scenes, with the near-miss shares | the goal-overlay test |
+| `goal_overlay_report.py` | Goal overlay vs control vs round 50 on the final-test scenes, with the near-miss shares | the goal-overlay test |
 | `select_candidates.py` | The fixed rule that picked the final-test candidates | the first 26-letter final test |
 | `final_test_report.py` | Paired analysis of the earlier tests fixed in advance | weight blends and the ten-shape test |
 | `record_letters.py` | One video per letter, all on the same starting scene | figures |

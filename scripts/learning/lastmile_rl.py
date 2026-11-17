@@ -1,4 +1,4 @@
-"""Last-mile RL on top of the frozen camera policy (D058): short episodes restarted from recorded near-goal states.
+"""Last-mile RL on top of the frozen camera policy: short episodes restarted from recorded near-goal states.
 
 Two methods, same states, reward and optimizer (SAC, off-policy; the base policy never changes):
   dsrl      the actor chooses the 32-number starting noise of the frozen policy's deterministic 10-step DDIM sampler
@@ -11,7 +11,7 @@ simulator state (block and pusher relative to the goal, coverage, shape): privil
 Reward per decision (8 controls): --reward-gain * coverage gain, minus --reward-loss * coverage lost within the
 decision, a one-time --reward-bonus when coverage first exceeds 0.95 (success, which ends the episode), and minus
 --reward-step per decision. Episodes last at most --episode-decisions decisions; time-limit cut-offs bootstrap.
-v1 (D058): 10 / 10 / 5 / 0.05, 6 decisions. v2 (D058 amendment): 10 / 2 / 20 / 0.2, 12 decisions, gamma 0.95.
+v1: 10 / 10 / 5 / 0.05, 6 decisions. v2 (amendment): 10 / 2 / 20 / 0.2, 12 decisions, gamma 0.95.
 
     .venv/bin/python -B scripts/learning/lastmile_rl.py train --method dsrl --student CKPT --states DIR --out DIR
     .venv/bin/python -B scripts/learning/lastmile_rl.py eval --student CKPT --states DIR --scenes 20030-20039 \
@@ -137,7 +137,7 @@ class Base:
         self.agent, _ = base_rollouts.build(student)
         self.device = self.agent.device
         self.size = getattr(self.agent, "render_size", 96)
-        self.overlay = getattr(self.agent, "goal_overlay", 0)            # D066 overlay students render the same way
+        self.overlay = getattr(self.agent, "goal_overlay", 0)            # goal-overlay students render the same way
         self.ddim = DDIMScheduler.from_config(self.agent.network.noise_scheduler.config)
         self.ddim.set_timesteps(steps)
         self.norm = self.agent.network.normalizer["action"]
@@ -228,7 +228,7 @@ REWARD = {"gain": 10.0, "loss": 10.0, "bonus": 5.0, "step": 0.05}           # se
 
 def reward(c0, c1, lost, crossed):
     """Coverage gain over the decision, an extra penalty on coverage lost within it, a one-time success bonus and a
-    cost per decision. v1 (D058) weights: 10, 10, 5, 0.05."""
+    cost per decision. v1 weights: 10, 10, 5, 0.05."""
     return REWARD["gain"] * (c1 - c0) - REWARD["loss"] * lost + (REWARD["bonus"] if crossed else 0.0) - REWARD["step"]
 
 

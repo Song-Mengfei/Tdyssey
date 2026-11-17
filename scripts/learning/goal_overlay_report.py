@@ -1,13 +1,14 @@
-"""D066 test report: goal-overlay student vs control (same rounds without the overlay) vs round 50, paired by shape and
-scene on the D064 pool (seeds 15000000 + 20*i). Groups as D064: 26 letters (near-T excluded), 9 never-seen shapes, T.
+"""Goal-overlay test report: goal-overlay student vs control (same rounds without the overlay) vs round 50, paired by
+shape and scene on the final-test pool (seeds 15000000 + 20*i). Groups as in the final test: 26 letters (near-T
+excluded), 9 never-seen shapes, T.
 Primary (fixed before results): overlay vs control, success over the 26 letters (mean over shapes; paired difference
 with a 95% interval). Secondary: both vs round 50; among failures, the share whose best coverage reached 0.90-0.95
 (near misses), and among episodes that reached 0.90, the share solved.
 Files: <dir>/<m>-part*.json (33 shapes) and <dir>/<m>new-part*.json (T + digits 2, 5, 8), base_rollouts.py eval.
-    python -I d066_report.py <dir> overlay control r50
+    python -I goal_overlay_report.py <dir> overlay control r50
 Validation progress curve (monitoring only): every round's student of both arms on the selection scenes (seeds
-400000 + 20*i, i < 50), paired by scene; <d066 dir>/<arm>/round<k>/val-part*.json and <d066 dir>/start/ (round 50).
-    python -I d066_report.py validation <d066 dir>
+400000 + 20*i, i < 50), paired by scene; <run dir>/<arm>/round<k>/val-part*.json and <run dir>/start/ (round 50).
+    python -I goal_overlay_report.py validation <run dir>
 """
 import glob
 import json
@@ -58,7 +59,7 @@ def validation(root):
         return out
     start = load_val(f"{root}/start")
     rounds = sorted({int(p.rsplit("round", 1)[1]) for p in glob.glob(f"{root}/*/round*") if p.rsplit("round", 1)[1].isdigit()})
-    print("D066 validation (monitoring only): 26 letters, mean success over shapes; all 27 trained shapes, solved of 1350;")
+    print("Goal-overlay validation (monitoring only): 26 letters, mean success over shapes; all 27 trained shapes, solved of 1350;")
     print("overlay - control paired by scene with a 95% interval")
     print(f"  {'round':>5s}  {'overlay':>16s}  {'control':>16s}  overlay - control")
     if start:
@@ -87,7 +88,7 @@ def main():
     d, models = sys.argv[1], sys.argv[2:]
     eps = {m: load(d, m) for m in models}
     keys = set.intersection(*(set(e) for e in eps.values()))
-    print(f"D066 test on seeds 15000000 + 20*i: {', '.join(models)}; {len(keys)} episodes common to all")
+    print(f"Goal-overlay test on seeds 15000000 + 20*i: {', '.join(models)}; {len(keys)} episodes common to all")
     for name, shapes in (("26 letters", LETTERS), ("9 never-seen shapes", NEVER), ("T", ["T"])):
         ks = [k for k in keys if k[0] in shapes]
         if not ks:

@@ -12,14 +12,14 @@ from ..letters import NOVEL_PATTERNS, PATTERNS, block_letter
 PROTOCOL = "official-t-l-com-v1"
 T_REFERENCE_COG = (0.0, 45.0)
 
-# Goal overlay (D066, off by default; docs/GOAL_OVERLAY.md). The part of the goal the block does not cover is painted
+# Goal overlay (off by default; docs/GOAL_OVERLAY.md). The part of the goal the block does not cover is painted
 # red on the 512 px canvas after the goal and before the block and pusher. Parts thinner than R = `goal_overlay`
 # simulator px (removed by a morphological opening of radius R/2; pieces at least R long) are grown by R, so a sliver
 # far below one camera pixel (512/96 = 5.33 simulator px; the block's drawn outline hides another ~2 px) still reaches
 # the 96 px image; wider parts keep their true outline, so the goal's letter shape stays readable far from the goal.
 # Computed from the same collision polygons as the coverage metric: privileged simulator geometry, a rendering aid.
 # Changing this definition changes what an overlay checkpoint was trained on: give it a new name, not the same flag.
-# goal_overlay = -R (D066 amendment, "slivers only"): only the grown thin parts are painted; wide uncovered parts keep
+# goal_overlay = -R (amendment, "slivers only"): only the grown thin parts are painted; wide uncovered parts keep
 # the official green, so the image matches the official one except where a thin sliver of goal is left uncovered (the
 # final misalignment). The negative value gives these frames, records and checkpoints their own name (frames-ov-9).
 OVERLAY_COLOR = (255, 0, 0)

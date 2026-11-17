@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Ten-letter correction rounds, one script for both lines of D048 (agreed 2026-11-01):
+# Ten-letter correction rounds, one script for both lines (agreed 2026-11-01):
 #   main line  TAG=m SIZE=96   (headline results; same camera as the official policy)
 #   side line  TAG=h SIZE=192  (labelled side experiment: is the 96 px camera the limit?)
 # Both lines start from the same 96 px student and follow the same schedule, so the main line is the side line's
 # matched control:
 #   round 0: retrain 30k steps on all teacher demos (intended-plan labels) + human T + all earlier corrections
-#   round k>=1: test on 50 validation scenes per letter (2 parts, alongside), the student drives 30 new training scenes
+#   round k>=1: test on 50 validation scenes per letter (2 parts, alongside), the student runs 30 new training scenes
 #            per letter (teacher takes 30% of 8-control decisions, labels every visited state with its 8-control plan),
 #            then fine-tune 20k steps on demos + human T + earlier corrections + this line's corrections.
 # Data at 96 px (human T, earlier corrections) is enlarged for the 192 px line; its own corrections are native 192 px.

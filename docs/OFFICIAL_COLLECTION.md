@@ -132,8 +132,7 @@ The first retained L pilot collected 800 controls across eight 100-step episodes
 with 354 contact steps, 12 simulated resets and 3,279,264 bytes of data. Frozen
 train/validation/model-test membership is 6/1/1 episodes. History 2/future 4 gives
 576/96/96 windows, and two batches of four examples passed in every split. These
-are data-path checks, not learned-model accuracy or an adaptation benefit. See
-[validation details](VALIDATION.md#official-l-collection-and-training-data-2026-10-19).
+are data-path checks, not learned-model accuracy or an adaptation benefit.
 
 The [first visual model](WORLD_MODEL.md) now implements training-only normalization
 and validation contact/noncontact comparisons against simple baselines. Its first

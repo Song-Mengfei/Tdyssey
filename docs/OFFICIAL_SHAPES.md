@@ -86,7 +86,6 @@ within 300. Maximum IoU was 0.9241 for T and 0.3015 for L; L had 288 contact ste
 and ended at zero overlap. All T actions and full body-state traces matched the
 earlier canonical official run exactly; its video was byte-identical. Reward
 differences were at most floating-point roundoff from polygon-area calculation.
-See [validation details](VALIDATION.md) for counts and artifact fingerprints.
 
 One scene does not establish a generalization rate or a learning benefit.
 [Official non-expert collection](OFFICIAL_COLLECTION.md) is now implemented with
@@ -165,7 +164,7 @@ adaptation data and later final tests.
 The first completed sweep used common scene 100000: T and Y succeeded; the other
 24 letters and near-T failed within 300 controls. Near-T reached IoU 0.8717 before
 ending at 0.7751. These single-scene outcomes do not locate a reliable tolerance
-boundary. See [full results and costs](VALIDATION.md).
+boundary.
 
 ### Near misses and lost progress
 

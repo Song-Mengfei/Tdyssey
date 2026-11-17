@@ -35,7 +35,6 @@ after replacing the CPU profile in the same environment; no duplicate CPU
 environment was retained. CUDA 12.4 calculations, gradients, torchvision, and
 pretrained inference passed on an Ada GPU. This does not prove full training
 memory requirements or compatibility with every GPU generation.
-See `docs/VALIDATION.md` for the checks that actually ran.
 
 All three backend extras conflict intentionally. Keep one `.venv` per checkout and
 switch its profile with an explicit `uv sync`, rather than retaining duplicate
@@ -107,17 +106,16 @@ profile**, not yet runtime-validated on Blackwell. Use doctor
 `--runtime --require-cuda --backend cu128 --dp` and an actual policy smoke run
 on that machine before longer jobs. Other operating systems or CPU
 architectures need a documented profile change before matched experiments.
-CPU simulator checks do not prove GPU or training compatibility. CPU/CUDA
-checkpoint loading and GPU gradient checks have separate evidence in
-`docs/VALIDATION.md`; a first small visual world-model CUDA pilot is recorded in `docs/WORLD_MODEL.md`.
+CPU simulator checks do not prove GPU or training compatibility. A first small
+visual world-model CUDA pilot is recorded in `docs/WORLD_MODEL.md`.
 Full policy training and other GPU generations remain unvalidated.
 
 ## Updating dependencies
 
 Change direct requirements deliberately, regenerate `uv.lock` with the pinned uv
-version, review the diff, and record the reason in `docs/DECISIONS.md`. All authors
-pull the manifest and lock together, then sync the selected profile. Never freeze
-an unrelated environment into this project.
+version and review the diff. All authors pull the manifest and lock together,
+then sync the selected profile. Never freeze an unrelated environment into this
+project.
 
 Gym 0.26.2 is distributed as source. Its static dependency metadata is recorded
 from a checksum-verified archive in `manifests/gym-metadata.json`, allowing lock

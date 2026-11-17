@@ -1,5 +1,5 @@
-"""Data tables for the round-50 results (no GPU): every policy on ONE pool of new test scenes, the D064 pool (seeds
-15000000 + 20*i, 200 scenes per shape, run store runs/fairtest-d064/).
+"""Data tables for the round-50 results (no GPU): every policy on ONE pool of new test scenes (seeds 15000000 + 20*i,
+200 scenes per shape, run store runs/fairtest-d064/).
 
     python3 presentation/scripts/build_round50_data.py [--runs <folder with the run store's runs/>] [--out <folder>]
 
@@ -16,7 +16,8 @@ letters, 9 never-seen shapes (digit3 digit4 digit7 plus hash arrow + digit2 digi
 own per-shape rows but is in no group. Paired differences (vs the original and vs round 50) use the same normal
 approximation as build_data.py: mean per-scene difference +- 1.96 sd / sqrt(n).
 
-Writes d064_test_by_shape.csv, d064_test_groups.csv and d064_test_paired.csv (rates as fractions, like the other tables).
+Writes pose_head_test_by_shape.csv, pose_head_test_groups.csv and pose_head_test_paired.csv (rates as fractions, like
+the other tables).
 """
 import argparse
 import csv
@@ -130,7 +131,7 @@ def main():
                          "success_rate": r4(sum(int(e["success"]) for e in ep) / n),
                          "mean_final_coverage": r4(sum(float(e["final_coverage"]) for e in ep) / n),
                          "mean_peak_coverage": r4(sum(float(e["peak_coverage"]) for e in ep) / n)})
-    write("d064_test_by_shape.csv", rows)
+    write("pose_head_test_by_shape.csv", rows)
     rows = []
     for k, name in MODELS:
         for g, ss in GROUPS.items():
@@ -144,7 +145,7 @@ def main():
                          "of_shapes": len(ss), "episodes": n, "successes": succ, "success_rate": r4(succ / n),
                          "wilson_low": r4(lo), "wilson_high": r4(hi),
                          "mean_final_coverage": r4(sum(float(e["final_coverage"]) for e in ep) / n)})
-    write("d064_test_groups.csv", rows)
+    write("pose_head_test_groups.csv", rows)
     rows = []
     units = [("group", g, ss) for g, ss in GROUPS.items()] + [("shape", s, [s]) for s in SHAPES]
     for base in ("orig", "r50"):
@@ -160,7 +161,7 @@ def main():
                 rows.append({"base_model_key": base, "model_key": k, "model": name, "kind": kind, "unit": unit,
                              "paired_episodes": n, "base_rate": r4(br), "model_rate": r4(mr), "difference": r4(mu),
                              "ci95_low": r4(lo), "ci95_high": r4(hi)})
-    write("d064_test_paired.csv", rows)
+    write("pose_head_test_paired.csv", rows)
 
 
 if __name__ == "__main__":

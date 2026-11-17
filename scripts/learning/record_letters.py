@@ -69,7 +69,7 @@ def main():
     a.out.mkdir(parents=True, exist_ok=False)
     agent, env_class = base_rollouts.build(str(a.student))
     size = getattr(agent, "render_size", 96)                           # the student's camera (192 px students need 192 px)
-    cam = {"goal_overlay": agent.goal_overlay} if getattr(agent, "goal_overlay", 0) else {}   # and its D066 overlay
+    cam = {"goal_overlay": agent.goal_overlay} if getattr(agent, "goal_overlay", 0) else {}   # and its goal overlay
     envs = {L: env_class(shape=L, legacy=True, render_size=size, **cam) for L in a.letters}
     obs, records = matched_reset(envs, a.seed, {"reset_physics_substeps": 0})
     scene = records[-1]["seed"]

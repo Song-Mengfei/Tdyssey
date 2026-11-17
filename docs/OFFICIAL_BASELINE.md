@@ -117,7 +117,6 @@ the historical runner's precise random stream or multi-process scheduling.
 The first three development scenes all reached upstream success, in 128/157/273
 controls. Maximum IoU was 0.9241/0.9082/0.9236. These are three development checks,
 not a full paper-score reproduction or a generalization/adaptation result.
-See [validation evidence](VALIDATION.md) for commands, storage, and costs.
 
 An official capital-L extension and paired probe now exist; see
 [shape geometry and comparison protocol](OFFICIAL_SHAPES.md). The older I/L adapter

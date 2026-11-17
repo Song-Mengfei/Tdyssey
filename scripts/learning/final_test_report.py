@@ -1,4 +1,4 @@
-"""Pre-registered final-test analysis (D040): candidate vs base, paired by scene, on the 1000-scene final pool.
+"""Pre-registered final-test analysis (first blend test): candidate vs base, paired by scene, on the 1000-scene final pool.
 
 Reads base parts (<runs>/base-part*.json) and candidate parts (<runs>/<name>-part*.json), pairs
 episodes by (shape, requested_seed), and reports per shape the success rates, the paired difference with a 95%

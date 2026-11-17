@@ -112,7 +112,7 @@ TDYSSEY_DATA_TESTS=1 .venv/bin/python -B -m unittest discover -s tests -p 'test_
 
 The installed tests use independent frame/action marker fixtures to test timing,
 boundaries, split isolation, corruption detection, and real PyTorch collation.
-Real collected T/I/L examples also passed the batch command; see
-`docs/VALIDATION.md`. The [first visual world-model trainer](WORLD_MODEL.md) wraps these windows
+Real collected T/I/L examples also passed the batch command. The
+[first visual world-model trainer](WORLD_MODEL.md) wraps these windows
 with explicit privileged motion/ROI targets. Original GPC data conversion remains
 separate work.

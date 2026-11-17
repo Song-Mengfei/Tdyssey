@@ -2,31 +2,32 @@
 
     python3 presentation/scripts/paper_numbers.py [--data <folder>] [--history <folder>] [--paper <folder>]
 
-Reads the round-50 test tables that build_round50_data.py writes (d064_test_by_shape.csv, d064_test_groups.csv,
-d064_test_paired.csv: every policy on ONE pool of new scenes, seeds 15000000 + 20*i, 200 per shape) from --data
-(default presentation/data; point it at a scratch folder to check a test that is still running), and the earlier
-tests, which are final, from --history (default presentation/data: final_tests_by_shape.csv for the history table,
-final_tests_episodes.csv for the steps-executed test D056).
+Reads the round-50 test tables that build_round50_data.py writes (pose_head_test_by_shape.csv,
+pose_head_test_groups.csv, pose_head_test_paired.csv: every policy on ONE pool of new scenes, seeds 15000000 + 20*i,
+200 per shape) from --data (default presentation/data; point it at a scratch folder to check a test that is still
+running), and the earlier tests, which are final, from --history (default presentation/data: final_tests_by_shape.csv
+for the history table, final_tests_episodes.csv for the steps-executed test).
 
 Writes, into --paper (the report folder, for example a local copy of the report project):
   numbers.tex          one \\newcommand per number the report's text uses, each with a comment naming its source
   tables/main_test.tex     success by shape group for the five policies, change of the main model vs the original
   tables/flowdit.tex       Flow-DiT against the main model (paired)
   tables/per_shape.tex     every letter and never-seen shape, every policy (appendix; the narrow T is not shown)
-  tables/steps.tex         steps executed per plan, D056 (26 letters, narrow T left out)
+  tables/steps.tex         steps executed per plan (26 letters, narrow T left out)
   tables/history.tex       the earlier fixed tests, averaged over letters only
 
-Numbers of experiments that finished later (Flow-DiT variants D062/D064/D065, the goal overlay D066, the near-miss share
-on the D064 pool) are typed in, with their sources, in --history/paper_late_numbers.json; each entry becomes one macro.
+Numbers of experiments that finished later (Flow-DiT variants with the ViT-L encoder, the pose head and the
+joint-attention head, the goal overlay, the near-miss share on the final-test pool) are typed in, with their sources,
+in --history/paper_late_numbers.json; each entry becomes one macro.
 
 Groups follow the talk: all 26 letters, 9 earlier letters (T Y D L E F J P U), 17 new letters, 9 never-seen shapes
 (digits 2, 3, 4, 5, 7, 8, plus, hash, arrow) and T; the narrow T (an extra training shape) is in no group, no table
 row and no macro, because the report leaves it out. Rates are
-pooled successes / episodes; paired changes and their 95% intervals come from d064_test_paired.csv (normal
+pooled successes / episodes; paired changes and their 95% intervals come from pose_head_test_paired.csv (normal
 approximation on per-scene differences, as in build_round50_data.py). If the test is not finished (fewer than 200
 paired scenes for some shape or policy), numbers.tex defines \\paperdatanote as a red line under the abstract.
 
-Flow-DiT numbers come from the same d064 files (policy key "base", paired against round 50), so the
+Flow-DiT numbers come from the same pose_head_test files (policy key "base", paired against round 50), so the
 architecture_test_*.csv files of build_experiment_data.py are not read here (they feed the deck's arch_groups graph).
 
 Typical use after the test:
@@ -92,17 +93,15 @@ def shape_name(s):
     return {"T_narrow": "narrow T", "plus": "+", "hash": "\\#", "arrow": "arrow"}.get(s, s.replace("digit", ""))
 
 
-SOURCE_HINT = re.compile(r"data/|\.csv|\.json|runs/|docs/|\bD0\d\d|seeds?\b|LEARNING_|DECISIONS|store\b|\.py\b|fairtest")
+SOURCE_HINT = re.compile(r"data/|\.csv|\.json|runs/|docs/|seeds?\b|store\b|\.py\b|fairtest")
 
 
 def clean(comment):
-    """A short plain description for a comment in a generated file: no file names, decision codes or seed formulas."""
+    """A short plain description for a comment in a generated file: no file names or seed formulas."""
     lead = len(comment) - len(comment.lstrip(" "))
     s = comment.split("Source:")[0]
     for _ in range(3):                                     # parentheses that only name a source
         s = re.sub(r"\s*\(([^()]*)\)", lambda m: "" if SOURCE_HINT.search(m.group(1)) else m.group(0), s)
-    s = re.sub(r"(?:,\s*)?\b(?:the\s+)?D0\d\d\s+(?:pool|test|rule)\b", "", s)
-    s = re.sub(r"\bD0\d\d(?:\s*(?:-|to|/)\s*D?0\d\d)*\b,?\s*", "", s)
     s = re.sub(r"\bseeds?\s+\d[\d,]*\s*\+\s*20\s*\*\s*i,?\s*", "", s)
     s = re.sub(r"\s{2,}", " ", s).strip(" ,;.")
     return " " * lead + s
@@ -121,7 +120,7 @@ class Macros:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data", default=str(ROOT / "data"), help="folder with d064_test_*.csv (default presentation/data)")
+    ap.add_argument("--data", default=str(ROOT / "data"), help="folder with pose_head_test_*.csv (default presentation/data)")
     ap.add_argument("--history", default=str(ROOT / "data"),
                     help="folder with final_tests_by_shape.csv and final_tests_episodes.csv (default presentation/data)")
     ap.add_argument("--paper", required=True, help="report folder (numbers.tex and tables/ go here)")
@@ -129,14 +128,14 @@ def main():
     data, hist, paper = Path(a.data), Path(a.history), Path(a.paper)
     (paper / "tables").mkdir(parents=True, exist_ok=True)
 
-    need = [data / f"d064_test_{x}.csv" for x in ("by_shape", "groups", "paired")]
+    need = [data / f"pose_head_test_{x}.csv" for x in ("by_shape", "groups", "paired")]
     if not all(f.exists() for f in need):
         raise SystemExit(f"missing {[f.name for f in need if not f.exists()]} in {data}: run "
                          "scripts/build_round50_data.py first (or pass --data <folder with its CSV files>)")
-    G = {(r["model_key"], r["group"]): r for r in read(data / "d064_test_groups.csv")}
-    S = {(r["model_key"], r["shape"]): r for r in read(data / "d064_test_by_shape.csv")}
-    P = {(r["base_model_key"], r["model_key"], r["kind"], r["unit"]): r for r in read(data / "d064_test_paired.csv")}
-    src = f"{data.name}/d064_test"
+    G = {(r["model_key"], r["group"]): r for r in read(data / "pose_head_test_groups.csv")}
+    S = {(r["model_key"], r["shape"]): r for r in read(data / "pose_head_test_by_shape.csv")}
+    P = {(r["base_model_key"], r["model_key"], r["kind"], r["unit"]): r for r in read(data / "pose_head_test_paired.csv")}
+    src = f"{data.name}/pose_head_test"
 
     # ---------------------------------------------------------------- completeness
     shapes_all = LETTERS26 + [NARROW_T] + UNSEEN9
@@ -151,7 +150,7 @@ def main():
                                 "build\\_round50\\_data.py, build\\_experiment\\_data.py and paper\\_numbers.py after the "
                                 "test.}")
     M.add("paperdatanote", note, "empty once every shape has 200 paired scenes for every policy")
-    print(f"D064 test: {n_min}-{n_max} paired scenes per shape and policy -> {'COMPLETE' if complete else 'PARTIAL'}")
+    print(f"Final test: {n_min}-{n_max} paired scenes per shape and policy -> {'COMPLETE' if complete else 'PARTIAL'}")
 
     # ---------------------------------------------------------------- group rates and coverage
     rate = {}
@@ -267,23 +266,23 @@ def main():
         return pct(k, n), (per[0] if per else 0), len(rows)
 
     HIST = [  # (test, label, shapes label, shapes, seed base, reference model, reference label, model)
-        ("D046", "5 shapes, round 4", "T Y D L", ["T", "Y", "D", "L"], "7{,}000{,}000", "original", "", "5-shape round 4"),
-        ("D047", "5 shapes, round 7", "T Y D L", ["T", "Y", "D", "L"], "8{,}000{,}000", "original", "", "5-shape round 7"),
-        ("D049/D050", "10 shapes, 96 px (round 13)", "9 earlier letters", EARLY9, "9{,}000{,}000", "original", "",
+        ("test_5shapes_round4", "5 shapes, round 4", "T Y D L", ["T", "Y", "D", "L"], "7{,}000{,}000", "original", "", "5-shape round 4"),
+        ("test_5shapes_round7", "5 shapes, round 7", "T Y D L", ["T", "Y", "D", "L"], "8{,}000{,}000", "original", "", "5-shape round 7"),
+        ("test_10shapes/test_10shapes_192px", "10 shapes, 96 px (round 13)", "9 earlier letters", EARLY9, "9{,}000{,}000", "original", "",
          "10-shape 96 px"),
-        ("D049/D050", "10 shapes, 192 px (round 6)", "9 earlier letters", EARLY9, "9{,}000{,}000", "original", "",
+        ("test_10shapes/test_10shapes_192px", "10 shapes, 192 px (round 6)", "9 earlier letters", EARLY9, "9{,}000{,}000", "original", "",
          "10-shape 192 px"),
-        ("D052", "10 shapes, 96 px, untrained letters", "17 letters added last", NEW17, "11{,}000{,}000", "original", "",
+        ("test_unseen_letters", "10 shapes, 96 px, untrained letters", "17 letters added last", NEW17, "11{,}000{,}000", "original", "",
          "10-shape 96 px"),
-        ("D052", "10 shapes, 192 px, untrained letters", "17 letters added last", NEW17, "11{,}000{,}000", "original", "",
+        ("test_unseen_letters", "10 shapes, 192 px, untrained letters", "17 letters added last", NEW17, "11{,}000{,}000", "original", "",
          "10-shape 192 px"),
-        ("D051", "26 letters, 96 px (round 44)", "26 letters", LETTERS26, "10{,}000{,}000", "original", "",
+        ("final_test", "26 letters, 96 px (round 44)", "26 letters", LETTERS26, "10{,}000{,}000", "original", "",
          "26-letter 96 px (round 44)"),
-        ("D051", "26 letters, 192 px (round 2)", "26 letters", LETTERS26, "10{,}000{,}000", "original", "",
+        ("final_test", "26 letters, 192 px (round 2)", "26 letters", LETTERS26, "10{,}000{,}000", "original", "",
          "26-letter 192 px (round 2)"),
-        ("D051", "26 letters, 96 px (round 44)", "6 never-seen shapes", UNSEEN6, "10{,}000{,}000", "original", "",
+        ("final_test", "26 letters, 96 px (round 44)", "6 never-seen shapes", UNSEEN6, "10{,}000{,}000", "original", "",
          "26-letter 96 px (round 44)"),
-        ("D054", "26 letters, round 50", "26 letters", LETTERS26, "12{,}000{,}000", "26-letter 96 px round 44",
+        ("test_round50", "26 letters, round 50", "26 letters", LETTERS26, "12{,}000{,}000", "26-letter 96 px round 44",
          " (round 44)", "26-letter 96 px round 50"),
     ]
     hist_rows = []
@@ -293,22 +292,22 @@ def main():
         if c_ref != len(shapes) or c_m != len(shapes):
             print(f"  history {test} {model}: {c_m} of {len(shapes)} shapes found")
         hist_rows.append(f"{label} & {slabel} & {n_m:,} & {rr}{reflab} & {rm} \\\\".replace("1,000", "1{,}000"))
-        if test == "D051" and slabel == "26 letters" and "96 px" in label:
-            M.add("numHistFinalOrig", rr, "earlier final test D051 (seeds 10000000 + 20*i, 300 scenes), original, 26 "
-                                          "letters (final_tests_by_shape.csv)")
-            M.add("numHistFinalMain", rm, "  D051, round 44, 26 letters")
-        if test == "D054":
-            M.add("numHistRoundFortyFour", rr, "D054 (seeds 12000000 + 20*i), round 44, 26 letters "
-                                               "(final_tests_by_shape.csv)")
-            M.add("numHistRoundFifty", rm, "  D054, round 50, 26 letters")
+        if test == "final_test" and slabel == "26 letters" and "96 px" in label:
+            M.add("numHistFinalOrig", rr, "earlier final test, original, 26 letters (seeds 10000000 + 20*i, 300 "
+                                          "scenes; final_tests_by_shape.csv)")
+            M.add("numHistFinalMain", rm, "  round 44, 26 letters")
+        if test == "test_round50":
+            M.add("numHistRoundFortyFour", rr, "round 44, 26 letters (round-50 test, seeds 12000000 + 20*i; "
+                                               "final_tests_by_shape.csv)")
+            M.add("numHistRoundFifty", rm, "  round 50, 26 letters")
     with open(paper / "tables" / "history.tex", "w") as f:
         f.write("% Generated from the project's result data. Do not edit by hand.\n% Success %, pooled over the letters named.\n")
         f.write("\\begin{tabular}{llrrr}\n\\toprule\n")
         f.write("Policy & Shapes & Scenes per shape & Reference & Result \\\\\n\\midrule\n")
         f.write("\n".join(hist_rows) + "\n\\bottomrule\n\\end{tabular}\n")
 
-    # ---------------------------------------------------------------- steps executed (D056, final data)
-    EP = [r for r in read(hist / "final_tests_episodes.csv") if r["test"] == "D056"]
+    # ---------------------------------------------------------------- steps executed (steps-per-plan test, final data)
+    EP = [r for r in read(hist / "final_tests_episodes.csv") if r["test"] == "test_steps_per_plan"]
     by = {}
     for r in EP:
         by.setdefault(r["model"], {})[(r["shape"], r["scene_seed"])] = int(r["success"])
@@ -329,18 +328,20 @@ def main():
             ch = [signed(str(dec1(100 * x))) for x in (mu, mu - h, mu + h)]
             cells += [v, f"{ch[0]} [{ch[1]}, {ch[2]}]"]
             if gl == "All 26 letters":
-                M.add(f"numSteps{word}", v, f"D056 (seeds 12000000 + 20*i, 200 scenes), round 50 executing "
-                                            f"{word.lower()} of 16 steps, 26 letters (final_tests_episodes.csv)")
+                M.add(f"numSteps{word}", v, f"round 50 executing {word.lower()} of 16 steps, 26 letters "
+                                            "(steps-per-plan test, seeds 12000000 + 20*i, 200 scenes; "
+                                            "final_tests_episodes.csv)")
                 M.add(f"numSteps{word}Diff", ch[0], "  paired change vs executing 8, points")
                 M.add(f"numSteps{word}DiffLo", ch[1], "  95% interval, low end")
                 M.add(f"numSteps{word}DiffHi", ch[2], "  95% interval, high end")
         if gl == "All 26 letters":
-            M.add("numStepsEight", cells[0], "D056, round 50 executing 8 of 16 steps (trained), 26 letters")
+            M.add("numStepsEight", cells[0], "round 50 executing 8 of 16 steps (trained), 26 letters")
         lines.append(f"{gl} & " + " & ".join(cells) + " \\\\")
-    # round 50 minus round 44 on the D054 pool (26 letters, paired by scene), the check that made round 50 the main model
+    # round 50 minus round 44 on the round-50 test pool (26 letters, paired by scene), the check that made round 50 the
+    # main model
     E54 = {}
     for r in read(hist / "final_tests_episodes.csv"):
-        if r["test"] == "D054":
+        if r["test"] == "test_round50":
             E54.setdefault(r["model"], {})[(r["shape"], r["scene_seed"])] = int(r["success"])
     r44, r50 = E54["26-letter 96 px round 44"], E54["26-letter 96 px round 50"]
     keys = sorted(k for k in r44 if k[0] in LETTERS26 and k in r50)
@@ -348,8 +349,8 @@ def main():
     mu = sum(d) / len(d)
     h = 1.96 * math.sqrt(sum((x - mu) ** 2 for x in d) / (len(d) - 1)) / math.sqrt(len(d))
     ch = [signed(str(dec1(100 * x))) for x in (mu, mu - h, mu + h)]
-    M.add("numHistRoundFiftyDiff", ch[0], f"D054 (seeds 12000000 + 20*i), round 50 minus round 44, 26 letters, paired "
-                                          f"change in points over {len(d)} scenes (final_tests_episodes.csv)")
+    M.add("numHistRoundFiftyDiff", ch[0], f"round 50 minus round 44, 26 letters, paired change in points over {len(d)} "
+                                          "scenes (round-50 test, seeds 12000000 + 20*i; final_tests_episodes.csv)")
     M.add("numHistRoundFiftyDiffLo", ch[1], f"  95% interval, low end ({100 * (mu - h):.3f} before rounding)")
     M.add("numHistRoundFiftyDiffHi", ch[2], "  95% interval, high end")
     M.add("numHistRoundFiftyDiffSig", "excludes" if mu - h > 0 or mu + h < 0 else "includes",
@@ -360,7 +361,7 @@ def main():
         f.write("Shapes & Execute 8 & Execute 12 & Change & Execute 15 & Change \\\\\n\\midrule\n")
         f.write("\n".join(lines) + "\n\\bottomrule\n\\end{tabular}\n")
 
-    # ---------------------------------------------------------------- tables from the D064 test
+    # ---------------------------------------------------------------- tables from the final test (pose_head_test_*.csv)
     def cell(k, gkey):
         r = G.get((k, gkey))
         return pct(int(r["successes"]), int(r["episodes"])) if r else "--"

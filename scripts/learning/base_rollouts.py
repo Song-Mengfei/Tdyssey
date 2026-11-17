@@ -70,13 +70,13 @@ def less_random(agent, init_scale=1.0):
 
 def build(student=None, device="cuda"):
     """Frozen base policy, or a distilled student (distill.py actor checkpoint) when `student` is given.
-    The agent's render_size and goal_overlay (D066; 0 = official rendering) come from the checkpoint's arch, so every
+    The agent's render_size and goal_overlay (0 = official rendering) come from the checkpoint's arch, so every
     caller renders the camera the way the student was trained. device="cpu" only for small CPU checks (official
     network path)."""
     from dataclasses import replace
     config = ForwardConfig(**json.loads((ROOT/"configs/nft_nearmiss_batched.json").read_text()))
     payload = torch.load(student, map_location="cpu", weights_only=True) if student else None
-    if payload and (payload.get("arch") or {}).get("type") == "flow_dit":   # flow_train.py (D059): DINOv2 + flow DiT
+    if payload and (payload.get("arch") or {}).get("type") == "flow_dit":   # flow_train.py: DINOv2 + flow DiT
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         import flow_policy
         return flow_policy.load_agent(payload), make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))

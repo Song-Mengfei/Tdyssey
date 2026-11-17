@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Adding letters E, F, J, P, U (decided with the project lead 2026-10-31). Starts after the D046 fair test (memory).
+# Adding letters E, F, J, P, U (decided with the project lead 2026-10-31). Starts after the 5-shape round-4 fair test.
 #  1. dynamics data: the original policy with Gaussian action noise 0/10/25/50 px on T + the new letters
 #     (value pool 600000 + 20*i, i = 1000-1399; same recipe as the first five letters' dyn-data)
 #  2. world model wm2 v2 on all ten letters (old dyn-data + new), TDYSSEY_SHAPES=T,T_narrow,Y,D,L,E,F,J,P,U
@@ -7,7 +7,7 @@
 #  4. original camera policy on the new letters (same 50 validation scenes), as the baseline
 source "$(dirname "$0")/common.sh"
 R=$WORK/runs; L=$WORK/logs; mkdir -p $L/newletters $R/dyn-data-new $R/dyn-data-10
-# (On the cluster this first waited for the D046 fair test, chain_fairtest_fix.sh, to finish.)
+# (On the cluster this first waited for the 5-shape round-4 fair test, chain_fairtest_fix.sh, to finish.)
 echo "[new $(date +%T)] start"
 # The earlier dynamics data (runs/dyn-data, runs/dyn-data-wide) must be in $WORK/runs. Set TDYSSEY_STORE to a Hugging
 # Face repository holding a copy (owner/name) to fetch it first.

@@ -183,7 +183,7 @@ bias and only one training seed/validation episode. The contact-only result cann
 be presented as a generalization or policy improvement. The physical probe used
 two eligible states, eight branches, 32 controls and one reset substep. Predicted
 reward ranges across candidates were below `2e-7`, while final physical reward
-ranges were about 0.077 and 0.101. See [complete evidence](VALIDATION.md).
+ranges were about 0.077 and 0.101.
 
 The first pretrained GPC assessment is now completed below. It loads unchanged
 released weights and exposes an appearance mismatch and mixed native contact
@@ -266,7 +266,7 @@ The first run completed in 6.39 seconds: **76 controls, 760 control physics
 substeps, two reset substeps, 20 restores, 64 forecast steps and 192 denoising
 steps**. Peak allocated GPU memory was about 105.8 MiB; report/preview used
 360,335 bytes, beyond the single checkpoint. No stored training/validation/model-test
-dataset was opened and no weights were updated. Full evidence: [VALIDATION.md](VALIDATION.md).
+dataset was opened and no weights were updated.
 
 At four controls, native bottom-push object-region MSE was **0.00785 vs 0.06821**
 for persistence; native left-push was **0.17537 vs 0.17479**, with missed rotation.
@@ -336,8 +336,7 @@ The mean hides a remaining failure: source-palette left-push object IoU is only
 rotation is about -9.84 degrees; the palette-conditioned prediction largely
 remains still. Most other directions improve, so palette conversion cannot be
 described as uniformly better or as a complete dynamics fix. Target shape/recall
-also remain imperfect. The failed first run and its separate resource counts are
-preserved in [VALIDATION.md](VALIDATION.md).
+also remain imperfect.
 
 Next calibrate the pretrained model on bounded **official-RGB T training data**
 with varied contact/rotation, then compare unchanged/adapted weights on disjoint

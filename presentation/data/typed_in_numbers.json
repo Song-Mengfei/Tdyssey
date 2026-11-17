@@ -1,9 +1,9 @@
 {
- "_about": "Numbers typed in from the project docs for charts without a CSV source. Edit values here; make_figures.py reads this file. Each entry names its source.",
+ "_about": "Numbers typed in for charts without a CSV source. Edit values here; make_figures.py reads this file.",
  "original_on_teacher_validation_5shapes": {
   "successes": 41,
   "of": 250,
-  "source": "docs/DECISIONS.md D046 (T 20, near-T 17, Y 4, D 0, L 0 on the teacher's 50 validation scenes)"
+  "source": "T 20, near-T 17, Y 4, D 0, L 0 on the teacher's 50 validation scenes"
  },
  "original_on_validation_10shapes": {
   "values": {
@@ -20,13 +20,13 @@
   },
   "successes": 41,
   "of": 500,
-  "source": "docs/DECISIONS.md D046 and docs/LEARNING_FINDINGS.md section 6 (original: T 20, near-T 17, Y 4, D 0, L 0 of 50 on the validation scenes; 'The original policy scores 0 on all five new letters' E, F, J, P, U). The 10-shape validation uses the same 50 scenes per shape (seeds 400000 + 20*i) as the 5-shape stage.",
-  "note": "No run of the original policy on the 27-shape validation scenes exists (the 17 newer letters were never validated with it); charts that need an original level for 27 shapes use the D051 fresh-test value and say so."
+  "source": "original: T 20, near-T 17, Y 4, D 0, L 0 of 50 on the validation scenes, and 0 on all five new letters E, F, J, P, U. The 10-shape validation uses the same 50 scenes per shape (seeds 400000 + 20*i) as the 5-shape stage.",
+  "note": "No run of the original policy on the 27-shape validation scenes exists (the 17 newer letters were never validated with it); charts that need an original level for 27 shapes use the final-test value and say so."
  },
  "teacher_first_planner_5shapes_total": {
   "successes": 124,
   "of": 250,
-  "source": "docs/LEARNING_FINDINGS.md section 5, final planner (T 5, near-T 12, Y 36, D 50, L 21); the FIRST exact-state planner, not the teacher that labelled the camera students",
+  "source": "final planner (T 5, near-T 12, Y 36, D 50, L 21); the FIRST exact-state planner, not the teacher that labelled the camera students",
   "label": "first exact-state planner (no state noise)"
  },
  "teacher26_successes_of_50": {
@@ -52,7 +52,7 @@
    "D": 49,
    "L": 34
   },
-  "source": "docs/LEARNING_FINDINGS.md section 7, 26-letter preparation (world model v3 teacher, 50 validation scenes per letter)"
+  "source": "26-letter preparation (world model v3 teacher, 50 validation scenes per letter)"
  },
  "teacher5_successes_of_50": {
   "values": {
@@ -62,7 +62,7 @@
    "D": 50,
    "L": 21
   },
-  "source": "docs/LEARNING_FINDINGS.md section 5, final planner"
+  "source": "final planner"
  },
  "original_5shapes_final_pool_percent": {
   "values": {
@@ -72,7 +72,7 @@
    "D": 0.3,
    "L": 0.1
   },
-  "source": "docs/LEARNING_FINDINGS.md section 5 (original policy, 1000-scene final-test pool)"
+  "source": "original policy, 1000-scene final-test pool"
  },
  "teacher_commit_successes_of_500": {
   "values": [
@@ -89,7 +89,7 @@
     303
    ]
   ],
-  "source": "docs/DECISIONS.md D048, teacher outcome"
+  "source": "ten-letter teacher outcome, 50 validation scenes per letter"
  },
  "teacher_totals": {
   "values": {
@@ -102,7 +102,7 @@
     500
    ]
   },
-  "source": "5 shapes: docs/LEARNING_FINDINGS.md section 6 (1 px / 1 degree noisy teacher, 34+22+46+50+39); 10 shapes: docs/LEARNING_FINDINGS.md section 7 and docs/DECISIONS.md D048 (re-plans every push, world model wm2 v2). 27 shapes: summed from teacher_validation.csv"
+  "source": "5 shapes: 1 px / 1 degree noisy teacher, 34+22+46+50+39; 10 shapes: re-plans every push, world model wm2 v2; 27 shapes: summed from teacher_validation.csv"
  },
  "label_ab_successes_of_1000": {
   "values": [
@@ -132,7 +132,7 @@
    "without",
    "with"
   ],
-  "source": "docs/LEARNING_FINDINGS.md section 7, What helps (100 validation scenes x 10 shapes)"
+  "source": "matched A/B tests, 100 validation scenes x 10 shapes"
  },
  "budget_samples_per_shape_per_round_thousands": {
   "values": [
@@ -148,8 +148,7 @@
     "27 shapes,\n54k steps",
     512
    ]
-  ],
-  "source": "docs/DECISIONS.md D053"
+  ]
  },
  "rl_long_runs": {
   "values": [
@@ -191,7 +190,7 @@
    "last update"
   ],
   "t_success_at_update_0": 0.55,
-  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs (small development evaluation)"
+  "source": "long runs, small development evaluation"
  },
  "rl_drift": {
   "values": [
@@ -251,7 +250,7 @@
    "T drift ratio",
    "last-evaluation T success"
   ],
-  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs"
+  "source": "long runs"
  },
  "rl_signal_share": {
   "values": [
@@ -281,7 +280,7 @@
    "plan share of score variance",
    "split-half reliability"
   ],
-  "source": "docs/LEARNING_FINDINGS.md section 2 (score_snr.py)"
+  "source": "score_snr.py"
  },
  "rl_candidate_ranking": {
   "values": [
@@ -316,7 +315,7 @@
    "value function",
    "one full-episode draw"
   ],
-  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 3 (correlation with the true full-episode return)"
+  "source": "correlation with the true full-episode return"
  },
  "teacher_noisy_planner_5shapes": {
   "values": {
@@ -329,7 +328,7 @@
   "successes": 191,
   "of": 250,
   "label": "planner teacher reading exact state with 1 px / 1 degree noise (labelled the 5-shape students)",
-  "source": "docs/LEARNING_FINDINGS.md section 6, 'Teacher-relabelled DAgger works' (teacher 34, 22, 46, 50, 39) and 'Can the student copy the teacher?' table; docs/DECISIONS.md D044/D045; 50 validation scenes per letter (seeds 400000 + 20*i)"
+  "source": "teacher 34, 22, 46, 50, 39; 50 validation scenes per letter (seeds 400000 + 20*i)"
  },
  "five_shape_round0": {
   "stage": "5 shapes",
@@ -381,8 +380,8 @@
    "line",
    "rounds completed"
   ],
-  "note": "Rounds whose student went to a fresh-scene test. Round 50 has no validation (the line stopped after training it); its number comes from the D054 fresh-scene test. Round 47 later scored the most validation successes (480 of 1350), but the D051 pick had been fixed by rule at round 44 (12 hours before the job ended).",
-  "source": "docs/DECISIONS.md D046, D047, D049 (amendment: round 13), D050, D051/D053 outcome (round 44, round 2), D054"
+  "note": "Rounds whose student went to a fresh-scene test. Round 50 has no validation (the line stopped after training it); its number comes from the round-50 fresh-scene test. Round 47 later scored the most validation successes (480 of 1350), but the final-test pick had been fixed by rule at round 44 (12 hours before the job ended).",
+  "source": "5-shape tests after rounds 4 and 7; 10-shape tests (96 px, amendment: round 13; 192 px); final-test picks (round 44, round 2); round-50 test"
  },
  "method_pipeline": {
   "dynamics_episodes": 1500,
@@ -411,6 +410,6 @@
   "correction_scenes_per_new_letter_from_round_14": 60,
   "world_model_pd_substeps": 10,
   "world_model_pusher_check_px": 0.0001,
-  "source": "docs/LEARNING_FINDINGS.md sections 4 (dynamics data, wm2), 5 (planner: --pushes 128 --horizon 48 in Reproduce), 6 (1 px / 1 degree noise; DAgger: student drives with probability 0.7; 206 human T episodes); scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 = 1024 candidates per control, 128 of the first iteration's 256 replaced by structured pushes); docs/LEARNING_FINDINGS.md Evaluation protocol (DDPM-100, 8 of 16 actions executed); docs/DECISIONS.md D048, D051, D053 (30 scenes per shape per round; 60 per new letter from round 14)"
+  "source": "dynamics data, wm2; planner: --pushes 128 --horizon 48; 1 px / 1 degree noise; DAgger: the student controls the pusher with probability 0.7; 206 human T episodes; scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 = 1024 candidates per control, 128 of the first iteration's 256 replaced by structured pushes); evaluation protocol: DDPM-100, 8 of 16 actions executed; 30 scenes per shape per round; 60 per new letter from round 14"
  }
 }

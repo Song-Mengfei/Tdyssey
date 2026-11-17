@@ -1,6 +1,6 @@
-"""Data tables for the two later experiments (no GPU): the architecture experiment (D059/D064: Flow-DiT, a 505M
-flow-matching transformer with all 16x16 image tokens, against the main model on the same data and camera) and last-mile
-RL on the frozen main model (D058).
+"""Data tables for the two later experiments (no GPU): the architecture experiment (Flow-DiT, a 505M flow-matching
+transformer with all 16x16 image tokens, against the main model on the same data and camera) and last-mile RL on the
+frozen main model.
 
     python3 presentation/scripts/build_experiment_data.py [--runs <folder with the run store's runs/>] [--out <folder>]
 
@@ -60,7 +60,7 @@ def main():
     DATA = Path(a.out)
     DATA.mkdir(parents=True, exist_ok=True)
     R = Path(a.runs)
-    # architecture experiment, new test scenes (D064 pool: seeds 15000000 + 20*i, 200 per shape): round 50 vs Flow-DiT
+    # architecture experiment, new test scenes (seeds 15000000 + 20*i, 200 per shape): round 50 vs Flow-DiT
     A, B = episodes(str(R / "fairtest-d064/r50-part*.json")), episodes(str(R / "fairtest-d064/base-part*.json"))
     keys = sorted(set(A) & set(B))
     shapes = sorted({k[0] for k in keys}, key=lambda s: (s in UNSEEN, s not in EARLY, s))
@@ -105,7 +105,7 @@ def main():
     rows = [{"step_end": int(min(i + 500, len(loss))), "mean_loss": round(float(loss[i:i + 500].mean()), 5)}
             for i in range(0, len(loss), 500)]
     write("architecture_training_loss.csv", rows)
-    # last-mile RL (D058): finishing from near-goal states of held-out scenes, paired with the frozen main model
+    # last-mile RL: finishing from near-goal states of held-out scenes, paired with the frozen main model
     L = R / "lastmile-rl"
     if not (L / "eval-heldout-base.json").exists():                 # run files not on this machine: keep the table
         print("last-mile RL files not found: data/lastmile_rl.csv left unchanged")

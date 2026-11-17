@@ -132,7 +132,7 @@ def main():
         NOISE.update(pos=args.state_noise, ang=args.angle_noise, rng=np.random.default_rng(derived_seed(7, "state-noise", args.shape, args.start)))
     agent, cls = base_rollouts.build(args.student)
     RS = getattr(agent, "render_size", 96)                # the student's camera size (192 for 192 px students)
-    OV = getattr(agent, "goal_overlay", 0)                # the student's goal overlay (D066; 0 = official rendering)
+    OV = getattr(agent, "goal_overlay", 0)                # the student's goal overlay (0 = official rendering)
     cam = {"goal_overlay": OV} if OV else {}
     device = agent.device
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp

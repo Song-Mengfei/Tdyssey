@@ -5,7 +5,7 @@ the episode ended. Restoring a saved pair reproduces the policy's input exactly.
 
     .venv/bin/python -B scripts/learning/lastmile_states.py --student CKPT --start 20000 --scenes 40 --out DIR
 
-Training scenes: seeds 800000 + 20*i with i in [20000, 30000) (reserved for last-mile work, D058).
+Training scenes: seeds 800000 + 20*i with i in [20000, 30000) (reserved for last-mile work).
 """
 import argparse
 from collections import deque
@@ -41,7 +41,7 @@ def main():
         raise SystemExit("last-mile scenes must use i in [20000, 30000)")
     agent, cls = base_rollouts.build(a.student)
     size = getattr(agent, "render_size", 96)
-    cam = {"goal_overlay": agent.goal_overlay} if getattr(agent, "goal_overlay", 0) else {}   # D066 overlay students
+    cam = {"goal_overlay": agent.goal_overlay} if getattr(agent, "goal_overlay", 0) else {}   # goal-overlay students
     a.out.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     for i in range(a.start, a.start + a.scenes):

@@ -8,7 +8,6 @@ establish official-policy performance or compatibility of its weights/data.
 This command loads GPC's published T-trained visual diffusion policy and executes
 one sampled action chunk at a time in the physical simulator. It uses no world
 model, reward predictor, or action ranking. It does not train or install anything.
-See [validation evidence](VALIDATION.md) for actual observations and limits.
 
 ## Resources
 

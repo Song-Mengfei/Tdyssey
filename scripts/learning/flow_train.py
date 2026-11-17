@@ -1,4 +1,4 @@
-"""Train the D059 flow-matching DiT camera policy (flow_policy.py: DINOv2 ViT-B/14 + DiT head, ~505M parameters).
+"""Train the Flow-DiT flow-matching camera policy (flow_policy.py: DINOv2 ViT-B/14 + DiT head, ~505M parameters).
 
 Data: exactly bc_train.py's pipeline (its functions are imported, the sample weighting is copied from its main()):
 teacher episodes (--demos, intended-plan labels with --label plan, the default here), the human T demonstrations
@@ -205,7 +205,7 @@ def main():
     p.add_argument("--no-cls", action="store_true", help="Drop the CLS token of each frame")
     p.add_argument("--no-qk-norm", action="store_true")
     p.add_argument("--head", choices=("cross", "prefix"), default=None,
-                   help="Action head: cross-attention to the condition (D059, default) or pi0-style block-causal joint "
+                   help="Action head: cross-attention to the condition (Flow-DiT, default) or pi0-style block-causal joint "
                         "attention; with --init: the checkpoint's head")
     p.add_argument("--cond-width", type=int, default=512, help="--head prefix: width of the condition stream")
     p.add_argument("--cond-mlp-ratio", type=float, default=4.0, help="--head prefix: MLP ratio of the condition stream")
@@ -307,7 +307,7 @@ def main():
     def save(step):
         payload = {"arch": arch, "ema": fp.head_state(ema), "normalizer": net.normalizer.state_dict(), "trainable": "flow_dit",
                    "step": step, "label": args.label, "parameters": counts,
-                   "recipe": "flow-matching DiT on DINOv2 (flow_train.py, D059); bc_train data pipeline"}
+                   "recipe": "flow-matching DiT on DINOv2 (flow_train.py); bc_train data pipeline"}
         torch.save(payload, args.out/f"ema-step{step}.pt")
         tmp = args.out/"resume.pt.tmp"
         torch.save({"net": net.state_dict(), "ema": ema.state_dict(), "opt": opt.state_dict(), "step": step,

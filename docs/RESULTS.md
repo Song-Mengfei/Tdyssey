@@ -4,18 +4,16 @@ The selected results below are committed with the source and can be viewed
 without installing the project. They include unsuccessful predictions and
 limitations. No image-policy learning or successful adaptation is established yet;
 a privileged world-model planning teacher now solves most D/Y/L scenes in the
-simulator, see [learning findings](LEARNING_FINDINGS.md).
-See [full evidence and commands](VALIDATION.md) and
-[world-model protocols](WORLD_MODEL.md).
+simulator. See the [world-model protocols](WORLD_MODEL.md).
 
 The newer [policy decision diagnostic](POLICY_DIAGNOSTICS.md) explains actual
 noise-to-action sampling and near-goal loss on D/near-T. Its source and commands
 are shared; generated interactive views, PNGs and MP4s currently remain local,
 not part of the published snapshots below.
 An additional 500-control original-T continuation first succeeds at 128, loses
-success at 129 and ends at zero overlap. Its [protocol and evidence](VALIDATION.md#original-t-continued-for-500-controls-after-ignoring-the-success-stop-2026-10-20)
-separate post-goal stability from the original terminate-on-success task; generated
-video/plots currently remain local as well.
+success at 129 and ends at zero overlap. It separates post-goal stability from
+the original terminate-on-success task; generated video/plots currently remain
+local as well.
 
 ## Available in Git
 
@@ -90,8 +88,8 @@ noise repeats do not establish generalization or policy learning.
 | Additional raw videos and future runs | Local/ignored until a small result selection is published |
 
 **No shared raw-data/checkpoint archive is configured yet.** A coauthor cannot
-recover these local files from their hashes. The commands in [VALIDATION.md](VALIDATION.md)
-and [WORLD_MODEL.md](WORLD_MODEL.md) support reproduction; exact original raw files
+recover these local files from their hashes. The commands in
+[WORLD_MODEL.md](WORLD_MODEL.md) support reproduction; exact original raw files
 need a separate transfer or future shared archive. Raw artifacts have not been
 deleted. Keep weights, datasets and caches out of routine Git history.
 
