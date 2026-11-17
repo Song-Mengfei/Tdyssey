@@ -33,6 +33,7 @@ Apart from the path changes they are the scripts that ran; after those changes t
 | 192 px continuation | `chain_192_continue.sh` | D055 |
 | Round 50 against round 44 on fresh scenes | `chain_d054.sh` | D054 |
 | Executing 8, 12 or 15 of the 16 planned steps | `chain_d056.sh` | D056 |
+| Goal overlay against a control arm, from round 50 (not run yet; overlay frames: `overlay_frames.py`) | `chain_d066.sh` | D066 |
 
 `chain_dagger_loop26c.sh` covers every 26-letter round. Round 0 (retraining on all 27 shapes) is
 `chain_dagger_loop26c.sh m 96 "<demo dirs>" <ten-shape student> 0 0 58000`. Rounds 1-13 ran an earlier copy that is

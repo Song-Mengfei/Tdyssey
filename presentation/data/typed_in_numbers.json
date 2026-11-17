@@ -1,0 +1,416 @@
+{
+ "_about": "Numbers typed in from the project docs for charts without a CSV source. Edit values here; make_figures.py reads this file. Each entry names its source.",
+ "original_on_teacher_validation_5shapes": {
+  "successes": 41,
+  "of": 250,
+  "source": "docs/DECISIONS.md D046 (T 20, near-T 17, Y 4, D 0, L 0 on the teacher's 50 validation scenes)"
+ },
+ "original_on_validation_10shapes": {
+  "values": {
+   "T": 20,
+   "T_narrow": 17,
+   "Y": 4,
+   "D": 0,
+   "L": 0,
+   "E": 0,
+   "F": 0,
+   "J": 0,
+   "P": 0,
+   "U": 0
+  },
+  "successes": 41,
+  "of": 500,
+  "source": "docs/DECISIONS.md D046 and docs/LEARNING_FINDINGS.md section 6 (original: T 20, near-T 17, Y 4, D 0, L 0 of 50 on the validation scenes; 'The original policy scores 0 on all five new letters' E, F, J, P, U). The 10-shape validation uses the same 50 scenes per shape (seeds 400000 + 20*i) as the 5-shape stage.",
+  "note": "No run of the original policy on the 27-shape validation scenes exists (the 17 newer letters were never validated with it); charts that need an original level for 27 shapes use the D051 fresh-test value and say so."
+ },
+ "teacher_first_planner_5shapes_total": {
+  "successes": 124,
+  "of": 250,
+  "source": "docs/LEARNING_FINDINGS.md section 5, final planner (T 5, near-T 12, Y 36, D 50, L 21); the FIRST exact-state planner, not the teacher that labelled the camera students",
+  "label": "first exact-state planner (no state noise)"
+ },
+ "teacher26_successes_of_50": {
+  "values": {
+   "A": 47,
+   "B": 49,
+   "C": 42,
+   "G": 44,
+   "H": 49,
+   "I": 47,
+   "K": 49,
+   "M": 49,
+   "N": 46,
+   "O": 49,
+   "Q": 49,
+   "R": 36,
+   "S": 49,
+   "V": 44,
+   "W": 47,
+   "X": 48,
+   "Z": 48,
+   "T": 30,
+   "D": 49,
+   "L": 34
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 7, 26-letter preparation (world model v3 teacher, 50 validation scenes per letter)"
+ },
+ "teacher5_successes_of_50": {
+  "values": {
+   "T": 5,
+   "T_narrow": 12,
+   "Y": 36,
+   "D": 50,
+   "L": 21
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 5, final planner"
+ },
+ "original_5shapes_final_pool_percent": {
+  "values": {
+   "T": 44.4,
+   "T_narrow": 41.9,
+   "Y": 9.4,
+   "D": 0.3,
+   "L": 0.1
+  },
+  "source": "docs/LEARNING_FINDINGS.md section 5 (original policy, 1000-scene final-test pool)"
+ },
+ "teacher_commit_successes_of_500": {
+  "values": [
+   [
+    "re-plan\nevery push",
+    390
+   ],
+   [
+    "commit to\n4 pushes",
+    317
+   ],
+   [
+    "commit to\n8 pushes",
+    303
+   ]
+  ],
+  "source": "docs/DECISIONS.md D048, teacher outcome"
+ },
+ "teacher_totals": {
+  "values": {
+   "5 shapes": [
+    191,
+    250
+   ],
+   "10 shapes": [
+    390,
+    500
+   ]
+  },
+  "source": "5 shapes: docs/LEARNING_FINDINGS.md section 6 (1 px / 1 degree noisy teacher, 34+22+46+50+39); 10 shapes: docs/LEARNING_FINDINGS.md section 7 and docs/DECISIONS.md D048 (re-plans every push, world model wm2 v2). 27 shapes: summed from teacher_validation.csv"
+ },
+ "label_ab_successes_of_1000": {
+  "values": [
+   [
+    "Copy the teacher's intended plan\ninstead of its executed pushes",
+    77,
+    129
+   ],
+   [
+    "Camera 192 px instead of 96 px",
+    111,
+    129
+   ],
+   [
+    "All teacher demonstrations\ninstead of half",
+    104,
+    111
+   ],
+   [
+    "Action network 990M instead of\n251M parameters (from scratch)",
+    138,
+    146
+   ]
+  ],
+  "columns": [
+   "change",
+   "without",
+   "with"
+  ],
+  "source": "docs/LEARNING_FINDINGS.md section 7, What helps (100 validation scenes x 10 shapes)"
+ },
+ "budget_samples_per_shape_per_round_thousands": {
+  "values": [
+   [
+    "10 shapes,\n20k steps",
+    512
+   ],
+   [
+    "27 shapes,\n20k steps",
+    190
+   ],
+   [
+    "27 shapes,\n54k steps",
+    512
+   ]
+  ],
+  "source": "docs/DECISIONS.md D053"
+ },
+ "rl_long_runs": {
+  "values": [
+   [
+    "dense, lr 1e-4",
+    0.15,
+    0.0,
+    "25"
+   ],
+   [
+    "dense, lr 3e-5",
+    0.0,
+    0.3,
+    "150"
+   ],
+   [
+    "dense, lr 1e-5",
+    0.3,
+    0.3,
+    "150"
+   ],
+   [
+    "dense, lr 3e-6",
+    0.6,
+    0.6,
+    "125"
+   ],
+   [
+    "LoRA, lr 3e-4",
+    0.4,
+    null,
+    "150"
+   ]
+  ],
+  "columns": [
+   "setting",
+   "AdvantageFlow last T success",
+   "NFT last T success",
+   "last update"
+  ],
+  "t_success_at_update_0": 0.55,
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs (small development evaluation)"
+ },
+ "rl_drift": {
+  "values": [
+   [
+    "AF",
+    0.65,
+    0.15
+   ],
+   [
+    "AF",
+    0.32,
+    0.3
+   ],
+   [
+    "AF",
+    19.0,
+    0.0
+   ],
+   [
+    "AF",
+    0.0085,
+    0.6
+   ],
+   [
+    "AF",
+    0.068,
+    0.4
+   ],
+   [
+    "AF",
+    0.076,
+    0.55
+   ],
+   [
+    "NFT",
+    1.5,
+    0.0
+   ],
+   [
+    "NFT",
+    0.11,
+    0.3
+   ],
+   [
+    "NFT",
+    0.9,
+    0.3
+   ],
+   [
+    "NFT",
+    0.01,
+    0.6
+   ]
+  ],
+  "columns": [
+   "method",
+   "T drift ratio",
+   "last-evaluation T success"
+  ],
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 2, Long runs"
+ },
+ "rl_signal_share": {
+  "values": [
+   [
+    "T",
+    0.33,
+    0.27
+   ],
+   [
+    "near-T",
+    0.17,
+    0.18
+   ],
+   [
+    "Y",
+    0.16,
+    0.14
+   ],
+   [
+    "D",
+    0.36,
+    0.29
+   ]
+  ],
+  "columns": [
+   "shape",
+   "plan share of score variance",
+   "split-half reliability"
+  ],
+  "source": "docs/LEARNING_FINDINGS.md section 2 (score_snr.py)"
+ },
+ "rl_candidate_ranking": {
+  "values": [
+   [
+    "T",
+    0.06,
+    0.04,
+    0.43
+   ],
+   [
+    "near-T",
+    0.15,
+    0.19,
+    0.47
+   ],
+   [
+    "Y",
+    0.24,
+    -0.08,
+    0.51
+   ],
+   [
+    "D",
+    -0.11,
+    0.12,
+    0.27
+   ]
+  ],
+  "columns": [
+   "shape",
+   "trainer 32-control score",
+   "value function",
+   "one full-episode draw"
+  ],
+  "source": "docs/LEARNING_EXPERIMENT_LOG.md section 3 (correlation with the true full-episode return)"
+ },
+ "teacher_noisy_planner_5shapes": {
+  "values": {
+   "T": 34,
+   "T_narrow": 22,
+   "Y": 46,
+   "D": 50,
+   "L": 39
+  },
+  "successes": 191,
+  "of": 250,
+  "label": "planner teacher reading exact state with 1 px / 1 degree noise (labelled the 5-shape students)",
+  "source": "docs/LEARNING_FINDINGS.md section 6, 'Teacher-relabelled DAgger works' (teacher 34, 22, 46, 50, 39) and 'Can the student copy the teacher?' table; docs/DECISIONS.md D044/D045; 50 validation scenes per letter (seeds 400000 + 20*i)"
+ },
+ "five_shape_round0": {
+  "stage": "5 shapes",
+  "line": "copy the teacher, no corrections (v1)",
+  "step": 30000,
+  "meaning": "the student the 5-shape correction rounds started from (round 0 = no correction rounds yet)",
+  "source": "run store runs/dagger-loop/round1/info.json, args.init = runs/bc/v1/ema-step30000.pt; its validation is the step-30000 row of that line in validation_rounds.csv"
+ },
+ "picked_rounds": {
+  "values": {
+   "5-shape round 4": [
+    "5 shapes",
+    "correction rounds",
+    4
+   ],
+   "5-shape round 7": [
+    "5 shapes",
+    "correction rounds",
+    7
+   ],
+   "10-shape 96 px": [
+    "10 shapes",
+    "96 px main line",
+    13
+   ],
+   "10-shape 192 px": [
+    "10 shapes",
+    "192 px side line",
+    6
+   ],
+   "26-letter 96 px (round 44)": [
+    "27 shapes",
+    "96 px line",
+    44
+   ],
+   "26-letter 192 px (round 2)": [
+    "27 shapes",
+    "192 px line",
+    2
+   ],
+   "26-letter 96 px round 50 (main model)": [
+    "27 shapes",
+    "96 px line",
+    50
+   ]
+  },
+  "columns": [
+   "stage",
+   "line",
+   "rounds completed"
+  ],
+  "note": "Rounds whose student went to a fresh-scene test. Round 50 has no validation (the line stopped after training it); its number comes from the D054 fresh-scene test. Round 47 later scored the most validation successes (480 of 1350), but the D051 pick had been fixed by rule at round 44 (12 hours before the job ended).",
+  "source": "docs/DECISIONS.md D046, D047, D049 (amendment: round 13), D050, D051/D053 outcome (round 44, round 2), D054"
+ },
+ "method_pipeline": {
+  "dynamics_episodes": 1500,
+  "dynamics_controls_thousands": 431,
+  "action_noise_px": [
+   0,
+   10,
+   25
+  ],
+  "planner_random_search_iterations": 4,
+  "planner_samples_per_iteration": 256,
+  "planner_structured_pushes": 128,
+  "planner_candidates_per_step": 1024,
+  "planner_candidates_note": "1024 = 4 iterations x 256 samples scored per control; the 128 structured push candidates are not extra: they replace the last 128 of the 256 samples in the first iteration (scripts/learning/mpc_teacher.py, plan(), acts[:, -args.pushes:] = pushes.sample(...) when it == 0)",
+  "planner_horizon_controls": 48,
+  "teacher_state_noise_px": 1,
+  "teacher_angle_noise_deg": 1,
+  "plan_steps": 16,
+  "executed_steps": 8,
+  "camera_frames": 2,
+  "camera_px": 96,
+  "denoising_steps": 100,
+  "teacher_share_of_decisions_in_corrections": 0.3,
+  "human_T_episodes": 206,
+  "correction_scenes_per_shape_per_round": 30,
+  "correction_scenes_per_new_letter_from_round_14": 60,
+  "world_model_pd_substeps": 10,
+  "world_model_pusher_check_px": 0.0001,
+  "source": "docs/LEARNING_FINDINGS.md sections 4 (dynamics data, wm2), 5 (planner: --pushes 128 --horizon 48 in Reproduce), 6 (1 px / 1 degree noise; DAgger: student drives with probability 0.7; 206 human T episodes); scripts/learning/mpc_teacher.py defaults (--samples 256, --iters 4: 4 x 256 = 1024 candidates per control, 128 of the first iteration's 256 replaced by structured pushes); docs/LEARNING_FINDINGS.md Evaluation protocol (DDPM-100, 8 of 16 actions executed); docs/DECISIONS.md D048, D051, D053 (30 scenes per shape per round; 60 per new letter from round 14)"
+ }
+}

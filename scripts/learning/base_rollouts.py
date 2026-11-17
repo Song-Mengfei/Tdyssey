@@ -68,11 +68,18 @@ def less_random(agent, init_scale=1.0):
     agent.sample_batch = types.MethodType(sample_batch, agent)
 
 
-def build(student=None):
-    """Frozen base policy, or a distilled student (distill.py actor checkpoint) when `student` is given."""
+def build(student=None, device="cuda"):
+    """Frozen base policy, or a distilled student (distill.py actor checkpoint) when `student` is given.
+    The agent's render_size and goal_overlay (D066; 0 = official rendering) come from the checkpoint's arch, so every
+    caller renders the camera the way the student was trained. device="cpu" only for small CPU checks (official
+    network path)."""
     from dataclasses import replace
     config = ForwardConfig(**json.loads((ROOT/"configs/nft_nearmiss_batched.json").read_text()))
     payload = torch.load(student, map_location="cpu", weights_only=True) if student else None
+    if payload and (payload.get("arch") or {}).get("type") == "flow_dit":   # flow_train.py (D059): DINOv2 + flow DiT
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import flow_policy
+        return flow_policy.load_agent(payload), make_official_shape_env_class(load_official_source(ROOT/"third_party/diffusion_policy"))
     if payload:
         config = replace(config, trainable=payload["trainable"])
     source = ROOT/"third_party/diffusion_policy"
@@ -80,11 +87,12 @@ def build(student=None):
     if arch and (arch["image_size"] != 96 or arch["down_dims"] or arch["scratch_model"]):
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         import policy_builder
-        base = policy_builder.build(arch["image_size"], arch["down_dims"], arch["scratch_model"])
+        base = policy_builder.build(arch["image_size"], arch["down_dims"], arch["scratch_model"], device=device)
     else:
-        base = OfficialDiffusionPolicy(source, ROOT/"checkpoints/official-dp/ema_policy.pt")
+        base = OfficialDiffusionPolicy(source, ROOT/"checkpoints/official-dp/ema_policy.pt", device=device)
     agent = ForwardPolicy(base, config)
     agent.render_size = arch["image_size"] if arch else 96
+    agent.goal_overlay = int(arch.get("goal_overlay", 0)) if arch else 0
     if payload:
         agent.actor.load_state_dict({k: v.to(agent.device) for k, v in payload["actor"].items()})
         if "encoder" in payload:                      # students trained with distill.py --train-encoder
@@ -93,13 +101,13 @@ def build(student=None):
 
 
 def run_eval(args):
-    agent, cls = build(args.student)
+    agent, cls = build(args.student, device=getattr(args, "device", "cuda"))
     if getattr(args, "sampler", "ddpm") == "ddim":
         less_random(agent, args.init_scale)
     seeds = [args.seed_base+20*(args.start+i) for i in range(args.scenes)]
     shapes = tuple(args.shapes) if args.shapes else SHAPES
     cfg = SimpleNamespace(eval_shapes=shapes, eval_seeds=seeds, eval_steps=300, seed=args.noise_seed, execute=args.execute,
-                          render_size=getattr(agent, "render_size", 96))
+                          render_size=getattr(agent, "render_size", 96), goal_overlay=getattr(agent, "goal_overlay", 0))
     counts, start = defaultdict(int), time.time()
     episodes = evaluate_batched(agent, cls, cfg, counts, lambda: None)
     rows = [{k: e[k] for k in ("shape", "requested_seed", "initial_scene_seed", "success", "controls",
@@ -115,6 +123,7 @@ def run_eval(args):
               f"{summary[shape]['wilson95'][1]:.2f}]  final cov {summary[shape]['mean_final_coverage']:.3f}", flush=True)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps({"policy": str(args.student) if args.student else "frozen base (official EMA)", "seeds": seeds, "policy_noise_seed": args.noise_seed,
+                                    **({"goal_overlay": cfg.goal_overlay} if cfg.goal_overlay else {}),
                                     "counts": dict(counts), "seconds": time.time()-start,
                                     "summary": summary, "episodes": rows}, indent=1))
     print(f"wrote {args.out} in {time.time()-start:.0f}s")
@@ -187,6 +196,7 @@ def main():
     e.add_argument("--sampler", choices=("ddpm", "ddim"), default="ddpm", help="ddpm = official; ddim = no noise during refinement")
     e.add_argument("--init-scale", type=float, default=1.0, help="Scale of the starting noise (with --sampler ddim)")
     e.add_argument("--shapes", nargs="*", default=None, help="Shapes to evaluate (default T T_narrow Y D L; any of the 26 capitals)")
+    e.add_argument("--device", default="cuda", help="cuda (default); cpu only for small checks of the official network")
     e.add_argument("--out", type=Path, required=True)
     c = sub.add_parser("collect")
     c.add_argument("--start", type=int, default=0)

@@ -1002,6 +1002,365 @@ each plan is much worse on every shape. Success over the 27 trained shapes: 8 st
 [-17.1, -15.2]), 15 steps 12.2% (-22.5 [-23.7, -21.4]); final coverage 0.83 -> 0.76 -> 0.72; six held-out shapes
 4.4% -> 2.2% -> 1.3%; T 44.0% -> 23.5% -> 17.5%. The trained setting (8) stays; no confirmation run is needed.
 
+## D057 — Presentation materials in Git (2026-11-08)
+
+Lead's decision: the talk and paper materials live in the repository under `presentation/` (branch
+`docs/presentation`), so every author can work on them: Beamer slides, graphs (PDF and PNG), images, short demo videos
+of every model we trained (most checkpoints are private), the CSV tables behind the graphs and the scripts that rebuild
+them. This is an explicit exception to keeping generated media outside Git, like the earlier curated snapshots. Limits:
+H.264 videos of at most 768 px wide grids (CRF 28), no checkpoints, no raw run data beyond the CSV tables, and the
+whole folder under 200 MB (`presentation/README.md` lists the contents). Videos are validation-scene examples and are
+labelled as such; success rates come only from the fresh-scene tests.
+
+PPTX-preservation addendum (2026-11-11): the lead requested conversion of the
+approved 62-slide offline PPTX back into this PR's editable LaTeX. Preserve its 17
+MP4 streams and original posters under `presentation/videos/slides/` and
+`presentation/videos/posters/slides/`, with relative-path bindings and byte hashes
+in `presentation/data/pptx_slide_media.json`. This narrow snapshot retains the
+approved wider canvases, including the 8 synchronized comparisons, instead of
+resizing their panels to 768 px. The 17 MP4s total 6,744,124 bytes; no new raw run data,
+model weights or experiments are added. The under 200 MB presentation limit remains.
+PDF posters open the existing Drive video by default, or the included relative
+MP4 with the documented local-launch build option; PDF viewer support varies.
+
+D057 amendment (2026-11-17, at the final merge). The talk is over and its deck is final, so main keeps only what the
+course report needs: `presentation/paper/`, the 44 figures, diagrams and images the report includes, the CSV data and
+the scripts that rebuild the report's numbers and figures, plus the final 37-slide deck as given
+(`presentation/talk/tdyssey-talk.pptx`, 13 MB, videos embedded). The demo videos and their stills, the Beamer slides,
+the PowerPoint generator, the slide-only images and the talk plan were removed before the squash merge, so they never
+enter main's history (they remain in the history of PR #12 and branch docs/presentation). The presentation build
+workflow was removed too.
+
+## D058 — 192 px line stopped; last-mile RL on the frozen policy (2026-11-08, before any result)
+
+Lead's decision: the 192 px line stops at round 12 (validation 476/1350, flat since round 2's 511; round 2 stays its
+tested model). The GPU goes to two new experiments, both kept separate from the D051 headline.
+
+Last-mile RL on top of the frozen 96 px round-50 policy. Start states: near-goal states recorded from that policy on
+training scenes (seeds 800000 + 20*i, i in [20000, 30000), reserved here; block coverage >= 0.80, episode not yet
+solved; exact simulator state plus the previous control's state for the two-frame camera input;
+`scripts/learning/lastmile_states.py`). Episodes: at most 48 controls (6 decisions of 8 executed targets) from a
+restored state. Reward per decision: coverage gain, minus a penalty on coverage lost, plus a one-time bonus when
+coverage first exceeds 0.95, which ends the episode; time-limit cut-offs bootstrap. Two methods on the same states and
+reward, both off-policy with the base frozen: (1) noise steering (DSRL): the actor chooses the 32-number starting noise
+of the deterministic 10-step DDIM sampler (shown equal to the 100-step sampler, 254 vs 244 of 675); (2) a bounded
+residual on the 8 executed targets. The actors read only the frozen policy's camera features and the pusher position;
+the critics may read exact simulator state (training only, disclosed). Tests: finishing rate from near-goal states of
+held-out scenes, then full episodes on an unused fresh pool (seeds 13000000 + 20*i), paired with round 50, with T and
+near-T reported.
+
+D058 amendment (2026-11-08, after the first run, before any v2 result). First run (v1, 150k decisions each, start
+states from scenes 20000-20019): on 1080 near-goal states of held-out scenes 20030-20039, finishing within 48 controls
+fell from 14.1% (base) to 8.0% with noise steering (-6.1 points [-8.5, -3.7]) and 12.8% with the residual (-1.3
+[-3.8, +1.2]). Mean training reward rose to about zero while success did not: the doubled penalty on lost coverage
+rewarded small, safe moves. v2 rebalances the reward (gain 10, extra loss penalty 2, success bonus 20, cost 0.2 per
+decision), allows 12 decisions (96 controls) with gamma 0.95, trains 300k decisions on start states from scenes
+20000-20029, and is evaluated on new held-out scenes 20040-20049 (20030-20039 are now used for tuning).
+v2 result (300k decisions each; 1080 near-goal states of held-out scenes 20040-20049, up to 96 controls each,
+paired with the base on the same states): base 28.9%; noise steering 30.3% (+1.4 points [-2.1, +4.9]), sampled from
+the actor 30.6% (+1.8 [-1.7, +5.2]); residual 26.9% (-2.0 [-5.5, +1.4]). No significant gain; T and near-T not worse
+under noise steering (T 9 -> 10, near-T 6 -> 10 of 40). Not tested on full episodes.
+Diagnostic (2026-11-08, before its result): the same v2 noise-steering run, but the actor also reads exact block and
+pusher state relative to the goal (`--actor-privileged`; not a deployable policy, no full-episode test). Same states,
+reward and held-out evaluation as v2. A clear gain would mean the frozen policy's camera features cannot resolve the
+remaining error; no gain would mean noise steering itself is too weak.
+Diagnostic result (same 1080 held-out states, paired): privileged actor 35.4% vs base 28.9% (+6.5 points [+2.9,
++10.0]) and vs the camera-only actor 30.3% (+5.1 [+1.5, +8.6]); mean final coverage 0.849 / 0.891 / 0.899. The frozen
+policy's sampler can produce finishing pushes and steering can choose them when the block pose is known exactly; the
+camera-only features of the frozen 96 px policy are the bottleneck. Not a deployable result (the actor reads exact
+state). The track closes here at the lead's decision. Results: `runs/lastmile-rl/eval-*heldout*.json` in the store.
+
+## D059 — New policy architecture (2026-11-08, before any result)
+
+Lead's decision: a new camera policy built with current methods at about 500M parameters, trained on the same data as
+the 26-letter line (teacher demonstrations with intended-plan labels, all correction records, the human T
+demonstrations; equal share per shape). Design, following the literature check of 2026-11-08: a DINOv2 image encoder
+(chosen over SigLIP: better on PushT in published comparisons and built for spatial detail), fine-tuned, on the two
+camera frames upsampled from 96 px, pooled to a small grid of spatial tokens; a transformer action head (DiT-style:
+self-attention over the 16 action tokens, cross-attention to image and pusher tokens, time by adaptive layer norm)
+trained with flow matching (pi0-style Beta time sampling), 10 Euler steps at inference; 16 predicted targets, 8
+executed, as before. Same fresh-scene test as D058, paired with round 50; correction rounds with the new policy only if
+time allows before the talk.
+
+D059 implementation (2026-11-08, before any result): `scripts/learning/flow_policy.py`, `flow_train.py`; 504.6M
+parameters (DINOv2 ViT-B/14 86.6M with `facebook/dinov2-base` weights; DiT head 418.0M, width 1024, depth 24, 16 heads).
+Each frame: 84 px crop (random in training) resized to 224; 16x16 patch tokens pooled to 8x8 plus CLS; one pusher token.
+Head blocks: self-attention over 16 action tokens, cross-attention to the 131 condition tokens, MLP; shared time
+modulation with per-block offsets (adaLN-single, zero-initialised gates); per-head query/key normalisation. Flow path
+x_t = t x1 + (1 - t) noise, t = 0.999 (1 - u), u ~ Beta(1.5, 1) (pi0); 10 Euler steps from per-row seeded noise. AdamW
+(head 1e-4, encoder 1e-5, betas 0.9/0.95), 1000 warm-up steps then cosine, bf16, EMA; batch 128, 160k steps (about 6.4
+passes over the round-50 training data: same 116 record folders, 4 teacher demonstration folders and human T data).
+`base_rollouts.build` loads it, so the existing tests and correction rounds run unchanged.
+
+D059 test (fixed 2026-11-08, before the final checkpoint exists). Interim validation, for monitoring only: the step-120k
+checkpoint solved 595 of 1350 validation scenes (44.1%), against 470 for round 44 and at most 480 for any 96 px round
+on the same scenes (validation picked those rounds, so this favours the CNN line). The deciding test: the final
+checkpoint (`runs/flow26/v1/ema-step160000.pt`) against the 96 px round-50 student (tested sampler, 100 DDPM steps),
+200 new scenes per shape on all 33 shapes (27 trained, 6 never seen), seeds 13000000 + 20*i, i in [0, 200) (unused so
+far), 8 executed targets, paired by scene; reported for all 27 trained shapes, the 10 earlier and 17 newer, the 6
+never-seen shapes, T and near-T, with 95% intervals, whatever the outcome.
+
+D059 outcome (2026-11-08; 6600 paired episodes, `runs/fairtest-d059/report.txt` in the store). Flow-matching policy
+(final checkpoint, step 160k) against the 96 px round-50 student, success %: all 27 trained shapes 32.8 -> 45.2 (+12.4
+[+10.6, +14.2]); 10 earlier shapes 33.3 -> 42.8 (+9.5 [+6.6, +12.4]); 17 newer letters 32.5 -> 46.6 (+14.1 [+11.9,
++16.3]); 6 never-seen shapes 4.1 -> 14.9 (+10.8 [+8.6, +13.0]); T 37.5 -> 50.0 (+12.5 [+3.0, +22.0]); near-T 30.5 ->
+33.5 (+3.0 [-6.2, +12.2]); digit 7 17.5 -> 30.5. Final coverage on the trained shapes 0.82 -> 0.89; 26 of 27 trained
+shapes improve. Same data, same 96 px camera input and same 8 executed targets as round 50; trained from scratch
+(DINOv2 encoder pretrained on images) for 160k steps without correction rounds of its own. The original policy was not
+run on this pool, so no claim against it here.
+
+## D060 — Correction rounds driven by the flow policy (2026-11-08, before any result)
+
+Lead's decision: the 96 px round-50 policy stays the project's final model; the flow policy (D059) is an experiment
+on how much the architecture matters, reported in a few extra slides; its D059 result (no rounds of its own) is the
+architecture comparison. As an additional experiment (what happens if it keeps training), its remaining A100 time goes
+to correction rounds driven by the flow policy itself, with the D053 recipe (teacher wm2 v3 takes 30% of 8-control
+decisions; 30 practice scenes per round for the ten earlier shapes, 60 for the 17 new letters; training seeds
+800000 + 20*i, i = 30000 + 70*k, an unused range), each round fine-tuning 20k steps from the previous checkpoint on all
+data (the round-50 data set plus all flow-round records). `scripts/learning/experiments/chain_flow_dagger.sh`; new
+rounds start only while there is time left for a round and the test before the job ends. Validation of each
+checkpoint is monitoring only. The deciding test (`chain_d060.sh`): the last completed round against the D059
+checkpoint (no rounds) and round 50, 200 new scenes per shape on all 33 shapes, seeds 14000000 + 20*i (unused), paired,
+reported for the same groups as D059 whatever the outcome.
+
+D060 outcome (2026-11-09). Five rounds ran (validation of the checkpoints before rounds 1-5 and after round 4: 572,
+591, 563, 585, 594 of 1350; flat within chance). Test on 6600 paired new scenes (seeds 14000000 + 20*i), success %:
+flow policy without rounds vs round 50: all 27 trained shapes 31.9 -> 44.6 (+12.7 [+10.9, +14.5]), 10 earlier 32.1 ->
+41.8 (+9.7 [+6.8, +12.6]), 17 newer 31.8 -> 46.3 (+14.5 [+12.3, +16.7]), 6 never seen 3.4 -> 13.8 (+10.4 [+8.3, +12.5]):
+the D059 gain replicates on a second pool. After five rounds vs round 50: all 27 +9.7 [+8.0, +11.5], never seen +9.2.
+After five rounds vs without rounds: all 27 trained shapes 44.6 -> 41.6 (-3.0 [-4.8, -1.2]); 10 earlier -1.8 [-4.7,
++1.2]; 17 newer -3.7 [-6.0, -1.5]; never seen -1.2 [-3.8, +1.3]. Correction rounds driven by the flow policy did not
+help; they cost about 3 points. Source: the chain log (`logs/1083816/chain_d060.log` in the store, which prints
+report_pair.py's output). The A100 node's /tmp was wiped at job end before the flow checkpoints, the round data and
+this test's episode files were uploaded, so per-shape numbers for D060 and the flow checkpoints are not available; the
+D059 episode files are in the store.
+
+## D061 — Rebuild the flow policy and continue its correction rounds (2026-11-10, before any result)
+
+Lead's decision: continue the flow policy's correction rounds beyond D060's five. The D060 checkpoints and round data
+were lost with the A100 node, so the H100 job first rebuilds the base flow policy with the D059 command (same data,
+settings, 160k steps; a rerun, not bit-identical) as `runs/flow26b/v1`, then runs the D060 round recipe
+(`chain_flow_dagger.sh` with FLOW_RUN=flow26b; the same practice-scene seeds i = 30000 + 70*k, continuing past k = 5)
+for as many rounds as fit before the job ends, with validation of every checkpoint for monitoring. Each round's
+checkpoint and data are uploaded to the store when the round ends. Deciding test (`chain_d060.sh` with
+FLOW_RUN=flow26b POOL=15000000 OUTNAME=fairtest-d061): the last completed round against the rebuilt base and round 50,
+200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (unused), paired, same groups as D059, whatever the
+outcome.
+
+D061 amendment (2026-11-10, before any result; lead's decision): after the 8 x 8 rebuild (`runs/flow26b`), the H100
+trains the same policy with all 16 x 16 patch tokens per frame (`--pool 16`, everything else identical;
+`runs/flow26b16`). Both bases are scored on the 50 validation scenes per shape; the correction rounds continue from
+the one with more successes (8 x 8 on a tie), and the deciding test (seeds 15000000 + 20*i) also runs the other base on
+the same scenes, so 8 x 8 vs 16 x 16 is compared directly.
+
+## D062 — Larger encoder and full image detail on the A100 (2026-11-10, before any result)
+
+Lead's decision for the queued A100 job: the D059 flow policy with two changes, the large DINOv2 encoder
+(`facebook/dinov2-large`, 304.4M, fine-tuned) and all 16 x 16 patch tokens per frame instead of an 8 x 8 average
+(`--vit large --pool 16`; 722.8M parameters in total). Everything else as D059: the round-50 data set (116 correction
+folders, the teacher demonstrations, the human T demos), batch 128, 160k steps, seed 0, the same schedule; encoder
+activations are recomputed in the backward pass (`--grad-checkpoint`), which changes memory, not the result (smoke
+test on the H100: 51 GB peak, out of memory without it). Run folder `runs/flow26L/v1`; checkpoints backed up every
+10k steps. If the job's end comes before step 160k, the latest checkpoint is tested instead and reported as such.
+Test: 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (the D061 pool), 8 executed targets, paired by
+scene against round 50 and the D061 rebuilt base (`runs/flow26b/v1`), same groups as D059, whatever the outcome.
+
+D062 outcome (2026-11-11, complete, 200 paired scenes per shape on seeds 15000000 + 20*i, `runs/fairtest-d062`). The
+large-encoder flow policy at step 160k (`runs/flow26L/v1/ema-step160000.pt`) against round 50: 26 letters 32.8% ->
+42.9%, +10.1 points [+8.2, +11.9]; nine never-seen shapes 8.0% -> 17.2%, +9.2 [+7.1, +11.3]. Against Flow-DiT 16 x 16
+(the ViT-B base): 26 letters 45.5% -> 42.9%, -2.7 [-4.5, -0.8]; never-seen shapes 17.3% -> 17.2%, -0.2 [-2.4, +2.1].
+The larger encoder is worse on the letters at the same data and steps, so Flow-DiT 16 x 16 (ViT-B) stays the
+architecture result and the large encoder is not used further.
+
+## D063 — Three more held-out shapes: digits 2, 5 and 8 (2026-11-10, before any result)
+
+Lead's decision: add `digit2`, `digit5` and `digit8` to the held-out test shapes (`tdyssey/letters.py`), never used
+for training, data or tuning. Drawn on the same 5 x 7 block grid, each one edge-connected piece, and checked by script
+against every capital, near-T and the other held-out shapes, including 180-degree rotations and mirror images: no
+match; the nearest shapes differ by 6-7 cells (digit 2 vs S or Z, digit 5 vs G, digit 8 vs B), about as far apart as
+B and D. Because a matched scene is accepted only if it is valid for every shape in the run, the three digits are
+tested as their own matched group with T (`T digit2 digit5 digit8`) on the same seeds, so the 33-shape scenes of every
+test stay unchanged. From the D061 and D062 tests onward every policy also runs this group; earlier tests do not
+include them.
+
+## D064 — Pose-supervised retrain instead of correction rounds (2026-11-11, before any result)
+
+Lead's decision: after the D061 validation of the two rebuilt bases, the H100 does not start correction rounds (D061's
+rounds and their test are cancelled); it retrains the better base instead with a training-only block-pose head. Early
+result for the record: the rebuilt 8 x 8 base (`runs/flow26b/v1`, 160k steps) solved 605 of 1350 validation scenes
+(44.8%; round 44 of the CNN line: 470; the lost D059 checkpoint: 572), and its loss curve matches the lost run's to the
+third decimal. The pose head reads the latest frame's full 16 x 16 DINOv2 patch grid (before pooling) and predicts the
+block's position and angle (180-degree-symmetric letters accept both orientations); its loss is added with weight 0.25
+during training only and the head is unused at test time, so the policy stays camera-only. Labels are exact simulator
+poses (privileged, training only): the teacher demonstrations and the human T demos carry them, the correction records
+do not and are left unlabelled. Everything else as the better base (same data, pooling, seed, batch 128, 160k steps).
+Test: the pose-trained policy against the better base on 200 new scenes per shape, all 33 shapes plus the D063 digit
+group, seeds 15000000 + 20*i, paired, same groups as D059, whatever the outcome.
+
+D064 implementation and start (2026-11-11). Validation of the two rebuilt bases (D061): 8 x 8 605, 16 x 16 627 of 1350
+(46.4%); the pose run therefore uses `--pool 16` (`runs/flow26p/v1`, started 17:38). Code: `--pose-weight 0.25` in
+flow_train.py; head on the latest frame's 16 x 16 patch tokens (LayerNorm, 768->128, flatten, 512, 4 outputs), 16.9M
+parameters, unused at inference (outputs bit-identical without it); smooth-L1 position (beta 2.6 px) + cos/sin angle,
+180-degree-symmetric letters (H, I, O, S, X, Z) take the closer orientation. Labelled samples: 694,012 of 3,205,500 by
+count, 50.6% by sampling weight (teacher demonstrations and human T). With the head off, the data and the losses are
+identical to the previous code.
+
+D064 amendment (2026-11-11 evening, before the test; lead's decision): the 16 x 16 policy (`runs/flow26b16/v1`) is the
+new model of the architecture experiment, named Flow-DiT (public weights: the model repo's `flow-dit/` folder,
+also in the demo); the 8 x 8 rebuild is not reported further. Round 50 is added to the D064 test on the same new
+scenes (seeds 15000000 + 20*i, 33 shapes and the digit group), run after the pose and 16 x 16 parts, so the test
+reports the 16 x 16 model and the pose model against round 50, and the pose model against the 16 x 16 model.
+
+D064 amendment 2 and first outcome (2026-11-12). Lead's decisions during the night: all results in the talk and the
+paper use round 50 and Flow-DiT 16 x 16 on one set of scenes, so the original policy, the ten-shape model (dagger10m
+round 13) and the 192 px model (dagger26h round 2) also run on the D064 pool (seeds 15000000 + 20*i, 200 per shape, 33
+shapes and the digit group); the talk speaks of the 26 letters (the narrow T stays a trained shape but is left out of
+every aggregate) and of nine never-seen shapes (the six earlier ones and digits 2, 5, 8); the 8 x 8 base also runs on
+the pool afterwards ("if there is time"). Flow-DiT 16 x 16 against round 50 (complete, 200 paired scenes per shape,
+`runs/fairtest-d064/{r50,base}-part*.json`): 26 letters 32.8% -> 45.5%, +12.7 points [+10.9, +14.5]; 9 earlier letters
++10.2, 17 new letters +14.1; T 33.0% -> 49.5%; six never-seen shapes 4.5% -> 11.7%; goal covered at the end 0.82 ->
+0.89; Flow-DiT higher on 24 of 26 letters (O and Y 1 point lower). This replicates D059 (+12.4) and D060 (+12.7).
+
+D064 outcome (2026-11-12, complete, 200 paired scenes per shape, `runs/fairtest-d064/{base,pose}-part*.json`): the
+pose-supervised Flow-DiT 16 x 16 (`runs/flow26p/v1`) against Flow-DiT 16 x 16 without the pose head: 26 letters 45.5%
+-> 45.7%, +0.2 points [-1.6, +2.0]; T 49.5% -> 53.0%, +3.5 [-6.2, +13.2]; six never-seen shapes 11.7% -> 10.1%, -1.6
+[-4.0, +0.8]; digits 2/5/8 against round 50 28.7% (Flow-DiT) and 31.7% (pose). No measurable gain: the head located the
+block within about 0.5 px near the goal on its training batches, but the policy did not finish more often, so the
+encoder's knowledge of the block pose is not what limits the last millimetres in this setting. Flow-DiT 16 x 16 stays
+the architecture result; the pose head is not used further. Round 50 against the other models on the same scenes
+(26 letters): original 2.0%, ten-shape 16.7%, round 50 32.8%, 192 px 34.0%, Flow-DiT 45.5%; nine never-seen shapes
+1.0%, 4.3%, 8.0%, 9.4%, 17.3% (`presentation/data/d064_test_*.csv` on docs/presentation).
+
+## D065 — Prefix (pi0-style) action head, built and speed-tested (2026-11-12, before any result)
+
+Lead's decision: build the parked joint-attention head now and train it in full on a later GPU job. `flow_train.py
+--head prefix` (branch feat/joint-head, commit 6721fb0): each of the 24 head blocks keeps Flow-DiT's time-modulated
+plan stream and replaces the cross-attention with one block-causal attention over [camera and pusher tokens | 16 plan
+tokens]. The condition tokens attend only to each other and are refined layer by layer by their own 512-wide layers
+(own weights, no time input); the plan tokens attend to all tokens (pi0, arXiv 2410.24164). The condition stream takes
+the parameters of the removed cross-attention: head 410.6M (Flow-DiT 418.2M). Its keys and values are computed once per
+decision for all 10 Euler steps. Checks (`flow_head_check.py`): condition states bit-identical under changes of plan or
+time; cached and uncached sampling agree to 1.6e-6 (fp32); the existing head and checkpoints are unchanged
+(bit-identical plans from the Flow-DiT step-160k checkpoint). Cost at batch 128 on the H100 (measured as ratios on a
+shared GPU): 8 x 8 about 1.2x Flow-DiT 8 x 8 per step (~12.4 h for 160k steps); 16 x 16 about 2x Flow-DiT (~25 h with
+head recomputation, ~56 GB). Full run (not started): the Flow-DiT command (same data and order, seed 0, batch 128, 160k
+steps) plus `--head prefix --head-checkpoint`. Test as D064: 200 new scenes per shape, seeds 15000000 + 20*i, 33 shapes
+and the digit group, paired against Flow-DiT (same pooling) and round 50, whatever the outcome.
+
+D065 amendment (2026-11-13, recorded before any pilot result) — short A100 pilot. Lead's request: try the prefix head on
+the A100 job (1106762) after D062. The full run does not fit the time left there (about 9 h after the D062 test;
+estimated 19-25 h for 160k steps at 8 x 8 on an A100), so this is a pilot, not the D065 full run. Run: the full-run
+command with 8 x 8 tokens (`runs/joint-smoke/full_run_command.sh`, POOL=8, run folder runs/flow26j8; same data, order,
+seed 0, batch 128 and `--steps 160000`, so the learning-rate schedule matches Flow-DiT 8 x 8). It starts only after the
+D062 test and only if at least 5 h remain, and it stops about 1.5 h before the job ends. Pilot test: its newest
+checkpoint (step N, a multiple of 10k) against Flow-DiT 8 x 8 at the same step (runs/flow26b/v1/ema-step<N>.pt) on the
+26 letters' selection scenes (validation seeds 400000 + 20*i, i < 50, 8 controls per plan), both run with the branch's
+code (it reproduces Flow-DiT plans bit-identically), paired by scene. Reported: success over the 26 letters (mean over
+shapes) and the paired difference with a 95% interval, as an equal-step early-training comparison. The deciding
+experiment stays the D065 full run and its D064-pool test.
+
+D065 pilot outcome (2026-11-15). Step 60000 as fixed in the amendment, 1300 paired episodes on the 26 letters'
+selection scenes: Flow-DiT 8 x 8 40.6%, prefix head 8 x 8 33.3%, -7.3 points [-10.9, -3.7]. Earlier checkpoints,
+compared afterwards and therefore exploratory: step 20k -4.2 [-7.2, -1.1], step 40k -8.3 [-11.7, -4.9]. The gap did
+not close with training, so the full run was not started; the head stays on branch feat/joint-head (merged with this
+log) as a tested negative result, off by default (without `--head prefix` training keeps the cross-attention head). FLUX-style double-stream
+and Z-Image-style single-stream heads were discussed but never built.
+
+## D066 — Goal overlay: show the camera policy the uncovered goal (draft 2026-11-13, before any run)
+
+Professor's suggestion at the final talk, lead's choice of design ("thick red overlay"). Most failures of round 50 are
+near misses (two in three reach 90% coverage) and one 96 px camera pixel spans about 5.3 simulator pixels, so the
+camera barely shows the last misalignment. The overlay paints the part of the goal the block does not cover in red on
+the 512 px canvas (after the goal, before the block and pusher; the official resize to 96 px follows): goal minus block
+from the coverage metric's collision polygons, with parts thinner than R = 9 simulator px grown by R so a zero-width
+sliver still shows about 6.5 px of red past the block's drawn outline; wider parts keep their true outline, so the
+letter shape stays readable far from the goal. Drawn the same way above 95% (no success threshold in the image).
+Definition, choice of R and checks: `docs/GOAL_OVERLAY.md`; code: `goal_overlay` in `tdyssey/envs/official.py`, off by
+default. Rejected: finding the visible goal-green pixels in the 512 px render; the block's 4 px edge line hides
+slivers up to about 2 px even there. Disclosure: privileged simulator geometry enters every image the policy sees in
+training and testing; reported as a rendering aid, separately from the camera-only results (like the 192 px sensor
+change), and as a test of whether this information limits the last nudge, not as a deployable policy.
+
+Data: the teacher demonstrations and human T demonstrations (694,012 of round 50's 3,205,500 samples, 50.6% of the
+sampling weight) are re-rendered with the overlay from their recorded states (`scripts/learning/overlay_frames.py`).
+The 116 earlier correction folders (49.4% of the weight) store frames without block poses and cannot be re-rendered;
+both arms keep them with their official frames. New records carry an overlay tag and the block pose of both frames.
+
+Experiment (H100 job 1131943; `scripts/learning/experiments/chain_d066.sh` per arm, started by a job launcher). Two
+arms start from the 96 px round-50 student and run concurrently with the same seeds, steps and data rules; the only
+difference is the overlay (with it, the human T frames come from the project's renderer instead of the dataset's
+images, about 0.5% of their pixels). Overlay arm: every camera image with the overlay (R = 9). Control arm: identical
+without it, so a gain cannot come from the extra rounds. Round 0: 54k steps on the arm's data, no new practice data (the
+overlay changes the goal's colour: on one CPU check scene round 50 solved T and G with official images and never
+covered either goal with overlay images). Rounds 1-K: the D053 recipe (teacher wm2 v3 takes 30% of 8-control decisions,
+intended-plan labels, 30 practice scenes for the ten earlier shapes and 60 for the 17 new letters, 54k steps from
+the previous student, batch 256, seed 0), training on the teacher demonstrations, human T, the 116 earlier folders and
+the arm's own new folders. Practice seeds 800000 + 20*i, i = 32000 + 70*k (32070-33039 for k = 1-14, unused by any
+earlier collection), the same scenes for both arms. K = 14 rounds per arm (lead's decision, 2026-11-13); no round
+starts later than 13.5 h before the job ends, so a last round of up to about 3.5 h leaves at least 10 h for its
+validation, the test, the report and slack; both arms are stopped 4.5 h before the end if still running. The test
+uses the last round both arms completed (K*), whatever their validation.
+Validation, monitoring only (lead's decision): every round's student of both arms (rounds 0 to K*) and round 50 once
+(official images) on the selection scenes (seeds 400000 + 20*i, i < 50, 27 trained shapes, 8 executed targets, the same
+policy-noise seed), paired by scene between the arms. It runs in the background as soon as a student exists, so it
+does not hold up the next round, and is reported as a progress curve (26 letters, overlay minus control with 95%
+intervals; `d066_report.py validation`). It is never used to pick the tested checkpoint.
+
+Test (fixed before any result): round K* of both arms on the D064 pool (seeds 15000000 + 20*i, i < 200, 33 shapes and
+the T/digit2/digit5/digit8 group, 8 executed targets), paired by shape and scene with round 50's existing D064 episodes.
+Primary: success over the 26 letters (mean over shapes; near-T excluded), overlay minus control, paired difference
+with a 95% interval: a gain if the interval is above zero, a loss if below, otherwise no measurable effect.
+Secondary: each arm against round 50; among failed episodes, the share whose best coverage reached 0.90-0.95 (near
+misses), and among episodes reaching 0.90, the share solved, overlay against control; final coverage; T and the nine
+never-seen shapes. Reported whatever the outcome (`scripts/learning/d066_report.py`).
+
+### D066 amendment 1 (2026-11-15 17:20, before any result of the new overlay arm)
+
+Finding (monitoring only, selection scenes): the overlay as first defined paints the whole uncovered goal red, so far
+from the goal the goal outline is red instead of green. The 116 earlier correction folders (49% of the training weight)
+exist only with green goals, so for red-goal images the overlay arm had only the teacher demonstrations, the plain
+copying setting. Round 0 of that arm scored 4.6% against 33.6% for the control, and rounds 1 to 4 reached 10.8, 13.2,
+14.5 and 14.6% (control 33.4 to 34.0%). The same round-0 checkpoint rendered with official images scored 31.2% (81 of
+260 episodes, seeds 400000 + 20*i, i < 10, 26 letters), so the skill was intact and the drop came from the changed look.
+That arm measures the change of appearance, not whether the policy can use the misalignment, so it was stopped (kept as
+runs/d066/overlay_v1_wholegoal) after the lead's decision.
+
+Change: the overlay arm restarts from round 50 with the "slivers only" overlay, `goal_overlay = -9`: only the thin
+uncovered parts (thinner than R = 9 simulator px, at least R long) are painted, grown by R. Wide uncovered parts keep
+the official green, so an image differs from the official one only where a thin sliver of goal is left uncovered (the
+final misalignment the professor pointed at). On three D teacher episodes the first frame is identical to the official
+frame and mid and late frames differ in 81 to 164 pixels. Frames, records and checkpoints carry -9, so they never mix
+with the first version. Everything else is unchanged: same seeds, practice scenes, steps, validation and test. The
+control arm keeps running. The restarted arm starts about 12 h after the control, so it completes fewer rounds. The
+test still compares round K* of both arms, now the last round the overlay arm completes, and the control's round-K*
+checkpoint already exists.
+
+
+### D066 outcome (2026-11-17, complete)
+
+Test as fixed above: round 11 of both arms (the last round the slivers-only overlay arm completed; the control ran 14
+rounds), D064 pool, paired by shape and scene with round 50 (`runs/fairtest-d066/{overlay,control,r50}*-part*.json`
+and `report.txt` in the run store). 26 letters: overlay 32.4%, control 33.4%, round 50 32.8%; overlay - control -1.0
+points [-2.7, +0.8], no measurable effect. Near misses among failures 63.4% vs 63.7% (round 50 63.6%); solved once
+0.90 coverage was reached 43.0% vs 44.0%; final coverage 0.827 vs 0.826. Nine never-seen shapes 8.7% vs 8.2% (+0.4
+[-1.2, +2.1]). T 45.5% vs 40.0% (+5.5 [-4.2, +15.2]); against round 50 the T rose in the overlay arm (+12.5 [+3.4,
++21.6]) and, within noise, in the control (+7.0 [-2.1, +16.1]). Each arm against round 50 on the 26 letters: overlay
+-0.4 [-2.1, +1.3], control +0.6 [-1.2, +2.3], so 11 more correction rounds without the overlay did not help either.
+Validation (monitoring only, selection scenes): the arms were within chance of each other in rounds 1 to 11.
+
+Exploratory check, decided after this result and not fixed in advance: the overlay arm's round-11 checkpoint with
+official images (`goal_overlay` set to 0) on the same pool (`runs/fairtest-d066-ovoff/` with its script and
+`report.txt`). 26 letters 34.1% against 32.4% with the overlay, +1.7 [-0.0, +3.5] (against the control +0.8 [-1.0,
++2.6]); near misses among failures 64.1%; never-seen shapes 9.1%; T 39.0% against 45.5%, -6.5 [-15.9, +2.9]. On the
+letters the policy does not use the red slivers to finish; the T may, within noise.
+
+Conclusion: showing the uncovered slivers did not help the camera policy finish in this design (about half of the
+training weight without the overlay, 11 rounds, the minimal slivers-only rendering). Together with D064 (pose head
+inside the encoder, no gain) and D058 (exact pose given to a small noise-steering network, +6.5 points [+2.9, +10.0]
+near the goal), the reading is that the camera policy cannot turn sub-pixel image cues into a fine correction, not
+that the information is missing. The overlay is not used further; Flow-DiT 16 x 16 stays the architecture result. The
+course report (branch docs/report, Appendix K) reports the test and the check.
+
 The next four entries were written on 2026-10-24 as D028 to D031 in PR #7 (contact-balanced image world model) and
 were renumbered D067 to D070 when it was merged, because main already used D028 to D031.
 

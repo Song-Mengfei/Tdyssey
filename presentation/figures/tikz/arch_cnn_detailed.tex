@@ -1,0 +1,106 @@
+% Architecture of the official Diffusion Policy CNN (the main model's network). Facts checked against the code:
+% third_party/diffusion_policy policy/diffusion_unet_hybrid_image_policy.py (robomimic ResNet-18 + spatial softmax encoder,
+% BatchNorm -> GroupNorm, crop, global condition = 2 frames x 66), model/diffusion/conditional_unet1d.py (U-Net, FiLM),
+% conv1d_components.py (Conv1d k5 + GroupNorm + Mish, down/upsampling), and the pinned released config
+% (manifests/official_dp.json: crop 84, down_dims 512/1024/2048, kernel 5, step embedding 128, DDPM 100 steps).
+% Parameters from the checkpoint: encoder 11.2M, U-Net 251.5M. Details belong in the caption.
+% Usage: \input{<presentation root>/figures/tikz/arch_cnn_detailed.tex} (144 x 60 mm, 9-10 pt text in the current font;
+% needs tikz with arrows.meta and calc, graphicx; thumbnail images/slide/ov_icon_camera.png via \presroot or ../).
+\ifdefined\presroot\def\adroot{\presroot}\else\def\adroot{../}\fi%
+\providecolor{tdblue}{HTML}{2A78D6}%
+\providecolor{tdink}{HTML}{1F2328}%
+\providecolor{tdgrey}{HTML}{5F6670}%
+\providecolor{adenc}{HTML}{2E7D4F}%
+\providecolor{adcond}{HTML}{B85C12}%
+\providecolor{addata}{HTML}{6B7280}%
+\def\adbody{\fontsize{9}{10.5}\selectfont}%
+\def\adhead{\fontsize{9.5}{11}\selectfont\bfseries}%
+\tikzset{%
+  ad blk/.style={rounded corners=1.2mm, line width=0.7pt, draw=#1, fill=#1!8, align=center, inner sep=1mm,
+    font=\adbody, text=tdink},%
+  ad io/.style={rounded corners=1.2mm, line width=0.7pt, draw=addata, fill=white, align=center, inner sep=1mm,
+    font=\adbody, text=tdink},%
+  ad grp/.style={rounded corners=2.2mm, line width=0.6pt, draw=#1!55, dash pattern=on 2.5pt off 1.5pt, fill=#1!3},%
+  ad title/.style={anchor=north west, inner sep=0pt, font=\adhead, text=#1},%
+  ad arr/.style={-{Stealth[length=1.8mm,width=1.6mm]}, line width=0.75pt, draw=#1},%
+  ad arr/.default=tdgrey,%
+  ad shape/.style={inner sep=0.8pt, font=\adbody, text=tdgrey},%
+  ad zoom/.style={line width=0.5pt, draw=#1, dash pattern=on 0.6pt off 1.1pt, line cap=round},%
+}%
+% \adslab{x left}{y centre}{width}{height}: one feature-map slab of the ResNet stack
+\def\adslab#1#2#3#4{%
+  \draw[adenc, line width=0.5pt, fill=adenc!28] (#1,#2+#4/2) -- ++(2,2) -- ++(#3,0) -- ++(-2,-2) -- cycle;%
+  \draw[adenc, line width=0.5pt, fill=adenc!40] (#1+#3,#2-#4/2) -- ++(2,2) -- ++(0,#4) -- ++(-2,-2) -- cycle;%
+  \draw[adenc, line width=0.6pt, fill=adenc!10] (#1,#2-#4/2) rectangle ++(#3,#4);%
+}%
+\begin{tikzpicture}[x=1mm, y=1mm]
+  \useasboundingbox (0,0) rectangle (144,60);
+  % ------------------------------------------------------------------ vision encoder
+  \def\yt{47}
+  \node[inner sep=0pt, outer sep=0pt] (cam) at (5.9,\yt) {\includegraphics[width=10mm]{\adroot images/slide/ov_icon_camera.png}};
+  \draw[addata, line width=0.5pt] (cam.south west) rectangle (cam.north east);
+  \node[ad shape, text=tdink] at (5.9,39.4) {2 frames};
+  \draw[ad grp=adenc] (26,38) rectangle (101,59);
+  \node[ad title=adenc] at (28.4,57.6) {Vision encoder\enspace\mdseries\adbody ResNet-18, 11.2M};
+  \draw[ad arr] (11.6,\yt) -- node[ad shape, above, pos=0.36] {crop $84^2$} (30.4,\yt);
+  \adslab{31}{\yt}{2.0}{11}
+  \adslab{38.5}{\yt}{2.0}{11}
+  \adslab{46}{\yt}{3.0}{8}
+  \adslab{54.5}{\yt}{4.0}{5.6}
+  \adslab{64}{\yt}{5.4}{3.6}
+  \foreach \x/\c in {32/64, 39.5/64, 47.5/128, 56.5/256, 66.7/512} \node[ad shape] at (\x+1,40.4) {\c};
+  \node[ad blk=adenc, minimum width=25mm, minimum height=13mm] (ss) at (86.4,\yt+0.6)
+    {\adhead Spatial softmax\\32 keypoints};
+  \draw[ad arr] (71.8,\yt+0.6) -- (ss.west);
+  \node[ad blk=adcond, minimum width=33mm, minimum height=13mm] (cond) at (127.4,\yt+0.6)
+    {\adhead Condition\\260-d vector};
+  \draw[ad arr] (118.4,59.4) -- node[ad shape, left] {pusher $xy$} (118.4,\yt+7.1);
+  \draw[ad arr] (136.4,59.4) -- node[ad shape, left] {step $k$} (136.4,\yt+7.1);
+  \draw[ad arr] (ss.east) -- node[ad shape, above] {$2{\times}64$} (cond.west);
+  % ------------------------------------------------------------------ action network (U-Net)
+  \draw[ad grp=tdblue] (18,4) rectangle (96,33);
+  \node[ad title=tdblue] at (20.4,31.6) {Action network\enspace\mdseries\adbody 1D U-Net, 251.5M};
+  % zoom callout (drawn before the blocks, so it passes behind them): the "512" stage -> the residual-block panel
+  \draw[ad zoom=tdblue!45] (83.6,19.9) -- (113,33);
+  \draw[ad zoom=tdblue!45] (83.6,12.5) -- (113,4);
+  \draw[ad zoom=tdblue!70, rounded corners=1.4mm] (72.4,12.5) rectangle (83.6,19.9);
+  \def\ya{22.6}\def\yb{16.2}\def\yc{9.8}
+  \tikzset{ad u/.style={ad blk=tdblue, minimum width=9mm, minimum height=5.2mm, inner sep=0.4mm}}
+  \node[ad u] (d1) at (27.0,\ya) {512};
+  \node[ad u] (d2) at (37.2,\yb) {1024};
+  \node[ad u] (d3) at (47.4,\yc) {2048};
+  \node[ad u] (md) at (57.6,\yc) {2048};
+  \node[ad u] (u1) at (67.8,\yc) {1024};
+  \node[ad u] (u2) at (78.0,\yb) {512};
+  \draw[ad arr] (d1.south) |- (d2.west);
+  \draw[ad arr] (d2.south) |- (d3.west);
+  \draw[ad arr] (d3) -- (md);
+  \draw[ad arr] (md) -- (u1);
+  \draw[ad arr] (u1.east) -| (u2.south);
+  \draw[ad arr=tdblue, dash pattern=on 2pt off 1.2pt] (d2.east) -- (u2.west);
+  \draw[ad arr=tdblue, dash pattern=on 2pt off 1.2pt] (d3.south) -- ++(0,-2.4) -| (u1.south);
+  \node[ad io, minimum width=12mm, minimum height=9mm] (in) at (6.4,\ya) {plan\\$a^k$};
+  \node[ad io, minimum width=12mm, minimum height=9mm] (out) at (106.0,\yb) {noise\\$\hat\epsilon$};
+  \draw[ad arr] (in) -- node[ad shape, above] {$16{\times}2$} (d1);
+  \draw[ad arr] (u2.east) -- node[ad shape, above, pos=0.55] {conv} (out.west);
+  \draw[ad arr=tdblue] (out.south) -- (106.0,1.4) -- (6.4,1.4) -- (in.south);
+  \node[ad shape, text=tdblue, fill=white, inner sep=1mm] at (56,1.4) {DDPM, $\times100$};
+  % condition -> every residual block (FiLM)
+  \draw[ad arr=adcond] (cond.south) -- (127.4,35.8) -- (57.6,35.8) -- (57.6,33);
+  \node[ad shape, text=adcond, anchor=east] at (126.6,38.2) {FiLM};
+  % ------------------------------------------------------------------ zoom: residual block
+  \draw[rounded corners=2.2mm, line width=0.6pt, draw=tdblue!55, fill=tdblue!3] (113,4) rectangle (144,33);
+  \node[ad title=tdblue] at (115.4,31.6) {Residual block};
+  \tikzset{ad z/.style={ad blk=#1, minimum width=22mm, minimum height=4.8mm, inner sep=0.4mm}}
+  \node[ad z=tdblue] (z1) at (131.4,23.6) {Conv\,$\cdot$\,GN\,$\cdot$\,Mish};
+  \node[ad z=adcond] (z2) at (131.4,17.2) {FiLM $(c)$};
+  \node[ad z=tdblue] (z3) at (131.4,10.8) {Conv\,$\cdot$\,GN\,$\cdot$\,Mish};
+  \node[circle, draw=tdgrey, line width=0.6pt, inner sep=0pt, minimum size=3mm, font=\adbody] (zp) at (131.4,6.0) {$+$};
+  \draw[ad arr] (131.4,27.6) -- (z1);
+  \draw[ad arr] (z1) -- (z2);
+  \draw[ad arr] (z2) -- (z3);
+  \draw[ad arr] (z3) -- (zp);
+  \draw[ad arr] (zp.east) -- (141.0,6.0);
+  \fill[tdgrey] (131.4,27.0) circle (0.45mm);
+  \draw[ad arr] (131.4,27.0) -| (117.4,6.0) -- (zp.west);
+\end{tikzpicture}%
