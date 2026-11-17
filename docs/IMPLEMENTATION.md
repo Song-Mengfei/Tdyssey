@@ -36,6 +36,13 @@ This change does not implement another physics engine or a replacement policy.
 | `scripts/probe_gpc_appearance.py` | Fixed six-scene palette experiment, shared physical branches, noise repeats and saved source frames |
 | `tdyssey/official_collection.py` | Official T/L play with evaluation-scene exclusions, full resets and nonempty frozen splits |
 | `scripts/collect_official_play.py` | Bounded official collection/read-back without model weights or training |
+| `scripts/collect_official_contact.py` | Many official T batches with privileged contact-balanced play |
+| `scripts/train_official_contact.py` | Resumable GPC denoiser updates from all finished contact batches |
+| `scripts/visualize_world_model.py` | Click viewer: live official T versus predicted next frame |
+| `tdyssey/official_contact_sampler.py` | Contact/miss headings and init-weight copy |
+| `tdyssey/official_contact_trainer.py` | Global window sampling, frozen useful/miss validation, Ctrl+C resume |
+| `tdyssey/region_weight.py` | Privileged case-split foreground masks for the denoiser loss |
+| `tdyssey/motion_replay.py` | Moved-T replay mix for contact-train chunks |
 | `scripts/collect_play.py` | Collection and validation command; see `docs/COLLECTION.md` |
 | `tdyssey/training_data.py` | Frozen combined catalogs, duplicate/split checks, and lazy episode-safe training windows |
 | `scripts/prepare_training_data.py` | Verify real CPU batches without training; see `docs/TRAINING_DATA.md` |

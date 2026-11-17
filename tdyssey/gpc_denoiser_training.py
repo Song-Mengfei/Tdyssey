@@ -12,9 +12,14 @@ import math
 import re
 from types import SimpleNamespace
 
+from .collection import integer
 from .dataset import load_episode, read_manifest
 from .gpc_world_model import hash_file, load_world_model_source, world_model_spec
+from .motion_replay import (DEFAULT_MOVED_FRACTION, object_displacement, object_moved,
+                            sample_replay_batch, split_motion_windows)
 from .official_collection import ENVIRONMENT_FAMILY
+from .region_weight import (DEFAULT_REGION_WEIGHT, foreground_weights, motion_mask,
+                            window_case_region, window_useful)
 
 
 def model_action(value):
@@ -88,14 +93,14 @@ def load_official_windows(root, splits, opened):
         rows, shape = _load_root(one, splits, opened)
         loaded.extend(rows)
         declared.append(shape)
-    shapes = {trajectory.transitions[0].before.shape for trajectory, _arrays in loaded}
+    shapes = {trajectory.transitions[0].before.shape for trajectory, _arrays, _record in loaded}
     if len(shapes) != 1:
         raise ValueError("Official denoiser windows refuse mixed shapes")
     if shapes != set(declared):
         raise ValueError("Collected shape differs from the official dataset")
     windows = []
-    for trajectory, arrays in loaded:
-        windows.extend(_windows(trajectory, arrays))
+    for trajectory, arrays, record in loaded:
+        windows.extend(_windows(trajectory, arrays, record))
     return windows
 
 
@@ -104,8 +109,8 @@ def _load_root(root, splits, opened):
     manifest = read_manifest(root)
     if manifest["provenance"].get("environment_family") != ENVIRONMENT_FAMILY:
         raise ValueError("Denoiser training expects a finished official dataset")
-    if manifest["config"].get("mode") not in ("object-directed", "angle-coverage"):
-        raise ValueError("Denoiser training expects object-directed or angle-coverage official play")
+    if manifest["config"].get("mode") not in ("object-directed", "angle-coverage", "contact-balanced"):
+        raise ValueError("Denoiser training expects object-directed, angle-coverage, or contact-balanced official play")
     by_id = {entry["trajectory_id"]: entry for entry in manifest["episodes"]}
     loaded = []
     for split in splits:
@@ -114,28 +119,42 @@ def _load_root(root, splits, opened):
         for identifier in manifest["splits"][split]:
             entry = by_id[identifier]
             opened.append(_image_name(entry))
-            trajectory, _record, arrays = load_episode(root, entry)
-            loaded.append((trajectory, arrays))
+            trajectory, record, arrays = load_episode(root, entry)
+            loaded.append((trajectory, arrays, record))
     if not loaded:
         raise ValueError("Selected splits contain no episodes")
     return loaded, manifest["config"]["shape"]
 
 
-def _windows(trajectory, arrays):
+def _windows(trajectory, arrays, record=None):
     import numpy as np
 
     images = np.asarray(arrays["images"], dtype=np.float32) / 255
     actions = np.asarray([step.action for step in trajectory.transitions], dtype=np.float32)
     if images.shape[0] != len(actions) + 1 or not np.isfinite(images).all() or not np.isfinite(actions).all():
         raise ValueError("Official window frames or actions are incomplete")
+    diagnostics = None if record is None else record["step_diagnostics"]
+    if diagnostics is not None and len(diagnostics) != len(actions):
+        raise ValueError("Episode diagnostics do not match control transitions")
     windows = []
     for anchor in anchors(len(actions)):
         image_slice, action_slice = window_slices(anchor)
         frame, action = images[image_slice], actions[action_slice]
         if frame.shape != (5, 3, 96, 96) or action.shape != (4, 2):
             raise ValueError("Official denoiser window has the wrong shape")
+        predicted = trajectory.transitions[anchor]
+        translation, rotation = object_displacement(predicted.before, predicted.after)
+        moved = object_moved(predicted.before, predicted.after)
+        n_contacts = 0 if diagnostics is None else integer(
+            diagnostics[anchor]["n_contacts"], "contacts", 0, 100000)
+        useful = window_useful(moved, n_contacts)
         windows.append({"episode_id": trajectory.trajectory_id, "anchor": anchor,
-                        "image": frame, "action": action})
+                        "image": frame, "action": action, "moved": moved,
+                        "n_contacts": n_contacts, "useful": useful,
+                        "region": window_case_region(
+                            predicted.before, predicted.after, frame[4], frame[3],
+                            moved=moved, n_contacts=n_contacts),
+                        "translation": translation, "rotation": rotation})
     return windows
 
 
@@ -225,10 +244,99 @@ def _finite(value, name):
     return value
 
 
+def weighted_denoiser_loss(network, image, action, weights, device):
+    """One EDM step with pixel weights. Does not patch the pinned GPC module."""
+    import torch
+
+    batch, steps, channels, height, width = image.size()
+    history = network.cfg.inner_model.num_steps_conditioning
+    if steps != history + 1:
+        raise ValueError("Weighted denoiser loss expects four conditioning frames and one next frame")
+    if network.sample_sigma_training is None:
+        raise ValueError("Denoiser training sigma sampler is not set")
+    previous = image[:, :history].reshape(batch, history * channels, height, width)
+    previous_action = action[:, :history]
+    next_obs = image[:, history]
+    if network.cfg.noise_previous_obs:
+        sigma_cond = network.sample_sigma_training(batch, device)
+        previous = network.apply_noise(previous, sigma_cond, network.cfg.sigma_offset_noise)
+    else:
+        sigma_cond = None
+    sigma = network.sample_sigma_training(batch, device)
+    noisy = network.apply_noise(next_obs, sigma, network.cfg.sigma_offset_noise)
+    conditioners = network.compute_conditioners(sigma, sigma_cond)
+    predicted = network.compute_model_output(noisy, previous, previous_action, conditioners)
+    target = (next_obs - conditioners.c_skip * noisy) / conditioners.c_out
+    error = (predicted - target) ** 2
+    weight = weights[:, None] if weights.ndim == 3 else weights
+    if weight.shape[0] != batch or weight.shape[-2:] != (height, width):
+        raise ValueError("Region weights must match the image batch")
+    expanded = weight.expand_as(error)
+    loss = (error * expanded).sum() / expanded.sum().clamp_min(1e-8)
+    if not torch.isfinite(loss):
+        raise ValueError("Denoiser training loss is not finite")
+    return loss
+
+
+SCORE_FIELDS = (
+    "mse", "persistence_mse", "object_roi_mse", "object_roi_persistence",
+    "motion_mse", "motion_persistence", "translation", "rotation",
+    "object_centroid_error_pixels", "predicted_centroid_shift_pixels",
+    "actual_centroid_shift_pixels",
+)
+
+
+def score_frames(predicted, target, still, region=None, translation=None, rotation=None,
+                 useful=None):
+    """Full-image, region, and motion errors. Appearance centroid is a color proxy."""
+    import numpy as np
+
+    from .appearance import prediction_metrics
+
+    predicted = np.clip(np.asarray(predicted, dtype=np.float64), 0, 1)
+    target = np.asarray(target, dtype=np.float64)
+    still = np.asarray(still, dtype=np.float64)
+    if predicted.shape != (3, 96, 96) or target.shape != predicted.shape or still.shape != predicted.shape:
+        raise ValueError("Frame scores expect 3x96x96 official images")
+    error = (predicted - target) ** 2
+    persist = (still - target) ** 2
+    motion = motion_mask(target, still)
+    mask = None if region is None else np.asarray(region, dtype=bool)
+    row = {"mse": float(error.mean()), "persistence_mse": float(persist.mean()),
+           "object_roi_mse": _masked_mean(error, mask),
+           "object_roi_persistence": _masked_mean(persist, mask),
+           "motion_mse": _masked_mean(error, motion),
+           "motion_persistence": _masked_mean(persist, motion),
+           "translation": None if translation is None else float(translation),
+           "rotation": None if rotation is None else float(rotation),
+           "object_centroid_error_pixels": None,
+           "predicted_centroid_shift_pixels": None,
+           "actual_centroid_shift_pixels": None,
+           "useful": None if useful is None else bool(useful)}
+    if mask is not None and mask.any():
+        appearance = prediction_metrics(predicted, target, still, mask)
+        row["object_centroid_error_pixels"] = appearance["object_centroid_error_pixels"]
+        row["predicted_centroid_shift_pixels"] = appearance["predicted_centroid_shift_pixels"]
+        row["actual_centroid_shift_pixels"] = appearance["actual_centroid_shift_pixels"]
+    return row
+
+
+def _masked_mean(error, mask):
+    import numpy as np
+
+    if mask is None:
+        return None
+    selected = np.asarray(mask, dtype=bool)
+    if selected.shape != error.shape[-2:] or not selected.any():
+        return None
+    return float(error[:, selected].mean())
+
+
 class GPCDenoiserTrainer:
     """A few CUDA denoising updates from the pinned GPC checkpoint."""
 
-    def __init__(self, source_root, checkpoint, updates=4, batch_size=4, seed=0, seconds=120):
+    def __init__(self, source_root, checkpoint, updates=4, batch_size=4, seed=0, seconds=120,
+                 moved_fraction=DEFAULT_MOVED_FRACTION, region_weight=DEFAULT_REGION_WEIGHT):
         from .collection import integer
 
         self.source_root = Path(source_root)
@@ -237,8 +345,10 @@ class GPCDenoiserTrainer:
         self.batch_size = integer(batch_size, "batch size", 1, 8)
         self.seed = integer(seed, "seed", 0, 2**32 - 1)
         self.seconds = integer(seconds, "seconds", 1, 900)
+        self.moved_fraction = moved_fraction
+        self.region_weight = integer(region_weight, "region weight", 1, 64)
 
-    def run(self, dataset, output):
+    def run(self, dataset, output, validation=None, training=None):
         import time
         import numpy as np
         import torch
@@ -246,9 +356,11 @@ class GPCDenoiserTrainer:
         start = time.monotonic()
         deadline = start + self.seconds
         opened = []
-        training = load_official_windows(dataset, ("train",), opened)
-        validation = load_official_windows(dataset, ("validation",), opened)
-        if not training or not validation:
+        scored_training = training if training is not None else load_official_windows(
+            dataset, ("train",), opened)
+        scored_validation = validation if validation is not None else load_official_windows(
+            dataset, ("validation",), opened)
+        if not scored_training or not scored_validation:
             raise ValueError("Denoiser training needs both training and validation windows")
         if torch.cuda.is_available() is False:
             raise ValueError("GPC denoiser training requires CUDA; no CPU fallback")
@@ -273,29 +385,31 @@ class GPCDenoiserTrainer:
         sampler = source.DiffusionSampler(network, source.DiffusionSamplerConfig(**spec["sampler"]))
         reference = next(network.parameters()).detach().cpu().clone()
         network.eval()
-        before = _score(sampler, validation, device, self.seed)
+        before = _score(sampler, scored_validation, device, self.seed)
         if time.monotonic() >= deadline:
             raise TimeoutError("Denoiser training wall-time limit exceeded")
         optimizer = torch.optim.AdamW(network.parameters(), lr=1e-4)
         generator = torch.Generator().manual_seed(self.seed)
-        losses = []
+        moved, still = split_motion_windows(scored_training)
+        losses, replay_batches = [], []
         network.train()
         for _step in range(self.updates):
             if time.monotonic() >= deadline:
                 raise TimeoutError("Denoiser training wall-time limit exceeded")
-            choice = torch.randperm(len(training), generator=generator)[:self.batch_size]
-            batch = [training[int(index)] for index in choice]
+            batch, mix = sample_replay_batch(moved, still, self.batch_size, self.moved_fraction, generator)
+            replay_batches.append(mix)
             image = torch.as_tensor(np.stack([item["image"] for item in batch]), device=device)
             action = torch.as_tensor(np.stack([normalize_actions(item["action"]) for item in batch]), device=device)
+            weight = torch.as_tensor(np.stack([
+                foreground_weights(item["region"]) if item.get("region") is not None
+                else np.ones((96, 96), dtype=np.float32) for item in batch]), device=device)
             optimizer.zero_grad(set_to_none=True)
-            loss, _metrics = network({"image": image, "action": action}, device)
-            if not torch.isfinite(loss):
-                raise ValueError("Denoiser training loss is not finite")
+            loss = weighted_denoiser_loss(network, image, action, weight, device)
             loss.backward()
             optimizer.step()
             losses.append(float(loss.detach().cpu()))
         network.eval()
-        adapted = _score(sampler, validation, device, self.seed)
+        adapted = _score(sampler, scored_validation, device, self.seed)
         changed = not torch.equal(reference, next(network.parameters()).detach().cpu())
         output = Path(output)
         output.mkdir(parents=True, exist_ok=True)
@@ -304,12 +418,15 @@ class GPCDenoiserTrainer:
         torch.save({name: value.detach().cpu() for name, value in network.state_dict().items()}, output / "denoiser.pt")
         (output / "denoiser.json").write_text(json.dumps(
             {"updates": prior_updates + self.updates, "init_sha256": init_hash}) + "\n")
-        scored = {"windows": len(validation), "before": before, "adapted": adapted}
+        scored = {"windows": len(scored_validation), "before": before, "adapted": adapted}
         if not resumed:
             scored["frozen"] = before
         return {"updates": self.updates, "losses": losses, "weights_changed": changed,
                 "opened_images": opened, "model_test_used": False, "resumed": resumed,
-                "validation": scored, "elapsed_seconds": time.monotonic() - start}
+                "validation": scored, "elapsed_seconds": time.monotonic() - start,
+                "replay": {"moved_windows": len(moved), "still_windows": len(still),
+                           "moved_fraction": self.moved_fraction, "region_weight": self.region_weight,
+                           "loss": "case_split_foreground", "batches": replay_batches}}
 
 
 def _score(sampler, windows, device, seed):
@@ -317,7 +434,7 @@ def _score(sampler, windows, device, seed):
     import numpy as np
     import torch
 
-    frozen_error, still_error, raw_min, raw_max = [], [], [], []
+    rows, raw_min, raw_max = [], [], []
     for index, window in enumerate(windows):
         image = torch.as_tensor(window["image"][:4], device=device)[None]
         action = torch.as_tensor(normalize_actions(window["action"]), device=device)[None]
@@ -326,14 +443,36 @@ def _score(sampler, windows, device, seed):
             torch.cuda.manual_seed(seed + index)
             prediction, _steps = sampler.sample(image, action)
         raw = prediction[0].detach().cpu().numpy()
-        predicted = np.clip(raw, 0, 1)
-        target, still = window["image"][4], window["image"][3]
-        frozen_error.append(float(np.mean((predicted - target) ** 2)))
-        still_error.append(float(np.mean((still - target) ** 2)))
+        useful = window.get("useful")
+        if useful is None:
+            useful = window_useful(window.get("moved", False), window.get("n_contacts", 0))
+        rows.append(score_frames(np.clip(raw, 0, 1), window["image"][4], window["image"][3],
+                                 window.get("region"), window.get("translation"),
+                                 window.get("rotation"), useful=useful))
         raw_min.append(float(raw.min()))
         raw_max.append(float(raw.max()))
-    return {"mse": float(np.mean(frozen_error)), "persistence_mse": float(np.mean(still_error)),
-            "raw_min": float(np.min(raw_min)), "raw_max": float(np.max(raw_max))}
+    return summarize_score_rows(rows, raw_min, raw_max)
+
+
+def summarize_score_rows(rows, raw_min=None, raw_max=None):
+    """Average frame scores overall and on useful versus miss windows."""
+    summary = {name: _mean_optional(row.get(name) for row in rows) for name in SCORE_FIELDS}
+    useful_rows = [row for row in rows if row.get("useful")]
+    miss_rows = [row for row in rows if row.get("useful") is False]
+    summary["useful_windows"] = len(useful_rows)
+    summary["miss_windows"] = len(miss_rows)
+    summary["useful"] = {name: _mean_optional(row.get(name) for row in useful_rows) for name in SCORE_FIELDS}
+    summary["miss"] = {name: _mean_optional(row.get(name) for row in miss_rows) for name in SCORE_FIELDS}
+    if raw_min is not None:
+        import numpy as np
+        summary["raw_min"] = float(np.min(raw_min))
+        summary["raw_max"] = float(np.max(raw_max))
+    return summary
+
+
+def _mean_optional(values):
+    present = [float(value) for value in values if value is not None]
+    return None if not present else float(sum(present) / len(present))
 
 
 def load_denoiser_sampler(source_root, checkpoint):
