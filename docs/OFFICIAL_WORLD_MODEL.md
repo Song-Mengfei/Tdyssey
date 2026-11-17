@@ -27,7 +27,7 @@ actions only. Official T occupancy, pusher disks, contact counts and the true
 next frame are **privileged labels** used to weight the loss and score
 validation. Do not mix this path with GPC fixtures or the custom CNN catalog.
 
-Current default loss is a case split (D031):
+Current default loss is a case split (D070):
 
 - **Hit / useful** window (`moved` or `n_contacts > 0`): weight motion pixels,
   the true next T, and the pusher. Table weight is 0.
@@ -150,7 +150,7 @@ This is a qualitative viewer. It is not contact, rotation, or policy evidence.
 
 `--output` must not already exist. Default `seed=100003` is an all-miss scene:
 object overlap there means “the unmoved T still looks like a T”, not contact.
-See D030.
+See D069.
 
 ## Limits
 
