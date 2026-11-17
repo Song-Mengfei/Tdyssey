@@ -18,6 +18,7 @@ The shell scripts that ran each experiment, with their seeds and settings, are i
 | Training data | `mpc_dagger.py` | Teacher demonstrations and correction rounds: the policy drives, the teacher labels every visited state |
 | Camera frames | `image_wm_data/replay_frames.py` | Exact camera images for recorded episodes, made by replaying their physics |
 | Camera policy | `bc_train.py`, `policy_builder.py` | Official training recipe on intended-plan labels with an equal share per shape; `policy_builder.py` builds the 192 px variant |
+| Goal overlay | `overlay_frames.py`, `overlay_check.py` | D066 rendering aid (uncovered goal in red; `docs/GOAL_OVERLAY.md`): overlay frames for the teacher demos and human T, and its CPU checks |
 
 ## Testing and reporting
 
@@ -25,6 +26,7 @@ The shell scripts that ran each experiment, with their seeds and settings, are i
 | --- | --- | --- |
 | `base_rollouts.py` | Fresh-scene evaluation of the original policy or a trained one (`--student`); also rollouts for world-model data | every claim |
 | `report_pair.py` | Paired comparison on the same scenes by shape group, with 95% intervals | final tests D051, D054, D056 |
+| `d066_report.py` | Goal overlay vs control vs round 50 on the D064 pool, with the near-miss shares | D066 (not run yet) |
 | `select_candidates.py` | The fixed rule that picked the final-test candidates | D051 |
 | `final_test_report.py` | Paired analysis of the earlier pre-registered tests | D040-D049 |
 | `record_letters.py` | One video per letter, all on the same starting scene | figures |
