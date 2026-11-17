@@ -1157,6 +1157,13 @@ test on the H100: 51 GB peak, out of memory without it). Run folder `runs/flow26
 Test: 200 new scenes per shape on all 33 shapes, seeds 15000000 + 20*i (the D061 pool), 8 executed targets, paired by
 scene against round 50 and the D061 rebuilt base (`runs/flow26b/v1`), same groups as D059, whatever the outcome.
 
+D062 outcome (2026-11-11, complete, 200 paired scenes per shape on seeds 15000000 + 20*i, `runs/fairtest-d062`). The
+large-encoder flow policy at step 160k (`runs/flow26L/v1/ema-step160000.pt`) against round 50: 26 letters 32.8% ->
+42.9%, +10.1 points [+8.2, +11.9]; nine never-seen shapes 8.0% -> 17.2%, +9.2 [+7.1, +11.3]. Against Flow-DiT 16 x 16
+(the ViT-B base): 26 letters 45.5% -> 42.9%, -2.7 [-4.5, -0.8]; never-seen shapes 17.3% -> 17.2%, -0.2 [-2.4, +2.1].
+The larger encoder is worse on the letters at the same data and steps, so Flow-DiT 16 x 16 (ViT-B) stays the
+architecture result and the large encoder is not used further.
+
 ## D063 — Three more held-out shapes: digits 2, 5 and 8 (2026-11-10, before any result)
 
 Lead's decision: add `digit2`, `digit5` and `digit8` to the held-out test shapes (`tdyssey/letters.py`), never used
@@ -1243,6 +1250,13 @@ checkpoint (step N, a multiple of 10k) against Flow-DiT 8 x 8 at the same step (
 code (it reproduces Flow-DiT plans bit-identically), paired by scene. Reported: success over the 26 letters (mean over
 shapes) and the paired difference with a 95% interval, as an equal-step early-training comparison. The deciding
 experiment stays the D065 full run and its D064-pool test.
+
+D065 pilot outcome (2026-11-15). Step 60000 as fixed in the amendment, 1300 paired episodes on the 26 letters'
+selection scenes: Flow-DiT 8 x 8 40.6%, prefix head 8 x 8 33.3%, -7.3 points [-10.9, -3.7]. Earlier checkpoints,
+compared afterwards and therefore exploratory: step 20k -4.2 [-7.2, -1.1], step 40k -8.3 [-11.7, -4.9]. The gap did
+not close with training, so the full run was not started; the head stays on branch feat/joint-head (merged with this
+log) as a tested negative result, off by default (without `--head prefix` training keeps the cross-attention head). FLUX-style double-stream
+and Z-Image-style single-stream heads were discussed but never built.
 
 ## D066 — Goal overlay: show the camera policy the uncovered goal (draft 2026-11-13, before any run)
 

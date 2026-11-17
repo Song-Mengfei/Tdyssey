@@ -1,15 +1,20 @@
 # Shared project status
 
-Updated: 2026-11-11 (presentation integration; policy research summary as of 2026-11-06). Stage: one image policy for all 26 capital letters and near-T. A planner teacher that reads the
-exact simulator state (privileged, training only) plans in a learned world model; the official camera Diffusion Policy
-copies the teacher's intended plans and learns from correction rounds (DAgger). On 300 fresh scenes per shape (D051),
-success over the 27 trained shapes rises from 3.7% (original) to 33.4% (96 px camera, as the original) and 33.8%
-(192 px, a disclosed sensor change); the ten earlier shapes stay at 33-34% and the 17 new letters reach 33%. On six
-never-seen shapes success rises with the number of training shapes: 1.2% -> 2.8% (ten letters) -> 4.7-5.9% (26
-letters). Six more 96 px rounds added +1.9 points [+0.1, +3.6] on fresh scenes (round 50 vs 44: 32.9% -> 34.8%;
-D054), so round 50 is the 96 px model. Earlier: the ten-letter policy, 9.1% -> 34.3% over its ten shapes (D049).
-Next: the 192 px line continues on the next H100 job (D055). Work continues on
-`feat/wm-planning-teacher`.
+Updated: 2026-11-17 (final state after the talk and the course report). Stage: done. One camera policy for all 26
+capital letters, trained without new human demonstrations. A planner teacher that reads the exact simulator state
+(privileged, training only) plans with the state world model; the official camera Diffusion Policy copies the
+teacher's intended plans and learns from 50 correction rounds (DAgger). Final test, 200 new scenes per shape (seeds
+15000000 + 20*i, D064): success over the 26 letters rises from 2.0% (original) to 32.8% (main model, round 50, 96 px,
+the original network and inputs) and 34.0% for the 192 px model (sensor change, +1.2, interval includes zero); final
+coverage 0.33 -> 0.82. Nine never-seen shapes: 1.0% -> 4.3% (ten-shape model) -> 8.0% (digit 7: 3.0% -> 18.5%).
+About two in three failures (63.6%) are near misses that reach 90% peak coverage. Flow-DiT 16 x 16 (pretrained
+DINOv2 ViT-B encoder, 418.2M flow-matching DiT head, 505M in total), trained on the same data, reaches 45.5%
+(+12.7 points [+10.9, +14.5] against the main model; D059-D061). Variants that did not beat it: the large encoder
+(D062, -2.7), a pose head (D064, +0.2), a pi0-style prefix head (D065 pilot, -7.3) and the goal overlay suggested at
+the talk (D066, -1.0 against its control). Slides, graphs, videos and data: `presentation/`; course report:
+`presentation/paper/`. Branches feat/last-mile-rl, feat/goal-overlay, feat/joint-head, docs/presentation and
+docs/report are merged here as one final change. Open: final alignment (the last 1 to 2 px) remains the main
+limitation; see the report's Limitations section.
 
 PRs #1 and #2 are merged. The baseline, data/training infrastructure and
 world-model diagnostics are on main; selected evidence is in `docs/RESULTS.md`.
