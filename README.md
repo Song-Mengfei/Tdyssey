@@ -8,48 +8,53 @@
 of the **T only**, and adapt it to every capital letter with machine-generated data. **No new human demonstrations
 were used.** The policy still sees only the camera image (two 96x96 frames) and the pusher position.
 
+- **Course report and talk:** the report source is in [`presentation/paper/`](presentation/paper/README.md) and the
+  final 37-slide deck is `presentation/talk/tdyssey-talk.pptx` (see [presentation](presentation/README.md)).
 - **Model weights:** [Hugging Face](https://anonymous-hf.com/a/uq38ysup3kuj/) (main model, a 192 px variant, the
-  planner teacher's world model, and single-file demo models).
+  planner teacher's state world model, and single-file demo models).
 - **Live demo:** [Hugging Face Space](https://tinyurl.com/tdyssey): pick a letter, drag the block, the goal and the
   pusher, and watch the original policy and ours on the same scene.
 
 ## Results
 
-Success means the block covers more than 95% of its goal outline within 300 controls. Every test uses fresh scenes
-never used for training or model selection, and every model in a table plays the same scenes.
+Success means the block covers more than 95% of its goal outline within 300 steps of 0.1 s. The final test uses 200
+new scenes per shape that were never used for training or for picking models, and every model plays the same scenes.
 
-**Final test (fixed in advance; 300 fresh scenes per shape):**
+| Shapes | Original policy | Ten-shape model | Main model (96 px) | 192 px model | Flow-DiT |
+| --- | --- | --- | --- | --- | --- |
+| **All 26 letters** | **2.0%** | 16.7% | **32.8%** | 34.0% | 45.5% |
+| 9 earlier letters (T, Y, D, L, E, F, J, P, U) | 5.2% | 36.8% | 33.9% | 34.2% | 44.1% |
+| 17 new letters | 0.3% | 6.1% | 32.2% | 33.9% | 46.3% |
+| 9 never-seen shapes (digits 2, 3, 4, 5, 7, 8, plus, hash, arrow) | 1.0% | 4.3% | 8.0% | 9.4% | 17.3% |
+| Goal covered at the end, 26 letters | 0.33 | 0.62 | 0.82 | 0.81 | 0.89 |
 
-| Shapes | Original policy | Ten-shape model | 26-letter 96 px | 26-letter 192 px |
-| --- | --- | --- | --- | --- |
-| Ten earlier shapes (T, near-T, Y, D, L, E, F, J, P, U) | 9.3% | 33.0% | 33.7% | 34.2% |
-| 17 other letters | 0.4% | 6.4% | 33.2% | 33.5% |
-| **All 26 trained shapes** | **3.7%** | 16.3% | **33.4%** | 33.8% |
-| 6 never-seen shapes (digits 3, 4, 7, plus, hash, arrow) | 1.2% | 2.8% | 4.7% | 5.9% |
-| Goal covered at the end, 26 shapes | 0.35 | 0.63 | 0.82 | 0.81 |
-
-Six more correction rounds then lifted the main model from 32.9% to 34.8% on 200 other fresh scenes per shape
-(+1.9 points, 95% interval +0.1 to +3.6). Details, intervals and per-shape results:
-[learning findings](docs/LEARNING_FINDINGS.md) and [decisions](docs/DECISIONS.md) (D051, D054).
+- The **main model** keeps the original network, the 96 px camera and the original inputs, after 50 correction rounds.
+- The **192 px model** sees a sharper camera image (a sensor change) and comes from 2 rounds of its own line. Its
+  +1.2 points over the main model has a 95% interval that includes zero.
+- **Flow-DiT** is a larger network (a pretrained DINOv2 encoder and a 418M flow-matching transformer head, 505M in
+  total) trained on the main model's final data: +12.7 points over the main model (95% interval +10.9 to +14.5).
+- About two in three failures of the main model are near misses that reach 90% coverage at some point.
 
 ## How it works
 
-1. **World model.** A model of the pushing physics for all letters: the pusher's motion and the contact geometry are
-   copied from the simulator, and how the letter moves when pushed is learned from machine-generated pushes.
-2. **Teacher.** A sampling planner that reads the exact simulator state and tries about 1,000 candidate push plans per
-   control inside the world model, re-planning after every push. It uses privileged information, so it only makes
-   training data; it is never deployed.
+1. **State world model.** A model of the pushing physics for all letters: the pusher's motion and the contact
+   geometry use the simulator's exact rules, and how the letter moves when pushed is learned from machine-generated
+   pushes. It runs about 200 times faster than one simulator process.
+2. **Teacher.** A sampling planner that reads the exact simulator state and tries 1,024 candidate push plans inside
+   the state world model at each decision. It uses privileged information, so it only makes training data and is
+   never deployed.
 3. **Copying.** The official training recipe on the teacher's demonstrations, labelled with the teacher's *intended*
    16-step plans (much better than its executed pushes), plus the original human T demonstrations, with an equal
    share for every letter.
 4. **Correction rounds (DAgger).** The policy drives new scenes, the teacher labels every situation it reaches, and
    the policy retrains on everything so far; 5 -> 10 -> 26 letters.
 
-**What did not work** (all documented with numbers in the [learning findings](docs/LEARNING_FINDINGS.md) and the
+**What did not work** (with numbers in the [learning findings](docs/LEARNING_FINDINGS.md) and the
 [experiment log](docs/LEARNING_EXPERIMENT_LOG.md)): reinforcement-learning fine-tuning of the diffusion policy in the
 simulator (the training signal was mostly noise, and larger steps destroyed the T skill), re-ranking the original
-policy's plans with the true simulator, back-propagating through the world model, weight blends, and a world model
-learned directly from images ([world-model notes](docs/WORLD_MODEL.md)).
+policy's plans with the true simulator, back-propagating through a learned model, weight blends, and world models
+learned directly from images ([image world model notes](docs/WORLD_MODEL.md)). After the talk we also painted the
+uncovered goal red in the camera image to help the last nudge; it did not raise success ([goal overlay](docs/GOAL_OVERLAY.md)).
 
 ## Run the trained policy
 
@@ -62,36 +67,31 @@ Set up the CUDA environment and the official Diffusion Policy as described below
     --shapes T A K M R Z --student /path/to/96px/model.pt --out my_test.json
 ```
 
-Shape names: any capital letter, `T_narrow`, and the never-seen `digit3 digit4 digit7 plus hash arrow`. The tools
-build the network and the camera size from the checkpoint. The training and correction-round scripts, with the seeds
-of every run, are in [scripts/learning](scripts/learning/README.md) and
+Shape names: any capital letter, `T_narrow`, and the never-seen `digit2 digit3 digit4 digit5 digit7 digit8 plus hash
+arrow`. The tools build the network and the camera size from the checkpoint. The training and correction-round
+scripts, with the seeds of every run, are in [scripts/learning](scripts/learning/README.md) and
 [scripts/learning/experiments](scripts/learning/experiments/README.md).
 
 ## Documentation
 
 - [Main results: one camera policy for all 26 letters, and what did not work](docs/LEARNING_FINDINGS.md)
 - [Every learning run, including failed ones](docs/LEARNING_EXPERIMENT_LOG.md) and [the run scripts with their seeds](scripts/learning/experiments/README.md)
-- [Decisions, each recorded before its result](docs/DECISIONS.md)
+- [Decision log, each entry recorded before its result](docs/DECISIONS.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
-- [Goal overlay: a rendering aid that shows the camera the uncovered goal (D066)](docs/GOAL_OVERLAY.md)
-- [Train and watch the official T world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
+- [Goal overlay: a rendering aid that shows the camera the uncovered goal](docs/GOAL_OVERLAY.md)
+- [Train and watch the official T image world-model denoiser](docs/OFFICIAL_WORLD_MODEL.md)
 - [Capital letters, near-T geometry and matched comparisons](docs/OFFICIAL_SHAPES.md)
 - [Run and inspect the official Diffusion Policy baseline](docs/OFFICIAL_BASELINE.md)
 - [Watch the published alphabet videos](docs/ALPHABET_RESULTS.md) and [browse published figures](docs/RESULTS.md)
-- [Visual world-model experiments](docs/WORLD_MODEL.md)
-- [Policy training methods and derivations](docs/POLICY_LEARNING.md), [forward-process RL](docs/FORWARD_POLICY_LEARNING.md) and [the RL research survey](docs/DIFFUSION_RL_RESEARCH.md)
-- [Original learning plan](docs/LEARNING_PLAN.md) and [project scope](docs/PROJECT.md)
+- [Image world-model experiments](docs/WORLD_MODEL.md)
+- [Policy training methods and derivations](docs/POLICY_LEARNING.md) and [forward-process RL](docs/FORWARD_POLICY_LEARNING.md)
 - [Implemented code and PushT integration](docs/IMPLEMENTATION.md)
 - [Collect official interaction data](docs/OFFICIAL_COLLECTION.md), [prepare training batches](docs/TRAINING_DATA.md) and [the separate GPC reference collector](docs/COLLECTION.md)
-- [Move to a training machine](docs/TRAINING_MACHINE.md) and [shared environment and storage](docs/ENVIRONMENT.md)
-- [Current status](docs/STATUS.md), [coauthor onboarding](docs/ONBOARDING.md), [validation evidence](docs/VALIDATION.md)
-- [Commit and pull request rules](docs/GIT.md), [agent instructions](AGENTS.md) and [Codex guidance](docs/CODEX.md)
-- [Original detailed research schedule](跨形状机器人世界模型研究_详细执行时间表.md)
+- [Shared environment and storage](docs/ENVIRONMENT.md) and [validation evidence](docs/VALIDATION.md)
 
 ## Work without installing anything
 
-Source and documentation work needs only an existing editor and Python 3.11+.
-These commands create no environment or package cache:
+Source and documentation work needs only Python 3.11+. These commands create no environment or package cache:
 
 ```bash
 python3 -B scripts/check_repo.py
@@ -131,8 +131,7 @@ python3 -B scripts/view_training.py --run PATH/TO/TRAINING/RUN
 ```
 
 Open http://127.0.0.1:8765. Charts show loss, fixed noise diagnostics, contact and
-physical results per letter. See the [handoff](docs/TRAINING_MACHINE.md) for
-authentication, remote viewing and repeatable longer runs.
+physical results per letter.
 
 An existing environment can be used directly through `.venv/bin/python`; activation
 is optional. If using `uv run`, pass the same extras to preserve the chosen profile.
@@ -151,10 +150,8 @@ visibility independently of GPU use; physics remains on CPU.
 
 ## Collaboration
 
-Each author uses a branch or separate checkout. Pull shared documents before a
-substantial task, agree on file ownership, and finish with a handoff in
-`docs/STATUS.md`. Dependency changes include both `pyproject.toml` and `uv.lock`.
-Use the same locked profile for matched experiments and record differences in
+Each author uses a branch or separate checkout and merges through pull requests. Dependency changes include both
+`pyproject.toml` and `uv.lock`. Use the same locked profile for matched experiments and record differences in
 hardware and numerical behavior.
 
 Keep datasets, environments, checkpoints, and raw videos outside Git. The

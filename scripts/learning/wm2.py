@@ -1,6 +1,6 @@
 """Structured privileged PushT world model (v2): exact pusher + contact geometry, learned object motion.
 
-Physics facts used (audited in docs/research/notes/supermimic_adaptation.md): the pusher is a kinematic
+Physics facts used: the pusher is a kinematic
 disk (radius 15) driven per control by 10 substeps of v <- v + 0.01*(100(a-p) - 20v), p <- p + 0.01 v,
 unaffected by contact; space.damping = 0 so the object is quasi-static (velocity 0 after any no-contact
 control); letters are unions of body-frame axis-aligned rectangles.

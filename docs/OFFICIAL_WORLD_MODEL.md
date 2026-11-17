@@ -158,4 +158,4 @@ See D069.
 - `model_test` is never opened.
 - Privileged geometry and contact counts must stay disclosed.
 - A later author cannot replay a local `artifacts/` run from Git alone.
-- Action-sensitive imagined rewards are still unproven; see `docs/STATUS.md`.
+- Action-sensitive imagined rewards are still unproven.

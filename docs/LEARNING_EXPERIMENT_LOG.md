@@ -23,7 +23,7 @@ checkpoints and data stay outside Git in the author's private store.
   The repository-side pieces (batched rollouts D033, presets, portable runs) are in Git.
 - **Throughput.** Up to 12 concurrent jobs per GPU under MPS. Eight concurrent
   smokes ran 1.4x faster in aggregate than one, 2.4x with MPS; batched lock-step
-  rollouts gave about 4x per lineage (details in `STATUS.md`, D033).
+  rollouts gave about 4x per lineage (D033).
 - **Idle GPU time.** The GPU sat idle twice because the queue ran out while no one was
   working: about 12 hours overnight (00:30-12:48 on 2026-10-26) and about 2.5 hours
   (16:16-18:47 on 2026-10-26), plus shorter gaps. An idle guard now starts more planner

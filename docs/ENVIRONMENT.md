@@ -20,8 +20,7 @@ Select exactly one of `cpu`, `cu124`, `cu128`; `dp` no longer pins a second torc
 version independently of that choice. `cu128` pins torch 2.7.1 / torchvision
 0.22.1. Add `--extra tracking` for pinned W&B 0.18.7 without installing the GPC
 extra. Default local scalar logging/live charts use only the standard library.
-See [training-machine handoff](TRAINING_MACHINE.md) for transfer, recovery and
-repeatable jobs. No existing profile is upgraded by this manifest change alone.
+No existing profile is upgraded by this manifest change alone.
 
 Select both `--extra dp --extra gpc` to retain both runners in one environment.
 The combined CUDA/DP/GPC profile measured **5.72 GiB / 113 packages**. The `dp`
