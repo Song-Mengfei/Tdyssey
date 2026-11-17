@@ -8,8 +8,8 @@
 of the **T only**, and adapt it to every capital letter with machine-generated data. **No new human demonstrations
 were used.** The policy still sees only the camera image (two 96x96 frames) and the pusher position.
 
-- **Course report and talk:** the report source is in [`presentation/paper/`](presentation/paper/README.md) and the
-  final 37-slide deck is `presentation/talk/tdyssey-talk.pptx` (see [presentation](presentation/README.md)).
+- **Talk and results data:** the final 37-slide deck is `presentation/talk/tdyssey-talk.pptx`, and the data and
+  scripts behind every reported number and graph are in [`presentation/`](presentation/README.md).
 - **Model weights:** [Hugging Face](https://anonymous-hf.com/a/uq38ysup3kuj/) (main model, a 192 px variant, the
   planner teacher's state world model, and single-file demo models).
 - **Live demo:** [Hugging Face Space](https://tinyurl.com/tdyssey): pick a letter, drag the block, the goal and the

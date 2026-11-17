@@ -8,7 +8,7 @@ d064_test_paired.csv: every policy on ONE pool of new scenes, seeds 15000000 + 2
 tests, which are final, from --history (default presentation/data: final_tests_by_shape.csv for the history table,
 final_tests_episodes.csv for the steps-executed test D056).
 
-Writes, into --paper (default presentation/paper):
+Writes, into --paper (the report folder, for example a local copy of the report project):
   numbers.tex          one \\newcommand per number the report's text uses, each with a comment naming its source
   tables/main_test.tex     success by shape group for the five policies, change of the main model vs the original
   tables/flowdit.tex       Flow-DiT against the main model (paired)
@@ -107,7 +107,7 @@ def main():
     ap.add_argument("--data", default=str(ROOT / "data"), help="folder with d064_test_*.csv (default presentation/data)")
     ap.add_argument("--history", default=str(ROOT / "data"),
                     help="folder with final_tests_by_shape.csv and final_tests_episodes.csv (default presentation/data)")
-    ap.add_argument("--paper", default=str(ROOT / "paper"), help="paper folder (numbers.tex and tables/ go here)")
+    ap.add_argument("--paper", required=True, help="report folder (numbers.tex and tables/ go here)")
     a = ap.parse_args()
     data, hist, paper = Path(a.data), Path(a.history), Path(a.paper)
     (paper / "tables").mkdir(parents=True, exist_ok=True)
