@@ -43,6 +43,12 @@ NOVEL_PATTERNS = {
     "plus": ("00100", "00100", "00100", "11111", "00100", "00100", "00100"),
     "hash": ("01010", "11111", "01010", "01010", "11111", "01010", "01010"),
     "arrow": ("00100", "01110", "11111", "00100", "00100", "00100", "00100"),
+    # Added 2026-11-10 (lead's request), drawn to differ from their look-alike capitals: 5 has a flat top bar and a
+    # sharp top-left corner and a one-block stem (S is rounded there), 8 is rounded on both sides (B has a flat left side), 2 has a
+    # rounded top (Z has a flat top bar).
+    "digit2": ("01110", "11011", "00011", "00110", "01100", "11000", "11111"),
+    "digit5": ("11111", "10000", "10000", "11110", "00011", "11011", "01110"),
+    "digit8": ("01110", "11011", "11011", "01110", "11011", "11011", "01110"),
 }
 NOVEL_SHAPES = tuple(NOVEL_PATTERNS)
 

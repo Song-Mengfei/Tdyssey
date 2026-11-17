@@ -2,7 +2,7 @@
 
 Run from the root of the Tdyssey repository with its environment (needs tdyssey/ and third_party/diffusion_policy):
 
-    python /path/to/replay_frames.py DATA.npz OUT_frames.npz [--size 96] [--workers 16]
+    python /path/to/replay_frames.py DATA.npz OUT_frames.npz [--size 96] [--workers 16] [--goal-overlay R]
 
 Why replay instead of drawing each recorded pose: the official camera image also draws small contact markers that
 only exist while the physics is stepping, so only a replay reproduces contact frames exactly. Replay is
@@ -10,7 +10,8 @@ deterministic: every step is checked against the recorded pose (tolerance 1e-3 p
 an error if any step differs.
 
 Output: frames (episodes, 301, size, size, 3) uint8 RGB; frames[i, t] is the camera image of state[i, t]. Steps
-after the end of an episode (mask False) are zeros.
+after the end of an episode (mask False) are zeros. --goal-overlay R renders the D066 goal overlay (uncovered goal in
+red, thin parts grown by R simulator px); the replay and its checks are the same.
 """
 import argparse
 from collections import defaultdict
@@ -33,7 +34,9 @@ def _setup(planner):
 
 
 def replay(job):
-    path, episodes, size, planner = job
+    path, episodes, size, planner = job[:4]
+    overlay = job[4] if len(job) > 4 else 0
+    cam = {"render_size": size, **({"goal_overlay": overlay} if overlay else {})}
     cls, matched_reset, physical_state = _setup(planner)
     z = np.load(path)
     out = np.zeros((len(episodes), z["state"].shape[1], size, size, 3), np.uint8)
@@ -42,9 +45,9 @@ def replay(job):
         shape, seed, n = str(z["shape"][i]), int(z["seed"][i]), int(z["mask"][i].sum())
         if planner:   # world-model planner episodes: the shape is reset together with T (L for T itself)
             partner = "L" if shape == "T" else shape
-            envs = {"T": cls(shape="T", legacy=True, render_size=size), partner: cls(shape=partner, legacy=True, render_size=size)}
+            envs = {"T": cls(shape="T", legacy=True, **cam), partner: cls(shape=partner, legacy=True, **cam)}
         else:         # base-policy episodes: all five letters reset together (matched scenes)
-            envs = {s: cls(shape=s, legacy=True, render_size=size) for s in SHAPES}
+            envs = {s: cls(shape=s, legacy=True, **cam) for s in SHAPES}
         matched_reset(envs, seed, defaultdict(int))
         env = envs[shape]
         for t in range(n):
@@ -66,6 +69,7 @@ def main():
     ap.add_argument("out", type=Path)
     ap.add_argument("--size", type=int, default=96)
     ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--goal-overlay", type=int, default=0, help="D066 goal overlay radius in simulator px (0 = off)")
     a = ap.parse_args()
     z = np.load(a.data)
     planner = "source" in z.files and "planner" in str(z["source"])
@@ -73,7 +77,7 @@ def main():
     chunks = [list(range(k, min(k+8, n_ep))) for k in range(0, n_ep, 8)]
     frames = np.zeros((n_ep, z["state"].shape[1], a.size, a.size, 3), np.uint8)
     with ProcessPoolExecutor(a.workers) as pool:
-        for eps, out in pool.map(replay, [(str(a.data), c, a.size, planner) for c in chunks]):
+        for eps, out in pool.map(replay, [(str(a.data), c, a.size, planner, a.goal_overlay) for c in chunks]):
             frames[eps] = out
     a.out.parent.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(a.out, frames=frames)

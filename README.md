@@ -43,6 +43,7 @@ learning settings.
 - [Recent image/flow RL methods and the next policy-training approach](docs/DIFFUSION_RL_RESEARCH.md)
 - [Project scope and milestones](docs/PROJECT.md)
 - [Inspect denoising, near misses and post-success continuation](docs/POLICY_DIAGNOSTICS.md)
+- [Goal overlay: a rendering aid that shows the camera the uncovered goal (D066)](docs/GOAL_OVERLAY.md)
 - [Implemented code and existing PushT integration](docs/IMPLEMENTATION.md)
 - [Collect official T/L interaction data](docs/OFFICIAL_COLLECTION.md)
 - [Separate GPC reference collector](docs/COLLECTION.md)

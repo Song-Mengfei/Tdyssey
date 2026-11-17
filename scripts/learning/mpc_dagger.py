@@ -132,6 +132,8 @@ def main():
         NOISE.update(pos=args.state_noise, ang=args.angle_noise, rng=np.random.default_rng(derived_seed(7, "state-noise", args.shape, args.start)))
     agent, cls = base_rollouts.build(args.student)
     RS = getattr(agent, "render_size", 96)                # the student's camera size (192 for 192 px students)
+    OV = getattr(agent, "goal_overlay", 0)                # the student's goal overlay (D066; 0 = official rendering)
+    cam = {"goal_overlay": OV} if OV else {}
     device = agent.device
     geo = teacher2.Geometry(device); geo.kp_mode = args.kp
     blob = torch.load(args.wm, map_location=device, weights_only=True)
@@ -148,10 +150,10 @@ def main():
     for name, (lo, hi) in reserved.items():               # never collect training data on held-out scenes
         if any(lo <= s < hi for s in seeds):
             raise SystemExit(f"seeds {seeds[0]}-{seeds[-1]} overlap the {name} pool [{lo}, {hi})")
-    envs, hists = [], []
+    envs, hists, poses = [], [], []
     for seed in seeds:
         partner = "L" if args.shape == "T" else args.shape
-        pair = {"T": cls(shape="T", legacy=True, render_size=RS), partner: cls(shape=partner, legacy=True, render_size=RS)}
+        pair = {"T": cls(shape="T", legacy=True, render_size=RS, **cam), partner: cls(shape=partner, legacy=True, render_size=RS, **cam)}
         matched_reset(pair, seed, defaultdict(int))
         env = pair[args.shape]
         for other in pair.values():
@@ -159,10 +161,11 @@ def main():
                 other.close()
         obs = env._get_obs()
         envs.append(env); hists.append(deque([obs, obs], maxlen=2))
+        poses.append(deque([block_pose(env)]*2, maxlen=2))   # block pose of each history frame (saved with the records)
     E = len(envs)
     branch = cls(shape=args.shape, legacy=True, render_size=RS) if args.beta < 1 and args.execute == 1 else None
     actions = [[] for _ in range(E)]                  # executed targets per env
-    saved = [[] for _ in range(E)]                    # (control, image, agent_pos, policy x (8,16,2), label or None)
+    saved = [[] for _ in range(E)]                    # (control, image, agent_pos, policy x (8,16,2), label or None, block pose)
     active, done = np.ones(E, bool), np.zeros(E, bool)
     cov, peak = np.zeros(E), np.zeros(E)
     student_left = np.zeros(E, int); student_plan = [None]*E
@@ -182,7 +185,8 @@ def main():
             for j, i in enumerate(idx):
                 if t % args.every == 0:
                     saved[i].append([t, np.stack([np.round(np.asarray(o["image"])*255) for o in hists[i]]).astype(np.uint8),
-                                     np.stack([np.asarray(o["agent_pos"]) for o in hists[i]]).astype(np.float32), xs[j], None])
+                                     np.stack([np.asarray(o["agent_pos"]) for o in hists[i]]).astype(np.float32), xs[j], None,
+                                     np.stack(poses[i])])
                 if args.beta < 1 and t % 8 == 0 and student_left[i] == 0 and rng.random() >= args.beta:
                     student_left[i], student_plan[i] = 8, plans[8*j]
         if args.beta < 1 and args.execute == 1:        # teacher labels for states the policy is about to drive
@@ -209,7 +213,7 @@ def main():
             a = student_plan[i][8-student_left[i]] if student_left[i] > 0 else a_teacher[j]
             student_left[i] = max(0, student_left[i]-1)
             obs, row = step_record(envs[i], np.clip(a, 0, 512))
-            hists[i].append(obs); actions[i].append(np.asarray(row["action"], np.float32))
+            hists[i].append(obs); actions[i].append(np.asarray(row["action"], np.float32)); poses[i].append(block_pose(envs[i]))
             cov[i] = row["coverage"]; peak[i] = max(peak[i], cov[i])
             if row["done"]:
                 done[i] = True; active[i] = False
@@ -224,7 +228,7 @@ def main():
     for i, seed in enumerate(seeds):
         acts = np.array(actions[i], np.float32)
         rec = defaultdict(list)
-        for c, image, agent_pos, x, label in saved[i]:
+        for c, image, agent_pos, x, label, pose in saved[i]:
             if label is None and args.label == "teacher":   # the teacher acted from here: its executed continuation
                 seq = [acts[max(c-1, 0)]] + [acts[min(c+u, len(acts)-1)] for u in range(15)]
                 label = np.array(seq, np.float32)
@@ -232,11 +236,12 @@ def main():
                 lab = x[0].astype(np.float16)
             else:
                 lab = norm.normalize(torch.as_tensor(label, device=device)).cpu().numpy().astype(np.float16)
-            rec["image"].append(image); rec["agent_pos"].append(agent_pos)
+            rec["image"].append(image); rec["agent_pos"].append(agent_pos); rec["block_pose"].append(pose)
             rec["candidate_x"].append(np.concatenate([x, lab[None]])); rec["score"].append(np.array([0.0]*8+[1.0], np.float32))
             rec["choice"].append(8); rec["control"].append(c)
         if rec["choice"]:
-            np.savez_compressed(data/f"{args.shape}-{seed}.npz", shape=args.shape, success=done[i], final_coverage=cov[i],
+            tag = {"goal_overlay": OV} if OV else {}       # frames rendered with the overlay; bc_train checks this tag
+            np.savez_compressed(data/f"{args.shape}-{seed}.npz", shape=args.shape, success=done[i], final_coverage=cov[i], **tag,
                                 **{key: np.stack(v) if key not in ("choice", "control") else np.array(v) for key, v in rec.items()})
             total += len(rec["choice"])
         envs[i].close()
@@ -245,6 +250,11 @@ def main():
                "records": total, "seconds": time.time()-start, "args": {k_: str(v) for k_, v in vars(args).items()}}
     (args.out/f"{args.shape}-{args.start}.json").write_text(json.dumps(summary, indent=1))
     print(f"{args.shape}: success {int(done.sum())}/{E} coverage {cov.mean():.3f}; {total} records -> {data}")
+
+
+def block_pose(env):
+    """Exact block pose (x, y, angle) behind a camera frame, so records can be re-rendered later (e.g. with an overlay)."""
+    return np.array([*env.block.position, env.block.angle], np.float64)
 
 
 def branch_label(env, branch, teacher, past):
