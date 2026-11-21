@@ -2454,7 +2454,7 @@ RL_SNR = TYPED["rl_signal_share"]["values"]
 RL_RANK = TYPED["rl_candidate_ranking"]["values"]
 
 
-RL_DECK_DROP = ("dense, lr 3e-6", "LoRA, lr 3e-4")      # rows left out of the deck version (lead's request)
+RL_DECK_DROP = ("dense, lr 3e-6", "LoRA, lr 3e-4")      # rows left out of the deck version
 
 
 def fig_rl_t_collapse():

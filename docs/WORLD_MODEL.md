@@ -19,7 +19,7 @@ experiments below used only L. The loader now supports mixed official-letter
 catalogs, deriving labels/masks from each episode's geometry without adding a
 letter ID to inputs. This enables shared-model experiments; it does not establish
 shared accuracy or adapt pretrained GPC. See the
-[forward-learning/data handoff](FORWARD_POLICY_LEARNING.md).
+[forward-learning/data notes](FORWARD_POLICY_LEARNING.md).
 
 **This custom CNN pilot uses no pretrained world-model checkpoint.** Its first run
 trains from scratch on six L play episodes (600 unique control steps).

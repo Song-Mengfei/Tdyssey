@@ -1,4 +1,4 @@
-"""Why did the 96 px main line stop improving? (2026-11-02) Reads only stored files; no GPU.
+"""Why did the 96 px main line stop improving? Reads only stored files; no GPU.
 
 A. training loss per round (start and end of each round)
 B. how test episodes end, per round (success / close >= 0.85 / middle / far < 0.6), main vs 192 px side line

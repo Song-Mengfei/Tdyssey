@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Preparation for the 26-letter run (agreed 2026-11-02): same recipe as chain_newletters.sh (E F J P U), for the other
+# Preparation for the 26-letter run: same recipe as chain_newletters.sh (E F J P U), for the other
 # 17 letters A B C G H I K M N O Q R S V W X Z.
 #  1. dynamics data: original policy with Gaussian action noise 0/10/25/50 px, each group = T + 5-6 new letters
 #     (value pool 600000 + 20*i, i = 1400-1799; 3 groups x 4 noise levels x 2 halves of 50 scenes)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 10-shape final test, original policy's half, low priority: 1000 fresh scenes per letter (seeds 9000000 + 20*i), ten shapes, as
 # 10 parts of 100 scenes (~7.5 GB each), ONE at a time, each started only with >= 25 GB GPU memory free, capped GPU share
-# (MPS 35%). Parts not finished tonight run tomorrow beside the candidate. Output runs/fairtest-d049/base-part<k>.json.
+# (MPS 35%). Output runs/fairtest-d049/base-part<k>.json.
 source "$(dirname "$0")/common.sh"
 R=$WORK/runs; OUT=$R/fairtest-d049; mkdir -p $OUT $WORK/logs/base-rollouts
 free_gb() { nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | awk '{print int($1/1024)}'; }

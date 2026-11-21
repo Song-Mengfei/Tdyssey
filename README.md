@@ -50,7 +50,7 @@ new scenes per shape that were never used for training or for picking models, an
    the policy retrains on everything so far. The stages train on 5 shapes, then 10 shapes, then 26 letters.
 
 **What did not work:** reinforcement-learning fine-tuning of the diffusion policy in the simulator (the training
-signal was mostly noise, and larger steps lowered T success from 55% to 5%), re-ranking the original policy's plans with the true
+signal was mostly noise, and larger steps lowered T success from 55% to between 0 and 30%), re-ranking the original policy's plans with the true
 simulator, back-propagating through a learned model, weight blends, and world models learned directly from images
 ([image world model notes](docs/WORLD_MODEL.md)). After the talk we also painted the uncovered goal red in the camera
 image to help the last nudge, and it did not raise success ([goal overlay](docs/GOAL_OVERLAY.md)).

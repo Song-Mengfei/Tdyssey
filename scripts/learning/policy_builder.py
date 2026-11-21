@@ -1,4 +1,4 @@
-"""Variants of the official Diffusion Policy for the student experiments (2026-11-01).
+"""Variants of the official Diffusion Policy for the student experiments.
 
 build(image_size=96, down_dims=None, scratch_model=False) -> OfficialDiffusionPolicy whose .network is replaced by a
 DiffusionUnetHybridImagePolicy with:

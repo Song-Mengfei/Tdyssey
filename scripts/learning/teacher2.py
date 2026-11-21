@@ -1,6 +1,6 @@
 """SuperMimic-style privileged teacher on the structured world model (wm2): BPTT + GAE critic.
 
-Result (2026-10-26, negative): trained from scratch it learns to approach the object but not to push it to
+Result (negative): trained from scratch it learns to approach the object but not to push it to
 the goal; real-simulator coverage stayed ~0.04-0.12 after 500+ iterations for every reward variant tried
 (including --dist). Gradients through contact appear to trap it in local optima. The sampling planner in
 mpc_teacher.py replaced it; its reward/geometry helpers (Geometry) are reused there.

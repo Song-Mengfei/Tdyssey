@@ -5,14 +5,14 @@
 # every flow round's records). Each round also checks the previous checkpoint on the 50 validation scenes per shape
 # (monitoring only). New rounds start only while DEADLINE minus ROUND_HOURS + RESERVE_HOURS is still ahead; then the
 # deciding test runs on the last completed round (chain_flow_dit_rounds.sh).
-# Usage: DEADLINE="2026-11-09 20:15" [FLOW_RUN=flow26] chain_flow_dagger.sh [first round] [last round]
+# Usage: DEADLINE="YYYY-MM-DD HH:MM" [FLOW_RUN=flow26] chain_flow_dagger.sh [first round] [last round]
 #   FLOW_RUN names the run folder (runs/$FLOW_RUN, base checkpoint runs/$FLOW_RUN/v1/ema-step160000.pt) and the data
 #   folders (runs/mpc-data/$FLOW_RUN-r<k>); the rebuild uses flow26b.
 #   training seeds 800000 + 20*i, i = 30000 + 70*k (unused range 30000-43999)
 source "$(dirname "$0")/common.sh"
 export TDYSSEY_SHAPES=T,T_narrow,Y,D,L,E,F,J,P,U,A,B,C,G,H,I,K,M,N,O,Q,R,S,V,W,X,Z
 first=${1:-1}; last=${2:-8}
-[ -n "$DEADLINE" ] || { echo "set DEADLINE (e.g. '2026-11-09 20:15')"; exit 1; }
+[ -n "$DEADLINE" ] || { echo "set DEADLINE (format 'YYYY-MM-DD HH:MM')"; exit 1; }
 end=$(date -d "$DEADLINE" +%s)
 FLOW_RUN=${FLOW_RUN:-flow26}
 R=$WORK/runs; L=$WORK/logs/$FLOW_RUN; RUN=$R/$FLOW_RUN; mkdir -p $L

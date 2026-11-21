@@ -1,6 +1,6 @@
 # Direct policy learning: method survey, derivations and runnable pilot
 
-Updated: 2026-10-23. This page specifies the first implemented policy-update
+This page specifies the first implemented policy-update
 method. An implementation is not an improvement result.
 
 An extended image/flow RL survey added DiffusionNFT,
@@ -11,7 +11,7 @@ its all-step parameter use and checkpoint type differ from this PPO trainer.
 
 ## Which method fits this project?
 
-Primary-source survey checked 2026-10-23. The fit judgments are our assessment,
+Primary-source survey. The fit judgments are our assessment,
 not published PushT/alphabet performance claims. No method is established as
 best for our geometry, checkpoint or data budget.
 

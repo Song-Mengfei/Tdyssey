@@ -11,7 +11,7 @@ simulator state (block and pusher relative to the goal, coverage, shape): privil
 Reward per decision (8 controls): --reward-gain * coverage gain, minus --reward-loss * coverage lost within the
 decision, a one-time --reward-bonus when coverage first exceeds 0.95 (success, which ends the episode), and minus
 --reward-step per decision. Episodes last at most --episode-decisions decisions; time-limit cut-offs bootstrap.
-v1: 10 / 10 / 5 / 0.05, 6 decisions. v2 (amendment): 10 / 2 / 20 / 0.2, 12 decisions, gamma 0.95.
+v1: 10 / 10 / 5 / 0.05, 6 decisions. v2: 10 / 2 / 20 / 0.2, 12 decisions, gamma 0.95.
 
     .venv/bin/python -B scripts/learning/lastmile_rl.py train --method dsrl --student CKPT --states DIR --out DIR
     .venv/bin/python -B scripts/learning/lastmile_rl.py eval --student CKPT --states DIR --scenes 20030-20039 \

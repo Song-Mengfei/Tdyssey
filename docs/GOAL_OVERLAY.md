@@ -44,7 +44,7 @@ The block's drawn outline covers about 2-2.5 px of a sliver next to it, so a gro
 red. The official 512 -> 96 px bilinear resize samples about every 5.3 px with a 2 px window, so a band needs roughly
 7 px to cover a whole camera pixel sample at any position. R = 9 gives at least 6.5 px for a zero-width sliver plus
 the sliver's own width. `scripts/learning/overlay_check.py` measured R = 5-13 on 250 random near-goal states per
-coverage band (2026-11-13): with R = 9 every state showed at least 64 (coverage 0.90-0.95) and 59 (0.95-0.99) fully red
+coverage band: with R = 9 every state showed at least 64 (coverage 0.90-0.95) and 59 (0.95-0.99) fully red
 camera pixels, against a median of 8 and 0 goal-green pixels in the official image of the same states (2 or fewer in
 18% and 75% of them). Every R tried showed at least 25 fully red pixels; by eye R = 5 draws thin, partly broken bands,
 R = 9 continuous bands, and R = 11-13 start to fill the letters' inner gaps (`radius_compare.png` in the check output).
@@ -69,7 +69,7 @@ letters: median rank correlation 0.99, no drop above 15% in 576 steps). Pooled o
 
 ## The experiment (settings fixed before any run)
 
-Two arms continue from round 50 on one H100 job, concurrently and with the same practice scenes, steps and data rules:
+Two arms continue from round 50 on one GPU, concurrently and with the same practice scenes, steps and data rules:
 the overlay arm (R = 9) and a control arm without the overlay, so a gain cannot come from extra rounds. Round 0 adapts
 each arm to its data (54k steps); then 14 correction rounds per arm (`scripts/learning/experiments/chain_goal_overlay.sh`). No
 round starts later than 13.5 h before the job ends, which keeps at least 10 h for the last validation, the test, the
@@ -91,12 +91,12 @@ re-render them. The human T dataset images come from an older renderer: re-rende
 them on about 0.5% of the pixels (block fill and edges), so overlay runs use project-rendered human T frames while
 official runs keep the dataset's images.
 
-Rendering cost on one CPU core (2026-11-13, shared node): along teacher trajectories 2.6-3.0 ms per frame officially
+Rendering cost on one CPU core: along teacher trajectories 2.6-3.0 ms per frame officially
 and 5.0-7.1 ms with the overlay (shapely operations and painting); replaying a demonstration with physics 13 ms per
 frame officially and 21 ms with the overlay, so the 705k teacher frames take about 4 CPU hours (about 10-15 minutes
 with 24 worker processes).
 
-## Checks (2026-11-13, CPU only)
+## Checks (CPU only)
 
 `scripts/learning/overlay_check.py` passed every check: with the overlay off, replayed teacher frames equal the stored
 `frames/` files and stepped episodes of six letters equal the code before the overlay was added (366 frames,

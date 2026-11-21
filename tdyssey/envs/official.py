@@ -19,7 +19,7 @@ T_REFERENCE_COG = (0.0, 45.0)
 # the 96 px image; wider parts keep their true outline, so the goal's letter shape stays readable far from the goal.
 # Computed from the same collision polygons as the coverage metric: privileged simulator geometry, a rendering aid.
 # Changing this definition changes what an overlay checkpoint was trained on: give it a new name, not the same flag.
-# goal_overlay = -R (amendment, "slivers only"): only the grown thin parts are painted; wide uncovered parts keep
+# goal_overlay = -R ("slivers only"): only the grown thin parts are painted; wide uncovered parts keep
 # the official green, so the image matches the official one except where a thin sliver of goal is left uncovered (the
 # final misalignment). The negative value gives these frames, records and checkpoints their own name (frames-ov-9).
 OVERLAY_COLOR = (255, 0, 0)

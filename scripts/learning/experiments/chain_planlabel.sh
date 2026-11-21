@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Plan-label ten-letter correction rounds (agreed 2026-11-01 after the label A/B): start from the best ten-letter
+# Plan-label ten-letter correction rounds (after the label A/B): start from the best ten-letter
 # student (round 16), demos = plan-recording teacher demos with intended-plan labels, + all correction records (already
 # plan-labelled) + human T. Rounds until about 2 hours before the job ends (the watchdog adds more if idle).
 source "$(dirname "$0")/common.sh"

@@ -11,7 +11,7 @@ R=$WORK/runs; OUT=$R/$OUTNAME; L=$WORK/logs; mkdir -p $OUT $L/base-rollouts
 PY=${PY:-$REPO/.venv/bin/python}; [ -x "$PY" ] || PY=$WORK/repo/.venv/bin/python
 SH="T T_narrow A B C D E F G H I J K L M N O P Q R S U V W X Y Z digit3 digit4 digit7 plus hash arrow"
 free_gb() { nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | awk '{print int($1/1024)}'; }
-SH_NEW="T digit2 digit5 digit8"   # held-out digits added 2026-11-10: their own matched group, so the 33-shape scenes stay unchanged
+SH_NEW="T digit2 digit5 digit8"   # held-out digits: their own matched group, so the 33-shape scenes stay unchanged
 run() {   # name checkpoint max-concurrent [shapes]
   local pids="" name=$1 cand=$2 conc=$3 shapes=${4:-$SH}
   for attempt in 1 2; do

@@ -33,7 +33,7 @@ PATTERNS = {
 ALPHABET = tuple("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 ALL_SHAPES = (*ALPHABET, "T_narrow")
 
-# Held-out test shapes (approved 2026-11-02 for the 26-letter run): never used for training, data collection,
+# Held-out test shapes: never used for training, data collection,
 # world-model fitting or tuning. Same 5 x 7 block system, size and density as the capitals; each is one
 # edge-connected piece and none matches a capital.
 NOVEL_PATTERNS = {
@@ -43,7 +43,7 @@ NOVEL_PATTERNS = {
     "plus": ("00100", "00100", "00100", "11111", "00100", "00100", "00100"),
     "hash": ("01010", "11111", "01010", "01010", "11111", "01010", "01010"),
     "arrow": ("00100", "01110", "11111", "00100", "00100", "00100", "00100"),
-    # Added 2026-11-10 (lead's request), drawn to differ from their look-alike capitals: 5 has a flat top bar and a
+    # Drawn to differ from their look-alike capitals: 5 has a flat top bar and a
     # sharp top-left corner and a one-block stem (S is rounded there), 8 is rounded on both sides (B has a flat left side), 2 has a
     # rounded top (Z has a flat top bar).
     "digit2": ("01110", "11011", "00011", "00110", "01100", "11000", "11111"),

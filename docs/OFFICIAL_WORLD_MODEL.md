@@ -1,6 +1,6 @@
 # Official T world-model training and use
 
-This page is the shared handoff for the **GPC image denoiser** continued on
+This page describes the **GPC image denoiser** continued on
 official PushT T data. It is not the custom L CNN in [WORLD_MODEL.md](WORLD_MODEL.md).
 It does not train or update the pushing policy. Weights, batches and reports
 stay in `artifacts/` and are **not in Git**. After a pull, collect and train

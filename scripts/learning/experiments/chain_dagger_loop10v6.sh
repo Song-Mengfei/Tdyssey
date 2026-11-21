@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ten-letter correction rounds, one script for both lines (agreed 2026-11-01):
+# Ten-letter correction rounds, one script for both lines:
 #   main line  TAG=m SIZE=96   (headline results; same camera as the official policy)
 #   side line  TAG=h SIZE=192  (labelled side experiment: is the 96 px camera the limit?)
 # Both lines start from the same 96 px student and follow the same schedule, so the main line is the side line's
@@ -9,7 +9,7 @@
 #            per letter (teacher takes 30% of 8-control decisions, labels every visited state with its 8-control plan),
 #            then fine-tune 20k steps on demos + human T + earlier corrections + this line's corrections.
 # Data at 96 px (human T, earlier corrections) is enlarged for the 192 px line; its own corrections are native 192 px.
-# v6 (2026-11-01 21:20): only one line collects at a time (flock on $WORK/collect.lock; two lines collecting
+# v6: only one line collects at a time (flock on $WORK/collect.lock; two lines collecting
 # together ran out of GPU memory at 20:24), and a letter whose collection crashed is collected again once.
 # Usage: chain_dagger_loop10v6.sh TAG SIZE "DEMO DIRS" <start student> <first round> <last round>
 source "$(dirname "$0")/common.sh"

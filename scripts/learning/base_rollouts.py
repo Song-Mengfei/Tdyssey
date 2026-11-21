@@ -47,7 +47,7 @@ def wilson(k, n, z=1.96):
 
 
 def less_random(agent, init_scale=1.0):
-    """Opt-in sampler for the randomness test (2026-11-02): DDIM with eta = 0 (no fresh noise during refinement; same
+    """Opt-in sampler for the randomness test: DDIM with eta = 0 (no fresh noise during refinement; same
     trained network and 100 steps), starting noise scaled by init_scale. The default evaluation path is unchanged."""
     import types
     import numpy as np

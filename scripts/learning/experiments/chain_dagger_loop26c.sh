@@ -4,10 +4,10 @@
 # rounds: test on 50 validation scenes per shape (2 parts, alongside), collect 30 training scenes per shape with the
 # teacher taking 30% of 8-control decisions (only one line collects at a time: flock; collection in waves of at most
 # 9 shapes, ~4.9 GB GPU memory each; crashed shapes collected once more), fine-tune 20k steps on everything.
-# v26c (2026-11-03, larger-rounds budget): STEPS training steps per round (default 54000), NEWSCENES practice scenes per round
+# v26c (larger-rounds budget): STEPS training steps per round (default 54000), NEWSCENES practice scenes per round
 # for the 17 new letters (default 60; the ten earlier shapes keep 30), seeds i = IBASE + SPACING*k (default 70).
 # Set TDYSSEY_FRAMES_MMAP=<local dir> where host memory is short (bc_train then streams its frames to disk).
-# From v26b (2026-11-02, for GPUs smaller than the 93 GB H100, e.g. an A100): collection waves of WAVE jobs (default 4)
+# From v26b (for GPUs with less memory): collection waves of WAVE jobs (default 4)
 # and each job starts only with MIN_FREE_GB free (default 10); evaluations use 4 parts of 13 scenes.
 # Usage: chain_dagger_loop26c.sh TAG SIZE "DEMO DIRS" <start student|official> <first round> <last round> <IBASE>
 #   TAG m (96 px) or h (192 px); training seeds 800000 + 20*i, i = IBASE + 50*k (as run: m 58000, h 52100; keep i < 60000)
